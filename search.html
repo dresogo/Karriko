@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suchergebnisse | AzubiCheck</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .search-page-header {
+            margin-top: 70px;
+            /* Navbar height */
+            padding: 2rem 0;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .search-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .result-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-content {
+            flex: 1;
+        }
+
+        .result-title {
+            color: var(--primary);
+            /* Similar blue to screenshot */
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .result-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .result-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 0.5rem;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-icon {
+            color: var(--primary);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar glass">
+        <div class="logo"><a href="index.html">AzubiCheck</a></div>
+        <div class="nav-actions">
+            <div class="search-container small" style="margin-right:2rem; width:300px; display:none;"
+                id="nav-search-container">
+                <input type="text" id="nav-search" placeholder="Suche..." style="padding:0.5rem 1rem;">
+            </div>
+            <div id="auth-buttons">
+                <button onclick="window.location.href='index.html'" class="btn btn-secondary">Home</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-page-header">
+        <div class="container">
+            <div class="search-stats">
+                <h2 style="font-size:1.5rem; margin:0"><span id="result-count">0</span> Treffer für <span
+                        id="search-term" style="color:var(--primary)">...</span></h2>
+                <select class="btn btn-secondary" style="padding:0.5rem">
+                    <option>Relevanz</option>
+                    <option>Bewertung</option>
+                    <option>Neueste</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="container section" style="padding-top:2rem">
+        <div class="grid" style="grid-template-columns: 1fr; gap:1rem" id="results-list">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:3000/api";
+        document.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q');
+
+            document.getElementById('search-term').textContent = query || "Alle";
+
+            if (query) {
+                try {
+                    const res = await fetch(`${API_URL}/companies?search=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+
+                    document.getElementById('result-count').textContent = data.length;
+                    renderResults(data);
+                } catch (e) {
+                    console.error(e);
+                }
+            } else {
+                // Load all or handle empty
+            }
+        });
+
+        function renderResults(companies) {
+            const list = document.getElementById('results-list');
+            if (companies.length === 0) {
+                list.innerHTML = "<p>Keine Ergebnisse gefunden.</p>";
+                return;
+            }
+
+            list.innerHTML = companies.map(c => {
+                const rating = c.avg_rating ? parseFloat(c.avg_rating).toFixed(1) : "0.0";
+                return `
+                <div class="result-card" onclick="window.location.href='company.html?name=${encodeURIComponent(c.name)}'" style="cursor:pointer">
+                    <div class="result-content">
+                        <span class="result-title">${c.name}</span>
+                        <div class="result-meta">
+                            <span class="meta-item"><i data-lucide="map-pin" style="width:16px"></i> ${c.location || 'Deutschland'}</span>
+                            <span class="meta-item" style="color:#b45309; background:#fffbeb; padding:0.1rem 0.5rem; border-radius:99px; font-weight:600">
+                                ${rating} ★
+                            </span>
+                             <span class="meta-item" style="color:var(--text-muted)">(${c.review_count || 0} Bewertungen)</span>
+                        </div>
+                        <p style="color:var(--text-muted); font-size:0.95rem; line-height:1.5; margin-bottom:1rem">
+                            ${c.description || "Ein führendes Unternehmen in seiner Branche. Entdecke spannende Ausbildungsmöglichkeiten und echte Bewertungen von Azubis."}
+                        </p>
+                        <div style="display:flex; gap:1rem; font-size:0.85rem; color:var(--text-muted)">
+                            <span>vor 1 Tag aktualisiert</span>
+                        </div>
+                    </div>
+                    <div class="result-logo">
+                        ${c.logo_url && c.logo_url.length > 2 ? `<img src="${c.logo_url}" style="width:100%; height:100%; object-fit:contain; border-radius:0.5rem">` : c.name.substring(0, 2).toUpperCase()}
+                    </div>
+                     <i data-lucide="heart" class="action-icon" style="position:absolute; bottom:1.5rem; right:1.5rem; color:#cbd5e1; width:20px"></i>
+                </div>
+            `}).join('');
+            lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>

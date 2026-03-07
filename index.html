@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AzubiCheck | Finde deinen perfekten Ausbildungsplatz</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar glass">
+      <div class="logo">AzubiCheck</div>
+      <div class="nav-actions">
+        <!-- Auth Buttons -->
+        <div id="auth-buttons">
+          <button id="btn-login" class="btn btn-secondary">Anmelden</button>
+          <button id="btn-register" class="btn btn-primary">
+            Registrieren
+          </button>
+        </div>
+        <!-- User Profile (Hidden by default) -->
+        <div id="user-profile" class="hidden">
+          <span id="user-name">Mein Profil</span>
+          <button id="btn-logout" class="btn btn-sm">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="hero-content">
+        <h1>
+          Finde deinen <span class="gradient-text">Traum-Ausbildungsplatz</span>
+        </h1>
+        <p class="subtitle">
+          Echte Bewertungen von Azubis für Azubis. Transparent, ehrlich und
+          direkt.
+        </p>
+
+        <div class="search-container glass" style="position: relative">
+          <i data-lucide="search" class="search-icon"></i>
+          <input
+            type="text"
+            id="company-search"
+            placeholder="Suche nach Unternehmen..."
+            autocomplete="off"
+          />
+          <button id="search-btn" class="btn btn-primary">Suchen</button>
+          <!-- Results Dropdown moved INSIDE relative parent for correct alignment -->
+          <div
+            id="search-results"
+            class="search-results-dropdown hidden glass"
+          ></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Promoted Jobs Section (4 Cards) -->
+    <section class="section container">
+      <div class="section-header">
+        <h2>Top Ausbildungsplätze</h2>
+        <p>Bewirb dich jetzt bei den besten Arbeitgebern.</p>
+      </div>
+      <div class="grid grid-4" id="promoted-jobs">
+        <!-- Dynamic Content -->
+        <div class="card skeleton"></div>
+        <div class="card skeleton"></div>
+        <div class="card skeleton"></div>
+        <div class="card skeleton"></div>
+      </div>
+    </section>
+
+    <!-- Platform Reviews Section (2x3 Cards) -->
+    <section class="section container bg-alt">
+      <div class="section-header">
+        <h2>Das sagen unsere Nutzer</h2>
+        <p>Erfahrungen von echten Auszubildenden auf AzubiCheck.</p>
+      </div>
+      <div class="grid grid-3" id="platform-reviews">
+        <!-- Dynamic Content -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-col">
+          <h3>AzubiCheck</h3>
+          <p>Die Plattform für transparente Ausbildungsbewertungen.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Rechtliches</h4>
+          <a href="#">Impressum</a>
+          <a href="#">Datenschutz</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+      <div class="modal-content glass">
+        <span class="close-modal">&times;</span>
+        <h2 id="modal-title">Willkommen</h2>
+        <div class="auth-options">
+          <button class="btn btn-social btn-google" onclick="authGoogle()">
+            <i data-lucide="chrome"></i> Mit Google fortfahren
+          </button>
+          <button class="btn btn-social btn-apple" onclick="authApple()">
+            <i data-lucide="apple"></i> Mit Apple fortfahren
+          </button>
+        </div>
+        <div class="divider">oder</div>
+        <form id="auth-form">
+          <div class="input-group">
+            <input
+              type="email"
+              id="email"
+              placeholder="E-Mail Adresse"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              id="password"
+              placeholder="Passwort"
+              required
+            />
+          </div>
+          <div class="input-group hidden" id="role-wrapper">
+            <label for="role">Registrieren als</label>
+            <select id="role">
+              <option value="azubi">Azubi</option>
+              <option value="unternehmen">Unternehmen</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-full"
+            id="auth-submit"
+          >
+            Anmelden
+          </button>
+        </form>
+        <p class="auth-switch">
+          Noch kein Konto? <a href="#" id="switch-auth">Registrieren</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

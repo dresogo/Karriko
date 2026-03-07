@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Azubi-Profil bearbeiten — AzubiCheck</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar glass">
+      <div class="logo">AzubiCheck — Profil</div>
+      <div style="margin-left: auto">
+        <a href="index.html" class="btn">Start</a>
+      </div>
+    </nav>
+
+    <main class="container section">
+      <h1>Profil bearbeiten</h1>
+      <p>
+        Bearbeite dein Azubi-Profil. Die Vorlage hilft dir, ein aussagekräftiges
+        Profil zu erstellen.
+      </p>
+
+      <div class="grid grid-2">
+        <div>
+          <form id="profile-form">
+            <div class="input-group">
+              <label for="u-username">Name / Anzeigename</label>
+              <input id="u-username" required />
+            </div>
+            <div class="input-group">
+              <label for="u-bio">Kurzprofil / Bio</label>
+              <textarea id="u-bio" rows="6"></textarea>
+            </div>
+            <div class="input-group">
+              <label for="u-avatar">Avatar Bild URL</label>
+              <input id="u-avatar" />
+            </div>
+            <button class="btn btn-primary">Speichern</button>
+          </form>
+        </div>
+
+        <div>
+          <h3>Profil-Vorlage</h3>
+          <div class="card">
+            <div style="display: flex; gap: 1rem; align-items: center">
+              <img
+                id="preview-avatar"
+                src="https://ui-avatars.com/api/?name=User"
+                style="
+                  width: 80px;
+                  height: 80px;
+                  border-radius: 50%;
+                  object-fit: cover;
+                "
+              />
+              <div>
+                <h2 id="preview-username">Dein Name</h2>
+                <p id="preview-bio" style="color: var(--text-muted)">
+                  Kurzbeschreibung ...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const API = "http://localhost:3000/api";
+      const currentUser =
+        JSON.parse(localStorage.getItem("azubi_user")) || null;
+      if (!currentUser || currentUser.role !== "azubi") {
+        document.body.innerHTML =
+          '<main class="container"><h2>Zugriff verweigert</h2><p>Diese Seite ist nur für Azubi-Accounts.</p><p><a href="index.html">Zurück</a></p></main>';
+        throw new Error("Access denied");
+      }
+
+      const form = document.getElementById("profile-form");
+
+      async function loadProfile() {
+        try {
+          const res = await fetch(`${API}/users/${currentUser.id}`);
+          if (!res.ok) return;
+          const u = await res.json();
+          document.getElementById("u-username").value = u.username || "";
+          document.getElementById("u-bio").value = u.bio || "";
+          document.getElementById("u-avatar").value = u.avatar_url || "";
+          updatePreview();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function updatePreview() {
+        const name = document.getElementById("u-username").value || "Dein Name";
+        const bio =
+          document.getElementById("u-bio").value || "Kurzbeschreibung ...";
+        const avatar =
+          document.getElementById("u-avatar").value ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
+        document.getElementById("preview-username").textContent = name;
+        document.getElementById("preview-bio").textContent = bio;
+        document.getElementById("preview-avatar").src = avatar;
+      }
+
+      ["u-username", "u-bio", "u-avatar"].forEach((id) => {
+        document.getElementById(id).addEventListener("input", updatePreview);
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          username: document.getElementById("u-username").value,
+          bio: document.getElementById("u-bio").value,
+          avatar_url: document.getElementById("u-avatar").value,
+        };
+        try {
+          const res = await fetch(`${API}/users/${currentUser.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json();
+          if (data.success) {
+            alert("Profil gespeichert");
+            // update localStorage copy
+            const updated = Object.assign({}, currentUser, {
+              username: payload.username,
+            });
+            localStorage.setItem("azubi_user", JSON.stringify(updated));
+          }
+        } catch (err) {
+          alert("Fehler: " + err.message);
+        }
+      });
+
+      loadProfile();
+    </script>
+  </body>
+</html>

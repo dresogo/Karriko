@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unternehmensprofil | AzubiCheck</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      .company-header-bg {
+        height: 300px;
+        background:
+          linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6)),
+          url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80");
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        margin-top: 70px;
+      }
+
+      .company-info {
+        margin-top: -40px;
+        padding-top: 0.75rem;
+        padding-bottom: 2rem;
+        display: flex;
+        align-items: flex-end;
+        gap: 2rem;
+        position: relative;
+        z-index: 10;
+      }
+
+      .company-logo {
+        width: 160px;
+        height: 160px;
+        min-width: 160px;
+        /* Prevent shrinking */
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .company-meta {
+        flex: 1;
+      }
+
+      .company-meta h1 {
+        color: var(--text-main);
+        font-size: 2.5rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+      }
+
+      .rating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #fffbeb;
+        color: #b45309;
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        font-weight: 600;
+      }
+
+      .reviews-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .rating-modal-content {
+        max-width: 600px;
+      }
+
+      /* Responsive Fixes */
+      @media (max-width: 768px) {
+        .company-header-bg {
+          height: 200px;
+        }
+
+        .company-info {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          margin-top: -30px;
+          padding-top: 0.5rem;
+          gap: 1rem;
+        }
+
+        .company-logo {
+          width: 120px;
+          height: 120px;
+          min-width: 120px;
+          font-size: 1.5rem;
+        }
+
+        .company-meta h1 {
+          font-size: 1.8rem;
+          margin-top: 0.5rem;
+        }
+
+        .grid-3 {
+          grid-template-columns: 1fr !important;
+        }
+
+        #btn-rate {
+          width: 100%;
+          margin-top: 1rem;
+        }
+
+        .reviews-controls {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+
+        .reviews-controls select {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar glass">
+      <div class="logo"><a href="index.html">AzubiCheck</a></div>
+      <div class="nav-actions">
+        <!-- Auth Buttons -->
+        <div id="auth-buttons">
+          <button id="btn-login" class="btn btn-secondary">Anmelden</button>
+          <button id="btn-register" class="btn btn-primary">
+            Registrieren
+          </button>
+        </div>
+        <!-- User Profile (Hidden by default) -->
+        <div id="user-profile" class="hidden">
+          <span id="user-name">Mein Profil</span>
+          <button
+            id="btn-logout"
+            class="btn btn-sm"
+            style="
+              margin-left: 1rem;
+              padding: 0.5rem 1rem;
+              border: 1px solid #e2e8f0;
+              background: white;
+              border-radius: 0.5rem;
+            "
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="company-header-bg"></div>
+
+    <div class="container">
+      <div class="company-info">
+        <div class="company-logo" id="company-logo">LOGO</div>
+        <div class="company-meta">
+          <h1 id="company-name">Lade Daten...</h1>
+          <div class="rating-badge">
+            <i data-lucide="star" style="fill: currentColor"></i>
+            <span id="avg-rating">-</span>
+            <span
+              style="
+                font-weight: 400;
+                color: var(--text-muted);
+                margin-left: 5px;
+              "
+              id="total-reviews"
+              >(- Bewertungen)</span
+            >
+          </div>
+        </div>
+        <button id="btn-rate" class="btn btn-primary">Jetzt bewerten</button>
+      </div>
+
+      <!-- Content Grid -->
+      <div
+        class="grid grid-3"
+        style="grid-template-columns: 2fr 1fr; gap: 3rem"
+      >
+        <!-- Reviews Column -->
+        <div>
+          <div class="reviews-controls">
+            <h3>Bewertungen</h3>
+            <select
+              id="sort-select"
+              style="
+                padding: 0.5rem;
+                border-radius: 0.5rem;
+                border: 1px solid #ddd;
+              "
+            >
+              <option value="newest">Neueste zuerst</option>
+              <option value="best">Beste zuerst</option>
+            </select>
+          </div>
+          <div
+            id="reviews-list"
+            class="grid"
+            style="grid-template-columns: 1fr; gap: 1.5rem"
+          >
+            <!-- Reviews go here -->
+          </div>
+        </div>
+
+        <!-- Sidebar (Jobs) -->
+        <div>
+          <h3>Offene Stellen</h3>
+          <div
+            id="jobs-list"
+            class="grid"
+            style="grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem"
+          >
+            <!-- Jobs go here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div id="rating-modal" class="modal hidden">
+      <div class="modal-content rating-modal-content">
+        <span class="close-rating-modal close-modal">&times;</span>
+        <h2>Bewertung abgeben</h2>
+        <form id="rating-form">
+          <div style="margin-bottom: 1.5rem">
+            <label
+              style="display: block; margin-bottom: 0.5rem; font-weight: 500"
+              >Wie möchtest du bewerten?</label
+            >
+            <div style="display: flex; gap: 1rem">
+              <label>
+                <input type="radio" name="anonymity" value="named" checked />
+                Mit Namen (100% Gewichtung)
+              </label>
+              <label>
+                <input type="radio" name="anonymity" value="anonymous" /> Anonym
+                (50% Gewichtung)
+              </label>
+            </div>
+          </div>
+
+          <div id="questions-container">
+            <!-- Dynamic Questions -->
+          </div>
+
+          <div class="input-group">
+            <label>Dein Kommentar</label>
+            <textarea
+              id="rating-text"
+              rows="4"
+              style="
+                width: 100%;
+                padding: 0.8rem;
+                border: 1px solid #ddd;
+                border-radius: 0.5rem;
+                margin-top: 0.5rem;
+              "
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">
+            Bewertung veröffentlichen
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Auth Modal (Added) -->
+    <div id="auth-modal" class="modal hidden">
+      <div class="modal-content glass">
+        <span class="close-modal close-auth-modal">&times;</span>
+        <h2 id="modal-title">Willkommen</h2>
+        <div class="auth-options">
+          <button class="btn btn-social btn-google" onclick="alert('Demo')">
+            <i data-lucide="chrome"></i> Mit Google fortfahren
+          </button>
+          <button class="btn btn-social btn-apple" onclick="alert('Demo')">
+            <i data-lucide="apple"></i> Mit Apple fortfahren
+          </button>
+        </div>
+        <div class="divider">oder</div>
+        <form id="auth-form">
+          <div class="input-group">
+            <input
+              type="email"
+              id="email"
+              placeholder="E-Mail Adresse"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              id="password"
+              placeholder="Passwort"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary btn-full"
+            id="auth-submit"
+          >
+            Anmelden
+          </button>
+        </form>
+        <p class="auth-switch">
+          Noch kein Konto? <a href="#" id="switch-auth">Registrieren</a>
+        </p>
+      </div>
+    </div>
+
+    <script src="company.js"></script>
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>

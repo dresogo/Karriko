@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Unternehmensbereich — AzubiCheck</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <nav class="navbar glass">
+      <div class="logo">AzubiCheck — Unternehmensbereich</div>
+      <div style="margin-left: auto">
+        <a href="index.html" class="btn">Start</a>
+      </div>
+    </nav>
+
+    <main class="container section">
+      <h1>Dein Unternehmensprofil</h1>
+      <p>
+        Diese Seite ist für Benutzer mit Rolle <strong>Unternehmen</strong>.
+        Hier kannst du dein Unternehmen anlegen oder bearbeiten. Nutze die
+        Vorlage und passe sie an.
+      </p>
+
+      <div class="grid grid-2">
+        <div>
+          <form id="company-form">
+            <input type="hidden" id="company-id" />
+            <div class="input-group">
+              <label for="c-name">Firmenname</label>
+              <input id="c-name" required />
+            </div>
+            <div class="input-group">
+              <label for="c-desc">Kurzbeschreibung</label>
+              <textarea id="c-desc" rows="4"></textarea>
+            </div>
+            <div class="input-group">
+              <label for="c-logo">Logo URL</label>
+              <input id="c-logo" />
+            </div>
+            <div class="input-group">
+              <label for="c-header">Header Bild URL</label>
+              <input id="c-header" />
+            </div>
+            <button class="btn btn-primary" id="save-company">Speichern</button>
+          </form>
+        </div>
+
+        <div>
+          <h3>Vorlage (so sieht dein Unternehmensprofil aus)</h3>
+          <div id="template-preview" class="card">
+            <div
+              style="
+                height: 140px;
+                background-size: cover;
+                background-position: center;
+              "
+              id="preview-header"
+            ></div>
+            <div style="padding: 1rem">
+              <div
+                style="
+                  display: flex;
+                  gap: 1rem;
+                  align-items: center;
+                  margin-top: -30px;
+                "
+              >
+                <div
+                  style="
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 8px;
+                    background: #eee;
+                  "
+                  id="preview-logo"
+                ></div>
+                <div>
+                  <h2 id="preview-name">Firmenname</h2>
+                  <p id="preview-desc" style="color: var(--text-muted)">
+                    Kurze Beschreibung ...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="margin-top: 0.5rem; color: var(--text-muted)">
+            Tipp: Fülle alle Felder aus und klicke auf "Speichern".
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const API = "http://localhost:3000/api";
+      const currentUser =
+        JSON.parse(localStorage.getItem("azubi_user")) || null;
+      if (
+        !currentUser ||
+        !(
+          currentUser.role === "unternehmen" ||
+          currentUser.role === "superadmin"
+        )
+      ) {
+        document.body.innerHTML =
+          '<main class="container"><h2>Zugriff verweigert</h2><p>Diese Seite ist nur für Unternehmens-Accounts.</p><p><a href="index.html">Zurück</a></p></main>';
+        throw new Error("Access denied");
+      }
+
+      const form = document.getElementById("company-form");
+      const preview = {
+        name: document.getElementById("preview-name"),
+        desc: document.getElementById("preview-desc"),
+        logo: document.getElementById("preview-logo"),
+        header: document.getElementById("preview-header"),
+      };
+
+      // Update preview when fields change
+      ["c-name", "c-desc", "c-logo", "c-header"].forEach((id) => {
+        const el = document.getElementById(id);
+        el.addEventListener("input", () => updatePreview());
+      });
+
+      function updatePreview() {
+        document.getElementById("preview-name").textContent =
+          document.getElementById("c-name").value || "Firmenname";
+        document.getElementById("preview-desc").textContent =
+          document.getElementById("c-desc").value || "Kurze Beschreibung ...";
+        const logo = document.getElementById("c-logo").value;
+        const header = document.getElementById("c-header").value;
+        document.getElementById("preview-logo").style.backgroundImage = logo
+          ? `url(${logo})`
+          : "none";
+        document.getElementById("preview-header").style.backgroundImage = header
+          ? `url(${header})`
+          : "none";
+      }
+
+      // Load existing company owned by this user (simple lookup)
+      async function loadOwnedCompany() {
+        try {
+          const res = await fetch(`${API}/companies?search=`);
+          // simple approach: get all companies and find owner_user_id
+          const companies = await res.json();
+          if (!Array.isArray(companies)) return;
+          const mine = companies.find((c) => c.owner_user_id == currentUser.id);
+          if (mine) {
+            document.getElementById("company-id").value = mine.id;
+            document.getElementById("c-name").value = mine.name || "";
+            document.getElementById("c-desc").value = mine.description || "";
+            document.getElementById("c-logo").value = mine.logo_url || "";
+            document.getElementById("c-header").value =
+              mine.header_image_url || "";
+            updatePreview();
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("company-id").value;
+        const payload = {
+          name: document.getElementById("c-name").value,
+          description: document.getElementById("c-desc").value,
+          logo_url: document.getElementById("c-logo").value,
+          header_image_url: document.getElementById("c-header").value,
+          owner_user_id: currentUser.id,
+        };
+
+        try {
+          if (id) {
+            const res = await fetch(`${API}/companies/${id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (data.success) alert("Speichern erfolgreich");
+          } else {
+            const res = await fetch(`${API}/companies`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (data.success) {
+              document.getElementById("company-id").value = data.companyId;
+              alert("Unternehmen angelegt");
+            }
+          }
+        } catch (err) {
+          alert("Fehler: " + err.message);
+        }
+      });
+
+      // initial load
+      loadOwnedCompany();
+    </script>
+  </body>
+</html>
