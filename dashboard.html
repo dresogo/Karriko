@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Karriko</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar glass" id="main-navbar">
+        <div class="logo"><a href="index.html">Karriko</a><span class="logo-dot"></span></div>
+        <div class="nav-actions">
+            <a href="index.html" class="nav-link">Startseite</a>
+            <span id="user-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary)"></span>
+            <button id="btn-logout" class="btn btn-secondary btn-sm">Logout</button>
+        </div>
+    </nav>
+
+    <div class="dashboard-header">
+        <div class="container">
+            <h1 style="font-size: 1.75rem">Mein Dashboard</h1>
+            <p style="color: var(--text-muted)">Verwalte deine Bewertungen und Bewerbungen.</p>
+        </div>
+    </div>
+
+    <div class="container" style="padding-bottom: 4rem">
+        <div class="tabs" id="dashboard-tabs">
+            <div class="tab active" data-tab="reviews" onclick="switchTab('reviews')">
+                <i data-lucide="star" style="width:16px; height:16px"></i> Meine Bewertungen
+            </div>
+            <div class="tab" data-tab="applications" onclick="switchTab('applications')">
+                <i data-lucide="file-text" style="width:16px; height:16px"></i> Meine Bewerbungen
+            </div>
+            <div class="tab" data-tab="profile" onclick="switchTab('profile')">
+                <i data-lucide="user" style="width:16px; height:16px"></i> Profil
+            </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div id="tab-reviews" class="tab-content">
+            <div id="my-reviews" class="grid" style="grid-template-columns: 1fr; gap: 1rem">
+                <div class="card skeleton" style="height: 120px"></div>
+            </div>
+        </div>
+
+        <!-- Applications Tab -->
+        <div id="tab-applications" class="tab-content hidden">
+            <div id="my-applications" class="grid" style="grid-template-columns: 1fr; gap: 1rem">
+                <div class="card skeleton" style="height: 120px"></div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-content hidden">
+            <div class="card" style="max-width: 600px">
+                <h3 style="margin-bottom: 1.5rem">Profil bearbeiten</h3>
+                <form id="profile-form">
+                    <div class="input-group">
+                        <label for="u-username">Anzeigename</label>
+                        <input id="u-username" required />
+                    </div>
+                    <div class="input-group">
+                        <label for="u-bio">Kurzprofil</label>
+                        <textarea id="u-bio" rows="5" placeholder="Erzähle etwas über dich..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="u-avatar">Avatar URL</label>
+                        <input id="u-avatar" type="url" placeholder="https://..." />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Speichern</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:3000/api";
+        const user = JSON.parse(localStorage.getItem("karriko_user"));
+
+        if (!user) {
+            document.body.innerHTML = '<main class="container section"><h2>Nicht angemeldet</h2><p>Bitte melde dich an.</p><a href="index.html" class="btn btn-primary" style="margin-top:1rem">Zur Startseite</a></main>';
+            throw new Error("Not logged in");
+        }
+
+        document.getElementById('user-name').textContent = user.username;
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('karriko_user');
+            window.location.href = 'index.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadMyReviews();
+            loadMyApplications();
+            loadProfile();
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        }
+
+        async function loadMyReviews() {
+            try {
+                const res = await fetch(`${API_URL}/reviews?limit=50`);
+                const reviews = await res.json();
+                const mine = reviews.filter(r => !r.anonymous && r.user === user.username);
+                const container = document.getElementById('my-reviews');
+
+                if (mine.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i data-lucide="star" style="width:48px;height:48px"></i><p>Du hast noch keine Bewertungen abgegeben.</p><a href="index.html" class="btn btn-primary" style="margin-top:1rem">Betriebssuche</a></div>';
+                    lucide.createIcons();
+                    return;
+                }
+
+                container.innerHTML = mine.map(r => `
+                    <div class="card" style="padding: 1.25rem">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem">
+                            <strong style="font-size: 1rem">${r.company}</strong>
+                            <div class="review-stars">${"★".repeat(Math.round(r.rating))}${"☆".repeat(5 - Math.round(r.rating))}</div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem">${r.text}</p>
+                        <small style="color: var(--text-light); margin-top: 0.5rem; display: block">${new Date(r.date).toLocaleDateString('de-DE')}</small>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadMyApplications() {
+            try {
+                const res = await fetch(`${API_URL}/applications?userId=${user.id}`);
+                const apps = await res.json();
+                const container = document.getElementById('my-applications');
+
+                if (apps.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i data-lucide="file-text" style="width:48px;height:48px"></i><p>Du hast noch keine Bewerbungen gesendet.</p><a href="jobs.html" class="btn btn-primary" style="margin-top:1rem">Ausbildungsplätze</a></div>';
+                    lucide.createIcons();
+                    return;
+                }
+
+                const statusMap = { new: 'Neu', reviewing: 'In Prüfung', rejected: 'Abgelehnt', invited: 'Eingeladen' };
+                const statusClass = { new: 'status-new', reviewing: 'status-reviewing', rejected: 'status-rejected', invited: 'status-invited' };
+
+                container.innerHTML = apps.map(a => `
+                    <div class="card" style="padding: 1.25rem">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem">
+                            <strong>${a.job_title}</strong>
+                            <span class="status-badge ${statusClass[a.status] || 'status-new'}">${statusMap[a.status] || a.status}</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.9rem">${a.company_name} · ${a.job_location || ''}</p>
+                        <small style="color: var(--text-light)">${new Date(a.created_at).toLocaleDateString('de-DE')}</small>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch(`${API_URL}/users/${user.id}`);
+                if (!res.ok) return;
+                const u = await res.json();
+                document.getElementById('u-username').value = u.username || '';
+                document.getElementById('u-bio').value = u.bio || '';
+                document.getElementById('u-avatar').value = u.avatar_url || '';
+            } catch (e) { console.error(e); }
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const payload = {
+                    username: document.getElementById('u-username').value,
+                    bio: document.getElementById('u-bio').value,
+                    avatar_url: document.getElementById('u-avatar').value,
+                };
+                const res = await fetch(`${API_URL}/users/${user.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const updated = { ...user, username: payload.username };
+                    localStorage.setItem('karriko_user', JSON.stringify(updated));
+                    document.getElementById('user-name').textContent = payload.username;
+                    alert('Profil gespeichert!');
+                }
+            } catch (err) { alert('Fehler: ' + err.message); }
+        });
+    </script>
+</body>
+</html>
