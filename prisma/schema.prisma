@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  phone     String?
+  role      String   @default("azubi") // azubi or company
+  username  String?
+  bio       String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+
+  companies    Company[]
+  reviews      Review[]
+  applications Application[]
+  helpful      ReviewHelpful[]
+
+  @@map("users")
+}
+
+model Company {
+  id             String  @id @default(cuid())
+  userId         String
+  name           String
+  slug           String  @unique
+  description    String?
+  industry       String?
+  location       String?
+  logoUrl        String?
+  headerUrl      String?
+  customThemeJson String?
+  verified       Boolean @default(false)
+  createdAt      DateTime @default(now())
+
+  user         User
+  reviews      Review[]
+  comments     ReviewComment[]
+  jobListings  JobListing[]
+  applications Application[] @relation("CompanyApplications")
+
+  @@map("companies")
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  companyId    String
+  userId       String?
+  isAnonymous  Boolean  @default(false)
+  weight       Float    @default(1.0)
+  overallScore Float
+  createdAt    DateTime @default(now())
+
+  company Company
+  user    User?
+  answers ReviewAnswer[]
+  comments ReviewComment[]
+  helpful  ReviewHelpful[]
+
+  @@map("reviews")
+}
+
+model ReviewAnswer {
+  id         String  @id @default(cuid())
+  reviewId   String
+  questionId String
+  starValue  Int?
+  textValue  String?
+
+  review   Review
+  question ReviewQuestion
+
+  @@map("review_answers")
+}
+
+model ReviewCategory {
+  id        String  @id @default(cuid())
+  name      String
+  sortOrder Int
+
+  questions ReviewQuestion[]
+
+  @@map("review_categories")
+}
+
+model ReviewQuestion {
+  id         String  @id @default(cuid())
+  categoryId String
+  text       String
+  type       String  @default("stars") // stars or text
+  sortOrder  Int
+
+  category ReviewCategory
+  answers  ReviewAnswer[]
+
+  @@map("review_questions")
+}
+
+model ReviewComment {
+  id        String   @id @default(cuid())
+  reviewId  String
+  companyId String
+  text      String
+  createdAt DateTime @default(now())
+
+  review  Review
+  company Company
+
+  @@map("review_comments")
+}
+
+model ReviewHelpful {
+  reviewId  String
+  userId    String
+  createdAt DateTime @default(now())
+
+  review Review
+  user   User
+
+  @@id([reviewId, userId])
+  @@map("review_helpful")
+}
+
+model JobListing {
+  id           String   @id @default(cuid())
+  companyId    String
+  title        String
+  description  String
+  location     String
+  startDate    String?
+  requirements String?
+  imageUrl     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  company     Company
+  applications Application[]
+
+  @@map("job_listings")
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  jobId     String
+  userId    String
+  status    String   @default("new") // new, reviewing, rejected, invited
+  cvUrl     String?
+  coverUrl  String?
+  message   String?
+  createdAt DateTime @default(now())
+
+  job  JobListing
+  user User
+
+  @@map("applications")
+}
