@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ausbildungsplätze | Karriko</title>
+    <meta name="description" content="Finde deinen perfekten Ausbildungsplatz auf Karriko. Hunderte Stellen in ganz Deutschland, Österreich und der Schweiz." />
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <nav class="navbar glass" id="main-navbar">
+        <div class="logo"><a href="index.html">Karriko</a><span class="logo-dot"></span></div>
+        <div class="nav-actions">
+            <a href="index.html" class="nav-link">Startseite</a>
+            <a href="jobs.html" class="nav-link" style="color: var(--primary)">Ausbildungsplätze</a>
+        </div>
+    </nav>
+
+    <div class="search-page-header">
+        <div class="container">
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem">Ausbildungsplätze</h1>
+            <p style="color: var(--text-muted)">Entdecke aktuelle Ausbildungsangebote im DACH-Raum.</p>
+        </div>
+    </div>
+
+    <div class="container section" style="padding-top: 2rem; padding-bottom: 4rem">
+        <div class="grid grid-3" id="jobs-grid">
+            <div class="card skeleton"></div>
+            <div class="card skeleton"></div>
+            <div class="card skeleton"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-brand">Karriko</div>
+                    <p class="footer-desc">Die Bewertungsplattform für Auszubildende im DACH-Raum.</p>
+                </div>
+                <div class="footer-col"><h4>Plattform</h4><a href="index.html">Startseite</a><a href="jobs.html">Jobs</a></div>
+                <div class="footer-col"><h4>Rechtliches</h4><a href="#">Impressum</a><a href="#">Datenschutz</a></div>
+                <div class="footer-col"><h4>Sprache</h4><a href="#">🇩🇪 Deutsch</a></div>
+            </div>
+            <div class="footer-bottom">© 2026 Karriko. Alle Rechte vorbehalten.</div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = "http://localhost:3000/api";
+        document.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            window.addEventListener("scroll", () => {
+                const nav = document.getElementById("main-navbar");
+                if (nav) nav.classList.toggle("scrolled", window.scrollY > 20);
+            });
+
+            try {
+                const res = await fetch(`${API_URL}/jobs?limit=50`);
+                const jobs = await res.json();
+                const grid = document.getElementById('jobs-grid');
+
+                if (jobs.length === 0) {
+                    grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1"><p>Aktuell keine offenen Stellen.</p></div>';
+                    return;
+                }
+
+                grid.innerHTML = jobs.map((job, i) => `
+                    <div class="card" style="animation: slideUp 0.4s ease ${i * 0.06}s forwards; opacity: 0; cursor: pointer" onclick="window.location.href='job-detail.html?id=${job.id}'">
+                        <img src="${job.image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80'}" class="card-image" alt="${job.title}" loading="lazy">
+                        <h3 style="font-size: 1.05rem; margin-bottom: 0.3rem">${job.title}</h3>
+                        <div class="job-card-company">
+                            <i data-lucide="building-2" style="width:14px; height:14px"></i>
+                            <span>${job.company}</span>
+                        </div>
+                        <div class="job-card-footer">
+                            <span class="tag tag-neutral">
+                                <i data-lucide="map-pin" style="width:12px; height:12px"></i> ${job.location || "DE"}
+                            </span>
+                            <span style="color: var(--primary); font-weight: 600; font-size: 0.85rem">Details →</span>
+                        </div>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('jobs-grid').innerHTML = '<p style="grid-column:1/-1; text-align:center; color: var(--text-muted)">Server nicht erreichbar.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
