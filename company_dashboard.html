@@ -1,203 +1,416 @@
 <!doctype html>
 <html lang="de">
-  <head>
+<head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Unternehmensbereich — AzubiCheck</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unternehmensbereich | Karriko</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
-  </head>
-  <body>
-    <nav class="navbar glass">
-      <div class="logo">AzubiCheck — Unternehmensbereich</div>
-      <div style="margin-left: auto">
-        <a href="index.html" class="btn">Start</a>
-      </div>
+</head>
+<body>
+    <nav class="navbar glass" id="main-navbar">
+        <div class="logo"><a href="index.html">Karriko</a><span class="logo-dot"></span></div>
+        <div class="nav-actions">
+            <a href="index.html" class="nav-link">Startseite</a>
+            <span id="user-name" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary)"></span>
+            <button id="btn-logout" class="btn btn-secondary btn-sm">Logout</button>
+        </div>
     </nav>
 
-    <main class="container section">
-      <h1>Dein Unternehmensprofil</h1>
-      <p>
-        Diese Seite ist für Benutzer mit Rolle <strong>Unternehmen</strong>.
-        Hier kannst du dein Unternehmen anlegen oder bearbeiten. Nutze die
-        Vorlage und passe sie an.
-      </p>
+    <div class="dashboard-header">
+        <div class="container">
+            <h1 style="font-size: 1.75rem">Unternehmensbereich</h1>
+            <p style="color: var(--text-muted)">Verwalte dein Unternehmensprofil, Stellenanzeigen und Bewerbungen.</p>
+        </div>
+    </div>
 
-      <div class="grid grid-2">
-        <div>
-          <form id="company-form">
-            <input type="hidden" id="company-id" />
-            <div class="input-group">
-              <label for="c-name">Firmenname</label>
-              <input id="c-name" required />
+    <div class="container" style="padding-bottom: 4rem">
+        <div class="tabs" id="dashboard-tabs">
+            <div class="tab active" data-tab="profile" onclick="switchTab('profile')">
+                <i data-lucide="building-2" style="width:16px;height:16px"></i> Profil
             </div>
-            <div class="input-group">
-              <label for="c-desc">Kurzbeschreibung</label>
-              <textarea id="c-desc" rows="4"></textarea>
+            <div class="tab" data-tab="jobs" onclick="switchTab('jobs')">
+                <i data-lucide="briefcase" style="width:16px;height:16px"></i> Stellenanzeigen
             </div>
-            <div class="input-group">
-              <label for="c-logo">Logo URL</label>
-              <input id="c-logo" />
+            <div class="tab" data-tab="applications" onclick="switchTab('applications')">
+                <i data-lucide="users" style="width:16px;height:16px"></i> Bewerbungen
             </div>
-            <div class="input-group">
-              <label for="c-header">Header Bild URL</label>
-              <input id="c-header" />
+            <div class="tab" data-tab="reviews" onclick="switchTab('reviews')">
+                <i data-lucide="star" style="width:16px;height:16px"></i> Bewertungen
             </div>
-            <button class="btn btn-primary" id="save-company">Speichern</button>
-          </form>
         </div>
 
-        <div>
-          <h3>Vorlage (so sieht dein Unternehmensprofil aus)</h3>
-          <div id="template-preview" class="card">
-            <div
-              style="
-                height: 140px;
-                background-size: cover;
-                background-position: center;
-              "
-              id="preview-header"
-            ></div>
-            <div style="padding: 1rem">
-              <div
-                style="
-                  display: flex;
-                  gap: 1rem;
-                  align-items: center;
-                  margin-top: -30px;
-                "
-              >
-                <div
-                  style="
-                    width: 60px;
-                    height: 60px;
-                    border-radius: 8px;
-                    background: #eee;
-                  "
-                  id="preview-logo"
-                ></div>
-                <div>
-                  <h2 id="preview-name">Firmenname</h2>
-                  <p id="preview-desc" style="color: var(--text-muted)">
-                    Kurze Beschreibung ...
-                  </p>
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-content">
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem">Unternehmensprofil</h3>
+                    <form id="company-form">
+                        <input type="hidden" id="company-id" />
+                        <div class="input-group">
+                            <label for="c-name">Firmenname</label>
+                            <input id="c-name" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="c-desc">Beschreibung</label>
+                            <textarea id="c-desc" rows="4" placeholder="Beschreibe dein Unternehmen..."></textarea>
+                        </div>
+                        <div class="input-group">
+                            <label for="c-industry">Branche</label>
+                            <input id="c-industry" placeholder="z.B. IT & Technologie" />
+                        </div>
+                        <div class="input-group">
+                            <label for="c-location">Standort</label>
+                            <input id="c-location" placeholder="z.B. Berlin" />
+                        </div>
+                        <div class="input-group">
+                            <label for="c-logo">Logo URL</label>
+                            <input id="c-logo" type="url" placeholder="https://..." />
+                        </div>
+                        <div class="input-group">
+                            <label for="c-header">Header Bild URL</label>
+                            <input id="c-header" type="url" placeholder="https://..." />
+                        </div>
+                        <button class="btn btn-primary" id="save-company">
+                            <i data-lucide="save" style="width:16px;height:16px"></i> Speichern
+                        </button>
+                    </form>
                 </div>
-              </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem">Vorschau</h3>
+                    <div class="card" style="overflow: hidden; padding: 0">
+                        <div style="height: 140px; background-size: cover; background-position: center; background: linear-gradient(135deg, var(--primary-light), var(--accent-light))" id="preview-header"></div>
+                        <div style="padding: 1.25rem">
+                            <div style="display: flex; gap: 1rem; align-items: center; margin-top: -35px">
+                                <div style="width: 60px; height: 60px; border-radius: var(--radius-md); background: var(--surface); border: 3px solid var(--surface); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary)" id="preview-logo">LO</div>
+                                <div>
+                                    <h3 id="preview-name" style="font-size: 1.1rem">Firmenname</h3>
+                                    <p id="preview-desc" style="color: var(--text-muted); font-size: 0.85rem">Beschreibung...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <p style="margin-top: 0.5rem; color: var(--text-muted)">
-            Tipp: Fülle alle Felder aus und klicke auf "Speichern".
-          </p>
         </div>
-      </div>
-    </main>
+
+        <!-- Jobs Tab -->
+        <div id="tab-jobs" class="tab-content hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                <h3>Deine Stellenanzeigen</h3>
+                <button class="btn btn-primary btn-sm" onclick="showJobForm()">
+                    <i data-lucide="plus" style="width:16px;height:16px"></i> Neue Stelle
+                </button>
+            </div>
+            <div id="job-form-card" class="card hidden" style="margin-bottom: 1.5rem">
+                <h4 style="margin-bottom: 1rem">Stellenanzeige erstellen</h4>
+                <form id="job-form">
+                    <input type="hidden" id="job-edit-id" />
+                    <div class="grid grid-2">
+                        <div class="input-group"><label>Titel</label><input id="j-title" required /></div>
+                        <div class="input-group"><label>Standort</label><input id="j-location" placeholder="z.B. Berlin" /></div>
+                    </div>
+                    <div class="input-group"><label>Beschreibung</label><textarea id="j-desc" rows="4" placeholder="Beschreibe die Stelle..."></textarea></div>
+                    <div class="grid grid-2">
+                        <div class="input-group"><label>Ausbildungsbeginn</label><input id="j-start" type="date" /></div>
+                        <div class="input-group"><label>Bild URL</label><input id="j-image" type="url" /></div>
+                    </div>
+                    <div class="input-group"><label>Anforderungen</label><textarea id="j-req" rows="3" placeholder="Was sollten Bewerber mitbringen?"></textarea></div>
+                    <div style="display: flex; gap: 0.75rem">
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideJobForm()">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+            <div id="my-jobs" class="grid" style="grid-template-columns: 1fr; gap: 1rem">
+                <div class="card skeleton" style="height: 80px"></div>
+            </div>
+        </div>
+
+        <!-- Applications Tab -->
+        <div id="tab-applications" class="tab-content hidden">
+            <h3 style="margin-bottom: 1.5rem">Eingegangene Bewerbungen</h3>
+            <div id="company-applications">
+                <div class="card skeleton" style="height: 80px"></div>
+            </div>
+        </div>
+
+        <!-- Reviews Tab -->
+        <div id="tab-reviews" class="tab-content hidden">
+            <h3 style="margin-bottom: 1.5rem">Bewertungen deines Unternehmens</h3>
+            <div id="company-reviews" class="grid" style="grid-template-columns: 1fr; gap: 1rem">
+                <div class="card skeleton" style="height: 80px"></div>
+            </div>
+        </div>
+    </div>
 
     <script>
-      const API = "http://localhost:3000/api";
-      const currentUser =
-        JSON.parse(localStorage.getItem("azubi_user")) || null;
-      if (
-        !currentUser ||
-        !(
-          currentUser.role === "unternehmen" ||
-          currentUser.role === "superadmin"
-        )
-      ) {
-        document.body.innerHTML =
-          '<main class="container"><h2>Zugriff verweigert</h2><p>Diese Seite ist nur für Unternehmens-Accounts.</p><p><a href="index.html">Zurück</a></p></main>';
-        throw new Error("Access denied");
-      }
+        const API = "http://localhost:3000/api";
+        const currentUser = JSON.parse(localStorage.getItem("karriko_user"));
 
-      const form = document.getElementById("company-form");
-      const preview = {
-        name: document.getElementById("preview-name"),
-        desc: document.getElementById("preview-desc"),
-        logo: document.getElementById("preview-logo"),
-        header: document.getElementById("preview-header"),
-      };
-
-      // Update preview when fields change
-      ["c-name", "c-desc", "c-logo", "c-header"].forEach((id) => {
-        const el = document.getElementById(id);
-        el.addEventListener("input", () => updatePreview());
-      });
-
-      function updatePreview() {
-        document.getElementById("preview-name").textContent =
-          document.getElementById("c-name").value || "Firmenname";
-        document.getElementById("preview-desc").textContent =
-          document.getElementById("c-desc").value || "Kurze Beschreibung ...";
-        const logo = document.getElementById("c-logo").value;
-        const header = document.getElementById("c-header").value;
-        document.getElementById("preview-logo").style.backgroundImage = logo
-          ? `url(${logo})`
-          : "none";
-        document.getElementById("preview-header").style.backgroundImage = header
-          ? `url(${header})`
-          : "none";
-      }
-
-      // Load existing company owned by this user (simple lookup)
-      async function loadOwnedCompany() {
-        try {
-          const res = await fetch(`${API}/companies?search=`);
-          // simple approach: get all companies and find owner_user_id
-          const companies = await res.json();
-          if (!Array.isArray(companies)) return;
-          const mine = companies.find((c) => c.owner_user_id == currentUser.id);
-          if (mine) {
-            document.getElementById("company-id").value = mine.id;
-            document.getElementById("c-name").value = mine.name || "";
-            document.getElementById("c-desc").value = mine.description || "";
-            document.getElementById("c-logo").value = mine.logo_url || "";
-            document.getElementById("c-header").value =
-              mine.header_image_url || "";
-            updatePreview();
-          }
-        } catch (e) {
-          console.error(e);
+        if (!currentUser || !(currentUser.role === "unternehmen" || currentUser.role === "superadmin")) {
+            document.body.innerHTML = '<main class="container section"><h2>Zugriff verweigert</h2><p>Diese Seite ist nur für Unternehmens-Accounts.</p><a href="index.html" class="btn btn-primary" style="margin-top:1rem">Zurück</a></main>';
+            throw new Error("Access denied");
         }
-      }
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const id = document.getElementById("company-id").value;
-        const payload = {
-          name: document.getElementById("c-name").value,
-          description: document.getElementById("c-desc").value,
-          logo_url: document.getElementById("c-logo").value,
-          header_image_url: document.getElementById("c-header").value,
-          owner_user_id: currentUser.id,
-        };
+        document.getElementById('user-name').textContent = currentUser.username;
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.removeItem('karriko_user');
+            window.location.href = 'index.html';
+        });
 
-        try {
-          if (id) {
-            const res = await fetch(`${API}/companies/${id}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
+        let myCompanyId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadOwnedCompany();
+
+            // Preview updates
+            ["c-name", "c-desc", "c-logo", "c-header", "c-industry", "c-location"].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener("input", updatePreview);
             });
-            const data = await res.json();
-            if (data.success) alert("Speichern erfolgreich");
-          } else {
-            const res = await fetch(`${API}/companies`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const data = await res.json();
-            if (data.success) {
-              document.getElementById("company-id").value = data.companyId;
-              alert("Unternehmen angelegt");
+        });
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+        }
+
+        function updatePreview() {
+            const name = document.getElementById("c-name").value || "Firmenname";
+            document.getElementById("preview-name").textContent = name;
+            document.getElementById("preview-desc").textContent = document.getElementById("c-desc").value || "Beschreibung...";
+            document.getElementById("preview-logo").textContent = name.substring(0, 2).toUpperCase();
+            const header = document.getElementById("c-header").value;
+            if (header) {
+                document.getElementById("preview-header").style.backgroundImage = `url(${header})`;
+                document.getElementById("preview-header").style.backgroundSize = 'cover';
             }
-          }
-        } catch (err) {
-          alert("Fehler: " + err.message);
         }
-      });
 
-      // initial load
-      loadOwnedCompany();
+        async function loadOwnedCompany() {
+            try {
+                const res = await fetch(`${API}/companies?search=`);
+                const companies = await res.json();
+                if (!Array.isArray(companies)) return;
+                const mine = companies.find(c => c.owner_user_id == currentUser.id);
+                if (mine) {
+                    myCompanyId = mine.id;
+                    document.getElementById("company-id").value = mine.id;
+                    document.getElementById("c-name").value = mine.name || "";
+                    document.getElementById("c-desc").value = mine.description || "";
+                    document.getElementById("c-industry").value = mine.industry || "";
+                    document.getElementById("c-location").value = mine.location || "";
+                    document.getElementById("c-logo").value = mine.logo_url || "";
+                    document.getElementById("c-header").value = mine.header_image_url || "";
+                    updatePreview();
+                    loadMyJobs();
+                    loadCompanyApplications();
+                    loadCompanyReviews();
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Company form submit
+        document.getElementById("company-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("company-id").value;
+            const payload = {
+                name: document.getElementById("c-name").value,
+                description: document.getElementById("c-desc").value,
+                logo_url: document.getElementById("c-logo").value,
+                header_image_url: document.getElementById("c-header").value,
+                industry: document.getElementById("c-industry").value,
+                location: document.getElementById("c-location").value,
+                owner_user_id: currentUser.id,
+            };
+
+            try {
+                if (id) {
+                    const res = await fetch(`${API}/companies/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                    const data = await res.json();
+                    if (data.success) alert("Profil gespeichert!");
+                } else {
+                    const res = await fetch(`${API}/companies`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                    const data = await res.json();
+                    if (data.success) {
+                        document.getElementById("company-id").value = data.companyId;
+                        myCompanyId = data.companyId;
+                        alert("Unternehmen angelegt!");
+                    }
+                }
+            } catch (err) { alert("Fehler: " + err.message); }
+        });
+
+        // ===== JOBS =====
+        function showJobForm() { document.getElementById('job-form-card').classList.remove('hidden'); }
+        function hideJobForm() {
+            document.getElementById('job-form-card').classList.add('hidden');
+            document.getElementById('job-form').reset();
+            document.getElementById('job-edit-id').value = '';
+        }
+
+        async function loadMyJobs() {
+            if (!myCompanyId) return;
+            try {
+                const res = await fetch(`${API}/jobs?companyId=${myCompanyId}&limit=50`);
+                const jobs = await res.json();
+                const container = document.getElementById('my-jobs');
+
+                if (jobs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Keine Stellenanzeigen vorhanden.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = jobs.map(j => `
+                    <div class="card" style="padding: 1.25rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem">
+                        <div>
+                            <strong>${j.title}</strong>
+                            <p style="color: var(--text-muted); font-size: 0.85rem">${j.location || ''} · Start: ${j.start_date || 'Flexibel'}</p>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem">
+                            <button class="btn btn-secondary btn-sm" onclick="deleteJob(${j.id})">Löschen</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        document.getElementById('job-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!myCompanyId) { alert('Bitte erst ein Unternehmen anlegen.'); return; }
+
+            const payload = {
+                company_id: myCompanyId,
+                title: document.getElementById('j-title').value,
+                description: document.getElementById('j-desc').value,
+                location: document.getElementById('j-location').value,
+                start_date: document.getElementById('j-start').value,
+                requirements: document.getElementById('j-req').value,
+                image_url: document.getElementById('j-image').value,
+            };
+
+            try {
+                const res = await fetch(`${API}/jobs`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const data = await res.json();
+                if (data.success) {
+                    hideJobForm();
+                    loadMyJobs();
+                    alert('Stelle erstellt!');
+                }
+            } catch (err) { alert('Fehler: ' + err.message); }
+        });
+
+        async function deleteJob(id) {
+            if (!confirm('Stelle wirklich löschen?')) return;
+            try {
+                await fetch(`${API}/jobs/${id}`, { method: 'DELETE' });
+                loadMyJobs();
+            } catch (e) { console.error(e); }
+        }
+
+        // ===== APPLICATIONS =====
+        async function loadCompanyApplications() {
+            if (!myCompanyId) return;
+            try {
+                const res = await fetch(`${API}/applications?companyId=${myCompanyId}`);
+                const apps = await res.json();
+                const container = document.getElementById('company-applications');
+
+                if (apps.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Keine Bewerbungen eingegangen.</p></div>';
+                    return;
+                }
+
+                const statusMap = { new: 'Neu', reviewing: 'In Prüfung', rejected: 'Abgelehnt', invited: 'Eingeladen' };
+
+                container.innerHTML = `
+                    <table class="data-table">
+                        <thead><tr><th>Bewerber</th><th>Stelle</th><th>Datum</th><th>Status</th><th>Aktionen</th></tr></thead>
+                        <tbody>
+                            ${apps.map(a => `
+                                <tr>
+                                    <td><strong>${a.applicant_name || 'Unbekannt'}</strong><br><small style="color: var(--text-light)">${a.applicant_email || ''}</small></td>
+                                    <td>${a.job_title}</td>
+                                    <td>${new Date(a.created_at).toLocaleDateString('de-DE')}</td>
+                                    <td>
+                                        <select class="btn btn-sm btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.5rem" onchange="updateAppStatus(${a.id}, this.value)">
+                                            ${['new', 'reviewing', 'rejected', 'invited'].map(s => `<option value="${s}" ${a.status === s ? 'selected' : ''}>${statusMap[s]}</option>`).join('')}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        ${a.cv_url ? `<a href="${a.cv_url}" target="_blank" class="btn btn-ghost btn-sm">CV</a>` : ''}
+                                        ${a.cover_url ? `<a href="${a.cover_url}" target="_blank" class="btn btn-ghost btn-sm">Anschreiben</a>` : ''}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (e) { console.error(e); }
+        }
+
+        async function updateAppStatus(id, status) {
+            try {
+                await fetch(`${API}/applications/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status }),
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        // ===== REVIEWS =====
+        async function loadCompanyReviews() {
+            if (!myCompanyId) return;
+            try {
+                const res = await fetch(`${API}/reviews?companyId=${myCompanyId}&limit=50`);
+                const reviews = await res.json();
+                const container = document.getElementById('company-reviews');
+
+                if (reviews.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><p>Noch keine Bewertungen erhalten.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = reviews.map(r => `
+                    <div class="card" style="padding: 1.25rem">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem">
+                            <div>
+                                <strong>${r.user}</strong>
+                                <span class="review-stars" style="margin-left: 0.5rem">${"★".repeat(Math.round(r.rating))}${"☆".repeat(5 - Math.round(r.rating))}</span>
+                            </div>
+                            <small style="color: var(--text-light)">${new Date(r.date).toLocaleDateString('de-DE')}</small>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem">${r.text}</p>
+                        <div id="reply-area-${r.id}">
+                            <textarea id="reply-text-${r.id}" rows="2" placeholder="Auf diese Bewertung antworten..." style="width:100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius-md); font-family: inherit; font-size: 0.85rem; margin-bottom: 0.5rem"></textarea>
+                            <button class="btn btn-primary btn-sm" onclick="replyToReview(${r.id})">Antworten</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        async function replyToReview(reviewId) {
+            const text = document.getElementById(`reply-text-${reviewId}`).value;
+            if (!text.trim()) return;
+            try {
+                const res = await fetch(`${API}/reviews/${reviewId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ company_id: myCompanyId, text }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById(`reply-area-${reviewId}`).innerHTML = '<p style="color: var(--success); font-size: 0.9rem">✓ Antwort veröffentlicht</p>';
+                } else {
+                    alert(data.error || 'Fehler');
+                }
+            } catch (e) { alert('Fehler: ' + e.message); }
+        }
     </script>
-  </body>
+</body>
 </html>
