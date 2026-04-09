@@ -7,57 +7,72 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="text-xl font-bold text-primary-600">
-                Karriko
-              </Link>
-            </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link href="/search" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                Suche
-              </Link>
-              <Link href="/jobs" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                Jobs
-              </Link>
-            </div>
-          </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-md text-sm font-medium">
-              Anmelden
-            </button>
-          </div>
-          <div className="-mr-2 flex items-center sm:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
-            >
-              <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
-            </button>
+    <nav className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur-sm shadow-sm">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-4">
+        {/* Logo */}
+        <Link href="/" className="font-serif-display text-xl font-light tracking-tight text-[#111827]">
+          Karriko
+        </Link>
+
+        {/* Links - Desktop */}
+        <div className="hidden md:flex md:items-center md:gap-1">
+          <Link href="/jobs" className="px-3 py-1.5 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#e5e7eb]">
+            Job Market
+          </Link>
+          <Link href="/" className="px-3 py-1.5 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#e5e7eb]">
+            Reviews
+          </Link>
+          <Link href="/company" className="px-3 py-1.5 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#e5e7eb]">
+            Companies
+          </Link>
+        </div>
+
+        {/* Right Icons - Desktop */}
+        <div className="hidden md:flex md:items-center md:gap-3">
+          <button 
+            className="inline-flex items-center justify-center rounded-full transition text-[#6b7280] hover:text-[#111827] p-1"
+            title="Benachrichtigungen"
+          >
+            <span className="text-lg">🔔</span>
+          </button>
+          <button 
+            className="inline-flex items-center justify-center rounded-full transition text-[#6b7280] hover:text-[#111827] p-1"
+            title="Hilfe"
+          >
+            <span className="text-lg">❓</span>
+          </button>
+          <div className="inline-flex items-center justify-center rounded-full bg-[#1a3a2a] w-9 h-9 text-xs font-bold text-white cursor-pointer">
+            AC
           </div>
         </div>
+
+        {/* Mobile Menu Button */}
+        <div className="flex items-center md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="inline-flex items-center justify-center rounded-md p-2 text-[#6b7280] transition hover:bg-[#f5f5f5] hover:text-[#111827]"
+          >
+            <span className="sr-only">Navigation �ffnen</span>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
+            </svg>
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link href="/search" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
-              Suche
+        <div className="border-t border-[#e5e7eb] bg-white px-4 py-3 md:hidden">
+          <div className="flex flex-col gap-2">
+            <Link href="/jobs" className="px-3 py-2 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#f5f5f5]">
+              Job Market
             </Link>
-            <Link href="/jobs" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300">
-              Jobs
+            <Link href="/" className="px-3 py-2 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#f5f5f5]">
+              Reviews
             </Link>
-          </div>
-          <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="flex items-center px-4">
-              <button className="bg-primary-600 hover:bg-primary-700 text-white px-3 py-2 rounded-md text-sm font-medium">
-                Anmelden
-              </button>
-            </div>
+            <Link href="/company" className="px-3 py-2 text-sm font-medium text-[#374151] rounded-lg transition hover:bg-[#f5f5f5]">
+              Companies
+            </Link>
           </div>
         </div>
       )}
