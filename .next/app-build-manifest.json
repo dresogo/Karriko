@@ -11,15 +11,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/company/page": [
+    "/search/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/company/page.js"
-    ],
-    "/jobs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/jobs/page.js"
+      "static/chunks/app/search/page.js"
     ]
   }
 }
