@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBell, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -33,13 +35,13 @@ export default function Navbar() {
             className="inline-flex items-center justify-center rounded-full transition text-[#6b7280] hover:text-[#111827] p-1"
             title="Benachrichtigungen"
           >
-            <span className="text-lg">🔔</span>
+            <FontAwesomeIcon icon={faBell} className="text-lg" />
           </button>
           <button 
             className="inline-flex items-center justify-center rounded-full transition text-[#6b7280] hover:text-[#111827] p-1"
             title="Hilfe"
           >
-            <span className="text-lg">❓</span>
+            <FontAwesomeIcon icon={faQuestion} className="text-lg" />
           </button>
           <div className="inline-flex items-center justify-center rounded-full bg-[#1a3a2a] w-9 h-9 text-xs font-bold text-white cursor-pointer">
             AC
