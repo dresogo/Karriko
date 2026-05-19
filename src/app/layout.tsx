@@ -1,15 +1,10 @@
 ﻿import type { Metadata } from 'next'
-import { DM_Sans, DM_Serif_Display } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
-const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' })
-const dmSerifDisplay = DM_Serif_Display({ 
-  subsets: ['latin'], 
-  variable: '--font-dm-serif-display',
-  weight: '400'
-})
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Karriko',
@@ -22,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" className={`${dmSans.variable} ${dmSerifDisplay.variable}`}>
-      <body className="bg-gradient-to-b from-emerald-50 via-emerald-25 to-white text-slate-900 antialiased">
+    <html lang="de" className={inter.variable}>
+      <body>
         <Navbar />
         <main className="min-h-screen">
           {children}

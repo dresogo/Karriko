@@ -10,23 +10,13 @@ exports.id = "vendor-chunks/next";
 exports.ids = ["vendor-chunks/next"];
 exports.modules = {
 
-/***/ "(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"DM_Sans\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-dm-sans\"}],\"variableName\":\"dmSans\"}":
-/*!*********************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/next/font/google/target.css?{"path":"src\\app\\layout.tsx","import":"DM_Sans","arguments":[{"subsets":["latin"],"variable":"--font-dm-sans"}],"variableName":"dmSans"} ***!
-  \*********************************************************************************************************************************************************************************************/
+/***/ "(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-inter\"}],\"variableName\":\"inter\"}":
+/*!****************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/next/font/google/target.css?{"path":"src\\app\\layout.tsx","import":"Inter","arguments":[{"subsets":["latin"],"variable":"--font-inter"}],"variableName":"inter"} ***!
+  \****************************************************************************************************************************************************************************************/
 /***/ ((module) => {
 
-eval("// Exports\nmodule.exports = {\n\t\"style\": {\"fontFamily\":\"'__DM_Sans_0d7163', '__DM_Sans_Fallback_0d7163'\",\"fontStyle\":\"normal\"},\n\t\"className\": \"__className_0d7163\",\n\t\"variable\": \"__variable_0d7163\"\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9ub2RlX21vZHVsZXMvbmV4dC9mb250L2dvb2dsZS90YXJnZXQuY3NzP3tcInBhdGhcIjpcInNyY1xcXFxhcHBcXFxcbGF5b3V0LnRzeFwiLFwiaW1wb3J0XCI6XCJETV9TYW5zXCIsXCJhcmd1bWVudHNcIjpbe1wic3Vic2V0c1wiOltcImxhdGluXCJdLFwidmFyaWFibGVcIjpcIi0tZm9udC1kbS1zYW5zXCJ9XSxcInZhcmlhYmxlTmFtZVwiOlwiZG1TYW5zXCJ9IiwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFDQSxXQUFXLG9GQUFvRjtBQUMvRjtBQUNBO0FBQ0EiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9rYXJyaWtvLy4vbm9kZV9tb2R1bGVzL25leHQvZm9udC9nb29nbGUvdGFyZ2V0LmNzcz8yZTg5Il0sInNvdXJjZXNDb250ZW50IjpbIi8vIEV4cG9ydHNcbm1vZHVsZS5leHBvcnRzID0ge1xuXHRcInN0eWxlXCI6IHtcImZvbnRGYW1pbHlcIjpcIidfX0RNX1NhbnNfMGQ3MTYzJywgJ19fRE1fU2Fuc19GYWxsYmFja18wZDcxNjMnXCIsXCJmb250U3R5bGVcIjpcIm5vcm1hbFwifSxcblx0XCJjbGFzc05hbWVcIjogXCJfX2NsYXNzTmFtZV8wZDcxNjNcIixcblx0XCJ2YXJpYWJsZVwiOiBcIl9fdmFyaWFibGVfMGQ3MTYzXCJcbn07XG4iXSwibmFtZXMiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"DM_Sans\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-dm-sans\"}],\"variableName\":\"dmSans\"}\n");
-
-/***/ }),
-
-/***/ "(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"DM_Serif_Display\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-dm-serif-display\",\"weight\":\"400\"}],\"variableName\":\"dmSerifDisplay\"}":
-/*!**************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/next/font/google/target.css?{"path":"src\\app\\layout.tsx","import":"DM_Serif_Display","arguments":[{"subsets":["latin"],"variable":"--font-dm-serif-display","weight":"400"}],"variableName":"dmSerifDisplay"} ***!
-  \**************************************************************************************************************************************************************************************************************************************/
-/***/ ((module) => {
-
-eval("// Exports\nmodule.exports = {\n\t\"style\": {\"fontFamily\":\"'__DM_Serif_Display_0e4539', '__DM_Serif_Display_Fallback_0e4539'\",\"fontWeight\":400,\"fontStyle\":\"normal\"},\n\t\"className\": \"__className_0e4539\",\n\t\"variable\": \"__variable_0e4539\"\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9ub2RlX21vZHVsZXMvbmV4dC9mb250L2dvb2dsZS90YXJnZXQuY3NzP3tcInBhdGhcIjpcInNyY1xcXFxhcHBcXFxcbGF5b3V0LnRzeFwiLFwiaW1wb3J0XCI6XCJETV9TZXJpZl9EaXNwbGF5XCIsXCJhcmd1bWVudHNcIjpbe1wic3Vic2V0c1wiOltcImxhdGluXCJdLFwidmFyaWFibGVcIjpcIi0tZm9udC1kbS1zZXJpZi1kaXNwbGF5XCIsXCJ3ZWlnaHRcIjpcIjQwMFwifV0sXCJ2YXJpYWJsZU5hbWVcIjpcImRtU2VyaWZEaXNwbGF5XCJ9IiwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFDQSxXQUFXLHVIQUF1SDtBQUNsSTtBQUNBO0FBQ0EiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9rYXJyaWtvLy4vbm9kZV9tb2R1bGVzL25leHQvZm9udC9nb29nbGUvdGFyZ2V0LmNzcz9mY2VjIl0sInNvdXJjZXNDb250ZW50IjpbIi8vIEV4cG9ydHNcbm1vZHVsZS5leHBvcnRzID0ge1xuXHRcInN0eWxlXCI6IHtcImZvbnRGYW1pbHlcIjpcIidfX0RNX1NlcmlmX0Rpc3BsYXlfMGU0NTM5JywgJ19fRE1fU2VyaWZfRGlzcGxheV9GYWxsYmFja18wZTQ1MzknXCIsXCJmb250V2VpZ2h0XCI6NDAwLFwiZm9udFN0eWxlXCI6XCJub3JtYWxcIn0sXG5cdFwiY2xhc3NOYW1lXCI6IFwiX19jbGFzc05hbWVfMGU0NTM5XCIsXG5cdFwidmFyaWFibGVcIjogXCJfX3ZhcmlhYmxlXzBlNDUzOVwiXG59O1xuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"DM_Serif_Display\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-dm-serif-display\",\"weight\":\"400\"}],\"variableName\":\"dmSerifDisplay\"}\n");
+eval("// Exports\nmodule.exports = {\n\t\"style\": {\"fontFamily\":\"'__Inter_f367f3', '__Inter_Fallback_f367f3'\",\"fontStyle\":\"normal\"},\n\t\"className\": \"__className_f367f3\",\n\t\"variable\": \"__variable_f367f3\"\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9ub2RlX21vZHVsZXMvbmV4dC9mb250L2dvb2dsZS90YXJnZXQuY3NzP3tcInBhdGhcIjpcInNyY1xcXFxhcHBcXFxcbGF5b3V0LnRzeFwiLFwiaW1wb3J0XCI6XCJJbnRlclwiLFwiYXJndW1lbnRzXCI6W3tcInN1YnNldHNcIjpbXCJsYXRpblwiXSxcInZhcmlhYmxlXCI6XCItLWZvbnQtaW50ZXJcIn1dLFwidmFyaWFibGVOYW1lXCI6XCJpbnRlclwifSIsIm1hcHBpbmdzIjoiQUFBQTtBQUNBO0FBQ0EsV0FBVyxnRkFBZ0Y7QUFDM0Y7QUFDQTtBQUNBIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8va2Fycmlrby8uL25vZGVfbW9kdWxlcy9uZXh0L2ZvbnQvZ29vZ2xlL3RhcmdldC5jc3M/MWRhZCJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBFeHBvcnRzXG5tb2R1bGUuZXhwb3J0cyA9IHtcblx0XCJzdHlsZVwiOiB7XCJmb250RmFtaWx5XCI6XCInX19JbnRlcl9mMzY3ZjMnLCAnX19JbnRlcl9GYWxsYmFja19mMzY3ZjMnXCIsXCJmb250U3R5bGVcIjpcIm5vcm1hbFwifSxcblx0XCJjbGFzc05hbWVcIjogXCJfX2NsYXNzTmFtZV9mMzY3ZjNcIixcblx0XCJ2YXJpYWJsZVwiOiBcIl9fdmFyaWFibGVfZjM2N2YzXCJcbn07XG4iXSwibmFtZXMiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"src\\\\app\\\\layout.tsx\",\"import\":\"Inter\",\"arguments\":[{\"subsets\":[\"latin\"],\"variable\":\"--font-inter\"}],\"variableName\":\"inter\"}\n");
 
 /***/ }),
 
@@ -2083,17 +2073,6 @@ eval("\nmodule.exports = __webpack_require__(/*! ../../module.compiled */ \"(ssr
 
 /***/ }),
 
-/***/ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-runtime.js":
-/*!*******************************************************************************************************!*\
-  !*** ./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-runtime.js ***!
-  \*******************************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-eval("\nmodule.exports = __webpack_require__(/*! ../../module.compiled */ \"(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/module.compiled.js?b374\").vendored[\"react-ssr\"].ReactJsxRuntime;\n\n//# sourceMappingURL=react-jsx-runtime.js.map//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvbmV4dC9kaXN0L3NlcnZlci9mdXR1cmUvcm91dGUtbW9kdWxlcy9hcHAtcGFnZS92ZW5kb3JlZC9zc3IvcmVhY3QtanN4LXJ1bnRpbWUuanMiLCJtYXBwaW5ncyI6IkFBQWE7QUFDYixzTUFBdUY7O0FBRXZGIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8va2Fycmlrby8uL25vZGVfbW9kdWxlcy9uZXh0L2Rpc3Qvc2VydmVyL2Z1dHVyZS9yb3V0ZS1tb2R1bGVzL2FwcC1wYWdlL3ZlbmRvcmVkL3Nzci9yZWFjdC1qc3gtcnVudGltZS5qcz9lM2MwIl0sInNvdXJjZXNDb250ZW50IjpbIlwidXNlIHN0cmljdFwiO1xubW9kdWxlLmV4cG9ydHMgPSByZXF1aXJlKFwiLi4vLi4vbW9kdWxlLmNvbXBpbGVkXCIpLnZlbmRvcmVkW1wicmVhY3Qtc3NyXCJdLlJlYWN0SnN4UnVudGltZTtcblxuLy8jIHNvdXJjZU1hcHBpbmdVUkw9cmVhY3QtanN4LXJ1bnRpbWUuanMubWFwIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-jsx-runtime.js\n");
-
-/***/ }),
-
 /***/ "(ssr)/./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-server-dom-webpack-client-edge.js":
 /*!**************************************************************************************************************************!*\
   !*** ./node_modules/next/dist/server/future/route-modules/app-page/vendored/ssr/react-server-dom-webpack-client-edge.js ***!
@@ -2123,16 +2102,6 @@ eval("\nmodule.exports = __webpack_require__(/*! ../../module.compiled */ \"(ssr
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 eval("module.exports = __webpack_require__(/*! ./dist/client/link */ \"(ssr)/./node_modules/next/dist/client/link.js\")\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvbmV4dC9saW5rLmpzIiwibWFwcGluZ3MiOiJBQUFBLCtHQUE4QyIsInNvdXJjZXMiOlsid2VicGFjazovL2thcnJpa28vLi9ub2RlX21vZHVsZXMvbmV4dC9saW5rLmpzPzZjODciXSwic291cmNlc0NvbnRlbnQiOlsibW9kdWxlLmV4cG9ydHMgPSByZXF1aXJlKCcuL2Rpc3QvY2xpZW50L2xpbmsnKVxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/next/link.js\n");
-
-/***/ }),
-
-/***/ "(ssr)/./node_modules/next/navigation.js":
-/*!*****************************************!*\
-  !*** ./node_modules/next/navigation.js ***!
-  \*****************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-eval("module.exports = __webpack_require__(/*! ./dist/client/components/navigation */ \"(ssr)/./node_modules/next/dist/client/components/navigation.js\")\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvbmV4dC9uYXZpZ2F0aW9uLmpzIiwibWFwcGluZ3MiOiJBQUFBLGlKQUErRCIsInNvdXJjZXMiOlsid2VicGFjazovL2thcnJpa28vLi9ub2RlX21vZHVsZXMvbmV4dC9uYXZpZ2F0aW9uLmpzPzI3YTciXSwic291cmNlc0NvbnRlbnQiOlsibW9kdWxlLmV4cG9ydHMgPSByZXF1aXJlKCcuL2Rpc3QvY2xpZW50L2NvbXBvbmVudHMvbmF2aWdhdGlvbicpXG4iXSwibmFtZXMiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/next/navigation.js\n");
 
 /***/ })
 

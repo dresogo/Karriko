@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Karriko - Ausbildungsbetriebe bewerten</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Karriko Startseite">
+      <span class="brand-mark">K</span>
+      <span>Karriko</span>
+    </a>
+    <nav class="main-nav" aria-label="Hauptnavigation">
+      <a href="#bewertungen">Bewertungen</a>
+      <a href="#betriebe">Betriebe</a>
+      <a href="#datenschutz">Datenschutz</a>
+    </nav>
+    <a class="header-action" href="#login">Anmelden</a>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Ausbildung transparent machen</p>
+          <h1 id="hero-title">Bewertungen fuer duale Ausbildung im DACH-Markt.</h1>
+        </div>
+
+        <form class="search-panel" role="search" aria-label="Ausbildungsbetrieb suchen">
+          <label for="search">Ausbildungsbetrieb, Beruf oder Ort suchen</label>
+          <div class="search-row">
+            <input id="search" name="search" type="search" placeholder="z. B. Mechatroniker Berlin, Bosch, Wien"
+              autocomplete="off" />
+            <button type="submit" aria-label="Suche starten">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="Plattform Kennzahlen">
+      <div>
+        <span class="metric-value">3</span>
+        <span class="metric-label">Nutzertypen</span>
+      </div>
+      <div>
+        <span class="metric-value">DACH</span>
+        <span class="metric-label">Fokusmarkt</span>
+      </div>
+      <div>
+        <span class="metric-value">DSGVO</span>
+        <span class="metric-label">von Beginn an</span>
+      </div>
+    </section>
+
+    <section class="section-grid" id="bewertungen">
+      <div class="section-heading">
+        <p class="eyebrow">Fuer Azubis</p>
+        <h2>Klare Einblicke, bevor die Bewerbung rausgeht.</h2>
+      </div>
+      <div class="feature-list">
+        <article>
+          <span>01</span>
+          <h3>Bewerten</h3>
+          <p>Ausbildungsqualitaet, Betreuung, Lernkultur und Uebernahmechancen strukturiert einordnen.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Vergleichen</h3>
+          <p>Betriebe nach Beruf, Standort und Erfahrungswerten anderer Auszubildender entdecken.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Vertrauen</h3>
+          <p>Moderierte Rezensionen schaffen hilfreiche Orientierung ohne unnoetige Komplexitaet.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="audience-band" id="betriebe">
+      <div class="audience-card">
+        <span>Azubi</span>
+        <p>Erfahrungen teilen, Betriebe finden, Ausbildung realistischer einschaetzen.</p>
+      </div>
+      <div class="audience-card">
+        <span>Betrieb</span>
+        <p>Profil pflegen, Feedback verstehen, Ausbildung als Qualitaetsmerkmal zeigen.</p>
+      </div>
+      <div class="audience-card">
+        <span>Stellen</span>
+        <p>Moderation, Datenschutzprozesse und Plattformqualitaet zentral steuern.</p>
+      </div>
+    </section>
+
+    <section class="privacy-section" id="datenschutz">
+      <div>
+        <p class="eyebrow">Privacy by design</p>
+        <h2>Datenschutz ist kein Zusatzmodul.</h2>
+      </div>
+      <p>
+        RLS-Policies, AVV-Anforderungen und eine DSGVO-konforme Architektur sind als
+        Produktprinzipien angelegt. Die Gestaltung bleibt bewusst ruhig, damit Vertrauen,
+        Nachvollziehbarkeit und Bewertungsqualitaet im Vordergrund stehen.
+      </p>
+    </section>
+  </main>
+</body>
+
+</html>

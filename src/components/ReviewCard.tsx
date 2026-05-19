@@ -38,7 +38,7 @@ export default function ReviewCard({ review }: { review: Review }) {
         </div>
       </div>
       <p className="text-xs text-[#4b5563] leading-relaxed">
-        "{review.text}"
+        &quot;{review.text}&quot;
       </p>
     </div>
   )
