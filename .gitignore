@@ -1,21 +1,88 @@
 # Dependencies
 node_modules/
+vendor/
 
-# Logs
-logs
+# Build outputs
+dist/
+build/
+target/
+.next/
+.nuxt/
+
+# Logs & temp files
+logs/
+log/
+tmp/
+temp/
+cache/
 *.log
+*.log.*
 npm-debug.log*
 yarn-debug.log*
 
-# OS generated files
+# Environment & secrets
+.env
+.env.local
+.env.*
+*.env
+config/.env
+secrets.env
+*.token
+*.secret
+
+# Private keys & certificates
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+id_rsa
+id_ed25519
+id_ecdsa
+*.pub
+*.jks
+*.keystore
+
+# Cloud credentials
+credentials.json
+service-account.json
+google-credentials.json
+aws/credentials
+.aws/credentials
+gcp-key.json
+
+# Config files with secrets
+config/secrets.yml
+config/secrets.json
+application-prod.yml
+application.properties
+hibernate.cfg.xml
+database.yml
+settings.xml
+auth.json
+
+# Databases & backups
+*.sql
+*.sqlite
+*.db
+dump.sql
+backup/
+*.bak
+
+# IDE & editor files
+.idea/
+*.iml
+.vscode/
 .DS_Store
 Thumbs.db
 
-# Environment
-.env
+# Other sensitive / generated files
+package-lock.json
+yarn.lock
+Pipfile.lock
+personal_access_token.txt
+__pycache__/
+.pytest_cache/
 
-# Optional: Editor settings
-.vscode/
-
-# Backup
+# Legacy / local
 _legacy/
