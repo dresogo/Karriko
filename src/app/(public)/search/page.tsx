@@ -16,13 +16,13 @@
 import { Suspense } from 'react'
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string
     branche?: string
     ort?: string
     sort?: 'score' | 'reviews' | 'name'
     page?: string
-  }
+  }>
 }
 
 export const metadata = {
@@ -30,7 +30,9 @@ export const metadata = {
   description: 'Suche und entdecke Ausbildungsbetriebe'
 }
 
-export default function SearchPage({ searchParams }: SearchPageProps) {
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  await searchParams
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Search Bar */}

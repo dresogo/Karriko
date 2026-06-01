@@ -12,20 +12,24 @@
  * - "Hilfreich"-Button
  */
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   // TODO: Fetch review data
   return {
-    title: 'Bewertung - Karriko',
+    title: `Bewertung ${id} - Karriko`,
     description: 'Vollständige Bewertung eines Ausbildungsbetriebs'
   }
 }
 
-export default function ReviewDetailPage({ params }: { params: { id: string } }) {
+export default async function ReviewDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-gray-600">
-        {/* TODO: Breadcrumb navigation */}
+        {/* TODO: Breadcrumb navigation for {id} */}
       </nav>
 
       <div className="max-w-4xl mx-auto">
