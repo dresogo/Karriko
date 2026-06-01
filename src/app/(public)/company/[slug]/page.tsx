@@ -13,22 +13,24 @@
  * - CTA (Bewertung schreiben)
  */
 
-import { notFound } from 'next/navigation'
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
   // TODO: Fetch company data via tRPC
   return {
-    title: `Unternehmen - Karriko`,
+    title: `Unternehmen ${slug} - Karriko`,
     description: 'Unternehmensprofile und Bewertungen'
   }
 }
 
-export default function CompanyPage({ params }: { params: { slug: string } }) {
+export default async function CompanyPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+
   return (
     <div className="space-y-8">
       {/* Company Header */}
       <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-64">
-        {/* TODO: Header image, logo, company info */}
+        {/* TODO: Header image, logo, company info for {slug} */}
       </div>
 
       <div className="container mx-auto px-4">
