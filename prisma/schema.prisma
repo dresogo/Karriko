@@ -42,11 +42,10 @@ model Company {
   verified       Boolean @default(false)
   createdAt      DateTime @default(now())
 
-  user         User
+  user         User            @relation(fields: [userId], references: [id])
   reviews      Review[]
   comments     ReviewComment[]
   jobListings  JobListing[]
-  applications Application[] @relation("CompanyApplications")
 
   @@map("companies")
 }
@@ -60,8 +59,8 @@ model Review {
   overallScore Float
   createdAt    DateTime @default(now())
 
-  company Company
-  user    User?
+  company Company @relation(fields: [companyId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
   answers ReviewAnswer[]
   comments ReviewComment[]
   helpful  ReviewHelpful[]
@@ -76,8 +75,8 @@ model ReviewAnswer {
   starValue  Int?
   textValue  String?
 
-  review   Review
-  question ReviewQuestion
+  review   Review         @relation(fields: [reviewId], references: [id])
+  question ReviewQuestion @relation(fields: [questionId], references: [id])
 
   @@map("review_answers")
 }
@@ -99,7 +98,7 @@ model ReviewQuestion {
   type       String  @default("stars") // stars or text
   sortOrder  Int
 
-  category ReviewCategory
+  category ReviewCategory @relation(fields: [categoryId], references: [id])
   answers  ReviewAnswer[]
 
   @@map("review_questions")
@@ -112,8 +111,8 @@ model ReviewComment {
   text      String
   createdAt DateTime @default(now())
 
-  review  Review
-  company Company
+  review  Review  @relation(fields: [reviewId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
 
   @@map("review_comments")
 }
@@ -123,8 +122,8 @@ model ReviewHelpful {
   userId    String
   createdAt DateTime @default(now())
 
-  review Review
-  user   User
+  review Review @relation(fields: [reviewId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@id([reviewId, userId])
   @@map("review_helpful")
@@ -142,7 +141,7 @@ model JobListing {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
 
-  company     Company
+  company     Company      @relation(fields: [companyId], references: [id])
   applications Application[]
 
   @@map("job_listings")
@@ -158,8 +157,8 @@ model Application {
   message   String?
   createdAt DateTime @default(now())
 
-  job  JobListing
-  user User
+  job  JobListing @relation(fields: [jobId], references: [id])
+  user User       @relation(fields: [userId], references: [id])
 
   @@map("applications")
 }

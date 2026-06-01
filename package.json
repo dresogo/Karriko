@@ -48,7 +48,7 @@
     "eslint": "^8",
     "eslint-config-next": "^15.5.16",
     "prisma": "^5.6.0",
-    "typescript": "^5",
+    "typescript": "^6.0.0",
     "vitest": "^4.1.0"
   }
 }

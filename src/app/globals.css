@@ -184,6 +184,11 @@ h1 {
 	background: var(--surface);
 }
 
+.search-field-group {
+	position: relative;
+	min-width: 0;
+}
+
 .search-row input {
 	width: 100%;
 	min-width: 0;
@@ -222,6 +227,49 @@ h1 {
 	stroke: currentColor;
 	stroke-width: 2.3;
 	stroke-linecap: square;
+}
+
+.search-suggestions {
+	position: absolute;
+	top: calc(100% + 12px);
+	left: 0;
+	right: 0;
+	z-index: 10;
+	display: grid;
+	gap: 8px;
+	padding: 10px;
+	border: 1px solid var(--line);
+	background: rgba(255, 255, 255, 0.98);
+	box-shadow: 0 18px 40px rgba(17, 17, 17, 0.12);
+	backdrop-filter: blur(12px);
+}
+
+.search-suggestion {
+	display: grid;
+	gap: 4px;
+	padding: 12px 14px;
+	border: 1px solid transparent;
+	background: var(--paper);
+	transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.search-suggestion:hover {
+	border-color: var(--ink);
+	background: #fff;
+	transform: translateY(-1px);
+}
+
+.search-suggestion-title {
+	font-size: 15px;
+	font-weight: 800;
+	color: var(--ink);
+}
+
+.search-suggestion-meta,
+.search-suggestion-description {
+	font-size: 13px;
+	line-height: 1.35;
+	color: var(--muted);
 }
 
 .metrics {

@@ -1,3 +1,5 @@
+import HomeSearch from '@/components/HomeSearch'
+
 export default function HomePage() {
   return (
     <main>
@@ -8,23 +10,7 @@ export default function HomePage() {
             <h1 id="hero-title">Bewertungen fuer duale Ausbildung im DACH-Markt.</h1>
           </div>
 
-          <form className="search-panel" role="search" aria-label="Ausbildungsbetrieb suchen">
-            <label htmlFor="search">Ausbildungsbetrieb, Beruf oder Ort suchen</label>
-            <div className="search-row">
-              <input
-                id="search"
-                name="search"
-                type="search"
-                placeholder="z. B. Mechatroniker Berlin, Bosch, Wien"
-                autoComplete="off"
-              />
-              <button type="submit" aria-label="Suche starten">
-                <svg aria-hidden="true" viewBox="0 0 24 24">
-                  <path d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" />
-                </svg>
-              </button>
-            </div>
-          </form>
+          <HomeSearch />
         </div>
       </section>
 
