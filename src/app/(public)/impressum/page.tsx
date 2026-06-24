@@ -25,19 +25,29 @@ export default function ImpressumPage() {
         <h2>Angaben gemäß § 5 TMG</h2>
         
         <h3>Verantwortlicher</h3>
-        {/* TODO: Company name, address, email, phone, registration details */}
+        <p>
+          Trage hier die vollständigen Angaben des Betreibers ein, einschließlich Name, Rechtsform, Anschrift, E-Mail und Telefonnummer.
+        </p>
 
         <h3>USt-ID</h3>
-        {/* TODO: VAT ID if applicable */}
+        <p>
+          Falls vorhanden, ergänze hier die Umsatzsteuer-Identifikationsnummer.
+        </p>
 
         <h3>Vertreter</h3>
-        {/* TODO: Legal representatives if applicable */}
+        <p>
+          Wenn eine juristische Person Betreiber ist, nenne hier die vertretungsberechtigten Personen.
+        </p>
 
         <h3>Kontakt</h3>
-        {/* TODO: Contact information */}
+        <p>
+          Hier gehören die direkten Kontaktmöglichkeiten des Verantwortlichen hinein.
+        </p>
 
         <h3>Streitschlichtung</h3>
-        {/* TODO: Legal notice about dispute resolution */}
+        <p>
+          Ergänze hier die Hinweise zur Streitbeilegung und zur Teilnahme an Verbraucherschlichtungsverfahren.
+        </p>
       </div>
     </div>
   )

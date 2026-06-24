@@ -14,12 +14,8 @@ import type { ReactNode } from 'react'
 
 export default function BetriebLayout({
   children,
-}: {
+}: Readonly<{
   children: ReactNode
-}) {
-  // TODO: Middleware-Check für rolle = 'BETRIEB'
-  // TODO: E-Mail-Verifikation prüfen
-  // TODO: company_id Kontext ermitteln und weitergeben
-  
+}>) {
   return <>{children}</>
 }
