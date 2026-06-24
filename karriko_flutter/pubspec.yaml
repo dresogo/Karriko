@@ -1,0 +1,34 @@
+name: karriko_flutter
+description: "Karriko – Bewertungsplattform für duale Ausbildung im DACH-Markt."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  go_router: ^14.2.0
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  supabase_flutter: ^2.5.0
+  dio: ^5.4.3
+  reactive_forms: ^17.0.1
+  flutter_svg: ^2.0.10
+  flutter_animate: ^4.5.0
+  intl: ^0.20.0
+  flutter_secure_storage: ^9.2.1
+  cached_network_image: ^3.3.1
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  riverpod_generator: ^2.4.3
+  build_runner: ^2.4.11
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
