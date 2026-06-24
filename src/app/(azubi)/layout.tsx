@@ -13,11 +13,8 @@ import type { ReactNode } from 'react'
 
 export default function AzubiLayout({
   children,
-}: {
+}: Readonly<{
   children: ReactNode
-}) {
-  // TODO: Middleware-Check für rolle = 'AZUBI'
-  // TODO: E-Mail-Verifikation prüfen
-  
+}>) {
   return <>{children}</>
 }
