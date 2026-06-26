@@ -1,9 +1,11 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../core/constants/appwrite_constants.dart';
 import '../../core/theme/app_theme.dart';
+import '../../data/services/appwrite_service.dart';
 import '../../providers/auth_provider.dart';
-import '../../data/services/supabase_service.dart';
 
 class _NotificationItem {
   final String id;
@@ -22,13 +24,14 @@ class _NotificationItem {
     required this.type,
   });
 
-  factory _NotificationItem.fromJson(Map<String, dynamic> json) => _NotificationItem(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String,
-        isRead: json['is_read'] as bool? ?? false,
-        createdAt: DateTime.parse(json['created_at'] as String),
-        type: json['type'] as String? ?? 'info',
+  factory _NotificationItem.fromDoc(Map<String, dynamic> data, String docId, String createdAt) =>
+      _NotificationItem(
+        id: docId,
+        title: data['title'] as String,
+        body: data['body'] as String,
+        isRead: data['is_read'] as bool? ?? false,
+        createdAt: DateTime.parse(createdAt),
+        type: data['type'] as String? ?? 'info',
       );
 }
 
@@ -42,6 +45,9 @@ class NotificationsScreen extends ConsumerStatefulWidget {
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   List<_NotificationItem> _notifications = [];
   bool _isLoading = true;
+  RealtimeSubscription? _subscription;
+
+  Databases get _db => Databases(AppwriteService.client);
 
   @override
   void initState() {
@@ -50,19 +56,30 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     _subscribeRealtime();
   }
 
+  @override
+  void dispose() {
+    _subscription?.close();
+    super.dispose();
+  }
+
   Future<void> _loadNotifications() async {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
     try {
-      final data = await SupabaseService.client
-          .from('notifications')
-          .select()
-          .eq('user_id', userId)
-          .order('created_at', ascending: false)
-          .limit(50);
+      final result = await _db.listDocuments(
+        databaseId: AppwriteConstants.databaseId,
+        collectionId: 'notifications',
+        queries: [
+          Query.equal('user_id', userId),
+          Query.orderDesc('\$createdAt'),
+          Query.limit(50),
+        ],
+      );
       if (mounted) {
         setState(() {
-          _notifications = (data as List).map((e) => _NotificationItem.fromJson(e as Map<String, dynamic>)).toList();
+          _notifications = result.documents
+              .map((d) => _NotificationItem.fromDoc(d.data, d.$id, d.$createdAt))
+              .toList();
           _isLoading = false;
         });
       }
@@ -74,28 +91,27 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   void _subscribeRealtime() {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
-    SupabaseService.client
-        .from('notifications')
-        .stream(primaryKey: ['id'])
-        .eq('user_id', userId)
-        .listen((data) {
-          if (mounted) {
-            setState(() {
-              _notifications = data.map((e) => _NotificationItem.fromJson(e)).toList()
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
-            });
-          }
-        });
+    final realtime = Realtime(AppwriteService.client);
+    _subscription = realtime.subscribe([
+      'databases.${AppwriteConstants.databaseId}.collections.notifications.documents',
+    ]);
+    _subscription!.stream.listen((event) {
+      if (mounted) _loadNotifications();
+    });
   }
 
   Future<void> _markAllRead() async {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
-    await SupabaseService.client
-        .from('notifications')
-        .update({'is_read': true})
-        .eq('user_id', userId)
-        .eq('is_read', false);
+    final unread = _notifications.where((n) => !n.isRead).toList();
+    await Future.wait(
+      unread.map((n) => _db.updateDocument(
+            databaseId: AppwriteConstants.databaseId,
+            collectionId: 'notifications',
+            documentId: n.id,
+            data: {'is_read': true},
+          )),
+    );
     await _loadNotifications();
   }
 
@@ -110,7 +126,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
           children: [
             const Text('Benachrichtigungen'),
             if (unread > 0)
-              Text('$unread ungelesene', style: const TextStyle(fontSize: 12, color: AppColors.primary)),
+              Text('$unread ungelesene',
+                  style: const TextStyle(fontSize: 12, color: AppColors.primary)),
           ],
         ),
         actions: [
@@ -130,7 +147,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     children: [
                       const Icon(Icons.notifications_none, size: 64, color: AppColors.textMuted),
                       const SizedBox(height: 16),
-                      Text('Keine Benachrichtigungen', style: Theme.of(context).textTheme.headlineSmall),
+                      Text('Keine Benachrichtigungen',
+                          style: Theme.of(context).textTheme.headlineSmall),
                     ],
                   ),
                 )
@@ -144,7 +162,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                       decoration: BoxDecoration(
                         color: n.isRead ? AppColors.surface : AppColors.lightGreen,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: n.isRead ? AppColors.border : AppColors.primaryLight),
+                        border: Border.all(
+                            color: n.isRead ? AppColors.border : AppColors.primaryLight),
                       ),
                       child: ListTile(
                         leading: Icon(

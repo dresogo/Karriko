@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/models/user_model.dart';
 import '../data/repositories/auth_repository.dart';
 
@@ -155,12 +154,4 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 
 final currentUserProvider = Provider<UserModel?>((ref) {
   return ref.watch(authProvider).user;
-});
-
-final authStateChangesProvider = StreamProvider<AuthState>((ref) {
-  return Supabase.instance.client.auth.onAuthStateChange.asyncMap((_) async {
-    final repo = ref.read(authRepositoryProvider);
-    final user = await repo.getCurrentUser();
-    return AuthState(user: user);
-  });
 });

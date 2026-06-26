@@ -1,36 +1,51 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as aw;
+import '../../core/constants/appwrite_constants.dart';
 import '../models/review_model.dart';
-import '../services/supabase_service.dart';
+import '../services/appwrite_service.dart';
 
 class ReviewRepository {
-  final _client = SupabaseService.client;
+  Databases get _db => Databases(AppwriteService.client);
 
   Future<List<ReviewModel>> getReviewsForCompany(
     String companyId, {
     int limit = 20,
     int offset = 0,
   }) async {
-    final data = await _client
-        .from('reviews')
-        .select()
-        .eq('company_id', companyId)
-        .eq('status', 'published')
-        .order('created_at', ascending: false)
-        .range(offset, offset + limit - 1);
-    return (data as List).map((e) => ReviewModel.fromJson(e as Map<String, dynamic>)).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      queries: [
+        Query.equal('company_id', companyId),
+        Query.equal('status', 'published'),
+        Query.orderDesc('created_at'),
+        Query.limit(limit),
+        Query.offset(offset),
+      ],
+    );
+    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
   }
 
   Future<ReviewModel> getReviewById(String id) async {
-    final data = await _client.from('reviews').select().eq('id', id).single();
-    return ReviewModel.fromJson(data);
+    final doc = await _db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      documentId: id,
+    );
+    return ReviewModel.fromJson(_toMap(doc));
   }
 
   Future<List<ReviewModel>> getMyReviews(String userId) async {
-    final data = await _client
-        .from('reviews')
-        .select()
-        .eq('author_id', userId)
-        .order('created_at', ascending: false);
-    return (data as List).map((e) => ReviewModel.fromJson(e as Map<String, dynamic>)).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      queries: [
+        Query.equal('author_id', userId),
+        Query.orderDesc('created_at'),
+        Query.limit(100),
+      ],
+    );
+    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
   }
 
   Future<ReviewModel> createReview({
@@ -49,48 +64,58 @@ class ReviewRepository {
     String? apprenticeshipYear,
     String? profession,
   }) async {
-    final data = await _client
-        .from('reviews')
-        .insert({
-          'company_id': companyId,
-          'author_id': authorId,
-          'is_anonymous': isAnonymous,
-          'overall_rating': overallRating,
-          if (trainingQuality != null) 'training_quality': trainingQuality,
-          if (mentoring != null) 'mentoring': mentoring,
-          if (workLifeBalance != null) 'work_life_balance': workLifeBalance,
-          if (careerOpportunities != null) 'career_opportunities': careerOpportunities,
-          'title': title,
-          'text': text,
-          if (pros != null) 'pros': pros,
-          if (cons != null) 'cons': cons,
-          if (apprenticeshipYear != null) 'apprenticeship_year': apprenticeshipYear,
-          if (profession != null) 'profession': profession,
-          'status': 'pending',
-        })
-        .select()
-        .single();
-    return ReviewModel.fromJson(data);
+    final doc = await _db.createDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      documentId: ID.unique(),
+      data: {
+        'company_id': companyId,
+        'author_id': authorId,
+        'is_anonymous': isAnonymous,
+        'overall_rating': overallRating,
+        if (trainingQuality != null) 'training_quality': trainingQuality,
+        if (mentoring != null) 'mentoring': mentoring,
+        if (workLifeBalance != null) 'work_life_balance': workLifeBalance,
+        if (careerOpportunities != null) 'career_opportunities': careerOpportunities,
+        'title': title,
+        'text': text,
+        if (pros != null) 'pros': pros,
+        if (cons != null) 'cons': cons,
+        if (apprenticeshipYear != null) 'apprenticeship_year': apprenticeshipYear,
+        if (profession != null) 'profession': profession,
+        'status': 'pending',
+      },
+      permissions: [
+        Permission.read(Role.user(authorId)),
+        Permission.update(Role.user(authorId)),
+        Permission.delete(Role.user(authorId)),
+      ],
+    );
+    return ReviewModel.fromJson(_toMap(doc));
   }
 
   Future<void> deleteReview(String reviewId) async {
-    await _client.from('reviews').delete().eq('id', reviewId);
+    await _db.deleteDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      documentId: reviewId,
+    );
   }
 
   Future<ReviewModel> addBetriebReply({
     required String reviewId,
     required String reply,
   }) async {
-    final data = await _client
-        .from('reviews')
-        .update({
-          'betrieb_reply': reply,
-          'betrieb_replied_at': DateTime.now().toIso8601String(),
-        })
-        .eq('id', reviewId)
-        .select()
-        .single();
-    return ReviewModel.fromJson(data);
+    final doc = await _db.updateDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      documentId: reviewId,
+      data: {
+        'betrieb_reply': reply,
+        'betrieb_replied_at': DateTime.now().toIso8601String(),
+      },
+    );
+    return ReviewModel.fromJson(_toMap(doc));
   }
 
   Future<void> reportReview({
@@ -98,20 +123,37 @@ class ReviewRepository {
     required String reporterId,
     required String reason,
   }) async {
-    await _client.from('review_reports').insert({
-      'review_id': reviewId,
-      'reporter_id': reporterId,
-      'reason': reason,
-    });
+    await _db.createDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewReportsCollection,
+      documentId: ID.unique(),
+      data: {
+        'review_id': reviewId,
+        'reporter_id': reporterId,
+        'reason': reason,
+      },
+      permissions: [
+        Permission.read(Role.user(reporterId)),
+      ],
+    );
   }
 
   Future<List<ReviewModel>> getRecentReviews({int limit = 6}) async {
-    final data = await _client
-        .from('reviews')
-        .select()
-        .eq('status', 'published')
-        .order('created_at', ascending: false)
-        .limit(limit);
-    return (data as List).map((e) => ReviewModel.fromJson(e as Map<String, dynamic>)).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.reviewsCollection,
+      queries: [
+        Query.equal('status', 'published'),
+        Query.orderDesc('created_at'),
+        Query.limit(limit),
+      ],
+    );
+    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
   }
+
+  Map<String, dynamic> _toMap(aw.Document doc) => {
+        'id': doc.$id,
+        'created_at': doc.$createdAt,
+        ...doc.data,
+      };
 }
