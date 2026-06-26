@@ -154,7 +154,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     children: [
                       const Icon(Icons.lock_outline, size: 12, color: AppColors.textMuted),
                       const SizedBox(width: 4),
-                      Text('Geschützt durch Supabase Auth · SSL-verschlüsselt',
+                      Text('Geschützt durch Appwrite Auth · SSL-verschlüsselt',
                           style: Theme.of(context).textTheme.bodySmall),
                     ],
                   ),

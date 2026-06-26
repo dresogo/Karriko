@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
-import '../../data/services/supabase_service.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -33,7 +33,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() { _isLoading = true; _error = null; });
     try {
-      await SupabaseService.updatePassword(_passwordCtrl.text);
+      await AuthRepository().updatePassword(_passwordCtrl.text);
       if (mounted) setState(() { _isLoading = false; _success = true; });
     } catch (e) {
       if (mounted) setState(() { _isLoading = false; _error = 'Passwort konnte nicht geändert werden.'; });
