@@ -190,6 +190,7 @@ class _HeaderActionButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.ink),
+          borderRadius: BorderRadius.circular(AppRadius.button),
         ),
         child: Center(
           child: Text(
@@ -219,6 +220,7 @@ class _UserMenuButton extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
           border: Border.all(color: AppColors.ink),
+          borderRadius: BorderRadius.circular(AppRadius.button),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

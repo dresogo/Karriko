@@ -35,6 +35,64 @@ class AppColors {
   );
 }
 
+/// Corner radii used across the app.
+class AppRadius {
+  AppRadius._();
+
+  /// Standard corner radius for all buttons.
+  static const double button = 10;
+}
+
+/// Swiss-style layout constants: a fixed grid measure and a consistent spacing
+/// scale for edge gutters. Content is capped to a readable width and centered,
+/// with generous, uniform margins that scale with the viewport.
+class AppLayout {
+  AppLayout._();
+
+  /// Maximum measure the content column is allowed to occupy.
+  static const double maxContentWidth = 1200;
+
+  /// Spacing scale — use these values exclusively for gaps and margins.
+  static const double s8 = 8;
+  static const double s16 = 16;
+  static const double s24 = 24;
+  static const double s32 = 32;
+  static const double s48 = 48;
+  static const double s64 = 64;
+
+  /// Horizontal edge gutter for the given viewport width, drawn from the scale.
+  static double gutter(double width) =>
+      width >= 1024 ? s64 : (width >= 600 ? s48 : s24);
+}
+
+/// Full-bleed band whose inner content is capped to [AppLayout.maxContentWidth],
+/// centered, and padded with the responsive edge gutter. Keeps hairline rules
+/// spanning the full width while the content stays on a readable measure.
+class ContentBand extends StatelessWidget {
+  final Widget child;
+  final EdgeInsets padding;
+
+  const ContentBand({
+    super.key,
+    required this.child,
+    this.padding = EdgeInsets.zero,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final gutter = AppLayout.gutter(MediaQuery.of(context).size.width);
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: AppLayout.maxContentWidth),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: gutter).add(padding),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
 class AppTheme {
   static TextTheme _buildTextTheme(TextTheme base) {
     return GoogleFonts.interTextTheme(base).copyWith(
@@ -148,7 +206,19 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+          textStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.accent,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w700,
@@ -160,7 +230,7 @@ class AppTheme {
           foregroundColor: AppColors.ink,
           side: const BorderSide(color: AppColors.ink),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w700,
