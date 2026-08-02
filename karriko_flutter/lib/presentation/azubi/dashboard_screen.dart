@@ -131,8 +131,10 @@ class _QuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     const actions = [
       (Icons.rate_review_outlined, 'Bewertung schreiben', '/reviews/new'),
+      (Icons.quiz_outlined, 'Fragen bewerten', '/fragen-bewerten'),
       (Icons.search, 'Betrieb suchen', '/search'),
       (Icons.bookmark_border, 'Merkliste', '/bookmarks'),
+      (Icons.person_outline, 'Mein Profil', '/profile'),
       (Icons.notifications_outlined, 'Mitteilungen', '/notifications'),
     ];
 

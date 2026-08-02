@@ -34,6 +34,7 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Unternehmensprofil'),
+      drawer: const KarrikoDrawer(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

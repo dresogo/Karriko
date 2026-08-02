@@ -50,6 +50,7 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Mein Profil'),
+      drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(

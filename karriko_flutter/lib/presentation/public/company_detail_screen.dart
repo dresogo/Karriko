@@ -19,6 +19,7 @@ class CompanyDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const KarrikoAppBar(),
+      drawer: const KarrikoDrawer(),
       body: company.when(
         data: (c) => _CompanyDetailBody(company: c),
         loading: () => const Center(child: CircularProgressIndicator()),

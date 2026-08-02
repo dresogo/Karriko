@@ -14,6 +14,8 @@ import '../presentation/public/kontakt_screen.dart';
 import '../presentation/public/legal/impressum_screen.dart';
 import '../presentation/public/legal/datenschutz_screen.dart';
 import '../presentation/public/legal/agb_screen.dart';
+import '../presentation/public/faq_screen.dart';
+import '../presentation/auth/login_choice_screen.dart';
 import '../presentation/auth/login_screen.dart';
 import '../presentation/auth/register_azubi_screen.dart';
 import '../presentation/auth/register_betrieb_screen.dart';
@@ -23,6 +25,7 @@ import '../presentation/auth/verify_email_screen.dart';
 import '../presentation/azubi/dashboard_screen.dart';
 import '../presentation/azubi/profile_screen.dart';
 import '../presentation/azubi/new_review_screen.dart';
+import '../presentation/azubi/fragen_bewerten_screen.dart';
 import '../presentation/azubi/my_reviews_screen.dart';
 import '../presentation/azubi/bookmarks_screen.dart';
 import '../presentation/azubi/notifications_screen.dart';
@@ -46,7 +49,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final path = state.uri.path;
 
       const authPaths = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
-      const azubiPaths = ['/dashboard', '/profile', '/reviews/new', '/my-reviews', '/bookmarks', '/notifications', '/settings'];
+      const azubiPaths = ['/dashboard', '/profile', '/reviews/new', '/fragen-bewerten', '/my-reviews', '/bookmarks', '/notifications', '/settings'];
       const betriebPaths = ['/betrieb-dashboard', '/betrieb-profile', '/betrieb-reviews', '/analytics', '/team', '/subscription', '/reports', '/betrieb-settings'];
 
       bool isAuthPath = authPaths.any((p) => path == p || path.startsWith('$p/'));
@@ -73,6 +76,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
       GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
       GoRoute(path: '/company/:slug', builder: (_, s) => CompanyDetailScreen(slug: s.pathParameters['slug']!)),
+      // Muss vor '/reviews/:id' stehen, sonst schluckt der Platzhalter '/reviews/new'.
+      GoRoute(path: '/reviews/new', builder: (_, __) => const NewReviewScreen()),
       GoRoute(path: '/reviews/:id', builder: (_, s) => ReviewDetailScreen(id: s.pathParameters['id']!)),
       GoRoute(path: '/fuer-betriebe', builder: (_, __) => const FuerBetriebeScreen()),
       GoRoute(path: '/blog', builder: (_, __) => const BlogScreen()),
@@ -82,7 +87,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/impressum', builder: (_, __) => const ImpressumScreen()),
       GoRoute(path: '/datenschutz', builder: (_, __) => const DatenschutzScreen()),
       GoRoute(path: '/agb', builder: (_, __) => const AgbScreen()),
-      GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(path: '/faq', builder: (_, __) => const FaqScreen()),
+      GoRoute(path: '/login', builder: (_, __) => const LoginChoiceScreen()),
+      GoRoute(path: '/login/azubi', builder: (_, __) => const LoginScreen(role: LoginRole.azubi)),
+      GoRoute(path: '/login/betrieb', builder: (_, __) => const LoginScreen(role: LoginRole.betrieb)),
       GoRoute(path: '/register/azubi', builder: (_, __) => const RegisterAzubiScreen()),
       GoRoute(path: '/register/betrieb', builder: (_, __) => const RegisterBetriebScreen()),
       GoRoute(path: '/forgot-password', builder: (_, __) => const ForgotPasswordScreen()),
@@ -90,7 +98,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/verify-email', builder: (_, __) => const VerifyEmailScreen()),
       GoRoute(path: '/dashboard', builder: (_, __) => const AzubiDashboardScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const AzubiProfileScreen()),
-      GoRoute(path: '/reviews/new', builder: (_, __) => const NewReviewScreen()),
+      GoRoute(path: '/fragen-bewerten', builder: (_, __) => const FragenBewertenScreen()),
       GoRoute(path: '/my-reviews', builder: (_, __) => const MyReviewsScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
       GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),

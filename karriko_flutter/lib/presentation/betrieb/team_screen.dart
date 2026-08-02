@@ -73,6 +73,7 @@ class _TeamScreenState extends State<TeamScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Team'),
+      drawer: const KarrikoDrawer(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showInviteDialog,
         backgroundColor: AppColors.primary,

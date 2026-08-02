@@ -80,6 +80,7 @@ class _NewReviewScreenState extends ConsumerState<NewReviewScreen> {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Bewertung schreiben'),
+      drawer: const KarrikoDrawer(),
       body: Column(
         children: [
           _StepIndicator(current: state.step, total: 4),
