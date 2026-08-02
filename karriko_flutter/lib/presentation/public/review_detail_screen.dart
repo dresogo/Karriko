@@ -18,6 +18,7 @@ class ReviewDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const KarrikoAppBar(),
+      drawer: const KarrikoDrawer(),
       body: review.when(
         data: (r) => _ReviewDetailBody(review: r),
         loading: () => const Center(child: CircularProgressIndicator()),

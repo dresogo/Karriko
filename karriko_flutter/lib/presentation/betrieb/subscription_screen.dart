@@ -9,6 +9,7 @@ class SubscriptionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Abonnement'),
+      drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

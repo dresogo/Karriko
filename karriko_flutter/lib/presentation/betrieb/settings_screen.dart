@@ -23,6 +23,7 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Einstellungen'),
+      drawer: const KarrikoDrawer(),
       body: ListView(
         children: [
           _SectionHeader('Konto'),

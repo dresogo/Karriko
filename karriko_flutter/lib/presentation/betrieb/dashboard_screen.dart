@@ -190,6 +190,14 @@ class _ProfileCompletion extends StatelessWidget {
           const SizedBox(height: 8),
           const Text('Füge ein Logo und eine Beschreibung hinzu, um dein Profil zu vervollständigen.',
               style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton(
+              onPressed: () => context.go('/betrieb-profile'),
+              child: const Text('Unternehmensprofil bearbeiten'),
+            ),
+          ),
         ],
       ),
     );

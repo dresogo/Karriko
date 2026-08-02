@@ -5,13 +5,17 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 
 class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  /// Höhe der Kopfzeile. Seiten, die eine Sektion auf volle Bildschirmhöhe
+  /// ziehen, rechnen diesen Wert von der Viewport-Höhe ab.
+  static const double height = 76;
+
   final String? title;
   final bool showBack;
 
   const KarrikoAppBar({super.key, this.title, this.showBack = true});
 
   @override
-  Size get preferredSize => const Size.fromHeight(76);
+  Size get preferredSize => const Size.fromHeight(height);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,7 +24,7 @@ class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final isWide = width > 980;
 
     return Container(
-      height: 76,
+      height: height,
       decoration: BoxDecoration(
         color: AppColors.paper.withOpacity(0.94),
         border: const Border(bottom: BorderSide(color: AppColors.line)),
@@ -57,7 +61,7 @@ class _WideHeader extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _NavLink('Suche', '/search', context),
+                _NavLink('Für Azubis', '/', context),
                 const SizedBox(width: 34),
                 _NavLink('Für Betriebe', '/fuer-betriebe', context),
                 const SizedBox(width: 34),
@@ -100,9 +104,13 @@ class _NarrowHeader extends ConsumerWidget {
               child: Icon(Icons.arrow_back, color: AppColors.ink, size: 20),
             ),
           ),
-        GestureDetector(
-          onTap: () => context.go('/'),
-          child: const _BrandMark(),
+        // Flexible statt fester Breite: bei schmalen Viewports oder vergrößerter
+        // Systemschrift schrumpft der Schriftzug, statt die Zeile zu sprengen.
+        Flexible(
+          child: GestureDetector(
+            onTap: () => context.go('/'),
+            child: const _BrandMark(),
+          ),
         ),
         const Spacer(),
         if (!auth.isAuthenticated)
@@ -129,34 +137,15 @@ class _BrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          color: AppColors.ink,
-          child: const Center(
-            child: Text(
-              'K',
-              style: TextStyle(
-                color: AppColors.paper,
-                fontWeight: FontWeight.w800,
-                fontSize: 18,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        const Text(
-          'Karriko',
-          style: TextStyle(
-            color: AppColors.ink,
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-          ),
-        ),
-      ],
+    return const Text(
+      'Karriko',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        color: AppColors.ink,
+        fontWeight: FontWeight.w800,
+        fontSize: 18,
+      ),
     );
   }
 }
@@ -183,23 +172,23 @@ class _HeaderActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    // Ohne Umrandung: InkWell statt GestureDetector, damit Hover, Druck und
+    // Tastaturfokus weiterhin sichtbar bleiben und die Tap-Fläche erhalten ist.
+    return InkWell(
       onTap: onTap,
+      hoverColor: AppColors.audienceBeige,
+      focusColor: AppColors.audienceBeige,
+      borderRadius: BorderRadius.circular(AppRadius.button),
       child: Container(
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 18),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.ink),
-          borderRadius: BorderRadius.circular(AppRadius.button),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: AppColors.ink,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-            ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.ink,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -289,10 +278,12 @@ class KarrikoDrawer extends ConsumerWidget {
               child: const _BrandMark(),
             ),
             const Divider(color: AppColors.line),
-            _DrawerItem(label: 'Suche', route: '/search'),
+            _DrawerItem(label: 'Für Azubis', route: '/'),
             _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
             _DrawerItem(label: 'Blog', route: '/blog'),
             _DrawerItem(label: 'Über uns', route: '/ueber-uns'),
+            _DrawerItem(label: 'Kontakt', route: '/kontakt'),
+            _DrawerItem(label: 'Häufige Fragen', route: '/faq'),
             const Divider(color: AppColors.line),
             if (!auth.isAuthenticated) ...[
               _DrawerItem(label: 'Anmelden', route: '/login'),
@@ -300,7 +291,10 @@ class KarrikoDrawer extends ConsumerWidget {
               _DrawerItem(label: 'Als Betrieb registrieren', route: '/register/betrieb'),
             ] else if (auth.isAzubi) ...[
               _DrawerItem(label: 'Dashboard', route: '/dashboard'),
+              _DrawerItem(label: 'Mein Profil', route: '/profile'),
               _DrawerItem(label: 'Bewertung schreiben', route: '/reviews/new'),
+              _DrawerItem(label: 'Fragen bewerten', route: '/fragen-bewerten'),
+              _DrawerItem(label: 'Meine Bewertungen', route: '/my-reviews'),
               _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
               _DrawerItem(label: 'Benachrichtigungen', route: '/notifications'),
               _DrawerItem(label: 'Einstellungen', route: '/settings'),
@@ -314,6 +308,7 @@ class KarrikoDrawer extends ConsumerWidget {
               ),
             ] else if (auth.isBetrieb) ...[
               _DrawerItem(label: 'Dashboard', route: '/betrieb-dashboard'),
+              _DrawerItem(label: 'Unternehmensprofil', route: '/betrieb-profile'),
               _DrawerItem(label: 'Bewertungen', route: '/betrieb-reviews'),
               _DrawerItem(label: 'Analytics', route: '/analytics'),
               _DrawerItem(label: 'Einstellungen', route: '/betrieb-settings'),
@@ -326,6 +321,10 @@ class KarrikoDrawer extends ConsumerWidget {
                 },
               ),
             ],
+            const Divider(color: AppColors.line),
+            _DrawerItem(label: 'Impressum', route: '/impressum'),
+            _DrawerItem(label: 'Datenschutz', route: '/datenschutz'),
+            _DrawerItem(label: 'AGB', route: '/agb'),
           ],
         ),
       ),

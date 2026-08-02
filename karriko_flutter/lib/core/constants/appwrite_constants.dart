@@ -1,11 +1,7 @@
 class AppwriteConstants {
   static const endpoint = 'https://cloud.appwrite.io/v1';
 
-  // Set via --dart-define=APPWRITE_PROJECT_ID=xxx
-  static const projectId = String.fromEnvironment(
-    'APPWRITE_PROJECT_ID',
-    defaultValue: 'YOUR_PROJECT_ID',
-  );
+  static const projectId = '6a3c45ef003356d7f16d';
 
   // Redirect URL after email verification (deep-link or web URL)
   static const verificationUrl = String.fromEnvironment(
@@ -14,10 +10,11 @@ class AppwriteConstants {
   );
 
   // Database & collection IDs (must match what you create in the Appwrite console)
-  static const databaseId = 'karriko';
+  static const databaseId = '6a3ea0a4002b4cf10630';
   static const profilesCollection = 'profiles';
   static const companiesCollection = 'companies';
   static const reviewsCollection = 'reviews';
   static const bookmarksCollection = 'bookmarks';
   static const reviewReportsCollection = 'review_reports';
+  static const questionsCollection = 'questions';
 }

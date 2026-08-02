@@ -33,6 +33,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Bewertungen melden'),
+      drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

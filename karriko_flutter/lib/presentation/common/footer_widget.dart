@@ -30,17 +30,23 @@ class _WideFooter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        // Wrap statt fester Zeile: Bei mittleren Breiten oder vergrößerter
+        // Systemschrift rutschen die Spalten in die nächste Zeile, statt über
+        // den Rand zu laufen.
+        Wrap(
+          spacing: 40,
+          runSpacing: 32,
+          crossAxisAlignment: WrapCrossAlignment.start,
           children: [
             // Brand col
-            Expanded(
+            const SizedBox(
+              width: 240,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const _FooterBrand(),
-                  const SizedBox(height: 8),
-                  const Text(
+                  _FooterBrand(),
+                  SizedBox(height: 8),
+                  Text(
                     'Ausbildung transparent machen.',
                     style: TextStyle(color: AppColors.muted, fontSize: 13),
                   ),
@@ -56,16 +62,15 @@ class _WideFooter extends StatelessWidget {
                 ('Blog', '/blog'),
               ],
             ),
-            const SizedBox(width: 40),
             // Company col
             _FooterColumn(
               title: 'Karriko',
               links: [
                 ('Über uns', '/ueber-uns'),
                 ('Kontakt', '/kontakt'),
+                ('Häufige Fragen', '/faq'),
               ],
             ),
-            const SizedBox(width: 40),
             // Legal col
             _FooterColumn(
               title: 'Rechtliches',
@@ -110,6 +115,8 @@ class _NarrowFooter extends StatelessWidget {
             ('Für Betriebe', '/fuer-betriebe'),
             ('Blog', '/blog'),
             ('Über uns', '/ueber-uns'),
+            ('Kontakt', '/kontakt'),
+            ('Häufige Fragen', '/faq'),
           ]
               .map((l) => Builder(
                     builder: (ctx) => GestureDetector(

@@ -6,6 +6,7 @@ import '../../providers/company_provider.dart';
 import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../common/app_bar_widget.dart';
+import '../common/footer_widget.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -87,29 +88,35 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       appBar: const KarrikoAppBar(title: 'Suche'),
       drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
-        child: ContentBand(
-          padding: const EdgeInsets.only(top: AppLayout.s48, bottom: AppLayout.s64),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Header(),
-              const SizedBox(height: AppLayout.s48),
-              if (isWide)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(width: 260, child: filters),
-                    const SizedBox(width: AppLayout.s48),
-                    Expanded(child: main),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ContentBand(
+              padding: const EdgeInsets.only(top: AppLayout.s48, bottom: AppLayout.s64),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Header(),
+                  const SizedBox(height: AppLayout.s48),
+                  if (isWide)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 260, child: filters),
+                        const SizedBox(width: AppLayout.s48),
+                        Expanded(child: main),
+                      ],
+                    )
+                  else ...[
+                    filters,
+                    const SizedBox(height: AppLayout.s48),
+                    main,
                   ],
-                )
-              else ...[
-                filters,
-                const SizedBox(height: AppLayout.s48),
-                main,
-              ],
-            ],
-          ),
+                ],
+              ),
+            ),
+            const FooterWidget(),
+          ],
         ),
       ),
     );
