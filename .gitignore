@@ -83,6 +83,10 @@ Pipfile.lock
 personal_access_token.txt
 __pycache__/
 .pytest_cache/
+graphify-out/
 
 # Legacy / local
 _legacy/
+
+# Claude Code: lokale, nutzerspezifische Einstellungen
+.claude/settings.local.json
