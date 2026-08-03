@@ -25,7 +25,7 @@ Was sich geändert hat: Die Stellen, die dem Nutzer Erfolg vorgespielt haben, tu
 | Tests | 54 | **111** |
 | Layout-Befunde | 28 | **24** |
 | Analyzer-Hinweise | 86 | **0** |
-| Sicherheit | nicht geprüft | **9 Befunde, 2 behoben** |
+| Sicherheit | nicht geprüft | **8 Befunde, 1 behoben** |
 
 ---
 
@@ -238,22 +238,30 @@ Empfehlung unverändert: `review_card`/`job_card` → Auth → restliche Betrieb
 
 Statische Prüfung am 3. August 2026: Git-Historie, Dart-Code unter `lib/`, Web-Bundle, Android-/iOS-Konfiguration, beide `.gitignore`. Kein Pen-Test, keine Laufzeitanalyse — jeder Befund ist aus dem Quellcode ableitbar.
 
-**9 Befunde: 1 kritisch, 1 hoch, 5 mittel, 2 niedrig.** Zwei davon sind mit diesem Stand erledigt.
+**8 Befunde: 1 hoch, 5 mittel, 2 niedrig.** Einer davon ist mit diesem Stand erledigt. Ein neunter, zunächst als kritisch eingestufter Punkt hat sich bei genauer Prüfung als gegenstandslos erwiesen — siehe 7.1.
 
-### 7.1 Zugangsdaten in der öffentlichen Git-Historie — kritisch
+### 7.1 `.env.local` in der Historie — geprüft, kein Leak
 
-`.env.local` wurde in **66afa2e** committet und in **9e92077** wieder entfernt. Das Entfernen aus dem aktuellen Stand hilft nicht: In einem öffentlichen Repository bleibt der Inhalt über `git show 66afa2e:.env.local`, die GitHub-Weboberfläche und jeden Fork abrufbar.
+**Ausgangsverdacht:** `.env.local` wurde in `66afa2e` committet und in `9e92077` wieder entfernt. Eine Notiz in `notes/fehler.md` führte das als offenen kritischen Punkt mit den Worten „Rotieren ist der einzige wirksame Schritt".
 
-| Variable | Tragweite bei Missbrauch |
-|---|---|
-| `SUPABASE_SERVICE_ROLE_KEY` | umgeht Row Level Security vollständig — Vollzugriff auf alle Daten |
-| `DATABASE_URL` | direkter Datenbankzugang inklusive Passwort |
-| `NEXTAUTH_SECRET` | Fälschen beliebiger Sitzungen |
-| `NEXT_PUBLIC_SUPABASE_URL` / `ANON_KEY` | öffentlich per Design, macht aber das Ziel identifizierbar |
+**Prüfergebnis: Der Verdacht trifft nicht zu.** Die Datei enthielt ausschließlich Platzhalter aus einer Vorlage:
 
-**Maßnahme:** Bereinigung der Historie mit `git filter-repo`, anschließend Force-Push. Rotation der Schlüssel wurde bewusst **nicht** durchgeführt — Einschätzung des Betreibers ist, dass ein Abfluss ausgeschlossen ist. Diese Entscheidung ist hier festgehalten, damit nachvollziehbar bleibt, worauf sie beruht: Sollte sich die Annahme als falsch erweisen, ist Rotation der einzige wirksame Schritt, da ein History-Rewrite bereits kopierte Werte nicht zurückholt.
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+DATABASE_URL=your_postgresql_url
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
 
-**Folgewirkung des Rewrites:** Sämtliche Commit-Hashes ändern sich. Bestehende Klone und offene Pull Requests müssen neu aufgesetzt werden; die in diesem Bericht genannten Hashes (`66afa2e`, `9e92077`) verlieren ihre Gültigkeit.
+Es waren nie echte Zugangsdaten im Repository. Damit entfällt der Befund, und eine Rotation ist gegenstandslos. **Die Notiz in `notes/fehler.md` ist sachlich falsch und sollte korrigiert oder gelöscht werden**, sonst löst sie beim nächsten Durchgang denselben Fehlalarm aus.
+
+**Trotzdem durchgeführt:** Die Historie wurde mit `git filter-repo --invert-paths --path .env.local` bereinigt und per Force-Push übertragen. Das war zum Zeitpunkt der Entscheidung als Sicherheitsmaßnahme gedacht; als Repo-Hygiene ist es weiterhin sinnvoll — eine `.env`-Datei gehört auch mit Platzhaltern nicht in die Historie, weil sie genau solche Fehlalarme erzeugt.
+
+**Folgewirkung des Rewrites:** Sämtliche Commit-Hashes haben sich geändert. Bestehende Klone müssen neu aufgesetzt werden; alle in älteren Notizen genannten Hashes (`66afa2e`, `9e92077`, `0be2d68`) sind ungültig. Offene Pull Requests gab es zum Zeitpunkt des Pushs keine.
+
+**Methodischer Hinweis für die nächste Prüfung:** Der Fehlalarm entstand, weil die Werte beim ersten Auslesen zum Schutz maskiert wurden — die Maskierung verdeckte, dass es Platzhalter waren. Bei Fundverdacht in der Historie gehört die Echtheitsprüfung des Werts **vor** die Einstufung der Schwere.
 
 ### 7.2 Fremdes JavaScript im Web-Build — hoch, behoben
 
@@ -358,7 +366,7 @@ Der Layout-Durchlauf aus diesem Bericht existiert als Technik, aber nicht als da
 ## 10. Vorgeschlagene Reihenfolge
 
 **Vorab — Sicherheit**
-0. Historie bereinigen (7.1), danach `reporterId`-Platzhalter (7.4), `allowBackup` (7.6), ungenutztes `flutter_secure_storage` (7.8) und die `.gitignore`-Korrekturen. Alles kleinteilig, keines davon hängt an einer anderen Baustelle. Die Prüfung der Appwrite-Permissions (7.3) gehört zeitlich vor den ersten echten Nutzer.
+0. `reporterId`-Platzhalter (7.4), `allowBackup` (7.6), ungenutztes `flutter_secure_storage` (7.8) und die `.gitignore`-Korrekturen. Alles kleinteilig, keines davon hängt an einer anderen Baustelle. Die Prüfung der Appwrite-Permissions (7.3) gehört zeitlich vor den ersten echten Nutzer. Die Historienbereinigung (7.1) ist erledigt, war aber nach Prüfung ohnehin nicht sicherheitsrelevant.
 
 **Zuerst — Daten und Wahrheit**
 1. `companies`-Dokument bei der Betriebsregistrierung anlegen und im Profil verknüpfen. **Schlüsselstück:** löst 2.3, ermöglicht echte Dashboard-Kennzahlen und die Bewertungszuordnung.
