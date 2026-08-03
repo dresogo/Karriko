@@ -5,6 +5,10 @@ class UserModel {
   final String? firstName;
   final String? lastName;
   final String? avatarUrl;
+
+  /// Name des Unternehmens. Nur bei Betriebskonten gesetzt.
+  final String? companyName;
+
   final bool emailVerified;
   final DateTime createdAt;
 
@@ -15,6 +19,7 @@ class UserModel {
     this.firstName,
     this.lastName,
     this.avatarUrl,
+    this.companyName,
     required this.emailVerified,
     required this.createdAt,
   });
@@ -33,6 +38,7 @@ class UserModel {
       firstName: json['first_name'] as String?,
       lastName: json['last_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      companyName: json['company_name'] as String?,
       emailVerified: json['email_verified'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
@@ -45,6 +51,7 @@ class UserModel {
         'first_name': firstName,
         'last_name': lastName,
         'avatar_url': avatarUrl,
+        'company_name': companyName,
         'email_verified': emailVerified,
         'created_at': createdAt.toIso8601String(),
       };
@@ -53,6 +60,7 @@ class UserModel {
     String? firstName,
     String? lastName,
     String? avatarUrl,
+    String? companyName,
     bool? emailVerified,
   }) {
     return UserModel(
@@ -62,6 +70,7 @@ class UserModel {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       avatarUrl: avatarUrl ?? this.avatarUrl,
+      companyName: companyName ?? this.companyName,
       emailVerified: emailVerified ?? this.emailVerified,
       createdAt: createdAt,
     );

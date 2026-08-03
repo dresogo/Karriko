@@ -1,3 +1,5 @@
+import '../../core/utils/date_format.dart';
+
 /// Art eines Eintrags im Blog- und Neuigkeiten-Stream.
 enum BlogEntryKind {
   /// Redaktioneller Artikel mit eigener Detailseite.
@@ -65,22 +67,5 @@ class BlogEntry {
 
   bool get isArticle => kind == BlogEntryKind.article;
 
-  /// Deutsches Datumsformat ohne Locale-Initialisierung.
-  String get formattedDate {
-    const months = [
-      'Januar',
-      'Februar',
-      'März',
-      'April',
-      'Mai',
-      'Juni',
-      'Juli',
-      'August',
-      'September',
-      'Oktober',
-      'November',
-      'Dezember',
-    ];
-    return '${date.day}. ${months[date.month - 1]} ${date.year}';
-  }
+  String get formattedDate => germanDate(date);
 }
