@@ -42,6 +42,14 @@ id_ecdsa
 *.pub
 *.jks
 *.keystore
+*.cer
+*.mobileprovision
+
+# Mobile: Signier- und Dienstkonfiguration (enthalten Schluessel bzw. Passwoerter)
+key.properties
+android/key.properties
+google-services.json
+GoogleService-Info.plist
 
 # Cloud credentials
 credentials.json
@@ -84,9 +92,12 @@ personal_access_token.txt
 __pycache__/
 .pytest_cache/
 graphify-out/
+coverage/
+*.lcov
 
 # Legacy / local
 _legacy/
 
 # Claude Code: lokale, nutzerspezifische Einstellungen
 .claude/settings.local.json
+.claude/
