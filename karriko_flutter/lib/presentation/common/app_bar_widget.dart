@@ -196,38 +196,51 @@ class _HeaderActionButton extends StatelessWidget {
   }
 }
 
-class _UserMenuButton extends ConsumerWidget {
+/// Profilmenü der Kopfzeile.
+///
+/// Auslöser ist ein quadratisches Monogramm im Duktus der Marke; das Menü ist
+/// eine weisse Fläche mit Haarlinie statt der abgerundeten Material-Karte mit
+/// Schatten. Kopfbereich mit Name, Adresse und Rolle, danach die Ziele, ganz
+/// unten – deutlich abgesetzt – das Abmelden.
+class _UserMenuButton extends ConsumerStatefulWidget {
   final AuthState auth;
 
   const _UserMenuButton({required this.auth});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_UserMenuButton> createState() => _UserMenuButtonState();
+}
+
+class _UserMenuButtonState extends ConsumerState<_UserMenuButton> {
+  bool _open = false;
+
+  AuthState get auth => widget.auth;
+
+  String get _initial =>
+      (auth.user?.displayName.trim().isNotEmpty ?? false)
+          ? auth.user!.displayName.trim().substring(0, 1).toUpperCase()
+          : 'U';
+
+  @override
+  Widget build(BuildContext context) {
+    final showName = MediaQuery.sizeOf(context).width > 980;
+
     return PopupMenuButton<String>(
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.ink),
-          borderRadius: BorderRadius.circular(AppRadius.button),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              auth.user?.displayName.substring(0, 1).toUpperCase() ?? 'U',
-              style: const TextStyle(
-                color: AppColors.ink,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(width: 6),
-            const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.ink),
-          ],
-        ),
+      tooltip: 'Profilmenü öffnen',
+      offset: const Offset(0, 48),
+      elevation: 0,
+      color: AppColors.surface,
+      padding: EdgeInsets.zero,
+      menuPadding: EdgeInsets.zero,
+      constraints: const BoxConstraints(minWidth: 260, maxWidth: 300),
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: AppColors.ink),
+        borderRadius: BorderRadius.zero,
       ),
+      onOpened: () => setState(() => _open = true),
+      onCanceled: () => setState(() => _open = false),
       onSelected: (value) {
+        setState(() => _open = false);
         switch (value) {
           case 'dashboard':
             context.go(auth.isBetrieb ? '/betrieb-dashboard' : '/dashboard');
@@ -241,20 +254,186 @@ class _UserMenuButton extends ConsumerWidget {
         }
       },
       itemBuilder: (_) => [
-        PopupMenuItem(
+        PopupMenuItem<String>(
           enabled: false,
-          child: Text(
-            auth.user?.displayName ?? '',
-            style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.ink),
+          height: 0,
+          padding: EdgeInsets.zero,
+          child: _MenuHeader(auth: auth, initial: _initial),
+        ),
+        const PopupMenuItem<String>(
+          value: 'dashboard',
+          padding: EdgeInsets.zero,
+          child: _MenuEntry(icon: Icons.grid_view_outlined, label: 'Dashboard'),
+        ),
+        const PopupMenuItem<String>(
+          value: 'profile',
+          padding: EdgeInsets.zero,
+          child: _MenuEntry(icon: Icons.person_outline, label: 'Profil'),
+        ),
+        const PopupMenuItem<String>(
+          value: 'settings',
+          padding: EdgeInsets.zero,
+          child: _MenuEntry(icon: Icons.tune, label: 'Einstellungen'),
+        ),
+        const PopupMenuItem<String>(
+          value: 'logout',
+          padding: EdgeInsets.zero,
+          child: _MenuEntry(
+            icon: Icons.logout,
+            label: 'Abmelden',
+            separated: true,
+            destructive: true,
           ),
         ),
-        const PopupMenuDivider(),
-        const PopupMenuItem(value: 'dashboard', child: Text('Dashboard')),
-        const PopupMenuItem(value: 'profile', child: Text('Profil')),
-        const PopupMenuItem(value: 'settings', child: Text('Einstellungen')),
-        const PopupMenuDivider(),
-        const PopupMenuItem(value: 'logout', child: Text('Abmelden')),
       ],
+      child: Container(
+        height: 40,
+        padding: EdgeInsets.only(left: 4, right: showName ? 12 : 4),
+        decoration: BoxDecoration(
+          color: _open ? AppColors.audienceBeige : Colors.transparent,
+          border: Border.all(color: AppColors.line),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              color: AppColors.ink,
+              alignment: Alignment.center,
+              child: Text(
+                _initial,
+                style: const TextStyle(
+                  color: AppColors.paper,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+            if (showName) ...[
+              const SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 140),
+                child: Text(
+                  auth.user?.displayName ?? '',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(width: 6),
+            AnimatedRotation(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              turns: _open ? 0.5 : 0,
+              child: const Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.ink),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MenuHeader extends StatelessWidget {
+  final AuthState auth;
+  final String initial;
+
+  const _MenuHeader({required this.auth, required this.initial});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppLayout.s16),
+      decoration: const BoxDecoration(
+        color: AppColors.paper,
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            auth.isBetrieb ? 'BETRIEB' : 'AZUBI',
+            style: const TextStyle(
+              color: AppColors.accent,
+              fontSize: 11,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.88,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            auth.user?.displayName ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            auth.user?.email ?? '',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: AppColors.muted, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MenuEntry extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  /// Setzt eine Trennlinie darüber – für Aktionen, die nicht zur Navigation
+  /// gehören und nicht versehentlich getroffen werden sollen.
+  final bool separated;
+
+  final bool destructive;
+
+  const _MenuEntry({
+    required this.icon,
+    required this.label,
+    this.separated = false,
+    this.destructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = destructive ? AppColors.accentDark : AppColors.ink;
+
+    return Container(
+      width: double.infinity,
+      decoration: separated
+          ? const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line)))
+          : null,
+      padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16, vertical: 14),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: destructive ? color : AppColors.muted),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
