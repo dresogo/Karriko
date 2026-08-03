@@ -33,10 +33,11 @@ class ReviewCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 18,
                   backgroundColor: AppColors.lightGreen,
-                  child: const Icon(Icons.person, color: AppColors.textMuted, size: 20),
+                  child:
+                      Icon(Icons.person, color: AppColors.textMuted, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -50,9 +51,10 @@ class ReviewCard extends StatelessWidget {
                       if (showCompany)
                         Text(
                           review.companyName,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.primary,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: AppColors.primary,
+                                  ),
                         ),
                     ],
                   ),
@@ -154,7 +156,8 @@ class StarRating extends StatelessWidget {
       children: List.generate(max, (i) {
         final filled = i < rating;
         return GestureDetector(
-          onTap: interactive && onChanged != null ? () => onChanged!(i + 1) : null,
+          onTap:
+              interactive && onChanged != null ? () => onChanged!(i + 1) : null,
           child: Icon(
             filled ? Icons.star : Icons.star_border,
             size: size,
@@ -202,7 +205,10 @@ class _VerifiedBadge extends StatelessWidget {
           const SizedBox(width: 3),
           Text(
             'Verifiziert',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.primaryDark),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColors.primaryDark),
           ),
         ],
       ),

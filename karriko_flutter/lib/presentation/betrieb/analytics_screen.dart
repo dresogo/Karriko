@@ -17,15 +17,18 @@ class AnalyticsScreen extends StatelessWidget {
           children: [
             _PremiumBanner(),
             const SizedBox(height: 20),
-            Text('Übersicht', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Übersicht',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 12),
             _AnalyticsGrid(),
             const SizedBox(height: 24),
-            Text('Bewertungsverteilung', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Bewertungsverteilung',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 12),
             _RatingDistribution(),
             const SizedBox(height: 24),
-            Text('Top-Kategorien', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Top-Kategorien',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 12),
             _CategoryScores(),
           ],
@@ -56,9 +59,15 @@ class _PremiumBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Premium Analytics', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+                const Text('Premium Analytics',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16)),
                 Text('Detaillierte Einblicke in deine Bewertungen.',
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12)),
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 12)),
               ],
             ),
           ),
@@ -82,7 +91,12 @@ class _AnalyticsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     const stats = [
       ('4.2', 'Ø Gesamtbewertung', Icons.star, AppColors.warning),
-      ('24', 'Gesamt-Bewertungen', Icons.rate_review_outlined, AppColors.primary),
+      (
+        '24',
+        'Gesamt-Bewertungen',
+        Icons.rate_review_outlined,
+        AppColors.primary
+      ),
       ('1.2k', 'Profilaufrufe', Icons.visibility_outlined, AppColors.success),
       ('87%', 'Weiterleitungsrate', Icons.trending_up, AppColors.primary),
     ];
@@ -94,23 +108,31 @@ class _AnalyticsGrid extends StatelessWidget {
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       childAspectRatio: 1.4,
-      children: stats.map((s) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(s.$3, color: s.$4, size: 18),
-            const Spacer(),
-            Text(s.$1, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: s.$4)),
-            Text(s.$2, style: Theme.of(context).textTheme.bodySmall, maxLines: 2),
-          ],
-        ),
-      )).toList(),
+      children: stats
+          .map((s) => Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(s.$3, color: s.$4, size: 18),
+                    const Spacer(),
+                    Text(s.$1,
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            color: s.$4)),
+                    Text(s.$2,
+                        style: Theme.of(context).textTheme.bodySmall,
+                        maxLines: 2),
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 }
@@ -128,32 +150,40 @@ class _RatingDistribution extends StatelessWidget {
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
-        children: dist.map((d) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Row(
-            children: [
-              SizedBox(width: 16, child: Text('${d.$1}', style: Theme.of(context).textTheme.bodySmall)),
-              const Icon(Icons.star, size: 12, color: AppColors.warning),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: d.$2,
-                    backgroundColor: AppColors.border,
-                    color: AppColors.primary,
-                    minHeight: 8,
+        children: dist
+            .map((d) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width: 16,
+                          child: Text('${d.$1}',
+                              style: Theme.of(context).textTheme.bodySmall)),
+                      const Icon(Icons.star,
+                          size: 12, color: AppColors.warning),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: d.$2,
+                            backgroundColor: AppColors.border,
+                            color: AppColors.primary,
+                            minHeight: 8,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      SizedBox(
+                        width: 36,
+                        child: Text('${(d.$2 * 100).round()}%',
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.end),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 36,
-                child: Text('${(d.$2 * 100).round()}%', style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.end),
-              ),
-            ],
-          ),
-        )).toList(),
+                ))
+            .toList(),
       ),
     );
   }
@@ -177,23 +207,36 @@ class _CategoryScores extends StatelessWidget {
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
-        children: scores.map((s) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: Row(
-            children: [
-              Expanded(child: Text(s.$1, style: Theme.of(context).textTheme.bodyMedium)),
-              Text(s.$2.toStringAsFixed(1), style: const TextStyle(fontWeight: FontWeight.w700, color: AppColors.primary)),
-              const SizedBox(width: 8),
-              Row(
-                children: List.generate(5, (i) => Icon(
-                  i < s.$2.round() ? Icons.star : Icons.star_border,
-                  size: 12,
-                  color: i < s.$2.round() ? AppColors.warning : AppColors.border,
-                )),
-              ),
-            ],
-          ),
-        )).toList(),
+        children: scores
+            .map((s) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text(s.$1,
+                              style: Theme.of(context).textTheme.bodyMedium)),
+                      Text(s.$2.toStringAsFixed(1),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primary)),
+                      const SizedBox(width: 8),
+                      Row(
+                        children: List.generate(
+                            5,
+                            (i) => Icon(
+                                  i < s.$2.round()
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  size: 12,
+                                  color: i < s.$2.round()
+                                      ? AppColors.warning
+                                      : AppColors.border,
+                                )),
+                      ),
+                    ],
+                  ),
+                ))
+            .toList(),
       ),
     );
   }

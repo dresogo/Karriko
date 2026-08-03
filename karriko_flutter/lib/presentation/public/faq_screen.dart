@@ -151,7 +151,9 @@ class FaqScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 for (var i = 0; i < group.$2.length; i++) ...[
-                                  if (i > 0) const Divider(color: AppColors.line, height: 1),
+                                  if (i > 0)
+                                    const Divider(
+                                        color: AppColors.line, height: 1),
                                   _FaqItem(
                                     question: group.$2[i].$1,
                                     answer: group.$2[i].$2,
@@ -189,7 +191,8 @@ class _FaqItem extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: AppLayout.s24, vertical: AppLayout.s8),
+        tilePadding: const EdgeInsets.symmetric(
+            horizontal: AppLayout.s24, vertical: AppLayout.s8),
         childrenPadding: const EdgeInsets.fromLTRB(
           AppLayout.s24,
           0,
@@ -201,7 +204,9 @@ class _FaqItem extends StatelessWidget {
         collapsedIconColor: AppColors.muted,
         title: Text(question, style: Theme.of(context).textTheme.headlineSmall),
         children: [
-          Text(answer, style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6)),
+          Text(answer,
+              style:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6)),
         ],
       ),
     );
@@ -217,7 +222,8 @@ class _ContactBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Frage nicht dabei?', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Frage nicht dabei?',
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppLayout.s8),
           Text(
             'Schreib uns – wir melden uns in der Regel innerhalb von zwei Werktagen.',

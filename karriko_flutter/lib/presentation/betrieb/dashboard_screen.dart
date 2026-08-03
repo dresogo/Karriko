@@ -17,7 +17,8 @@ class BetriebDashboardScreen extends ConsumerWidget {
       appBarTitle: 'Dashboard',
       eyebrow: 'BETRIEB',
       title: company?.isNotEmpty == true ? company! : 'Dein Betrieb',
-      lede: 'Bewertungen einsehen, auf Feedback antworten und dein Profil pflegen.',
+      lede:
+          'Bewertungen einsehen, auf Feedback antworten und dein Profil pflegen.',
       headerAction: FilledButton.icon(
         onPressed: () => context.go('/betrieb-reviews'),
         icon: const Icon(Icons.rate_review_outlined, size: 18),
@@ -281,13 +282,17 @@ class _ManagementCardState extends State<_ManagementCard> {
                     AnimatedSlide(
                       duration: const Duration(milliseconds: 150),
                       curve: Curves.easeOut,
-                      offset: _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
-                      child: const Icon(Icons.arrow_forward, size: 18, color: AppColors.muted),
+                      offset: _hovered || _focused
+                          ? const Offset(0.25, 0)
+                          : Offset.zero,
+                      child: const Icon(Icons.arrow_forward,
+                          size: 18, color: AppColors.muted),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppLayout.s8),
-                Text(widget.description, style: Theme.of(context).textTheme.bodySmall),
+                Text(widget.description,
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ),

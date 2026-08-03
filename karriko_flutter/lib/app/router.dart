@@ -49,13 +49,39 @@ final routerProvider = Provider<GoRouter>((ref) {
       final path = state.uri.path;
 
       // '/verify-email' gehoert bewusst nicht hierher – siehe Sonderfall unten.
-      const authPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
-      const azubiPaths = ['/dashboard', '/profile', '/reviews/new', '/fragen-bewerten', '/my-reviews', '/bookmarks', '/notifications', '/settings'];
-      const betriebPaths = ['/betrieb-dashboard', '/betrieb-profile', '/betrieb-reviews', '/analytics', '/team', '/subscription', '/reports', '/betrieb-settings'];
+      const authPaths = [
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/reset-password'
+      ];
+      const azubiPaths = [
+        '/dashboard',
+        '/profile',
+        '/reviews/new',
+        '/fragen-bewerten',
+        '/my-reviews',
+        '/bookmarks',
+        '/notifications',
+        '/settings'
+      ];
+      const betriebPaths = [
+        '/betrieb-dashboard',
+        '/betrieb-profile',
+        '/betrieb-reviews',
+        '/analytics',
+        '/team',
+        '/subscription',
+        '/reports',
+        '/betrieb-settings'
+      ];
 
-      bool isAuthPath = authPaths.any((p) => path == p || path.startsWith('$p/'));
-      bool isAzubiPath = azubiPaths.any((p) => path == p || path.startsWith('$p/'));
-      bool isBetriebPath = betriebPaths.any((p) => path == p || path.startsWith('$p/'));
+      bool isAuthPath =
+          authPaths.any((p) => path == p || path.startsWith('$p/'));
+      bool isAzubiPath =
+          azubiPaths.any((p) => path == p || path.startsWith('$p/'));
+      bool isBetriebPath =
+          betriebPaths.any((p) => path == p || path.startsWith('$p/'));
 
       if (auth.isLoading) return null;
 
@@ -76,7 +102,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       if (isAzubiPath || isBetriebPath) {
-        if (!auth.isAuthenticated) return '/login?next=${Uri.encodeComponent(path)}';
+        if (!auth.isAuthenticated) {
+          return '/login?next=${Uri.encodeComponent(path)}';
+        }
         if (!auth.emailVerified) return '/verify-email';
         if (isAzubiPath && auth.isBetrieb) return '/betrieb-dashboard';
         if (isBetriebPath && auth.isAzubi) return '/dashboard';
@@ -87,42 +115,82 @@ final routerProvider = Provider<GoRouter>((ref) {
     routes: [
       GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
       GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
-      GoRoute(path: '/company/:slug', builder: (_, s) => CompanyDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(
+          path: '/company/:slug',
+          builder: (_, s) =>
+              CompanyDetailScreen(slug: s.pathParameters['slug']!)),
       // Muss vor '/reviews/:id' stehen, sonst schluckt der Platzhalter '/reviews/new'.
-      GoRoute(path: '/reviews/new', builder: (_, __) => const NewReviewScreen()),
-      GoRoute(path: '/reviews/:id', builder: (_, s) => ReviewDetailScreen(id: s.pathParameters['id']!)),
-      GoRoute(path: '/fuer-betriebe', builder: (_, __) => const FuerBetriebeScreen()),
+      GoRoute(
+          path: '/reviews/new', builder: (_, __) => const NewReviewScreen()),
+      GoRoute(
+          path: '/reviews/:id',
+          builder: (_, s) => ReviewDetailScreen(id: s.pathParameters['id']!)),
+      GoRoute(
+          path: '/fuer-betriebe',
+          builder: (_, __) => const FuerBetriebeScreen()),
       GoRoute(path: '/blog', builder: (_, __) => const BlogScreen()),
-      GoRoute(path: '/blog/:slug', builder: (_, s) => BlogDetailScreen(slug: s.pathParameters['slug']!)),
+      GoRoute(
+          path: '/blog/:slug',
+          builder: (_, s) => BlogDetailScreen(slug: s.pathParameters['slug']!)),
       GoRoute(path: '/ueber-uns', builder: (_, __) => const UeberUnsScreen()),
       GoRoute(path: '/kontakt', builder: (_, __) => const KontaktScreen()),
       GoRoute(path: '/impressum', builder: (_, __) => const ImpressumScreen()),
-      GoRoute(path: '/datenschutz', builder: (_, __) => const DatenschutzScreen()),
+      GoRoute(
+          path: '/datenschutz', builder: (_, __) => const DatenschutzScreen()),
       GoRoute(path: '/agb', builder: (_, __) => const AgbScreen()),
       GoRoute(path: '/faq', builder: (_, __) => const FaqScreen()),
       GoRoute(path: '/login', builder: (_, __) => const LoginChoiceScreen()),
-      GoRoute(path: '/login/azubi', builder: (_, __) => const LoginScreen(role: LoginRole.azubi)),
-      GoRoute(path: '/login/betrieb', builder: (_, __) => const LoginScreen(role: LoginRole.betrieb)),
-      GoRoute(path: '/register/azubi', builder: (_, __) => const RegisterAzubiScreen()),
-      GoRoute(path: '/register/betrieb', builder: (_, __) => const RegisterBetriebScreen()),
-      GoRoute(path: '/forgot-password', builder: (_, __) => const ForgotPasswordScreen()),
-      GoRoute(path: '/reset-password', builder: (_, __) => const ResetPasswordScreen()),
-      GoRoute(path: '/verify-email', builder: (_, __) => const VerifyEmailScreen()),
-      GoRoute(path: '/dashboard', builder: (_, __) => const AzubiDashboardScreen()),
+      GoRoute(
+          path: '/login/azubi',
+          builder: (_, __) => const LoginScreen(role: LoginRole.azubi)),
+      GoRoute(
+          path: '/login/betrieb',
+          builder: (_, __) => const LoginScreen(role: LoginRole.betrieb)),
+      GoRoute(
+          path: '/register/azubi',
+          builder: (_, __) => const RegisterAzubiScreen()),
+      GoRoute(
+          path: '/register/betrieb',
+          builder: (_, __) => const RegisterBetriebScreen()),
+      GoRoute(
+          path: '/forgot-password',
+          builder: (_, __) => const ForgotPasswordScreen()),
+      GoRoute(
+          path: '/reset-password',
+          builder: (_, __) => const ResetPasswordScreen()),
+      GoRoute(
+          path: '/verify-email', builder: (_, __) => const VerifyEmailScreen()),
+      GoRoute(
+          path: '/dashboard', builder: (_, __) => const AzubiDashboardScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const AzubiProfileScreen()),
-      GoRoute(path: '/fragen-bewerten', builder: (_, __) => const FragenBewertenScreen()),
+      GoRoute(
+          path: '/fragen-bewerten',
+          builder: (_, __) => const FragenBewertenScreen()),
       GoRoute(path: '/my-reviews', builder: (_, __) => const MyReviewsScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
-      GoRoute(path: '/notifications', builder: (_, __) => const NotificationsScreen()),
-      GoRoute(path: '/settings', builder: (_, __) => const AzubiSettingsScreen()),
-      GoRoute(path: '/betrieb-dashboard', builder: (_, __) => const betrieb.BetriebDashboardScreen()),
-      GoRoute(path: '/betrieb-profile', builder: (_, __) => const betrieb.BetriebProfileScreen()),
-      GoRoute(path: '/betrieb-reviews', builder: (_, __) => const betrieb.BetriebReviewsScreen()),
+      GoRoute(
+          path: '/notifications',
+          builder: (_, __) => const NotificationsScreen()),
+      GoRoute(
+          path: '/settings', builder: (_, __) => const AzubiSettingsScreen()),
+      GoRoute(
+          path: '/betrieb-dashboard',
+          builder: (_, __) => const betrieb.BetriebDashboardScreen()),
+      GoRoute(
+          path: '/betrieb-profile',
+          builder: (_, __) => const betrieb.BetriebProfileScreen()),
+      GoRoute(
+          path: '/betrieb-reviews',
+          builder: (_, __) => const betrieb.BetriebReviewsScreen()),
       GoRoute(path: '/analytics', builder: (_, __) => const AnalyticsScreen()),
       GoRoute(path: '/team', builder: (_, __) => const TeamScreen()),
-      GoRoute(path: '/subscription', builder: (_, __) => const SubscriptionScreen()),
+      GoRoute(
+          path: '/subscription',
+          builder: (_, __) => const SubscriptionScreen()),
       GoRoute(path: '/reports', builder: (_, __) => const ReportsScreen()),
-      GoRoute(path: '/betrieb-settings', builder: (_, __) => const betrieb.BetriebSettingsScreen()),
+      GoRoute(
+          path: '/betrieb-settings',
+          builder: (_, __) => const betrieb.BetriebSettingsScreen()),
     ],
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Seite nicht gefunden: ${state.uri}')),

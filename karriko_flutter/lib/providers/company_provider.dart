@@ -3,7 +3,8 @@ import '../data/models/company_model.dart';
 import '../data/models/job_model.dart';
 import '../data/repositories/company_repository.dart';
 
-final companyRepositoryProvider = Provider<CompanyRepository>((ref) => CompanyRepository());
+final companyRepositoryProvider =
+    Provider<CompanyRepository>((ref) => CompanyRepository());
 
 class SearchFilters {
   final String? query;
@@ -77,7 +78,8 @@ class SearchNotifier extends StateNotifier<SearchState> {
   SearchNotifier(this._repo) : super(const SearchState());
 
   Future<void> search(SearchFilters filters) async {
-    state = state.copyWith(isLoading: true, filters: filters, results: [], clearError: true);
+    state = state.copyWith(
+        isLoading: true, filters: filters, results: [], clearError: true);
     try {
       final results = await _repo.searchCompanies(
         query: filters.query,
@@ -119,7 +121,8 @@ class SearchNotifier extends StateNotifier<SearchState> {
   void clear() => state = const SearchState();
 }
 
-final searchProvider = StateNotifierProvider<SearchNotifier, SearchState>((ref) {
+final searchProvider =
+    StateNotifierProvider<SearchNotifier, SearchState>((ref) {
   return SearchNotifier(ref.watch(companyRepositoryProvider));
 });
 
@@ -127,16 +130,19 @@ final featuredCompaniesProvider = FutureProvider<List<CompanyModel>>((ref) {
   return ref.watch(companyRepositoryProvider).getFeaturedCompanies();
 });
 
-final companyBySlugProvider = FutureProvider.family<CompanyModel, String>((ref, slug) {
+final companyBySlugProvider =
+    FutureProvider.family<CompanyModel, String>((ref, slug) {
   return ref.watch(companyRepositoryProvider).getCompanyBySlug(slug);
 });
 
-final searchSuggestionsProvider = FutureProvider.family<List<String>, String>((ref, query) {
+final searchSuggestionsProvider =
+    FutureProvider.family<List<String>, String>((ref, query) {
   if (query.length < 2) return Future.value([]);
   return ref.watch(companyRepositoryProvider).getSearchSuggestions(query);
 });
 
-final bookmarkedCompaniesProvider = FutureProvider.family<List<CompanyModel>, String>((ref, userId) {
+final bookmarkedCompaniesProvider =
+    FutureProvider.family<List<CompanyModel>, String>((ref, userId) {
   return ref.watch(companyRepositoryProvider).getBookmarkedCompanies(userId);
 });
 
@@ -146,12 +152,15 @@ final bookmarkedCompaniesProvider = FutureProvider.family<List<CompanyModel>, St
 /// these entries are derived from real companies as a placeholder. Replace this
 /// with a proper jobs source once one exists.
 final jobSuggestionsProvider = FutureProvider<List<JobModel>>((ref) async {
-  final companies = await ref.watch(companyRepositoryProvider).searchCompanies(limit: 12);
+  final companies =
+      await ref.watch(companyRepositoryProvider).searchCompanies(limit: 12);
   return [
     for (final c in companies)
       JobModel(
         id: 'job-${c.id}',
-        title: c.industry != null ? 'Ausbildung · ${c.industry}' : 'Ausbildungsplatz',
+        title: c.industry != null
+            ? 'Ausbildung · ${c.industry}'
+            : 'Ausbildungsplatz',
         company: c.name,
         companySlug: c.slug,
         companyLogoUrl: c.logoUrl,

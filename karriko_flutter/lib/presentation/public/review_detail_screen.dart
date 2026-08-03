@@ -22,7 +22,8 @@ class ReviewDetailScreen extends ConsumerWidget {
       body: review.when(
         data: (r) => _ReviewDetailBody(review: r),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Bewertung nicht gefunden.')),
+        error: (_, __) =>
+            const Center(child: Text('Bewertung nicht gefunden.')),
       ),
     );
   }
@@ -43,7 +44,10 @@ class _ReviewDetailBody extends StatelessWidget {
             onTap: () => context.go('/company/${review.companySlug}'),
             child: Text(
               review.companyName,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.primary),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.primary),
             ),
           ),
           const SizedBox(height: 8),
@@ -51,17 +55,20 @@ class _ReviewDetailBody extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 16,
                 backgroundColor: AppColors.lightGreen,
-                child: const Icon(Icons.person, size: 18, color: AppColors.textMuted),
+                child: Icon(Icons.person, size: 18, color: AppColors.textMuted),
               ),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(review.displayAuthor, style: Theme.of(context).textTheme.labelLarge),
-                  Text(DateFormat('dd. MMMM yyyy', 'de').format(review.createdAt),
+                  Text(review.displayAuthor,
+                      style: Theme.of(context).textTheme.labelLarge),
+                  Text(
+                      DateFormat('dd. MMMM yyyy', 'de')
+                          .format(review.createdAt),
                       style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
@@ -70,9 +77,12 @@ class _ReviewDetailBody extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          if (review.trainingQuality != null || review.mentoring != null ||
-              review.workLifeBalance != null || review.careerOpportunities != null) ...[
-            Text('Detailbewertungen', style: Theme.of(context).textTheme.headlineSmall),
+          if (review.trainingQuality != null ||
+              review.mentoring != null ||
+              review.workLifeBalance != null ||
+              review.careerOpportunities != null) ...[
+            Text('Detailbewertungen',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 12),
             _RatingRow('Ausbildungsqualität', review.trainingQuality),
             _RatingRow('Betreuung', review.mentoring),
@@ -85,11 +95,15 @@ class _ReviewDetailBody extends StatelessWidget {
           Text(review.text, style: Theme.of(context).textTheme.bodyLarge),
           if (review.pros != null) ...[
             const SizedBox(height: 16),
-            _ProsConsSection(label: 'Vorteile', text: review.pros!, color: AppColors.success),
+            _ProsConsSection(
+                label: 'Vorteile',
+                text: review.pros!,
+                color: AppColors.success),
           ],
           if (review.cons != null) ...[
             const SizedBox(height: 12),
-            _ProsConsSection(label: 'Nachteile', text: review.cons!, color: AppColors.error),
+            _ProsConsSection(
+                label: 'Nachteile', text: review.cons!, color: AppColors.error),
           ],
           if (review.betriebReply != null) ...[
             const SizedBox(height: 24),
@@ -105,21 +119,29 @@ class _ReviewDetailBody extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.business, size: 16, color: AppColors.primary),
+                      const Icon(Icons.business,
+                          size: 16, color: AppColors.primary),
                       const SizedBox(width: 8),
                       Text('Antwort des Betriebs',
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.darkGreen)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge
+                              ?.copyWith(color: AppColors.darkGreen)),
                       const Spacer(),
                       if (review.betriebRepliedAt != null)
                         Text(
-                          DateFormat('dd.MM.yyyy').format(review.betriebRepliedAt!),
+                          DateFormat('dd.MM.yyyy')
+                              .format(review.betriebRepliedAt!),
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Text(review.betriebReply!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.darkGreen)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          ?.copyWith(color: AppColors.darkGreen)),
                 ],
               ),
             ),
@@ -143,7 +165,9 @@ class _RatingRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: Theme.of(context).textTheme.bodyMedium)),
+          Expanded(
+              child:
+                  Text(label, style: Theme.of(context).textTheme.bodyMedium)),
           StarRating(rating: rating!),
           const SizedBox(width: 8),
           Text('$rating/5', style: Theme.of(context).textTheme.bodySmall),
@@ -158,21 +182,24 @@ class _ProsConsSection extends StatelessWidget {
   final String text;
   final Color color;
 
-  const _ProsConsSection({required this.label, required this.text, required this.color});
+  const _ProsConsSection(
+      {required this.label, required this.text, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: color, fontSize: 13)),
+          Text(label,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, color: color, fontSize: 13)),
           const SizedBox(height: 4),
           Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ],

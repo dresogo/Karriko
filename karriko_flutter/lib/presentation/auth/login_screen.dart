@@ -53,7 +53,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.isAuthenticated) {
         // Signalisiert dem Passwortmanager, dass die Anmeldung erfolgreich war.
         TextInput.finishAutofillContext();
-        final nextRoute = GoRouterState.of(context).uri.queryParameters['next'] ?? '/';
+        final nextRoute =
+            GoRouterState.of(context).uri.queryParameters['next'] ?? '/';
         context.go(next.isBetrieb ? '/betrieb-dashboard' : nextRoute);
       }
     });
@@ -91,10 +92,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   autocorrect: false,
-                  autofillHints: const [AutofillHints.username, AutofillHints.email],
+                  autofillHints: const [
+                    AutofillHints.username,
+                    AutofillHints.email
+                  ],
                   style: const TextStyle(fontSize: 16, color: AppColors.ink),
                   decoration: InputDecoration(
-                    hintText: _isBetrieb ? 'name@betrieb.de' : 'name@beispiel.de',
+                    hintText:
+                        _isBetrieb ? 'name@betrieb.de' : 'name@beispiel.de',
                   ),
                   validator: Validators.email,
                   onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
@@ -119,14 +124,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             : Icons.visibility_off_outlined,
                         color: AppColors.muted,
                       ),
-                      tooltip:
-                          _obscurePassword ? 'Passwort anzeigen' : 'Passwort verbergen',
+                      tooltip: _obscurePassword
+                          ? 'Passwort anzeigen'
+                          : 'Passwort verbergen',
                       onPressed: () =>
                           setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
-                  validator: (v) =>
-                      v == null || v.isEmpty ? 'Passwort ist erforderlich' : null,
+                  validator: (v) => v == null || v.isEmpty
+                      ? 'Passwort ist erforderlich'
+                      : null,
                   onFieldSubmitted: (_) {
                     if (!auth.isLoading) _submit();
                   },
@@ -154,7 +161,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white),
                         )
                       : const Text('Anmelden'),
                 ),
@@ -170,15 +178,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () =>
-                      context.go(_isBetrieb ? '/register/betrieb' : '/register/azubi'),
+                  onPressed: () => context
+                      .go(_isBetrieb ? '/register/betrieb' : '/register/azubi'),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: const Size(0, 44),
                     tapTargetSize: MaterialTapTargetSize.padded,
                   ),
                   child: Text(
-                    _isBetrieb ? 'Betrieb registrieren' : 'Als Azubi registrieren',
+                    _isBetrieb
+                        ? 'Betrieb registrieren'
+                        : 'Als Azubi registrieren',
                   ),
                 ),
               ),
@@ -235,7 +245,9 @@ class _BackToChoice extends StatelessWidget {
         onPressed: () => context.go('/login'),
         icon: const Icon(Icons.arrow_back, size: 16),
         label: Text(
-          isBetrieb ? 'Kein Betrieb? Zugang wechseln' : 'Kein Azubi? Zugang wechseln',
+          isBetrieb
+              ? 'Kein Betrieb? Zugang wechseln'
+              : 'Kein Azubi? Zugang wechseln',
         ),
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,

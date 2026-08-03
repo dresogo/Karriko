@@ -9,7 +9,8 @@ class BetriebSettingsScreen extends ConsumerStatefulWidget {
   const BetriebSettingsScreen({super.key});
 
   @override
-  ConsumerState<BetriebSettingsScreen> createState() => _BetriebSettingsScreenState();
+  ConsumerState<BetriebSettingsScreen> createState() =>
+      _BetriebSettingsScreenState();
 }
 
 class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
@@ -110,7 +111,7 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
         const SizedBox(height: AppLayout.s48),
         const SectionLabel('Schnittstelle'),
         const SizedBox(height: AppLayout.s16),
-        AppRowGroup(
+        const AppRowGroup(
           children: [
             AppRow(
               icon: Icons.code,

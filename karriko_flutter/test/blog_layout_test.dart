@@ -30,7 +30,8 @@ Widget _app(String initialLocation) {
       GoRoute(path: '/blog', builder: (_, __) => const BlogScreen()),
       GoRoute(
         path: '/blog/:slug',
-        builder: (_, s) => Scaffold(body: Text('Detail: ${s.pathParameters['slug']}')),
+        builder: (_, s) =>
+            Scaffold(body: Text('Detail: ${s.pathParameters['slug']}')),
       ),
     ],
   );
@@ -52,7 +53,8 @@ Future<void> _pumpAt(WidgetTester tester, String location, Size size) async {
   await tester.pump();
 }
 
-String get _currentUri => _router.routerDelegate.currentConfiguration.uri.toString();
+String get _currentUri =>
+    _router.routerDelegate.currentConfiguration.uri.toString();
 
 void main() {
   const sizes = <String, Size>{
@@ -80,7 +82,8 @@ void main() {
     });
   });
 
-  testWidgets('Ungefiltert erscheinen Artikel und Produkt-Updates', (tester) async {
+  testWidgets('Ungefiltert erscheinen Artikel und Produkt-Updates',
+      (tester) async {
     await _pumpAt(tester, '/blog', const Size(1440, 900));
 
     expect(find.text(_featuredArticle), findsOneWidget);
@@ -123,11 +126,13 @@ void main() {
     expect(find.text('Detail: tipps-ausbildungsbetrieb'), findsOneWidget);
   });
 
-  testWidgets('Footer liegt unter dem Inhalt und die Seite scrollt', (tester) async {
+  testWidgets('Footer liegt unter dem Inhalt und die Seite scrollt',
+      (tester) async {
     const size = Size(1440, 900);
     await _pumpAt(tester, '/blog', size);
 
     // Der Footer schließt die Seite ab und ist ohne Scrollen nicht sichtbar.
-    expect(tester.getTopLeft(find.byType(FooterWidget)).dy, greaterThan(size.height));
+    expect(tester.getTopLeft(find.byType(FooterWidget)).dy,
+        greaterThan(size.height));
   });
 }

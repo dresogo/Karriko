@@ -53,22 +53,22 @@ class _HeroSection extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
+                  const Expanded(
                     flex: 53,
                     child: _HeroCopy(isWide: true),
                   ),
                   Container(width: 1, color: AppColors.line),
-                  Expanded(
+                  const Expanded(
                     flex: 37,
                     child: _SearchPanel(isWide: true),
                   ),
                 ],
               ),
             )
-          : Column(
+          : const Column(
               children: [
                 _HeroCopy(isWide: false),
-                const Divider(color: AppColors.line, height: 1),
+                Divider(color: AppColors.line, height: 1),
                 _SearchPanel(isWide: false),
               ],
             ),
@@ -111,7 +111,8 @@ class _HeroCopy extends StatelessWidget {
                 style: TextStyle(
                   color: AppColors.ink,
                   fontSize: isWide
-                      ? (MediaQuery.of(context).size.width * 0.065).clamp(56.0, 120.0)
+                      ? (MediaQuery.of(context).size.width * 0.065)
+                          .clamp(56.0, 120.0)
                       : 48,
                   fontWeight: FontWeight.w800,
                   height: 0.92,
@@ -148,11 +149,11 @@ class _SearchPanel extends StatelessWidget {
     return Container(
       color: AppColors.surface,
       padding: EdgeInsets.fromLTRB(hPad, vPad, hPad, vPad),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const Text(
+          Text(
             'Betrieb oder Beruf\nsuchen.',
             style: TextStyle(
               color: AppColors.ink,
@@ -161,8 +162,8 @@ class _SearchPanel extends StatelessWidget {
               height: 1.08,
             ),
           ),
-          const SizedBox(height: 18),
-          const HomeSearchBar(),
+          SizedBox(height: 18),
+          HomeSearchBar(),
         ],
       ),
     );
@@ -236,7 +237,8 @@ class _MetricCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fontSize = (MediaQuery.of(context).size.width * 0.05).clamp(38.0, 72.0);
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.05).clamp(38.0, 72.0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -267,9 +269,21 @@ class _MetricCell extends StatelessWidget {
 
 class _FeaturesSection extends StatelessWidget {
   static const _features = [
-    ('01', 'Bewerten', 'Ausbildungsqualität, Betreuung, Lernkultur und Übernahmechancen strukturiert einordnen.'),
-    ('02', 'Vergleichen', 'Betriebe nach Beruf, Standort und Erfahrungswerten anderer Auszubildender entdecken.'),
-    ('03', 'Vertrauen', 'Moderierte Rezensionen schaffen hilfreiche Orientierung ohne unnötige Komplexität.'),
+    (
+      '01',
+      'Bewerten',
+      'Ausbildungsqualität, Betreuung, Lernkultur und Übernahmechancen strukturiert einordnen.'
+    ),
+    (
+      '02',
+      'Vergleichen',
+      'Betriebe nach Beruf, Standort und Erfahrungswerten anderer Auszubildender entdecken.'
+    ),
+    (
+      '03',
+      'Vertrauen',
+      'Moderierte Rezensionen schaffen hilfreiche Orientierung ohne unnötige Komplexität.'
+    ),
   ];
 
   @override
@@ -338,7 +352,8 @@ class _FeaturesSection extends StatelessWidget {
 class _SectionHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final fontSize = (MediaQuery.of(context).size.width * 0.045).clamp(36.0, 72.0);
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.045).clamp(36.0, 72.0);
     return Text(
       'Klare Einblicke,\nbevor die\nBewerbung\nrausgeht.',
       style: TextStyle(
@@ -373,7 +388,9 @@ class _FeatureRow extends StatelessWidget {
       padding: EdgeInsets.all(isWide ? 32 : 20),
       decoration: BoxDecoration(
         border: Border(
-          bottom: isLast ? BorderSide.none : const BorderSide(color: AppColors.line),
+          bottom: isLast
+              ? BorderSide.none
+              : const BorderSide(color: AppColors.line),
         ),
       ),
       child: isWide
@@ -384,19 +401,24 @@ class _FeatureRow extends StatelessWidget {
                   width: 72,
                   child: Text(number,
                       style: const TextStyle(
-                          color: AppColors.accent, fontSize: 13, fontWeight: FontWeight.w800)),
+                          color: AppColors.accent,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800)),
                 ),
                 Expanded(
                   flex: 45,
                   child: Text(title,
                       style: const TextStyle(
-                          color: AppColors.ink, fontSize: 20, fontWeight: FontWeight.w800)),
+                          color: AppColors.ink,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800)),
                 ),
                 const SizedBox(width: 26),
                 Expanded(
                   flex: 100,
                   child: Text(description,
-                      style: const TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55)),
+                      style: const TextStyle(
+                          color: AppColors.muted, fontSize: 17, height: 1.55)),
                 ),
               ],
             )
@@ -405,14 +427,19 @@ class _FeatureRow extends StatelessWidget {
               children: [
                 Text(number,
                     style: const TextStyle(
-                        color: AppColors.accent, fontSize: 13, fontWeight: FontWeight.w800)),
+                        color: AppColors.accent,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 Text(title,
                     style: const TextStyle(
-                        color: AppColors.ink, fontSize: 20, fontWeight: FontWeight.w800)),
+                        color: AppColors.ink,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
                 Text(description,
-                    style: const TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55)),
+                    style: const TextStyle(
+                        color: AppColors.muted, fontSize: 17, height: 1.55)),
               ],
             ),
     );
@@ -423,9 +450,24 @@ class _FeatureRow extends StatelessWidget {
 
 class _AudienceSection extends StatelessWidget {
   static const _cards = [
-    ('Azubi', 'Erfahrungen teilen, Betriebe finden, Ausbildung realistischer einschätzen.', AppColors.surface, false),
-    ('Betrieb', 'Profil pflegen, Feedback verstehen, Ausbildung als Qualitätsmerkmal zeigen.', AppColors.audienceBeige, false),
-    ('Stellen', 'Moderation, Datenschutzprozesse und Plattformqualität zentral steuern.', AppColors.green, true),
+    (
+      'Azubi',
+      'Erfahrungen teilen, Betriebe finden, Ausbildung realistischer einschätzen.',
+      AppColors.surface,
+      false
+    ),
+    (
+      'Betrieb',
+      'Profil pflegen, Feedback verstehen, Ausbildung als Qualitätsmerkmal zeigen.',
+      AppColors.audienceBeige,
+      false
+    ),
+    (
+      'Stellen',
+      'Moderation, Datenschutzprozesse und Plattformqualität zentral steuern.',
+      AppColors.green,
+      true
+    ),
   ];
 
   @override
@@ -492,8 +534,10 @@ class _AudienceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleColor = inverted ? Colors.white : AppColors.ink;
-    final descColor = inverted ? Colors.white.withOpacity(0.78) : AppColors.muted;
-    final fontSize = (MediaQuery.of(context).size.width * 0.04).clamp(32.0, 58.0);
+    final descColor =
+        inverted ? Colors.white.withValues(alpha: 0.78) : AppColors.muted;
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.04).clamp(32.0, 58.0);
 
     return Container(
       constraints: const BoxConstraints(minHeight: 300),
@@ -501,8 +545,12 @@ class _AudienceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         border: Border(
-          right: borderRight ? const BorderSide(color: AppColors.line) : BorderSide.none,
-          bottom: borderBottom ? const BorderSide(color: AppColors.line) : BorderSide.none,
+          right: borderRight
+              ? const BorderSide(color: AppColors.line)
+              : BorderSide.none,
+          bottom: borderBottom
+              ? const BorderSide(color: AppColors.line)
+              : BorderSide.none,
         ),
       ),
       child: Column(
@@ -557,13 +605,16 @@ class _RecentReviewsSection extends StatelessWidget {
           const SizedBox(height: 24),
           recentReviews.when(
             data: (reviews) => Column(
-              children: (reviews as List).map<Widget>((r) => Container(
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: AppColors.line)),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: ReviewCard(review: r, showCompany: true),
-                  )).toList(),
+              children: (reviews as List)
+                  .map<Widget>((r) => Container(
+                        decoration: const BoxDecoration(
+                          border:
+                              Border(bottom: BorderSide(color: AppColors.line)),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: ReviewCard(review: r, showCompany: true),
+                      ))
+                  .toList(),
             ),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (_, __) => const Text('Fehler beim Laden der Bewertungen.'),
@@ -619,7 +670,8 @@ class _PrivacySection extends StatelessWidget {
 class _PrivacyHeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final fontSize = (MediaQuery.of(context).size.width * 0.045).clamp(36.0, 72.0);
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.045).clamp(36.0, 72.0);
     return Text(
       'Datenschutz\nist kein\nZusatzmodul.',
       style: TextStyle(
@@ -635,7 +687,8 @@ class _PrivacyHeading extends StatelessWidget {
 class _PrivacyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final fontSize = (MediaQuery.of(context).size.width * 0.018).clamp(17.0, 26.0);
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.018).clamp(17.0, 26.0);
     return Text(
       'RLS-Policies, AVV-Anforderungen und eine DSGVO-konforme Architektur sind als Produktprinzipien angelegt. Die Gestaltung bleibt bewusst ruhig, damit Vertrauen, Nachvollziehbarkeit und Bewertungsqualität im Vordergrund stehen.',
       style: TextStyle(

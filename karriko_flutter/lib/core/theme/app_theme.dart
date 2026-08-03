@@ -206,7 +206,8 @@ class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w700,
@@ -218,7 +219,8 @@ class AppTheme {
           backgroundColor: AppColors.accent,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w700,
@@ -230,7 +232,8 @@ class AppTheme {
           foregroundColor: AppColors.ink,
           side: const BorderSide(color: AppColors.ink),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: GoogleFonts.inter(
             fontSize: 14,
             fontWeight: FontWeight.w700,
@@ -265,7 +268,8 @@ class AppTheme {
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: AppColors.error),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         hintStyle: GoogleFonts.inter(
           fontSize: 15,
           color: const Color(0xFF8C8E88),
@@ -290,7 +294,8 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.paper,
         selectedColor: AppColors.ink,
-        labelStyle: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
+        labelStyle:
+            GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         side: const BorderSide(color: AppColors.line),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

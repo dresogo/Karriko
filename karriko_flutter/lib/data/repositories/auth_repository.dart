@@ -38,8 +38,8 @@ class AuthRepository {
   /// Übersetzt Appwrite-Fehler in Meldungen, die dem Nutzer weiterhelfen.
   AuthFailure _mapError(AppwriteException e, String fallback) {
     return switch (e.type) {
-      'user_invalid_credentials' => const AuthFailure(
-          'E-Mail-Adresse oder Passwort ist falsch.'),
+      'user_invalid_credentials' =>
+        const AuthFailure('E-Mail-Adresse oder Passwort ist falsch.'),
       'user_already_exists' || 'user_email_already_exists' => const AuthFailure(
           'Für diese E-Mail-Adresse existiert bereits ein Konto.'),
       'user_blocked' => const AuthFailure('Dieses Konto ist gesperrt.'),
@@ -59,7 +59,8 @@ class AuthRepository {
   }) async {
     try {
       await _clearExistingSession();
-      await _account.createEmailPasswordSession(email: email, password: password);
+      await _account.createEmailPasswordSession(
+          email: email, password: password);
       return await _fetchCurrentUser();
     } on AppwriteException catch (e) {
       throw _mapError(e, 'Anmeldung fehlgeschlagen.');
@@ -83,7 +84,8 @@ class AuthRepository {
         password: password,
         name: '$firstName $lastName',
       );
-      await _account.createEmailPasswordSession(email: email, password: password);
+      await _account.createEmailPasswordSession(
+          email: email, password: password);
       await _account.updatePrefs(prefs: {
         'role': 'azubi',
         'first_name': firstName,
@@ -137,7 +139,8 @@ class AuthRepository {
         password: password,
         name: '$contactFirstName $contactLastName',
       );
-      await _account.createEmailPasswordSession(email: email, password: password);
+      await _account.createEmailPasswordSession(
+          email: email, password: password);
       await _account.updatePrefs(prefs: {
         'role': 'betrieb',
         'first_name': contactFirstName,
@@ -292,7 +295,8 @@ class AuthRepository {
 
   Future<void> deleteAccount(String userId) async {
     // Requires server-side function with API key in Appwrite.
-    throw UnimplementedError('Account deletion requires a server-side Appwrite Function.');
+    throw UnimplementedError(
+        'Account deletion requires a server-side Appwrite Function.');
   }
 
   Future<UserModel> _fetchCurrentUser() async {

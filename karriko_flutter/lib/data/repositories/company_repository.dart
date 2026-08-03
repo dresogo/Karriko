@@ -38,7 +38,9 @@ class CompanyRepository {
       collectionId: AppwriteConstants.companiesCollection,
       queries: queries,
     );
-    return result.documents.map((d) => CompanyModel.fromJson(_toMap(d))).toList();
+    return result.documents
+        .map((d) => CompanyModel.fromJson(_toMap(d)))
+        .toList();
   }
 
   Future<CompanyModel> getCompanyBySlug(String slug) async {
@@ -70,7 +72,9 @@ class CompanyRepository {
         Query.limit(limit),
       ],
     );
-    return result.documents.map((d) => CompanyModel.fromJson(_toMap(d))).toList();
+    return result.documents
+        .map((d) => CompanyModel.fromJson(_toMap(d)))
+        .toList();
   }
 
   Future<List<String>> getSearchSuggestions(String query) async {
@@ -158,7 +162,8 @@ class CompanyRepository {
       queries: [Query.equal('user_id', userId), Query.limit(100)],
     );
     final companies = await Future.wait(
-      bookmarks.documents.map((b) => getCompanyById(b.data['company_id'] as String)),
+      bookmarks.documents
+          .map((b) => getCompanyById(b.data['company_id'] as String)),
     );
     return companies;
   }

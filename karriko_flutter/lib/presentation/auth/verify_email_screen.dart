@@ -22,7 +22,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     setState(() => _isResending = true);
     try {
       await AuthRepository().resendVerificationEmail();
-      if (mounted) setState(() { _isResending = false; _resent = true; });
+      if (mounted) {
+        setState(() {
+          _isResending = false;
+          _resent = true;
+        });
+      }
     } catch (_) {
       if (mounted) setState(() => _isResending = false);
     }
@@ -58,9 +63,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.email_outlined, size: 56, color: AppColors.primary),
+                  const Icon(Icons.email_outlined,
+                      size: 56, color: AppColors.primary),
                   const SizedBox(height: 20),
-                  Text('E-Mail bestätigen', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+                  Text('E-Mail bestätigen',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                      textAlign: TextAlign.center),
                   const SizedBox(height: 12),
                   Text(
                     'Wir haben eine Bestätigungs-E-Mail an\n$email\ngesendet. Bitte klicke auf den Link in der E-Mail.',
@@ -85,13 +93,17 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Text('E-Mail wurde erneut gesendet!',
-                          style: TextStyle(color: AppColors.darkGreen, fontSize: 13)),
+                          style: TextStyle(
+                              color: AppColors.darkGreen, fontSize: 13)),
                     )
                   else
                     TextButton(
                       onPressed: _isResending ? null : _resend,
                       child: _isResending
-                          ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2))
                           : const Text('E-Mail erneut senden'),
                     ),
                   const SizedBox(height: 12),
@@ -100,7 +112,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                       ref.read(authProvider.notifier).signOut();
                       context.go('/login');
                     },
-                    child: const Text('Abmelden', style: TextStyle(color: AppColors.textSecondary)),
+                    child: const Text('Abmelden',
+                        style: TextStyle(color: AppColors.textSecondary)),
                   ),
                 ],
               ),

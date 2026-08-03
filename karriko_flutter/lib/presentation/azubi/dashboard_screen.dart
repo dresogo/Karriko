@@ -90,7 +90,8 @@ class _Stats extends StatelessWidget {
             ),
             SizedBox(
               width: width,
-              child: StatTile(value: _count(bookmarks), label: 'Gemerkte Betriebe'),
+              child: StatTile(
+                  value: _count(bookmarks), label: 'Gemerkte Betriebe'),
             ),
           ],
         );
@@ -153,7 +154,8 @@ class _QuickAction extends StatefulWidget {
   final String label;
   final String route;
 
-  const _QuickAction({required this.icon, required this.label, required this.route});
+  const _QuickAction(
+      {required this.icon, required this.label, required this.route});
 
   @override
   State<_QuickAction> createState() => _QuickActionState();
@@ -184,7 +186,9 @@ class _QuickActionState extends State<_QuickAction> {
               vertical: AppLayout.s16,
             ),
             decoration: BoxDecoration(
-              border: Border.all(color: _focused ? AppColors.ink : AppColors.line, width: _focused ? 2 : 1),
+              border: Border.all(
+                  color: _focused ? AppColors.ink : AppColors.line,
+                  width: _focused ? 2 : 1),
             ),
             child: Row(
               children: [
@@ -203,8 +207,11 @@ class _QuickActionState extends State<_QuickAction> {
                 AnimatedSlide(
                   duration: const Duration(milliseconds: 150),
                   curve: Curves.easeOut,
-                  offset: _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
-                  child: const Icon(Icons.arrow_forward, size: 18, color: AppColors.muted),
+                  offset: _hovered || _focused
+                      ? const Offset(0.25, 0)
+                      : Offset.zero,
+                  child: const Icon(Icons.arrow_forward,
+                      size: 18, color: AppColors.muted),
                 ),
               ],
             ),
@@ -237,7 +244,8 @@ class _ReviewsSection extends StatelessWidget {
           data: (list) => list.isEmpty
               ? AppEmptyState(
                   title: 'Noch keine Bewertung',
-                  description: 'Teile deine Erfahrung und hilf anderen bei der Wahl '
+                  description:
+                      'Teile deine Erfahrung und hilf anderen bei der Wahl '
                       'ihres Ausbildungsbetriebs.',
                   actionLabel: 'Erste Bewertung schreiben',
                   onAction: () => context.go('/reviews/new'),
@@ -248,7 +256,8 @@ class _ReviewsSection extends StatelessWidget {
                       AppRow(
                         icon: Icons.rate_review_outlined,
                         title: review.title,
-                        subtitle: '${review.companyName} · ${review.overallRating}/5',
+                        subtitle:
+                            '${review.companyName} · ${review.overallRating}/5',
                         onTap: () => context.go('/reviews/${review.id}'),
                       ),
                   ],
@@ -285,7 +294,8 @@ class _BookmarksSection extends StatelessWidget {
           data: (list) => list.isEmpty
               ? AppEmptyState(
                   title: 'Keine Betriebe gemerkt',
-                  description: 'Speichere Betriebe, die dich interessieren, um sie '
+                  description:
+                      'Speichere Betriebe, die dich interessieren, um sie '
                       'später wiederzufinden.',
                   actionLabel: 'Betriebe entdecken',
                   onAction: () => context.go('/search'),
@@ -363,7 +373,8 @@ class _SectionLoading extends StatelessWidget {
       child: const SizedBox(
         width: 22,
         height: 22,
-        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.muted),
+        child:
+            CircularProgressIndicator(strokeWidth: 2, color: AppColors.muted),
       ),
     );
   }
@@ -380,7 +391,8 @@ class _SectionError extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.error_outline, size: 18, color: AppColors.accentDark),
+          const Icon(Icons.error_outline,
+              size: 18, color: AppColors.accentDark),
           const SizedBox(width: AppLayout.s8),
           Expanded(
             child: Text(text, style: Theme.of(context).textTheme.bodyMedium),

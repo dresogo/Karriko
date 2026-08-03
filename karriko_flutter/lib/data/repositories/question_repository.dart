@@ -20,7 +20,9 @@ class QuestionRepository {
         queries: [Query.orderAsc('sort_order'), Query.limit(100)],
       );
       if (result.documents.isEmpty) return defaultQuestions;
-      return result.documents.map((d) => QuestionModel.fromJson(_toMap(d))).toList();
+      return result.documents
+          .map((d) => QuestionModel.fromJson(_toMap(d)))
+          .toList();
     } on AppwriteException {
       // Collection existiert noch nicht oder ist nicht lesbar.
       return defaultQuestions;

@@ -53,7 +53,8 @@ class _JobCardState extends State<JobCard> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
-                      child: Icon(Icons.business, color: AppColors.primary, size: 20),
+                      child: Icon(Icons.business,
+                          color: AppColors.primary, size: 20),
                     ),
                   ),
                   const Spacer(),
@@ -63,21 +64,29 @@ class _JobCardState extends State<JobCard> {
               const SizedBox(height: 12),
               Text(
                 widget.job.title,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(fontSize: 15),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(fontSize: 15),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
                 widget.job.company,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: AppColors.textSecondary),
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
-                  const Icon(Icons.location_on_outlined, size: 12, color: AppColors.textMuted),
+                  const Icon(Icons.location_on_outlined,
+                      size: 12, color: AppColors.textMuted),
                   const SizedBox(width: 4),
-                  Text(widget.job.location, style: Theme.of(context).textTheme.bodySmall),
+                  Text(widget.job.location,
+                      style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
             ],

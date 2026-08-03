@@ -11,7 +11,8 @@ class BetriebProfileScreen extends ConsumerStatefulWidget {
   const BetriebProfileScreen({super.key});
 
   @override
-  ConsumerState<BetriebProfileScreen> createState() => _BetriebProfileScreenState();
+  ConsumerState<BetriebProfileScreen> createState() =>
+      _BetriebProfileScreenState();
 }
 
 class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
@@ -55,11 +56,11 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
     // einem companies-Dokument fehlt. Vorher stand hier „Profil gespeichert!",
     // ohne dass etwas gespeichert wurde.
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         backgroundColor: AppColors.ink,
         behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 6),
-        content: const Text(
+        duration: Duration(seconds: 6),
+        content: Text(
           'Das Speichern ist noch nicht angebunden – deine Eingaben gelten nur '
           'für diese Sitzung.',
           style: TextStyle(color: AppColors.paper),
@@ -118,13 +119,16 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
               AppRow(
                 icon: Icons.place_outlined,
                 title: 'Standort',
-                value: _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : '–',
+                value: _cityCtrl.text.trim().isNotEmpty
+                    ? _cityCtrl.text.trim()
+                    : '–',
               ),
               AppRow(
                 icon: Icons.link,
                 title: 'Website',
-                value:
-                    _websiteCtrl.text.trim().isNotEmpty ? _websiteCtrl.text.trim() : '–',
+                value: _websiteCtrl.text.trim().isNotEmpty
+                    ? _websiteCtrl.text.trim()
+                    : '–',
               ),
             ],
           ),
@@ -231,7 +235,8 @@ class _EditForm extends StatelessWidget {
                 controller: nameCtrl,
                 textInputAction: TextInputAction.next,
                 style: const TextStyle(fontSize: 16, color: AppColors.ink),
-                validator: (v) => Validators.required(v, label: 'Unternehmensname'),
+                validator: (v) =>
+                    Validators.required(v, label: 'Unternehmensname'),
               ),
             ),
             const SizedBox(height: AppLayout.s24),

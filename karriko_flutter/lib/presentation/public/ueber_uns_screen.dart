@@ -21,11 +21,18 @@ class UeberUnsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Über Karriko', style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white)),
+                  Text('Über Karriko',
+                      style: Theme.of(context)
+                          .textTheme
+                          .displaySmall
+                          ?.copyWith(color: Colors.white)),
                   const SizedBox(height: 12),
                   Text(
                     'Wir machen Ausbildung transparent – für Azubis und Betriebe gleichermaßen.',
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, height: 1.5),
+                    style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontSize: 16,
+                        height: 1.5),
                   ),
                 ],
               ),
@@ -35,31 +42,39 @@ class UeberUnsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Unsere Mission', style: Theme.of(context).textTheme.headlineLarge),
+                  Text('Unsere Mission',
+                      style: Theme.of(context).textTheme.headlineLarge),
                   const SizedBox(height: 12),
                   Text(
                     'Karriko wurde mit dem Ziel gegründet, den Ausbildungsmarkt im DACH-Raum transparenter zu machen. Wir glauben, dass ehrliches Feedback sowohl Azubis bei ihrer Berufswahl hilft als auch Betriebe dabei unterstützt, ihre Ausbildungsqualität kontinuierlich zu verbessern.',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(height: 1.6),
                   ),
                   const SizedBox(height: 32),
-                  Text('Unsere Werte', style: Theme.of(context).textTheme.headlineLarge),
+                  Text('Unsere Werte',
+                      style: Theme.of(context).textTheme.headlineLarge),
                   const SizedBox(height: 16),
-                  _ValueCard(
+                  const _ValueCard(
                     icon: Icons.shield_outlined,
                     title: 'Vertrauen & Transparenz',
-                    description: 'Alle Bewertungen werden moderiert und auf Authentizität geprüft.',
+                    description:
+                        'Alle Bewertungen werden moderiert und auf Authentizität geprüft.',
                   ),
                   const SizedBox(height: 12),
-                  _ValueCard(
+                  const _ValueCard(
                     icon: Icons.lock_outline,
                     title: 'Datenschutz first',
-                    description: 'DSGVO-konform von Beginn an – nicht als Nachgedanke.',
+                    description:
+                        'DSGVO-konform von Beginn an – nicht als Nachgedanke.',
                   ),
                   const SizedBox(height: 12),
-                  _ValueCard(
+                  const _ValueCard(
                     icon: Icons.people_outline,
                     title: 'Für alle Beteiligten',
-                    description: 'Karriko schafft Mehrwert für Azubis, Betriebe und den Ausbildungsmarkt.',
+                    description:
+                        'Karriko schafft Mehrwert für Azubis, Betriebe und den Ausbildungsmarkt.',
                   ),
                 ],
               ),
@@ -77,7 +92,8 @@ class _ValueCard extends StatelessWidget {
   final String title;
   final String description;
 
-  const _ValueCard({required this.icon, required this.title, required this.description});
+  const _ValueCard(
+      {required this.icon, required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +122,8 @@ class _ValueCard extends StatelessWidget {
               children: [
                 Text(title, style: Theme.of(context).textTheme.labelLarge),
                 const SizedBox(height: 4),
-                Text(description, style: Theme.of(context).textTheme.bodyMedium),
+                Text(description,
+                    style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
           ),

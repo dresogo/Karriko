@@ -24,7 +24,8 @@ class _NotificationItem {
     required this.type,
   });
 
-  factory _NotificationItem.fromDoc(Map<String, dynamic> data, String docId, String createdAt) =>
+  factory _NotificationItem.fromDoc(
+          Map<String, dynamic> data, String docId, String createdAt) =>
       _NotificationItem(
         id: docId,
         title: data['title'] as String,
@@ -39,7 +40,8 @@ class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
+  ConsumerState<NotificationsScreen> createState() =>
+      _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
@@ -78,7 +80,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       if (mounted) {
         setState(() {
           _notifications = result.documents
-              .map((d) => _NotificationItem.fromDoc(d.data, d.$id, d.$createdAt))
+              .map(
+                  (d) => _NotificationItem.fromDoc(d.data, d.$id, d.$createdAt))
               .toList();
           _isLoading = false;
         });
@@ -127,14 +130,16 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
             const Text('Benachrichtigungen'),
             if (unread > 0)
               Text('$unread ungelesene',
-                  style: const TextStyle(fontSize: 12, color: AppColors.primary)),
+                  style:
+                      const TextStyle(fontSize: 12, color: AppColors.primary)),
           ],
         ),
         actions: [
           if (unread > 0)
             TextButton(
               onPressed: _markAllRead,
-              child: const Text('Alle lesen', style: TextStyle(color: AppColors.primary)),
+              child: const Text('Alle lesen',
+                  style: TextStyle(color: AppColors.primary)),
             ),
         ],
       ),
@@ -145,7 +150,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.notifications_none, size: 64, color: AppColors.textMuted),
+                      const Icon(Icons.notifications_none,
+                          size: 64, color: AppColors.textMuted),
                       const SizedBox(height: 16),
                       Text('Keine Benachrichtigungen',
                           style: Theme.of(context).textTheme.headlineSmall),
@@ -160,26 +166,36 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 6),
                       decoration: BoxDecoration(
-                        color: n.isRead ? AppColors.surface : AppColors.lightGreen,
+                        color:
+                            n.isRead ? AppColors.surface : AppColors.lightGreen,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                            color: n.isRead ? AppColors.border : AppColors.primaryLight),
+                            color: n.isRead
+                                ? AppColors.border
+                                : AppColors.primaryLight),
                       ),
                       child: ListTile(
                         leading: Icon(
                           _iconForType(n.type),
-                          color: n.isRead ? AppColors.textMuted : AppColors.primary,
+                          color: n.isRead
+                              ? AppColors.textMuted
+                              : AppColors.primary,
                         ),
                         title: Text(n.title,
                             style: TextStyle(
-                              fontWeight: n.isRead ? FontWeight.normal : FontWeight.w600,
+                              fontWeight: n.isRead
+                                  ? FontWeight.normal
+                                  : FontWeight.w600,
                               color: AppColors.textPrimary,
                             )),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(n.body, style: Theme.of(context).textTheme.bodySmall),
-                            Text(DateFormat('dd.MM.yyyy HH:mm').format(n.createdAt),
+                            Text(n.body,
+                                style: Theme.of(context).textTheme.bodySmall),
+                            Text(
+                                DateFormat('dd.MM.yyyy HH:mm')
+                                    .format(n.createdAt),
                                 style: Theme.of(context).textTheme.bodySmall),
                           ],
                         ),

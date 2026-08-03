@@ -74,7 +74,8 @@ void main() {
 
   routes.forEach((routeName, location) {
     sizes.forEach((sizeName, size) {
-      testWidgets('$routeName rendert fehlerfrei bei $sizeName', (tester) async {
+      testWidgets('$routeName rendert fehlerfrei bei $sizeName',
+          (tester) async {
         await _pumpAt(tester, location, size);
         expect(tester.takeException(), isNull);
       });
@@ -99,7 +100,8 @@ void main() {
     });
   });
 
-  testWidgets('Auswahlseite: Panelinhalt sitzt vertikal mittig', (tester) async {
+  testWidgets('Auswahlseite: Panelinhalt sitzt vertikal mittig',
+      (tester) async {
     const size = Size(1440, 900);
     await _pumpAt(tester, '/login', size);
 
@@ -109,7 +111,8 @@ void main() {
     // messen, nicht den Textknoten – die Tap-Fläche ist größer als der Text.
     final contentTop = tester.getTopLeft(find.text('ZUGANG WÄHLEN')).dy;
     final contentBottom = tester
-        .getBottomLeft(find.widgetWithText(TextButton, 'Als Betrieb registrieren'))
+        .getBottomLeft(
+            find.widgetWithText(TextButton, 'Als Betrieb registrieren'))
         .dy;
 
     final topGap = contentTop - KarrikoAppBar.height;

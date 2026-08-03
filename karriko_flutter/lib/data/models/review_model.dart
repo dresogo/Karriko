@@ -49,7 +49,8 @@ class ReviewModel {
     required this.createdAt,
   });
 
-  String get displayAuthor => isAnonymous ? 'Anonymer Azubi' : (authorName ?? 'Unbekannt');
+  String get displayAuthor =>
+      isAnonymous ? 'Anonymer Azubi' : (authorName ?? 'Unbekannt');
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(

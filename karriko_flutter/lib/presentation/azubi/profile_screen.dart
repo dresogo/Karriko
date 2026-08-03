@@ -107,12 +107,15 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
               AppRow(
                 icon: Icons.badge_outlined,
                 title: 'Vorname',
-                value: user?.firstName?.isNotEmpty == true ? user!.firstName! : '–',
+                value: user?.firstName?.isNotEmpty == true
+                    ? user!.firstName!
+                    : '–',
               ),
               AppRow(
                 icon: Icons.badge_outlined,
                 title: 'Nachname',
-                value: user?.lastName?.isNotEmpty == true ? user!.lastName! : '–',
+                value:
+                    user?.lastName?.isNotEmpty == true ? user!.lastName! : '–',
               ),
               AppRow(
                 icon: Icons.mail_outline,
@@ -133,7 +136,9 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
               subtitle: (user?.emailVerified ?? false)
                   ? null
                   : 'Bestätige deine Adresse, um alle Bereiche zu nutzen.',
-              onTap: (user?.emailVerified ?? false) ? null : () => context.go('/verify-email'),
+              onTap: (user?.emailVerified ?? false)
+                  ? null
+                  : () => context.go('/verify-email'),
             ),
             AppRow(
               icon: Icons.school_outlined,
@@ -279,7 +284,8 @@ class _Field extends StatelessWidget {
             textInputAction: textInputAction,
             style: const TextStyle(fontSize: 16, color: AppColors.ink),
             validator: (v) => Validators.required(v, label: label),
-            onFieldSubmitted: onSubmitted == null ? null : (_) => onSubmitted!(),
+            onFieldSubmitted:
+                onSubmitted == null ? null : (_) => onSubmitted!(),
           ),
         ],
       ),
@@ -308,10 +314,8 @@ class _SavedBanner extends StatelessWidget {
             Expanded(
               child: Text(
                 'Profil gespeichert.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.ink, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -340,15 +344,14 @@ class _ErrorBanner extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.error_outline, size: 18, color: AppColors.accentDark),
+            const Icon(Icons.error_outline,
+                size: 18, color: AppColors.accentDark),
             const SizedBox(width: AppLayout.s8),
             Expanded(
               child: Text(
                 message,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.ink, fontWeight: FontWeight.w600),
               ),
             ),
           ],

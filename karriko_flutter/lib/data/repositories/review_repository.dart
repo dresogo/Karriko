@@ -23,7 +23,9 @@ class ReviewRepository {
         Query.offset(offset),
       ],
     );
-    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
+    return result.documents
+        .map((d) => ReviewModel.fromJson(_toMap(d)))
+        .toList();
   }
 
   Future<ReviewModel> getReviewById(String id) async {
@@ -45,7 +47,9 @@ class ReviewRepository {
         Query.limit(100),
       ],
     );
-    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
+    return result.documents
+        .map((d) => ReviewModel.fromJson(_toMap(d)))
+        .toList();
   }
 
   Future<ReviewModel> createReview({
@@ -76,12 +80,14 @@ class ReviewRepository {
         if (trainingQuality != null) 'training_quality': trainingQuality,
         if (mentoring != null) 'mentoring': mentoring,
         if (workLifeBalance != null) 'work_life_balance': workLifeBalance,
-        if (careerOpportunities != null) 'career_opportunities': careerOpportunities,
+        if (careerOpportunities != null)
+          'career_opportunities': careerOpportunities,
         'title': title,
         'text': text,
         if (pros != null) 'pros': pros,
         if (cons != null) 'cons': cons,
-        if (apprenticeshipYear != null) 'apprenticeship_year': apprenticeshipYear,
+        if (apprenticeshipYear != null)
+          'apprenticeship_year': apprenticeshipYear,
         if (profession != null) 'profession': profession,
         'status': 'pending',
       },
@@ -148,7 +154,9 @@ class ReviewRepository {
         Query.limit(limit),
       ],
     );
-    return result.documents.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
+    return result.documents
+        .map((d) => ReviewModel.fromJson(_toMap(d)))
+        .toList();
   }
 
   Map<String, dynamic> _toMap(aw.Document doc) => {

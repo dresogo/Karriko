@@ -20,7 +20,8 @@ class _HomeSearchBarState extends ConsumerState<HomeSearchBar> {
   void initState() {
     super.initState();
     _focusNode.addListener(() {
-      setState(() => _showSuggestions = _focusNode.hasFocus && _controller.text.length >= 2);
+      setState(() => _showSuggestions =
+          _focusNode.hasFocus && _controller.text.length >= 2);
     });
   }
 
@@ -64,16 +65,19 @@ class _HomeSearchBarState extends ConsumerState<HomeSearchBar> {
                   onSubmitted: (_) => _search(),
                   decoration: InputDecoration(
                     hintText: 'Betrieb oder Beruf suchen ...',
-                    hintStyle: const TextStyle(color: Color(0xFF8C8E88), fontSize: 16),
+                    hintStyle:
+                        const TextStyle(color: Color(0xFF8C8E88), fontSize: 16),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
                     filled: false,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 18, vertical: 0),
                     constraints: const BoxConstraints(minHeight: 62),
                     suffixIcon: query.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, color: AppColors.muted, size: 18),
+                            icon: const Icon(Icons.clear,
+                                color: AppColors.muted, size: 18),
                             onPressed: () => setState(() {
                               _controller.clear();
                               _showSuggestions = false;
@@ -91,7 +95,8 @@ class _HomeSearchBarState extends ConsumerState<HomeSearchBar> {
                   height: 62,
                   decoration: const BoxDecoration(
                     color: AppColors.accent,
-                    border: Border(left: BorderSide(color: AppColors.ink, width: 2)),
+                    border: Border(
+                        left: BorderSide(color: AppColors.ink, width: 2)),
                   ),
                   child: const Center(
                     child: Icon(Icons.search, color: Colors.white, size: 24),
@@ -149,7 +154,8 @@ class _SuggestionList extends StatelessWidget {
               (s) => GestureDetector(
                 onTap: () => onTap(s),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: AppColors.paper,
@@ -157,7 +163,8 @@ class _SuggestionList extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search, size: 14, color: AppColors.muted),
+                      const Icon(Icons.search,
+                          size: 14, color: AppColors.muted),
                       const SizedBox(width: 10),
                       Text(s,
                           style: const TextStyle(

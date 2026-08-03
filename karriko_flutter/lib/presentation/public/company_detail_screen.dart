@@ -58,7 +58,8 @@ class _CompanyDetailBody extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: const Icon(Icons.business, size: 32, color: AppColors.primary),
+                      child: const Icon(Icons.business,
+                          size: 32, color: AppColors.primary),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -69,11 +70,14 @@ class _CompanyDetailBody extends ConsumerWidget {
                             children: [
                               Expanded(
                                 child: Text(company.name,
-                                    style: Theme.of(context).textTheme.headlineMedium),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                               ),
                               if (company.isVerified)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(
                                     color: AppColors.lightGreen,
                                     borderRadius: BorderRadius.circular(100),
@@ -81,19 +85,25 @@ class _CompanyDetailBody extends ConsumerWidget {
                                   child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.verified, size: 12, color: AppColors.primary),
+                                      Icon(Icons.verified,
+                                          size: 12, color: AppColors.primary),
                                       SizedBox(width: 3),
                                       Text('Verifiziert',
-                                          style: TextStyle(color: AppColors.primaryDark, fontSize: 11, fontWeight: FontWeight.w600)),
+                                          style: TextStyle(
+                                              color: AppColors.primaryDark,
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600)),
                                     ],
                                   ),
                                 ),
                             ],
                           ),
                           if (company.location.isNotEmpty)
-                            Text(company.location, style: Theme.of(context).textTheme.bodyMedium),
+                            Text(company.location,
+                                style: Theme.of(context).textTheme.bodyMedium),
                           if (company.industry != null)
-                            Text(company.industry!, style: Theme.of(context).textTheme.bodySmall),
+                            Text(company.industry!,
+                                style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                     ),
@@ -129,9 +139,11 @@ class _CompanyDetailBody extends ConsumerWidget {
                 ),
                 if (company.description != null) ...[
                   const SizedBox(height: 20),
-                  Text('Über das Unternehmen', style: Theme.of(context).textTheme.headlineSmall),
+                  Text('Über das Unternehmen',
+                      style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 8),
-                  Text(company.description!, style: Theme.of(context).textTheme.bodyMedium),
+                  Text(company.description!,
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ],
             ),
@@ -142,7 +154,8 @@ class _CompanyDetailBody extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Bewertungen', style: Theme.of(context).textTheme.headlineMedium),
+                Text('Bewertungen',
+                    style: Theme.of(context).textTheme.headlineMedium),
                 const SizedBox(height: 16),
                 reviews.when(
                   data: (list) => list.isEmpty
@@ -155,8 +168,10 @@ class _CompanyDetailBody extends ConsumerWidget {
                                   ))
                               .toList(),
                         ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (_, __) => const Text('Fehler beim Laden der Bewertungen.'),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (_, __) =>
+                      const Text('Fehler beim Laden der Bewertungen.'),
                 ),
               ],
             ),
@@ -172,7 +187,8 @@ class _StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
 
-  const _StatCard({required this.label, required this.value, required this.icon});
+  const _StatCard(
+      {required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +205,9 @@ class _StatCard extends StatelessWidget {
             Icon(icon, size: 18, color: AppColors.primary),
             const SizedBox(height: 4),
             Text(value, style: Theme.of(context).textTheme.headlineSmall),
-            Text(label, style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center),
+            Text(label,
+                style: Theme.of(context).textTheme.bodySmall,
+                textAlign: TextAlign.center),
           ],
         ),
       ),
@@ -206,12 +224,15 @@ class _EmptyReviews extends StatelessWidget {
       padding: const EdgeInsets.all(40),
       child: Column(
         children: [
-          const Icon(Icons.rate_review_outlined, size: 48, color: AppColors.textMuted),
+          const Icon(Icons.rate_review_outlined,
+              size: 48, color: AppColors.textMuted),
           const SizedBox(height: 12),
-          Text('Noch keine Bewertungen', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Noch keine Bewertungen',
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text('Sei der Erste und teile deine Erfahrungen!',
-              style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => context.go('/reviews/new'),

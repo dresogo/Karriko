@@ -56,18 +56,24 @@ class LegalPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppLayout.s16),
-                    Text(title, style: Theme.of(context).textTheme.displaySmall),
+                    Text(title,
+                        style: Theme.of(context).textTheme.displaySmall),
                     if (subtitle != null) ...[
                       const SizedBox(height: AppLayout.s8),
-                      Text(subtitle!, style: Theme.of(context).textTheme.bodySmall),
+                      Text(subtitle!,
+                          style: Theme.of(context).textTheme.bodySmall),
                     ],
                     const SizedBox(height: AppLayout.s48),
                     for (final s in sections) ...[
-                      Text(s.$1, style: Theme.of(context).textTheme.headlineMedium),
+                      Text(s.$1,
+                          style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: AppLayout.s8),
                       Text(
                         s.$2,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(height: 1.6),
                       ),
                       const SizedBox(height: AppLayout.s32),
                     ],
@@ -101,12 +107,16 @@ class LegalNotice extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.warning_amber_outlined, color: AppColors.ink, size: 20),
+          const Icon(Icons.warning_amber_outlined,
+              color: AppColors.ink, size: 20),
           const SizedBox(width: AppLayout.s16),
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.ink),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.ink),
             ),
           ),
         ],

@@ -24,8 +24,10 @@ class UserModel {
     required this.createdAt,
   });
 
-  String get fullName => [firstName, lastName].where((s) => s != null && s.isNotEmpty).join(' ');
-  String get displayName => fullName.isNotEmpty ? fullName : email.split('@').first;
+  String get fullName =>
+      [firstName, lastName].where((s) => s != null && s.isNotEmpty).join(' ');
+  String get displayName =>
+      fullName.isNotEmpty ? fullName : email.split('@').first;
 
   bool get isAzubi => role.toLowerCase() == 'azubi';
   bool get isBetrieb => role.toLowerCase() == 'betrieb';

@@ -42,13 +42,15 @@ class LoginChoiceScreen extends StatelessWidget {
           Material(
             color: AppColors.surface,
             child: Container(
-              decoration: BoxDecoration(border: Border.all(color: AppColors.line)),
+              decoration:
+                  BoxDecoration(border: Border.all(color: AppColors.line)),
               child: Column(
                 children: [
                   _RoleRow(
                     icon: Icons.school_outlined,
                     title: 'Ich bin Azubi',
-                    description: 'Bewertungen schreiben, Betriebe merken und dein '
+                    description:
+                        'Bewertungen schreiben, Betriebe merken und dein '
                         'Profil verwalten.',
                     onTap: () => context.go(target('/login/azubi')),
                   ),
@@ -56,7 +58,8 @@ class LoginChoiceScreen extends StatelessWidget {
                   _RoleRow(
                     icon: Icons.business_outlined,
                     title: 'Ich bin Betrieb',
-                    description: 'Unternehmensprofil pflegen, Feedback einsehen und '
+                    description:
+                        'Unternehmensprofil pflegen, Feedback einsehen und '
                         'auf Bewertungen antworten.',
                     onTap: () => context.go(target('/login/betrieb')),
                   ),
@@ -147,7 +150,8 @@ class _RoleRowState extends State<_RoleRow> {
                 height: 44,
                 decoration: const BoxDecoration(
                   color: AppColors.audienceBeige,
-                  border: Border.fromBorderSide(BorderSide(color: AppColors.line)),
+                  border:
+                      Border.fromBorderSide(BorderSide(color: AppColors.line)),
                 ),
                 child: Icon(widget.icon, size: 22, color: AppColors.ink),
               ),
@@ -156,7 +160,8 @@ class _RoleRowState extends State<_RoleRow> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.title, style: Theme.of(context).textTheme.headlineSmall),
+                    Text(widget.title,
+                        style: Theme.of(context).textTheme.headlineSmall),
                     const SizedBox(height: 4),
                     Text(
                       widget.description,
@@ -169,8 +174,10 @@ class _RoleRowState extends State<_RoleRow> {
               AnimatedSlide(
                 duration: const Duration(milliseconds: 150),
                 curve: Curves.easeOut,
-                offset: _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
-                child: const Icon(Icons.arrow_forward, size: 20, color: AppColors.ink),
+                offset:
+                    _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
+                child: const Icon(Icons.arrow_forward,
+                    size: 20, color: AppColors.ink),
               ),
             ],
           ),

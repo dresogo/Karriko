@@ -53,14 +53,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _search() {
     ref.read(searchProvider.notifier).search(
-      SearchFilters(
-        query: _query.isEmpty ? null : _query,
-        industry: _industry == 'Alle Branchen' ? null : _industry,
-        city: _city,
-        // "Ab 1 Stern" means no effective filter.
-        minRating: (_minRating != null && _minRating! > 1) ? _minRating : null,
-      ),
-    );
+          SearchFilters(
+            query: _query.isEmpty ? null : _query,
+            industry: _industry == 'Alle Branchen' ? null : _industry,
+            city: _city,
+            // "Ab 1 Stern" means no effective filter.
+            minRating:
+                (_minRating != null && _minRating! > 1) ? _minRating : null,
+          ),
+        );
   }
 
   @override
@@ -73,15 +74,27 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       selectedIndustry: _industry,
       minRating: _minRating ?? 1,
       selectedCity: _city,
-      onIndustry: (v) { setState(() => _industry = v); _search(); },
-      onRating: (v) { setState(() => _minRating = v); _search(); },
-      onCity: (v) { setState(() => _city = _city == v ? null : v); _search(); },
+      onIndustry: (v) {
+        setState(() => _industry = v);
+        _search();
+      },
+      onRating: (v) {
+        setState(() => _minRating = v);
+        _search();
+      },
+      onCity: (v) {
+        setState(() => _city = _city == v ? null : v);
+        _search();
+      },
     );
 
     final main = _MainColumn(
       controller: _controller,
       onQueryChanged: (v) => _query = v,
-      onSearch: () { _query = _controller.text.trim(); _search(); },
+      onSearch: () {
+        _query = _controller.text.trim();
+        _search();
+      },
     );
 
     return Scaffold(
@@ -92,7 +105,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ContentBand(
-              padding: const EdgeInsets.only(top: AppLayout.s48, bottom: AppLayout.s64),
+              padding: const EdgeInsets.only(
+                  top: AppLayout.s48, bottom: AppLayout.s64),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -128,7 +142,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final fontSize = (MediaQuery.of(context).size.width * 0.045).clamp(34.0, 56.0);
+    final fontSize =
+        (MediaQuery.of(context).size.width * 0.045).clamp(34.0, 56.0);
     return Text(
       'UNTERNEHMEN DURCHSUCHEN',
       style: TextStyle(
@@ -197,7 +212,8 @@ class _FiltersSidebar extends StatelessWidget {
                   inactiveTrackColor: AppColors.line,
                   thumbColor: AppColors.ink,
                   overlayShape: SliderComponentShape.noOverlay,
-                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+                  thumbShape:
+                      const RoundSliderThumbShape(enabledThumbRadius: 7),
                 ),
                 child: Slider(
                   value: minRating,
@@ -213,7 +229,8 @@ class _FiltersSidebar extends StatelessWidget {
                 children: [
                   Text(
                     minRating <= 1 ? 'Alle' : 'Ab ${minRating.toInt()} Sternen',
-                    style: const TextStyle(color: AppColors.muted, fontSize: 12),
+                    style:
+                        const TextStyle(color: AppColors.muted, fontSize: 12),
                   ),
                   const Text('5 Sterne',
                       style: TextStyle(color: AppColors.muted, fontSize: 12)),
@@ -281,7 +298,8 @@ class _IndustryLink extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _IndustryLink({required this.label, required this.selected, required this.onTap});
+  const _IndustryLink(
+      {required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +325,8 @@ class _CityCheckbox extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _CityCheckbox({required this.label, required this.selected, required this.onTap});
+  const _CityCheckbox(
+      {required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -322,14 +341,16 @@ class _CityCheckbox extends StatelessWidget {
               height: 18,
               decoration: BoxDecoration(
                 color: selected ? AppColors.ink : AppColors.surface,
-                border: Border.all(color: selected ? AppColors.ink : AppColors.line),
+                border: Border.all(
+                    color: selected ? AppColors.ink : AppColors.line),
               ),
               child: selected
                   ? const Icon(Icons.check, size: 14, color: Colors.white)
                   : null,
             ),
             const SizedBox(width: 12),
-            Text(label, style: const TextStyle(color: AppColors.ink, fontSize: 15)),
+            Text(label,
+                style: const TextStyle(color: AppColors.ink, fontSize: 15)),
           ],
         ),
       ),
@@ -372,7 +393,8 @@ class _MainColumn extends ConsumerWidget {
                   onSubmitted: (_) => onSearch(),
                   decoration: const InputDecoration(
                     hintText: 'Betrieb oder Beruf suchen ...',
-                    hintStyle: TextStyle(color: Color(0xFF8C8E88), fontSize: 16),
+                    hintStyle:
+                        TextStyle(color: Color(0xFF8C8E88), fontSize: 16),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
@@ -389,7 +411,8 @@ class _MainColumn extends ConsumerWidget {
                   height: 60,
                   decoration: const BoxDecoration(
                     color: AppColors.accent,
-                    border: Border(left: BorderSide(color: AppColors.ink, width: 2)),
+                    border: Border(
+                        left: BorderSide(color: AppColors.ink, width: 2)),
                   ),
                   child: const Center(
                     child: Icon(Icons.search, color: Colors.white, size: 24),
@@ -418,7 +441,8 @@ class _MainColumn extends ConsumerWidget {
             emptyMessage: searchState.error ?? 'Keine Betriebe gefunden.',
             itemCount: searchState.results.length,
             onNearEnd: () => ref.read(searchProvider.notifier).loadMore(),
-            itemBuilder: (context, i) => _CompanyCard(company: searchState.results[i]),
+            itemBuilder: (context, i) =>
+                _CompanyCard(company: searchState.results[i]),
           ),
           const SizedBox(height: AppLayout.s48),
 
@@ -482,7 +506,8 @@ class _ResultsGrid extends StatelessWidget {
       return _message(state.error!);
     }
     if (state.results.isEmpty) {
-      return _message('Keine Betriebe gefunden. Passe Suchbegriff oder Filter an.');
+      return _message(
+          'Keine Betriebe gefunden. Passe Suchbegriff oder Filter an.');
     }
 
     return LayoutBuilder(
@@ -566,7 +591,8 @@ class _LoadMoreButton extends StatelessWidget {
             ? const SizedBox(
                 width: 18,
                 height: 18,
-                child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.ink),
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: AppColors.ink),
               )
             : const Text(
                 'Mehr anzeigen',
@@ -648,7 +674,8 @@ class _CarouselState extends State<_Carousel> {
     final target = (_scroll.offset + direction * viewport)
         .clamp(0.0, _scroll.position.maxScrollExtent);
     _scroll.animateTo(target,
-        duration: const Duration(milliseconds: 320), curve: Curves.easeOutCubic);
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic);
   }
 
   @override
@@ -736,7 +763,8 @@ class _ArrowButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback onTap;
 
-  const _ArrowButton({required this.icon, required this.enabled, required this.onTap});
+  const _ArrowButton(
+      {required this.icon, required this.enabled, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -787,7 +815,8 @@ class _CompanyCard extends StatelessWidget {
               height: 44,
               decoration: const BoxDecoration(
                 color: AppColors.audienceBeige,
-                border: Border.fromBorderSide(BorderSide(color: AppColors.line)),
+                border:
+                    Border.fromBorderSide(BorderSide(color: AppColors.line)),
               ),
               child: const Icon(Icons.business, color: AppColors.ink, size: 20),
             ),
@@ -808,7 +837,8 @@ class _CompanyCard extends StatelessWidget {
                 company.description ?? company.industry ?? '',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: AppColors.muted, fontSize: 14, height: 1.4),
+                style: const TextStyle(
+                    color: AppColors.muted, fontSize: 14, height: 1.4),
               ),
             ),
             const SizedBox(height: AppLayout.s16),
@@ -871,13 +901,16 @@ class _JobCard extends StatelessWidget {
                   height: 40,
                   decoration: const BoxDecoration(
                     color: AppColors.audienceBeige,
-                    border: Border.fromBorderSide(BorderSide(color: AppColors.line)),
+                    border: Border.fromBorderSide(
+                        BorderSide(color: AppColors.line)),
                   ),
-                  child: const Icon(Icons.work_outline, color: AppColors.ink, size: 18),
+                  child: const Icon(Icons.work_outline,
+                      color: AppColors.ink, size: 18),
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   color: AppColors.accent,
                   child: Text(
                     job.badge,
@@ -913,14 +946,16 @@ class _JobCard extends StatelessWidget {
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.location_on_outlined, size: 13, color: AppColors.muted),
+                const Icon(Icons.location_on_outlined,
+                    size: 13, color: AppColors.muted),
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     job.location,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(color: AppColors.muted, fontSize: 13),
+                    style:
+                        const TextStyle(color: AppColors.muted, fontSize: 13),
                   ),
                 ),
               ],

@@ -16,7 +16,8 @@ class FragenBewertenScreen extends ConsumerStatefulWidget {
   const FragenBewertenScreen({super.key});
 
   @override
-  ConsumerState<FragenBewertenScreen> createState() => _FragenBewertenScreenState();
+  ConsumerState<FragenBewertenScreen> createState() =>
+      _FragenBewertenScreenState();
 }
 
 class _FragenBewertenScreenState extends ConsumerState<FragenBewertenScreen> {
@@ -66,7 +67,8 @@ class _FragenBewertenScreenState extends ConsumerState<FragenBewertenScreen> {
                     const Text(
                       'Beantworte die Fragen zu deinem Ausbildungsbetrieb. Deine '
                       'Antworten werden anonym ausgewertet.',
-                      style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+                      style: TextStyle(
+                          color: AppColors.muted, fontSize: 17, height: 1.55),
                     ),
                     const SizedBox(height: AppLayout.s48),
                     questions.when(
@@ -258,7 +260,8 @@ class _ChoiceChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _ChoiceChip({required this.label, required this.selected, required this.onTap});
+  const _ChoiceChip(
+      {required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

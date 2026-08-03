@@ -259,7 +259,8 @@ class _AppRowState extends State<AppRow> {
       ),
       child: Row(
         children: [
-          Icon(widget.icon, size: 20, color: widget.destructive ? color : AppColors.muted),
+          Icon(widget.icon,
+              size: 20, color: widget.destructive ? color : AppColors.muted),
           const SizedBox(width: AppLayout.s16),
           Expanded(
             child: Column(
@@ -275,7 +276,8 @@ class _AppRowState extends State<AppRow> {
                 ),
                 if (widget.subtitle != null) ...[
                   const SizedBox(height: 2),
-                  Text(widget.subtitle!, style: Theme.of(context).textTheme.bodySmall),
+                  Text(widget.subtitle!,
+                      style: Theme.of(context).textTheme.bodySmall),
                 ],
               ],
             ),
@@ -457,7 +459,8 @@ class AppEmptyState extends StatelessWidget {
           const SizedBox(height: AppLayout.s24),
           Align(
             alignment: Alignment.centerLeft,
-            child: OutlinedButton(onPressed: onAction, child: Text(actionLabel)),
+            child:
+                OutlinedButton(onPressed: onAction, child: Text(actionLabel)),
           ),
         ],
       ),

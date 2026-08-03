@@ -31,7 +31,8 @@ class CompanyModel {
     required this.createdAt,
   });
 
-  String get location => [city, country].where((s) => s != null && (s?.isNotEmpty ?? false)).join(', ');
+  String get location =>
+      [city, country].where((s) => s != null && s.isNotEmpty).join(', ');
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) {
     return CompanyModel(

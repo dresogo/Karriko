@@ -50,20 +50,23 @@ class _NewReviewScreenState extends ConsumerState<NewReviewScreen> {
 
   void _goToStep(int step) {
     ref.read(newReviewProvider.notifier).goToStep(step);
-    _pageCtrl.animateToPage(step, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _pageCtrl.animateToPage(step,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   Future<void> _submit() async {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
     ref.read(newReviewProvider.notifier).setDetails(
-      title: _titleCtrl.text.trim(),
-      text: _textCtrl.text.trim(),
-      pros: _prosCtrl.text.trim().isEmpty ? null : _prosCtrl.text.trim(),
-      cons: _consCtrl.text.trim().isEmpty ? null : _consCtrl.text.trim(),
-      profession: _professionCtrl.text.trim().isEmpty ? null : _professionCtrl.text.trim(),
-      isAnonymous: _isAnonymous,
-    );
+          title: _titleCtrl.text.trim(),
+          text: _textCtrl.text.trim(),
+          pros: _prosCtrl.text.trim().isEmpty ? null : _prosCtrl.text.trim(),
+          cons: _consCtrl.text.trim().isEmpty ? null : _consCtrl.text.trim(),
+          profession: _professionCtrl.text.trim().isEmpty
+              ? null
+              : _professionCtrl.text.trim(),
+          isAnonymous: _isAnonymous,
+        );
     await ref.read(newReviewProvider.notifier).submit(userId);
   }
 
@@ -105,23 +108,25 @@ class _NewReviewScreenState extends ConsumerState<NewReviewScreen> {
                   workLife: _workLife,
                   career: _career,
                   onOverallChanged: (v) => setState(() => _overallRating = v),
-                  onTrainingChanged: (v) => setState(() => _trainingQuality = v),
+                  onTrainingChanged: (v) =>
+                      setState(() => _trainingQuality = v),
                   onMentoringChanged: (v) => setState(() => _mentoring = v),
                   onWorkLifeChanged: (v) => setState(() => _workLife = v),
                   onCareerChanged: (v) => setState(() => _career = v),
                   onNext: () {
                     if (_overallRating == 0) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Bitte gib eine Gesamtbewertung ab.')));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Bitte gib eine Gesamtbewertung ab.')));
                       return;
                     }
                     ref.read(newReviewProvider.notifier).setRatings(
-                      overall: _overallRating,
-                      training: _trainingQuality > 0 ? _trainingQuality : null,
-                      mentoring: _mentoring > 0 ? _mentoring : null,
-                      workLife: _workLife > 0 ? _workLife : null,
-                      career: _career > 0 ? _career : null,
-                    );
+                          overall: _overallRating,
+                          training:
+                              _trainingQuality > 0 ? _trainingQuality : null,
+                          mentoring: _mentoring > 0 ? _mentoring : null,
+                          workLife: _workLife > 0 ? _workLife : null,
+                          career: _career > 0 ? _career : null,
+                        );
                     _goToStep(2);
                   },
                   onBack: () => _goToStep(0),
@@ -134,7 +139,8 @@ class _NewReviewScreenState extends ConsumerState<NewReviewScreen> {
                   consCtrl: _consCtrl,
                   professionCtrl: _professionCtrl,
                   isAnonymous: _isAnonymous,
-                  onAnonymousChanged: (v) => setState(() => _isAnonymous = v ?? true),
+                  onAnonymousChanged: (v) =>
+                      setState(() => _isAnonymous = v ?? true),
                   onNext: () {
                     if (!_step2Key.currentState!.validate()) return;
                     _goToStep(3);
@@ -180,21 +186,42 @@ class _StepIndicator extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: done || active ? AppColors.primary : AppColors.background,
+                        color: done || active
+                            ? AppColors.primary
+                            : AppColors.background,
                         shape: BoxShape.circle,
-                        border: Border.all(color: done || active ? AppColors.primary : AppColors.border),
+                        border: Border.all(
+                            color: done || active
+                                ? AppColors.primary
+                                : AppColors.border),
                       ),
                       child: Center(
                         child: done
-                            ? const Icon(Icons.check, size: 12, color: Colors.white)
-                            : Text('${i + 1}', style: TextStyle(fontSize: 11, color: active ? Colors.white : AppColors.textMuted, fontWeight: FontWeight.w700)),
+                            ? const Icon(Icons.check,
+                                size: 12, color: Colors.white)
+                            : Text('${i + 1}',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: active
+                                        ? Colors.white
+                                        : AppColors.textMuted,
+                                    fontWeight: FontWeight.w700)),
                       ),
                     ),
-                    Text(labels[i], style: TextStyle(fontSize: 9, color: active ? AppColors.primary : AppColors.textMuted)),
+                    Text(labels[i],
+                        style: TextStyle(
+                            fontSize: 9,
+                            color: active
+                                ? AppColors.primary
+                                : AppColors.textMuted)),
                   ],
                 ),
                 if (i < total - 1)
-                  Expanded(child: Container(height: 2, margin: const EdgeInsets.only(bottom: 14), color: done ? AppColors.primary : AppColors.border)),
+                  Expanded(
+                      child: Container(
+                          height: 2,
+                          margin: const EdgeInsets.only(bottom: 14),
+                          color: done ? AppColors.primary : AppColors.border)),
               ],
             ),
           );
@@ -209,19 +236,23 @@ class _Step0SelectCompany extends ConsumerWidget {
   final String? selectedCompany;
   final void Function(String id, String name) onSelect;
 
-  const _Step0SelectCompany({required this.searchCtrl, this.selectedCompany, required this.onSelect});
+  const _Step0SelectCompany(
+      {required this.searchCtrl, this.selectedCompany, required this.onSelect});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final query = searchCtrl.text;
-    final suggestions = query.length >= 2 ? ref.watch(searchSuggestionsProvider(query)) : const AsyncValue.data(<String>[]);
+    final suggestions = query.length >= 2
+        ? ref.watch(searchSuggestionsProvider(query))
+        : const AsyncValue.data(<String>[]);
 
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Welchen Betrieb möchtest du bewerten?', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Welchen Betrieb möchtest du bewerten?',
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 16),
           TextField(
             controller: searchCtrl,
@@ -234,11 +265,14 @@ class _Step0SelectCompany extends ConsumerWidget {
           if (query.length >= 2)
             suggestions.when(
               data: (list) => Column(
-                children: list.map((s) => ListTile(
-                  title: Text(s),
-                  leading: const Icon(Icons.business, color: AppColors.primary),
-                  onTap: () => onSelect('placeholder-id', s),
-                )).toList(),
+                children: list
+                    .map((s) => ListTile(
+                          title: Text(s),
+                          leading: const Icon(Icons.business,
+                              color: AppColors.primary),
+                          onTap: () => onSelect('placeholder-id', s),
+                        ))
+                    .toList(),
               ),
               loading: () => const LinearProgressIndicator(),
               error: (_, __) => const SizedBox.shrink(),
@@ -255,7 +289,10 @@ class _Step0SelectCompany extends ConsumerWidget {
                 children: [
                   const Icon(Icons.check_circle, color: AppColors.success),
                   const SizedBox(width: 8),
-                  Text(selectedCompany!, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.darkGreen)),
+                  Text(selectedCompany!,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.darkGreen)),
                 ],
               ),
             ),
@@ -304,19 +341,25 @@ class _Step1Ratings extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Deine Bewertung', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Deine Bewertung',
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 24),
           _RatingItem('Gesamtbewertung *', overallRating, onOverallChanged),
-          _RatingItem('Ausbildungsqualität', trainingQuality, onTrainingChanged),
+          _RatingItem(
+              'Ausbildungsqualität', trainingQuality, onTrainingChanged),
           _RatingItem('Betreuung', mentoring, onMentoringChanged),
           _RatingItem('Work-Life-Balance', workLife, onWorkLifeChanged),
           _RatingItem('Übernahmechancen', career, onCareerChanged),
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: OutlinedButton(onPressed: onBack, child: const Text('Zurück'))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: onBack, child: const Text('Zurück'))),
               const SizedBox(width: 12),
-              Expanded(child: ElevatedButton(onPressed: onNext, child: const Text('Weiter'))),
+              Expanded(
+                  child: ElevatedButton(
+                      onPressed: onNext, child: const Text('Weiter'))),
             ],
           ),
         ],
@@ -339,9 +382,14 @@ class _RatingItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary)),
+          Text(label,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: AppColors.textPrimary)),
           const SizedBox(height: 6),
-          StarRating(rating: value, size: 32, interactive: true, onChanged: onChanged),
+          StarRating(
+              rating: value, size: 32, interactive: true, onChanged: onChanged),
         ],
       ),
     );
@@ -382,11 +430,13 @@ class _Step2Details extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Details zur Bewertung', style: Theme.of(context).textTheme.headlineSmall),
+            Text('Details zur Bewertung',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 16),
             TextFormField(
               controller: titleCtrl,
-              decoration: const InputDecoration(labelText: 'Titel der Bewertung *'),
+              decoration:
+                  const InputDecoration(labelText: 'Titel der Bewertung *'),
               validator: (v) => Validators.required(v, label: 'Titel'),
             ),
             const SizedBox(height: 12),
@@ -403,34 +453,43 @@ class _Step2Details extends StatelessWidget {
             TextFormField(
               controller: prosCtrl,
               maxLines: 2,
-              decoration: const InputDecoration(labelText: 'Vorteile (optional)', alignLabelWithHint: true),
+              decoration: const InputDecoration(
+                  labelText: 'Vorteile (optional)', alignLabelWithHint: true),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: consCtrl,
               maxLines: 2,
-              decoration: const InputDecoration(labelText: 'Nachteile (optional)', alignLabelWithHint: true),
+              decoration: const InputDecoration(
+                  labelText: 'Nachteile (optional)', alignLabelWithHint: true),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: professionCtrl,
-              decoration: const InputDecoration(labelText: 'Ausbildungsberuf (optional)'),
+              decoration: const InputDecoration(
+                  labelText: 'Ausbildungsberuf (optional)'),
             ),
             const SizedBox(height: 12),
             CheckboxListTile(
               value: isAnonymous,
               onChanged: onAnonymousChanged,
               contentPadding: EdgeInsets.zero,
-              title: const Text('Anonym bewerten', style: TextStyle(fontSize: 14)),
-              subtitle: const Text('Dein Name wird nicht angezeigt.', style: TextStyle(fontSize: 12)),
+              title:
+                  const Text('Anonym bewerten', style: TextStyle(fontSize: 14)),
+              subtitle: const Text('Dein Name wird nicht angezeigt.',
+                  style: TextStyle(fontSize: 12)),
               controlAffinity: ListTileControlAffinity.leading,
             ),
             const SizedBox(height: 20),
             Row(
               children: [
-                Expanded(child: OutlinedButton(onPressed: onBack, child: const Text('Zurück'))),
+                Expanded(
+                    child: OutlinedButton(
+                        onPressed: onBack, child: const Text('Zurück'))),
                 const SizedBox(width: 12),
-                Expanded(child: ElevatedButton(onPressed: onNext, child: const Text('Weiter'))),
+                Expanded(
+                    child: ElevatedButton(
+                        onPressed: onNext, child: const Text('Weiter'))),
               ],
             ),
           ],
@@ -445,7 +504,8 @@ class _Step3Confirm extends StatelessWidget {
   final VoidCallback onSubmit;
   final VoidCallback onBack;
 
-  const _Step3Confirm({required this.state, required this.onSubmit, required this.onBack});
+  const _Step3Confirm(
+      {required this.state, required this.onSubmit, required this.onBack});
 
   @override
   Widget build(BuildContext context) {
@@ -454,7 +514,8 @@ class _Step3Confirm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Bewertung bestätigen', style: Theme.of(context).textTheme.headlineSmall),
+          Text('Bewertung bestätigen',
+              style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 8),
           Text('Überprüfe deine Angaben vor dem Absenden.',
               style: Theme.of(context).textTheme.bodyMedium),
@@ -466,7 +527,8 @@ class _Step3Confirm extends StatelessWidget {
                 color: const Color(0xFFFEF2F2),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Text(state.error!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
+              child: Text(state.error!,
+                  style: const TextStyle(color: AppColors.error, fontSize: 13)),
             ),
             const SizedBox(height: 12),
           ],
@@ -483,7 +545,9 @@ class _Step3Confirm extends StatelessWidget {
               border: Border.all(color: AppColors.border),
             ),
             child: Text(state.text.isNotEmpty ? state.text : '–',
-                style: Theme.of(context).textTheme.bodyMedium, maxLines: 5, overflow: TextOverflow.ellipsis),
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis),
           ),
           const SizedBox(height: 24),
           Container(
@@ -500,13 +564,19 @@ class _Step3Confirm extends StatelessWidget {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: OutlinedButton(onPressed: onBack, child: const Text('Zurück'))),
+              Expanded(
+                  child: OutlinedButton(
+                      onPressed: onBack, child: const Text('Zurück'))),
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: state.isSubmitting ? null : onSubmit,
                   child: state.isSubmitting
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white))
                       : const Text('Bewertung absenden'),
                 ),
               ),
@@ -529,8 +599,15 @@ class _SummaryRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
-          SizedBox(width: 130, child: Text(label, style: Theme.of(context).textTheme.bodySmall)),
-          Expanded(child: Text(value, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary))),
+          SizedBox(
+              width: 130,
+              child: Text(label, style: Theme.of(context).textTheme.bodySmall)),
+          Expanded(
+              child: Text(value,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: AppColors.textPrimary))),
         ],
       ),
     );

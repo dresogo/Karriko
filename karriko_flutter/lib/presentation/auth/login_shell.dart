@@ -48,8 +48,10 @@ class LoginShell extends StatelessWidget {
     // Der Login-Bereich füllt den Viewport unterhalb der Kopfzeile vollständig,
     // unabhängig von der Bildschirmhöhe. Passt der Inhalt nicht hinein, wächst
     // die Sektion mit, statt abzuschneiden.
-    final sectionHeight =
-        mq.size.height - KarrikoAppBar.height - mq.padding.top - mq.padding.bottom;
+    final sectionHeight = mq.size.height -
+        KarrikoAppBar.height -
+        mq.padding.top -
+        mq.padding.bottom;
 
     final copyWidth = isWide ? _copyWidth(mq.size.width) : mq.size.width;
     final panelWidth = isWide ? mq.size.width - 1 - copyWidth : mq.size.width;
@@ -72,14 +74,15 @@ class LoginShell extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ConstrainedBox(
-              constraints:
-                  BoxConstraints(minHeight: sectionHeight > 0 ? sectionHeight : 0),
+              constraints: BoxConstraints(
+                  minHeight: sectionHeight > 0 ? sectionHeight : 0),
               child: Container(
                 decoration: BoxDecoration(
                   // Gestapelt liegt das weiße Panel unten; überschüssige Höhe
                   // bekommt dieselbe Fläche, damit kein Farbsprung entsteht.
                   color: isWide ? null : AppColors.surface,
-                  border: const Border(bottom: BorderSide(color: AppColors.line)),
+                  border:
+                      const Border(bottom: BorderSide(color: AppColors.line)),
                 ),
                 child: isWide
                     ? IntrinsicHeight(
@@ -145,7 +148,8 @@ class _Copy extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: EdgeInsets.only(bottom: isWide ? AppLayout.s48 : AppLayout.s32),
+            padding:
+                EdgeInsets.only(bottom: isWide ? AppLayout.s48 : AppLayout.s32),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -163,7 +167,8 @@ class _Copy extends StatelessWidget {
                   headline,
                   style: TextStyle(
                     color: AppColors.ink,
-                    fontSize: isWide ? (viewportWidth * 0.042).clamp(40.0, 64.0) : 38,
+                    fontSize:
+                        isWide ? (viewportWidth * 0.042).clamp(40.0, 64.0) : 38,
                     fontWeight: FontWeight.w800,
                     height: 0.96,
                     letterSpacing: -0.5,
@@ -199,7 +204,8 @@ class _Panel extends StatelessWidget {
   /// Maximale Breite des Formulars innerhalb des Panels.
   static const double _measure = 520;
 
-  const _Panel({required this.isWide, required this.width, required this.child});
+  const _Panel(
+      {required this.isWide, required this.width, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +216,8 @@ class _Panel extends StatelessWidget {
 
     return Container(
       color: AppColors.surface,
-      padding: EdgeInsets.fromLTRB(basePad + inset, vPad, basePad + inset, vPad),
+      padding:
+          EdgeInsets.fromLTRB(basePad + inset, vPad, basePad + inset, vPad),
       // Zentriert den Inhalt vertikal im Panel. Ein einfaches Align genügt nicht:
       // Der Inhalt ist selbst eine Column mit MainAxisSize.max und würde die
       // volle Höhe einnehmen. Als Kind dieser Column bekommt er unbegrenzte
@@ -285,7 +292,8 @@ class LoginErrorBanner extends StatelessWidget {
                 alignment: PlaceholderAlignment.middle,
                 child: Padding(
                   padding: EdgeInsets.only(right: AppLayout.s8),
-                  child: Icon(Icons.error_outline, size: 18, color: AppColors.accentDark),
+                  child: Icon(Icons.error_outline,
+                      size: 18, color: AppColors.accentDark),
                 ),
               ),
               TextSpan(text: message),

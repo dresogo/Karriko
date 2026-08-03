@@ -14,7 +14,8 @@ class _FailingAuthRepository implements AuthRepository {
   Future<UserModel?> getCurrentUser() async => null;
 
   @override
-  Future<UserModel> signIn({required String email, required String password}) async {
+  Future<UserModel> signIn(
+      {required String email, required String password}) async {
     throw error;
   }
 
@@ -45,7 +46,8 @@ void main() {
   });
 
   test('Sitzungskonflikt wird nicht als falsches Passwort gemeldet', () async {
-    const meldung = 'Es besteht bereits eine aktive Sitzung. Bitte lade die Seite neu.';
+    const meldung =
+        'Es besteht bereits eine aktive Sitzung. Bitte lade die Seite neu.';
 
     final error = await _errorAfterSignIn(const AuthFailure(meldung));
 
@@ -63,8 +65,8 @@ void main() {
   test('Fehlgeschlagene Anmeldung setzt den Nutzer zurueck', () async {
     final container = ProviderContainer(
       overrides: [
-        authRepositoryProvider
-            .overrideWithValue(_FailingAuthRepository(const AuthFailure('nope'))),
+        authRepositoryProvider.overrideWithValue(
+            _FailingAuthRepository(const AuthFailure('nope'))),
       ],
     );
     addTearDown(container.dispose);

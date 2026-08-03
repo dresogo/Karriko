@@ -46,7 +46,8 @@ class _KontaktScreenState extends State<KontaktScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Kontakt', style: Theme.of(context).textTheme.displaySmall),
+                  Text('Kontakt',
+                      style: Theme.of(context).textTheme.displaySmall),
                   const SizedBox(height: 8),
                   Text('Schreib uns – wir antworten innerhalb von 24 Stunden.',
                       style: Theme.of(context).textTheme.bodyLarge),
@@ -60,12 +61,18 @@ class _KontaktScreenState extends State<KontaktScreen> {
                           ),
                           child: Column(
                             children: [
-                              const Icon(Icons.check_circle, size: 48, color: AppColors.success),
+                              const Icon(Icons.check_circle,
+                                  size: 48, color: AppColors.success),
                               const SizedBox(height: 16),
-                              Text('Nachricht gesendet!', style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
+                              Text('Nachricht gesendet!',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
+                                  textAlign: TextAlign.center),
                               const SizedBox(height: 8),
                               Text('Wir melden uns bald bei dir.',
-                                  style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  textAlign: TextAlign.center),
                             ],
                           ),
                         )
@@ -76,21 +83,26 @@ class _KontaktScreenState extends State<KontaktScreen> {
                             children: [
                               TextFormField(
                                 controller: _nameCtrl,
-                                decoration: const InputDecoration(labelText: 'Name'),
-                                validator: (v) => Validators.required(v, label: 'Name'),
+                                decoration:
+                                    const InputDecoration(labelText: 'Name'),
+                                validator: (v) =>
+                                    Validators.required(v, label: 'Name'),
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: _emailCtrl,
                                 keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(labelText: 'E-Mail-Adresse'),
+                                decoration: const InputDecoration(
+                                    labelText: 'E-Mail-Adresse'),
                                 validator: Validators.email,
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
                                 controller: _subjectCtrl,
-                                decoration: const InputDecoration(labelText: 'Betreff'),
-                                validator: (v) => Validators.required(v, label: 'Betreff'),
+                                decoration:
+                                    const InputDecoration(labelText: 'Betreff'),
+                                validator: (v) =>
+                                    Validators.required(v, label: 'Betreff'),
                               ),
                               const SizedBox(height: 16),
                               TextFormField(
@@ -100,7 +112,8 @@ class _KontaktScreenState extends State<KontaktScreen> {
                                   labelText: 'Nachricht',
                                   alignLabelWithHint: true,
                                 ),
-                                validator: (v) => Validators.minLength(v, 20, label: 'Nachricht'),
+                                validator: (v) => Validators.minLength(v, 20,
+                                    label: 'Nachricht'),
                               ),
                               const SizedBox(height: 24),
                               SizedBox(
@@ -114,11 +127,15 @@ class _KontaktScreenState extends State<KontaktScreen> {
                           ),
                         ),
                   const SizedBox(height: 40),
-                  Text('Alternativ erreichst du uns unter:', style: Theme.of(context).textTheme.headlineSmall),
+                  Text('Alternativ erreichst du uns unter:',
+                      style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 12),
-                  const _ContactInfo(icon: Icons.email_outlined, label: 'hallo@karriko.de'),
+                  const _ContactInfo(
+                      icon: Icons.email_outlined, label: 'hallo@karriko.de'),
                   const SizedBox(height: 8),
-                  const _ContactInfo(icon: Icons.location_on_outlined, label: 'Deutschland · DACH-Region'),
+                  const _ContactInfo(
+                      icon: Icons.location_on_outlined,
+                      label: 'Deutschland · DACH-Region'),
                 ],
               ),
             ),

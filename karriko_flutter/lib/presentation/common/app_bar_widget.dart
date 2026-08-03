@@ -26,7 +26,7 @@ class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.paper.withOpacity(0.94),
+        color: AppColors.paper.withValues(alpha: 0.94),
         border: const Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: Padding(
@@ -61,13 +61,13 @@ class _WideHeader extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _NavLink('Für Azubis', '/', context),
+                _navLink('Für Azubis', '/', context),
                 const SizedBox(width: 34),
-                _NavLink('Für Betriebe', '/fuer-betriebe', context),
+                _navLink('Für Betriebe', '/fuer-betriebe', context),
                 const SizedBox(width: 34),
-                _NavLink('Blog', '/blog', context),
+                _navLink('Blog', '/blog', context),
                 const SizedBox(width: 34),
-                _NavLink('Über uns', '/ueber-uns', context),
+                _navLink('Über uns', '/ueber-uns', context),
               ],
             ),
           ),
@@ -150,7 +150,7 @@ class _BrandMark extends StatelessWidget {
   }
 }
 
-Widget _NavLink(String label, String route, BuildContext context) {
+Widget _navLink(String label, String route, BuildContext context) {
   return GestureDetector(
     onTap: () => context.go(route),
     child: Text(
@@ -216,10 +216,9 @@ class _UserMenuButtonState extends ConsumerState<_UserMenuButton> {
 
   AuthState get auth => widget.auth;
 
-  String get _initial =>
-      (auth.user?.displayName.trim().isNotEmpty ?? false)
-          ? auth.user!.displayName.trim().substring(0, 1).toUpperCase()
-          : 'U';
+  String get _initial => (auth.user?.displayName.trim().isNotEmpty ?? false)
+      ? auth.user!.displayName.trim().substring(0, 1).toUpperCase()
+      : 'U';
 
   @override
   Widget build(BuildContext context) {
@@ -331,7 +330,8 @@ class _UserMenuButtonState extends ConsumerState<_UserMenuButton> {
               duration: const Duration(milliseconds: 150),
               curve: Curves.easeOut,
               turns: _open ? 0.5 : 0,
-              child: const Icon(Icons.keyboard_arrow_down, size: 18, color: AppColors.ink),
+              child: const Icon(Icons.keyboard_arrow_down,
+                  size: 18, color: AppColors.ink),
             ),
           ],
         ),
@@ -415,9 +415,11 @@ class _MenuEntry extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: separated
-          ? const BoxDecoration(border: Border(top: BorderSide(color: AppColors.line)))
+          ? const BoxDecoration(
+              border: Border(top: BorderSide(color: AppColors.line)))
           : null,
-      padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16, vertical: 14),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppLayout.s16, vertical: 14),
       child: Row(
         children: [
           Icon(icon, size: 18, color: destructive ? color : AppColors.muted),
@@ -452,48 +454,67 @@ class KarrikoDrawer extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 16),
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: const _BrandMark(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: _BrandMark(),
             ),
             const Divider(color: AppColors.line),
-            _DrawerItem(label: 'Für Azubis', route: '/'),
-            _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
-            _DrawerItem(label: 'Blog', route: '/blog'),
-            _DrawerItem(label: 'Über uns', route: '/ueber-uns'),
-            _DrawerItem(label: 'Kontakt', route: '/kontakt'),
-            _DrawerItem(label: 'Häufige Fragen', route: '/faq'),
+            const _DrawerItem(label: 'Für Azubis', route: '/'),
+            const _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
+            const _DrawerItem(label: 'Blog', route: '/blog'),
+            const _DrawerItem(label: 'Über uns', route: '/ueber-uns'),
+            const _DrawerItem(label: 'Kontakt', route: '/kontakt'),
+            const _DrawerItem(label: 'Häufige Fragen', route: '/faq'),
             const Divider(color: AppColors.line),
             if (!auth.isAuthenticated) ...[
-              _DrawerItem(label: 'Anmelden', route: '/login'),
-              _DrawerItem(label: 'Als Azubi registrieren', route: '/register/azubi'),
-              _DrawerItem(label: 'Als Betrieb registrieren', route: '/register/betrieb'),
+              const _DrawerItem(label: 'Anmelden', route: '/login'),
+              const _DrawerItem(
+                  label: 'Als Azubi registrieren', route: '/register/azubi'),
+              const _DrawerItem(
+                  label: 'Als Betrieb registrieren',
+                  route: '/register/betrieb'),
             ] else if (auth.isAzubi) ...[
-              _DrawerItem(label: 'Dashboard', route: '/dashboard'),
-              _DrawerItem(label: 'Mein Profil', route: '/profile'),
-              _DrawerItem(label: 'Bewertung schreiben', route: '/reviews/new'),
-              _DrawerItem(label: 'Fragen bewerten', route: '/fragen-bewerten'),
-              _DrawerItem(label: 'Meine Bewertungen', route: '/my-reviews'),
-              _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
-              _DrawerItem(label: 'Benachrichtigungen', route: '/notifications'),
-              _DrawerItem(label: 'Einstellungen', route: '/settings'),
+              const _DrawerItem(label: 'Dashboard', route: '/dashboard'),
+              const _DrawerItem(label: 'Mein Profil', route: '/profile'),
+              const _DrawerItem(
+                  label: 'Bewertung schreiben', route: '/reviews/new'),
+              const _DrawerItem(
+                  label: 'Fragen bewerten', route: '/fragen-bewerten'),
+              const _DrawerItem(
+                  label: 'Meine Bewertungen', route: '/my-reviews'),
+              const _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
+              const _DrawerItem(
+                  label: 'Benachrichtigungen', route: '/notifications'),
+              const _DrawerItem(label: 'Einstellungen', route: '/settings'),
               const Divider(color: AppColors.line),
               ListTile(
-                title: const Text('Abmelden', style: TextStyle(color: AppColors.muted, fontSize: 14, fontWeight: FontWeight.w600)),
+                title: const Text('Abmelden',
+                    style: TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600)),
                 onTap: () {
                   context.pop();
                   ref.read(authProvider.notifier).signOut();
                 },
               ),
             ] else if (auth.isBetrieb) ...[
-              _DrawerItem(label: 'Dashboard', route: '/betrieb-dashboard'),
-              _DrawerItem(label: 'Unternehmensprofil', route: '/betrieb-profile'),
-              _DrawerItem(label: 'Bewertungen', route: '/betrieb-reviews'),
-              _DrawerItem(label: 'Analytics', route: '/analytics'),
-              _DrawerItem(label: 'Einstellungen', route: '/betrieb-settings'),
+              const _DrawerItem(
+                  label: 'Dashboard', route: '/betrieb-dashboard'),
+              const _DrawerItem(
+                  label: 'Unternehmensprofil', route: '/betrieb-profile'),
+              const _DrawerItem(
+                  label: 'Bewertungen', route: '/betrieb-reviews'),
+              const _DrawerItem(label: 'Analytics', route: '/analytics'),
+              const _DrawerItem(
+                  label: 'Einstellungen', route: '/betrieb-settings'),
               const Divider(color: AppColors.line),
               ListTile(
-                title: const Text('Abmelden', style: TextStyle(color: AppColors.muted, fontSize: 14, fontWeight: FontWeight.w600)),
+                title: const Text('Abmelden',
+                    style: TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600)),
                 onTap: () {
                   context.pop();
                   ref.read(authProvider.notifier).signOut();
@@ -501,9 +522,9 @@ class KarrikoDrawer extends ConsumerWidget {
               ),
             ],
             const Divider(color: AppColors.line),
-            _DrawerItem(label: 'Impressum', route: '/impressum'),
-            _DrawerItem(label: 'Datenschutz', route: '/datenschutz'),
-            _DrawerItem(label: 'AGB', route: '/agb'),
+            const _DrawerItem(label: 'Impressum', route: '/impressum'),
+            const _DrawerItem(label: 'Datenschutz', route: '/datenschutz'),
+            const _DrawerItem(label: 'AGB', route: '/agb'),
           ],
         ),
       ),

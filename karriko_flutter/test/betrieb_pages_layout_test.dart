@@ -38,7 +38,9 @@ Future<void> _open(WidgetTester tester, String route, Size size) async {
   addTearDown(tester.view.reset);
 
   _container = ProviderContainer(
-    overrides: [authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_betrieb))],
+    overrides: [
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_betrieb))
+    ],
   );
   addTearDown(_container.dispose);
 
@@ -98,26 +100,36 @@ void main() {
   testWidgets('Dashboard verlinkt alle Betriebsbereiche', (tester) async {
     await _open(tester, '/betrieb-dashboard', const Size(1440, 900));
 
-    for (final title in ['Bewertungen', 'Unternehmensprofil', 'Analytics', 'Team']) {
+    for (final title in [
+      'Bewertungen',
+      'Unternehmensprofil',
+      'Analytics',
+      'Team'
+    ]) {
       expect(find.text(title), findsWidgets, reason: 'Kachel „$title" fehlt');
     }
     // Team und Berichte waren zuvor nur ueber die URL erreichbar.
     expect(find.text('Bewertungen melden'), findsOneWidget);
   });
 
-  testWidgets('Unternehmensprofil nutzt keinen erfundenen Namen', (tester) async {
+  testWidgets('Unternehmensprofil nutzt keinen erfundenen Namen',
+      (tester) async {
     await _open(tester, '/betrieb-profile', const Size(1440, 900));
 
     expect(find.text('Musterbetrieb GmbH'), findsNothing);
     expect(find.text('Musterbau GmbH'), findsWidgets);
-    expect(find.textContaining('noch nicht dauerhaft gespeichert'), findsOneWidget);
+    expect(find.textContaining('noch nicht dauerhaft gespeichert'),
+        findsOneWidget);
   });
 
-  testWidgets('Betriebs-Einstellungen benennen den Schalterzustand', (tester) async {
+  testWidgets('Betriebs-Einstellungen benennen den Schalterzustand',
+      (tester) async {
     await _open(tester, '/betrieb-settings', const Size(1440, 900));
 
-    expect(find.textContaining('E-Mail bei jeder neuen Bewertung · An'), findsOneWidget);
-    expect(find.textContaining('Neue Funktionen und Tipps · Aus'), findsOneWidget);
+    expect(find.textContaining('E-Mail bei jeder neuen Bewertung · An'),
+        findsOneWidget);
+    expect(
+        find.textContaining('Neue Funktionen und Tipps · Aus'), findsOneWidget);
   });
 
   testWidgets('Einstellungen fuehren auf das Team', (tester) async {
@@ -128,7 +140,12 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(
-      _container.read(routerProvider).routerDelegate.currentConfiguration.uri.toString(),
+      _container
+          .read(routerProvider)
+          .routerDelegate
+          .currentConfiguration
+          .uri
+          .toString(),
       '/team',
     );
   });

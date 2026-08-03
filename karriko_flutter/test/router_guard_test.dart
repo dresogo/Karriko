@@ -37,7 +37,9 @@ Future<void> _pump(WidgetTester tester, UserModel? user) async {
   addTearDown(tester.view.reset);
 
   _container = ProviderContainer(
-    overrides: [authRepositoryProvider.overrideWithValue(_FakeAuthRepository(user))],
+    overrides: [
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository(user))
+    ],
   );
   addTearDown(_container.dispose);
 
@@ -61,11 +63,17 @@ Future<String> _goTo(WidgetTester tester, String route) async {
   _container.read(routerProvider).go(route);
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 50));
-  return _container.read(routerProvider).routerDelegate.currentConfiguration.uri.toString();
+  return _container
+      .read(routerProvider)
+      .routerDelegate
+      .currentConfiguration
+      .uri
+      .toString();
 }
 
 void main() {
-  testWidgets('Unbestaetigte Adresse fuehrt auf /verify-email, nicht in eine Schleife',
+  testWidgets(
+      'Unbestaetigte Adresse fuehrt auf /verify-email, nicht in eine Schleife',
       (tester) async {
     await _pump(tester, _user(role: 'azubi', verified: false));
 
@@ -98,7 +106,8 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Bestaetigter Azubi wird von /verify-email weggeleitet', (tester) async {
+  testWidgets('Bestaetigter Azubi wird von /verify-email weggeleitet',
+      (tester) async {
     await _pump(tester, _user(role: 'azubi', verified: true));
 
     expect(await _goTo(tester, '/verify-email'), '/dashboard');

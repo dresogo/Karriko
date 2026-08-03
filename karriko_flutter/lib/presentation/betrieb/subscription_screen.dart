@@ -17,19 +17,24 @@ class SubscriptionScreen extends StatelessWidget {
           children: [
             _CurrentPlan(),
             const SizedBox(height: 24),
-            Text('Verfügbare Pläne', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Verfügbare Pläne',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 12),
-            _PlanCard(
+            const _PlanCard(
               name: 'Basis',
               price: 'Kostenlos',
-              features: const ['Öffentliches Profil', 'Bewertungen einsehen', 'Auf Bewertungen antworten'],
+              features: [
+                'Öffentliches Profil',
+                'Bewertungen einsehen',
+                'Auf Bewertungen antworten'
+              ],
               isCurrent: true,
             ),
             const SizedBox(height: 12),
-            _PlanCard(
+            const _PlanCard(
               name: 'Premium',
               price: '49 €/Monat',
-              features: const [
+              features: [
                 'Alles aus Basis',
                 'Detaillierte Analytics',
                 'Team-Verwaltung (bis zu 5 Nutzer)',
@@ -39,7 +44,8 @@ class SubscriptionScreen extends StatelessWidget {
               isCurrent: false,
             ),
             const SizedBox(height: 24),
-            Text('Rechnungen', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Rechnungen',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(32),
@@ -49,7 +55,8 @@ class SubscriptionScreen extends StatelessWidget {
                 border: Border.all(color: AppColors.border),
               ),
               child: const Center(
-                child: Text('Keine Rechnungen vorhanden.', style: TextStyle(color: AppColors.textMuted)),
+                child: Text('Keine Rechnungen vorhanden.',
+                    style: TextStyle(color: AppColors.textMuted)),
               ),
             ),
           ],
@@ -76,15 +83,27 @@ class _CurrentPlan extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text('Aktueller Plan',
-              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5)),
           const SizedBox(height: 6),
-          const Text('Basis', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w700)),
+          const Text('Basis',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          Text('Kostenlos', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14)),
+          Text('Kostenlos',
+              style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.7), fontSize: 14)),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {},
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: AppColors.darkGreen),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.darkGreen),
             child: const Text('Auf Premium upgraden'),
           ),
         ],
@@ -113,7 +132,9 @@ class _PlanCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrent ? AppColors.lightGreen : AppColors.surface,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isCurrent ? AppColors.primary : AppColors.border, width: isCurrent ? 2 : 1),
+        border: Border.all(
+            color: isCurrent ? AppColors.primary : AppColors.border,
+            width: isCurrent ? 2 : 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,17 +145,25 @@ class _PlanCard extends StatelessWidget {
               const Spacer(),
               if (isCurrent)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: const Text('Aktuell', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+                  child: const Text('Aktuell',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600)),
                 ),
             ],
           ),
           Text(price,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.primary)),
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary)),
           const SizedBox(height: 12),
           ...features.map(
             (f) => Padding(
@@ -152,7 +181,8 @@ class _PlanCard extends StatelessWidget {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(onPressed: () {}, child: Text('Zu $name wechseln')),
+              child: ElevatedButton(
+                  onPressed: () {}, child: Text('Zu $name wechseln')),
             ),
           ],
         ],

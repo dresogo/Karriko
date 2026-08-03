@@ -2,17 +2,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/review_model.dart';
 import '../data/repositories/review_repository.dart';
 
-final reviewRepositoryProvider = Provider<ReviewRepository>((ref) => ReviewRepository());
+final reviewRepositoryProvider =
+    Provider<ReviewRepository>((ref) => ReviewRepository());
 
-final companyReviewsProvider = FutureProvider.family<List<ReviewModel>, String>((ref, companyId) {
+final companyReviewsProvider =
+    FutureProvider.family<List<ReviewModel>, String>((ref, companyId) {
   return ref.watch(reviewRepositoryProvider).getReviewsForCompany(companyId);
 });
 
-final reviewByIdProvider = FutureProvider.family<ReviewModel, String>((ref, id) {
+final reviewByIdProvider =
+    FutureProvider.family<ReviewModel, String>((ref, id) {
   return ref.watch(reviewRepositoryProvider).getReviewById(id);
 });
 
-final myReviewsProvider = FutureProvider.family<List<ReviewModel>, String>((ref, userId) {
+final myReviewsProvider =
+    FutureProvider.family<List<ReviewModel>, String>((ref, userId) {
   return ref.watch(reviewRepositoryProvider).getMyReviews(userId);
 });
 
@@ -178,6 +182,7 @@ class NewReviewNotifier extends StateNotifier<NewReviewState> {
   void reset() => state = const NewReviewState();
 }
 
-final newReviewProvider = StateNotifierProvider<NewReviewNotifier, NewReviewState>((ref) {
+final newReviewProvider =
+    StateNotifierProvider<NewReviewNotifier, NewReviewState>((ref) {
   return NewReviewNotifier(ref.watch(reviewRepositoryProvider));
 });

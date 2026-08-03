@@ -22,9 +22,12 @@ class BetriebReviewsScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.rate_review_outlined, size: 64, color: AppColors.textMuted),
+                    Icon(Icons.rate_review_outlined,
+                        size: 64, color: AppColors.textMuted),
                     SizedBox(height: 16),
-                    Text('Keine Bewertungen vorhanden', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                    Text('Keine Bewertungen vorhanden',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 16)),
                   ],
                 ),
               )
@@ -32,7 +35,8 @@ class BetriebReviewsScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(16),
                 itemCount: list.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
-                itemBuilder: (_, i) => _BetriebReviewCard(review: list[i], ref: ref),
+                itemBuilder: (_, i) =>
+                    _BetriebReviewCard(review: list[i], ref: ref),
               ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const Center(child: Text('Fehler beim Laden.')),
@@ -67,11 +71,14 @@ class _BetriebReviewCardState extends ConsumerState<_BetriebReviewCard> {
     setState(() => _isSaving = true);
     try {
       await ref.read(reviewRepositoryProvider).addBetriebReply(
-        reviewId: widget.review.id,
-        reply: _replyCtrl.text.trim(),
-      );
+            reviewId: widget.review.id,
+            reply: _replyCtrl.text.trim(),
+          );
       if (mounted) {
-        setState(() { _isSaving = false; _showReplyForm = false; });
+        setState(() {
+          _isSaving = false;
+          _showReplyForm = false;
+        });
         ref.invalidate(recentReviewsProvider);
       }
     } catch (_) {
@@ -125,7 +132,11 @@ class _BetriebReviewCardState extends ConsumerState<_BetriebReviewCard> {
                       ElevatedButton(
                         onPressed: _isSaving ? null : _saveReply,
                         child: _isSaving
-                            ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                            ? const SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white))
                             : const Text('Antwort senden'),
                       ),
                     ],

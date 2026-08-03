@@ -9,7 +9,8 @@ class AzubiSettingsScreen extends ConsumerStatefulWidget {
   const AzubiSettingsScreen({super.key});
 
   @override
-  ConsumerState<AzubiSettingsScreen> createState() => _AzubiSettingsScreenState();
+  ConsumerState<AzubiSettingsScreen> createState() =>
+      _AzubiSettingsScreenState();
 }
 
 class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
@@ -152,14 +153,18 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
           side: BorderSide(color: AppColors.ink),
           borderRadius: BorderRadius.zero,
         ),
-        title: Text('Konto löschen?', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('Konto löschen?',
+            style: Theme.of(context).textTheme.headlineMedium),
         content: Text(
           'Dein Konto und alle deine Bewertungen werden unwiderruflich gelöscht. '
           'Diese Aktion kann nicht rückgängig gemacht werden.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         actionsPadding: const EdgeInsets.fromLTRB(
-          AppLayout.s24, 0, AppLayout.s24, AppLayout.s16,
+          AppLayout.s24,
+          0,
+          AppLayout.s24,
+          AppLayout.s16,
         ),
         actions: [
           TextButton(
@@ -168,7 +173,8 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.accentDark),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: AppColors.accentDark),
             child: const Text('Konto löschen'),
           ),
         ],

@@ -1,6 +1,7 @@
 class AppConstants {
   static const appName = 'Karriko';
-  static const appTagline = 'Bewertungsplattform für duale Ausbildung im DACH-Markt';
+  static const appTagline =
+      'Bewertungsplattform für duale Ausbildung im DACH-Markt';
 
   static const appwriteProjectIdEnvKey = 'APPWRITE_PROJECT_ID';
 
@@ -25,7 +26,11 @@ class AppConstants {
     'Sonstiges',
   ];
 
-  static const List<String> countries = ['Deutschland', 'Österreich', 'Schweiz'];
+  static const List<String> countries = [
+    'Deutschland',
+    'Österreich',
+    'Schweiz'
+  ];
 
   static const maxRating = 5;
   static const reviewMinLength = 100;

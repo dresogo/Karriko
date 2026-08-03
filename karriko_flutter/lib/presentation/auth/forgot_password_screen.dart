@@ -9,7 +9,8 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
@@ -36,7 +37,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go('/login')),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/login')),
         title: const Text('Passwort vergessen'),
       ),
       body: Center(
@@ -45,7 +48,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 440),
             child: _sent
-                ? _SuccessView(email: _emailCtrl.text, onBack: () => context.go('/login'))
+                ? _SuccessView(
+                    email: _emailCtrl.text, onBack: () => context.go('/login'))
                 : Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
@@ -58,10 +62,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const Icon(Icons.lock_reset, size: 40, color: AppColors.primary),
+                          const Icon(Icons.lock_reset,
+                              size: 40, color: AppColors.primary),
                           const SizedBox(height: 16),
                           Text('Passwort zurücksetzen',
-                              style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+                              style: Theme.of(context).textTheme.headlineSmall,
+                              textAlign: TextAlign.center),
                           const SizedBox(height: 8),
                           Text(
                             'Wir senden dir einen Link zum Zurücksetzen deines Passworts.',
@@ -77,14 +83,16 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(auth.error!,
-                                  style: const TextStyle(color: AppColors.error, fontSize: 12)),
+                                  style: const TextStyle(
+                                      color: AppColors.error, fontSize: 12)),
                             ),
                             const SizedBox(height: 12),
                           ],
                           TextFormField(
                             controller: _emailCtrl,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(labelText: 'E-Mail-Adresse'),
+                            decoration: const InputDecoration(
+                                labelText: 'E-Mail-Adresse'),
                             validator: Validators.email,
                           ),
                           const SizedBox(height: 20),
@@ -93,8 +101,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             child: ElevatedButton(
                               onPressed: auth.isLoading ? null : _submit,
                               child: auth.isLoading
-                                  ? const SizedBox(width: 18, height: 18,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.white))
                                   : const Text('Link senden'),
                             ),
                           ),
@@ -131,17 +142,22 @@ class _SuccessView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(Icons.mark_email_read_outlined, size: 48, color: AppColors.primary),
+          const Icon(Icons.mark_email_read_outlined,
+              size: 48, color: AppColors.primary),
           const SizedBox(height: 16),
-          Text('E-Mail gesendet!', style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+          Text('E-Mail gesendet!',
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center),
           const SizedBox(height: 8),
           Text('Wir haben einen Reset-Link an $email gesendet.',
-              style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
             height: 48,
-            child: ElevatedButton(onPressed: onBack, child: const Text('Zurück zum Login')),
+            child: ElevatedButton(
+                onPressed: onBack, child: const Text('Zurück zum Login')),
           ),
         ],
       ),

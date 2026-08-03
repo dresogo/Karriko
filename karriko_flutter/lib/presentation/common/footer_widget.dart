@@ -33,13 +33,13 @@ class _WideFooter extends StatelessWidget {
         // Wrap statt fester Zeile: Bei mittleren Breiten oder vergrößerter
         // Systemschrift rutschen die Spalten in die nächste Zeile, statt über
         // den Rand zu laufen.
-        Wrap(
+        const Wrap(
           spacing: 40,
           runSpacing: 32,
           crossAxisAlignment: WrapCrossAlignment.start,
           children: [
             // Brand col
-            const SizedBox(
+            SizedBox(
               width: 240,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +123,9 @@ class _NarrowFooter extends StatelessWidget {
                       onTap: () => ctx.go(l.$2),
                       child: Text(l.$1,
                           style: const TextStyle(
-                              color: AppColors.muted, fontSize: 14, fontWeight: FontWeight.w600)),
+                              color: AppColors.muted,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600)),
                     ),
                   ))
               .toList(),
@@ -142,7 +144,9 @@ class _NarrowFooter extends StatelessWidget {
                       onTap: () => ctx.go(l.$2),
                       child: Text(l.$1,
                           style: const TextStyle(
-                              color: AppColors.muted, fontSize: 14, fontWeight: FontWeight.w600)),
+                              color: AppColors.muted,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600)),
                     ),
                   ))
               .toList(),
@@ -171,12 +175,18 @@ class _FooterBrand extends StatelessWidget {
           color: AppColors.ink,
           child: const Center(
             child: Text('K',
-                style: TextStyle(color: AppColors.paper, fontWeight: FontWeight.w800, fontSize: 16)),
+                style: TextStyle(
+                    color: AppColors.paper,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16)),
           ),
         ),
         const SizedBox(width: 8),
         const Text('Karriko',
-            style: TextStyle(color: AppColors.ink, fontWeight: FontWeight.w800, fontSize: 16)),
+            style: TextStyle(
+                color: AppColors.ink,
+                fontWeight: FontWeight.w800,
+                fontSize: 16)),
       ],
     );
   }

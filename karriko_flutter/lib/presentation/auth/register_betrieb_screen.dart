@@ -10,7 +10,8 @@ class RegisterBetriebScreen extends ConsumerStatefulWidget {
   const RegisterBetriebScreen({super.key});
 
   @override
-  ConsumerState<RegisterBetriebScreen> createState() => _RegisterBetriebScreenState();
+  ConsumerState<RegisterBetriebScreen> createState() =>
+      _RegisterBetriebScreenState();
 }
 
 class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
@@ -54,30 +55,33 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
     };
     if (!valid) return;
     setState(() => _step++);
-    _pageCtrl.animateToPage(_step, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _pageCtrl.animateToPage(_step,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   void _back() {
     if (_step == 0) return;
     setState(() => _step--);
-    _pageCtrl.animateToPage(_step, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    _pageCtrl.animateToPage(_step,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
   }
 
   Future<void> _submit() async {
     if (!_step2Key.currentState!.validate()) return;
     if (!_agreeTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Bitte stimme den AGB zu.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Bitte stimme den AGB zu.')));
       return;
     }
     await ref.read(authProvider.notifier).registerBetrieb(
-      email: _emailCtrl.text.trim(),
-      password: _passwordCtrl.text,
-      companyName: _companyNameCtrl.text.trim(),
-      contactFirstName: _firstNameCtrl.text.trim(),
-      contactLastName: _lastNameCtrl.text.trim(),
-      industry: _industry,
-      city: _cityCtrl.text.trim().isEmpty ? null : _cityCtrl.text.trim(),
-    );
+          email: _emailCtrl.text.trim(),
+          password: _passwordCtrl.text,
+          companyName: _companyNameCtrl.text.trim(),
+          contactFirstName: _firstNameCtrl.text.trim(),
+          contactLastName: _lastNameCtrl.text.trim(),
+          industry: _industry,
+          city: _cityCtrl.text.trim().isEmpty ? null : _cityCtrl.text.trim(),
+        );
   }
 
   @override
@@ -99,12 +103,18 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 32),
-                  Text('Als Betrieb registrieren', style: Theme.of(context).textTheme.displaySmall),
+                  Text('Als Betrieb registrieren',
+                      style: Theme.of(context).textTheme.displaySmall),
                   const SizedBox(height: 8),
                   Text('Erstelle ein Profil und verwalte Bewertungen.',
-                      style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center),
                   const SizedBox(height: 24),
-                  _StepIndicator(current: _step, labels: const ['Unternehmen', 'Kontaktperson', 'Zugangsdaten']),
+                  _StepIndicator(current: _step, labels: const [
+                    'Unternehmen',
+                    'Kontaktperson',
+                    'Zugangsdaten'
+                  ]),
                   const SizedBox(height: 32),
                   Container(
                     height: 500,
@@ -122,7 +132,8 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                           companyNameCtrl: _companyNameCtrl,
                           cityCtrl: _cityCtrl,
                           industry: _industry,
-                          onIndustryChanged: (v) => setState(() => _industry = v),
+                          onIndustryChanged: (v) =>
+                              setState(() => _industry = v),
                           onNext: _next,
                         ),
                         _StepKontakt(
@@ -140,9 +151,12 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                           obscurePassword: _obscurePassword,
                           obscureConfirm: _obscureConfirm,
                           agreeTerms: _agreeTerms,
-                          onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword),
-                          onToggleConfirm: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                          onAgreeChanged: (v) => setState(() => _agreeTerms = v ?? false),
+                          onTogglePassword: () => setState(
+                              () => _obscurePassword = !_obscurePassword),
+                          onToggleConfirm: () => setState(
+                              () => _obscureConfirm = !_obscureConfirm),
+                          onAgreeChanged: (v) =>
+                              setState(() => _agreeTerms = v ?? false),
                           onBack: _back,
                           onSubmit: _submit,
                           isLoading: auth.isLoading,
@@ -155,11 +169,15 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Bereits ein Konto? ', style: Theme.of(context).textTheme.bodyMedium),
+                      Text('Bereits ein Konto? ',
+                          style: Theme.of(context).textTheme.bodyMedium),
                       GestureDetector(
                         onTap: () => context.go('/login'),
                         child: const Text('Anmelden',
-                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600, fontSize: 14)),
+                            style: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14)),
                       ),
                     ],
                   ),
@@ -195,18 +213,26 @@ class _StepIndicator extends StatelessWidget {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: done || active ? AppColors.primary : AppColors.background,
+                      color: done || active
+                          ? AppColors.primary
+                          : AppColors.background,
                       shape: BoxShape.circle,
-                      border: Border.all(color: done || active ? AppColors.primary : AppColors.border, width: 2),
+                      border: Border.all(
+                          color: done || active
+                              ? AppColors.primary
+                              : AppColors.border,
+                          width: 2),
                     ),
                     child: Center(
                       child: done
-                          ? const Icon(Icons.check, size: 14, color: Colors.white)
+                          ? const Icon(Icons.check,
+                              size: 14, color: Colors.white)
                           : Text('${i + 1}',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: active ? Colors.white : AppColors.textMuted,
+                                color:
+                                    active ? Colors.white : AppColors.textMuted,
                               )),
                     ),
                   ),
@@ -215,7 +241,8 @@ class _StepIndicator extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 10,
                         color: active ? AppColors.primary : AppColors.textMuted,
-                        fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+                        fontWeight:
+                            active ? FontWeight.w600 : FontWeight.normal,
                       ),
                       textAlign: TextAlign.center),
                 ],
@@ -262,16 +289,18 @@ class _StepUnternehmen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Unternehmensdaten', style: Theme.of(context).textTheme.headlineSmall),
+            Text('Unternehmensdaten',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             TextFormField(
               controller: companyNameCtrl,
               decoration: const InputDecoration(labelText: 'Unternehmensname'),
-              validator: (v) => Validators.required(v, label: 'Unternehmensname'),
+              validator: (v) =>
+                  Validators.required(v, label: 'Unternehmensname'),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: industry,
+              initialValue: industry,
               decoration: const InputDecoration(labelText: 'Branche'),
               items: AppConstants.industries
                   .where((i) => i != 'Alle Branchen')
@@ -285,7 +314,10 @@ class _StepUnternehmen extends StatelessWidget {
               decoration: const InputDecoration(labelText: 'Stadt / Standort'),
             ),
             const Spacer(),
-            SizedBox(height: 48, child: ElevatedButton(onPressed: onNext, child: const Text('Weiter'))),
+            SizedBox(
+                height: 48,
+                child: ElevatedButton(
+                    onPressed: onNext, child: const Text('Weiter'))),
           ],
         ),
       ),
@@ -317,9 +349,11 @@ class _StepKontakt extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Kontaktperson', style: Theme.of(context).textTheme.headlineSmall),
+            Text('Kontaktperson',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
-            Text('Wer ist für das Konto verantwortlich?', style: Theme.of(context).textTheme.bodyMedium),
+            Text('Wer ist für das Konto verantwortlich?',
+                style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 24),
             TextFormField(
               controller: firstNameCtrl,
@@ -335,9 +369,13 @@ class _StepKontakt extends StatelessWidget {
             const Spacer(),
             Row(
               children: [
-                Expanded(child: OutlinedButton(onPressed: onBack, child: const Text('Zurück'))),
+                Expanded(
+                    child: OutlinedButton(
+                        onPressed: onBack, child: const Text('Zurück'))),
                 const SizedBox(width: 12),
-                Expanded(child: ElevatedButton(onPressed: onNext, child: const Text('Weiter'))),
+                Expanded(
+                    child: ElevatedButton(
+                        onPressed: onNext, child: const Text('Weiter'))),
               ],
             ),
           ],
@@ -390,7 +428,8 @@ class _StepZugang extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Zugangsdaten', style: Theme.of(context).textTheme.headlineSmall),
+              Text('Zugangsdaten',
+                  style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 16),
               if (error != null) ...[
                 Container(
@@ -400,14 +439,17 @@ class _StepZugang extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(color: const Color(0xFFFECACA)),
                   ),
-                  child: Text(error!, style: const TextStyle(color: AppColors.error, fontSize: 12)),
+                  child: Text(error!,
+                      style: const TextStyle(
+                          color: AppColors.error, fontSize: 12)),
                 ),
                 const SizedBox(height: 12),
               ],
               TextFormField(
                 controller: emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(labelText: 'Geschäftliche E-Mail'),
+                decoration:
+                    const InputDecoration(labelText: 'Geschäftliche E-Mail'),
                 validator: Validators.email,
               ),
               const SizedBox(height: 12),
@@ -417,7 +459,9 @@ class _StepZugang extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Passwort',
                   suffixIcon: IconButton(
-                    icon: Icon(obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(obscurePassword
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
                     onPressed: onTogglePassword,
                   ),
                 ),
@@ -430,25 +474,31 @@ class _StepZugang extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Passwort bestätigen',
                   suffixIcon: IconButton(
-                    icon: Icon(obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined),
+                    icon: Icon(obscureConfirm
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
                     onPressed: onToggleConfirm,
                   ),
                 ),
-                validator: (v) => Validators.confirmPassword(v, passwordCtrl.text),
+                validator: (v) =>
+                    Validators.confirmPassword(v, passwordCtrl.text),
               ),
               const SizedBox(height: 12),
               CheckboxListTile(
                 value: agreeTerms,
                 onChanged: onAgreeChanged,
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Ich stimme den AGB und der Datenschutzerklärung zu.',
+                title: const Text(
+                    'Ich stimme den AGB und der Datenschutzerklärung zu.',
                     style: TextStyle(fontSize: 12)),
                 controlAffinity: ListTileControlAffinity.leading,
               ),
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: OutlinedButton(onPressed: onBack, child: const Text('Zurück'))),
+                  Expanded(
+                      child: OutlinedButton(
+                          onPressed: onBack, child: const Text('Zurück'))),
                   const SizedBox(width: 12),
                   Expanded(
                     child: SizedBox(
@@ -456,8 +506,11 @@ class _StepZugang extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: isLoading ? null : onSubmit,
                         child: isLoading
-                            ? const SizedBox(width: 18, height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white))
                             : const Text('Registrieren'),
                       ),
                     ),

@@ -17,8 +17,8 @@ enum _Filter {
   final String slug;
   final String label;
 
-  static _Filter fromSlug(String? slug) =>
-      _Filter.values.firstWhere((f) => f.slug == slug, orElse: () => _Filter.alle);
+  static _Filter fromSlug(String? slug) => _Filter.values
+      .firstWhere((f) => f.slug == slug, orElse: () => _Filter.alle);
 }
 
 /// Blog und Neuigkeiten in einem chronologischen Stream: redaktionelle Artikel
@@ -29,7 +29,8 @@ class BlogScreen extends StatelessWidget {
   static final _entries = <BlogEntry>[
     BlogEntry.update(
       title: 'Fragebogen für Betriebsbewertungen',
-      teaser: 'Azubis beantworten jetzt strukturierte Fragen zu Ausbildungsqualität, '
+      teaser:
+          'Azubis beantworten jetzt strukturierte Fragen zu Ausbildungsqualität, '
           'Betreuung und Übernahmechancen statt nur Freitext zu schreiben.',
       date: DateTime(2026, 7, 24),
       version: 'v1.4',
@@ -37,7 +38,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.article(
       title: 'Wie finde ich den richtigen Ausbildungsbetrieb?',
-      teaser: 'Worauf es bei der Wahl wirklich ankommt – von der Branche über das '
+      teaser:
+          'Worauf es bei der Wahl wirklich ankommt – von der Branche über das '
           'Betriebsklima bis zu den Übernahmechancen.',
       date: DateTime(2026, 6, 18),
       category: 'Tipps & Tricks',
@@ -46,7 +48,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.update(
       title: 'Schnellere Suche mit Branchenfiltern',
-      teaser: 'Die Betriebssuche filtert jetzt nach Branche, Ort und Mindestbewertung '
+      teaser:
+          'Die Betriebssuche filtert jetzt nach Branche, Ort und Mindestbewertung '
           'und liefert Ergebnisse spürbar schneller.',
       date: DateTime(2026, 6, 2),
       version: 'v1.3',
@@ -54,7 +57,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.article(
       title: 'DSGVO und Ausbildungsbewertungen',
-      teaser: 'Was Betriebe über anonyme Bewertungen wissen müssen und welche Rechte '
+      teaser:
+          'Was Betriebe über anonyme Bewertungen wissen müssen und welche Rechte '
           'Azubis beim Veröffentlichen haben.',
       date: DateTime(2026, 5, 21),
       category: 'Datenschutz',
@@ -63,7 +67,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.update(
       title: 'Benachrichtigungen kamen doppelt an',
-      teaser: 'Ein Fehler hat Betrieben dieselbe Bewertungsbenachrichtigung mehrfach '
+      teaser:
+          'Ein Fehler hat Betrieben dieselbe Bewertungsbenachrichtigung mehrfach '
           'zugestellt. Das ist behoben.',
       date: DateTime(2026, 5, 8),
       version: 'v1.2.1',
@@ -71,7 +76,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.article(
       title: 'Warum Azubi-Feedback Betrieben hilft',
-      teaser: 'Ehrliche Rückmeldungen decken auf, woran Ausbildung im Alltag scheitert '
+      teaser:
+          'Ehrliche Rückmeldungen decken auf, woran Ausbildung im Alltag scheitert '
           '– und was sich mit wenig Aufwand ändern lässt.',
       date: DateTime(2026, 4, 30),
       category: 'Für Betriebe',
@@ -80,7 +86,8 @@ class BlogScreen extends StatelessWidget {
     ),
     BlogEntry.article(
       title: 'Top 10 Ausbildungsberufe 2026',
-      teaser: 'Welche Ausbildungen aktuell am stärksten nachgefragt werden und wo die '
+      teaser:
+          'Welche Ausbildungen aktuell am stärksten nachgefragt werden und wo die '
           'Übernahmequoten am höchsten liegen.',
       date: DateTime(2026, 3, 12),
       category: 'Karriere',
@@ -91,7 +98,8 @@ class BlogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filter = _Filter.fromSlug(GoRouterState.of(context).uri.queryParameters['typ']);
+    final filter =
+        _Filter.fromSlug(GoRouterState.of(context).uri.queryParameters['typ']);
 
     final entries = switch (filter) {
       _Filter.alle => _entries,
@@ -130,7 +138,9 @@ class BlogScreen extends StatelessWidget {
                           const SizedBox(height: AppLayout.s48),
                         ],
                         if (rest.isNotEmpty)
-                          _EntryList(entries: rest, showKindLabel: filter == _Filter.alle),
+                          _EntryList(
+                              entries: rest,
+                              showKindLabel: filter == _Filter.alle),
                       ],
                     ),
             ),
@@ -189,7 +199,8 @@ class _HeroBand extends StatelessWidget {
               child: const Text(
                 'Artikel rund um Ausbildung und Karriere – und jede neue Funktion, '
                 'die es auf Karriko schafft.',
-                style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+                style: TextStyle(
+                    color: AppColors.muted, fontSize: 17, height: 1.55),
               ),
             ),
           ],
@@ -354,7 +365,8 @@ class _FeaturedArticle extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 640),
             child: Text(
               entry.teaser,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
+              style:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
             ),
           ),
           const SizedBox(height: AppLayout.s24),
@@ -495,7 +507,8 @@ class _UpdateRow extends StatelessWidget {
           const SizedBox(height: AppLayout.s8),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(entry.teaser, style: Theme.of(context).textTheme.bodyMedium),
+            child: Text(entry.teaser,
+                style: Theme.of(context).textTheme.bodyMedium),
           ),
         ],
       ),
@@ -646,7 +659,8 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Nichts gefunden', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Nichts gefunden',
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppLayout.s8),
           Text(
             'In dieser Rubrik gibt es aktuell keine Beiträge.',

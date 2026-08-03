@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/user_model.dart';
 import '../data/repositories/auth_repository.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository());
+final authRepositoryProvider =
+    Provider<AuthRepository>((ref) => AuthRepository());
 
 class AuthState {
   final UserModel? user;
@@ -87,7 +88,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
+      state = state.copyWith(
+          isLoading: false,
+          error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
@@ -113,7 +116,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
+      state = state.copyWith(
+          isLoading: false,
+          error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
@@ -128,7 +133,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       await _repo.resetPassword(email);
       state = state.copyWith(isLoading: false);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Passwort-Reset fehlgeschlagen.');
+      state = state.copyWith(
+          isLoading: false, error: 'Passwort-Reset fehlgeschlagen.');
     }
   }
 
@@ -144,7 +150,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: updated);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Profil-Update fehlgeschlagen.');
+      state = state.copyWith(
+          isLoading: false, error: 'Profil-Update fehlgeschlagen.');
     }
   }
 

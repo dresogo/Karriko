@@ -53,25 +53,33 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   Expanded(
                     child: Text(
                       'Melde Bewertungen, die gegen unsere Richtlinien verstoßen. Unser Team prüft jede Meldung individuell.',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: const Color(0xFF92400E)),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: const Color(0xFF92400E)),
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            Text('Neue Meldung', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Neue Meldung',
+                style: Theme.of(context).textTheme.headlineMedium),
             const SizedBox(height: 16),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Bewertungs-ID'),
-              onChanged: (v) => setState(() => _selectedReviewId = v.isEmpty ? null : v),
+              onChanged: (v) =>
+                  setState(() => _selectedReviewId = v.isEmpty ? null : v),
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: _selectedReason,
+              initialValue: _selectedReason,
               decoration: const InputDecoration(labelText: 'Grund der Meldung'),
-              items: _reasons.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
-              onChanged: (v) => setState(() => _selectedReason = v ?? _selectedReason),
+              items: _reasons
+                  .map((r) => DropdownMenuItem(value: r, child: Text(r)))
+                  .toList(),
+              onChanged: (v) =>
+                  setState(() => _selectedReason = v ?? _selectedReason),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -90,13 +98,16 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 onPressed: _selectedReviewId != null
                     ? () async {
                         await ref.read(reviewRepositoryProvider).reportReview(
-                          reviewId: _selectedReviewId!,
-                          reporterId: 'current-user',
-                          reason: _reasonCtrl.text.isEmpty ? _selectedReason : '$_selectedReason: ${_reasonCtrl.text}',
-                        );
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Meldung eingereicht. Wir prüfen den Fall.')));
+                              reviewId: _selectedReviewId!,
+                              reporterId: 'current-user',
+                              reason: _reasonCtrl.text.isEmpty
+                                  ? _selectedReason
+                                  : '$_selectedReason: ${_reasonCtrl.text}',
+                            );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              content: Text(
+                                  'Meldung eingereicht. Wir prüfen den Fall.')));
                           setState(() {
                             _selectedReviewId = null;
                             _reasonCtrl.clear();

@@ -9,7 +9,8 @@ class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});
 
   @override
-  ConsumerState<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
@@ -31,12 +32,25 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       await AuthRepository().updatePassword(_passwordCtrl.text);
-      if (mounted) setState(() { _isLoading = false; _success = true; });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _success = true;
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() { _isLoading = false; _error = 'Passwort konnte nicht geändert werden.'; });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _error = 'Passwort konnte nicht geändert werden.';
+        });
+      }
     }
   }
 
@@ -59,12 +73,16 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               child: _success
                   ? Column(
                       children: [
-                        const Icon(Icons.check_circle, size: 48, color: AppColors.success),
+                        const Icon(Icons.check_circle,
+                            size: 48, color: AppColors.success),
                         const SizedBox(height: 16),
-                        Text('Passwort geändert!', style: Theme.of(context).textTheme.headlineSmall),
+                        Text('Passwort geändert!',
+                            style: Theme.of(context).textTheme.headlineSmall),
                         const SizedBox(height: 8),
-                        Text('Du kannst dich jetzt mit deinem neuen Passwort anmelden.',
-                            style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
+                        Text(
+                            'Du kannst dich jetzt mit deinem neuen Passwort anmelden.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center),
                         const SizedBox(height: 24),
                         SizedBox(
                           width: double.infinity,
@@ -81,9 +99,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Text('Neues Passwort', style: Theme.of(context).textTheme.headlineSmall),
+                          Text('Neues Passwort',
+                              style: Theme.of(context).textTheme.headlineSmall),
                           const SizedBox(height: 8),
-                          Text('Wähle ein neues sicheres Passwort für dein Konto.',
+                          Text(
+                              'Wähle ein neues sicheres Passwort für dein Konto.',
                               style: Theme.of(context).textTheme.bodyMedium),
                           const SizedBox(height: 24),
                           if (_error != null) ...[
@@ -93,7 +113,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                                 color: const Color(0xFFFEF2F2),
                                 borderRadius: BorderRadius.circular(4),
                               ),
-                              child: Text(_error!, style: const TextStyle(color: AppColors.error, fontSize: 12)),
+                              child: Text(_error!,
+                                  style: const TextStyle(
+                                      color: AppColors.error, fontSize: 12)),
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -103,8 +125,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             decoration: InputDecoration(
                               labelText: 'Neues Passwort',
                               suffixIcon: IconButton(
-                                icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                                icon: Icon(_obscurePassword
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined),
+                                onPressed: () => setState(
+                                    () => _obscurePassword = !_obscurePassword),
                               ),
                             ),
                             validator: Validators.password,
@@ -116,11 +141,15 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             decoration: InputDecoration(
                               labelText: 'Passwort bestätigen',
                               suffixIcon: IconButton(
-                                icon: Icon(_obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined),
-                                onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                                icon: Icon(_obscureConfirm
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined),
+                                onPressed: () => setState(
+                                    () => _obscureConfirm = !_obscureConfirm),
                               ),
                             ),
-                            validator: (v) => Validators.confirmPassword(v, _passwordCtrl.text),
+                            validator: (v) => Validators.confirmPassword(
+                                v, _passwordCtrl.text),
                           ),
                           const SizedBox(height: 24),
                           SizedBox(
@@ -128,8 +157,11 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
                             child: ElevatedButton(
                               onPressed: _isLoading ? null : _submit,
                               child: _isLoading
-                                  ? const SizedBox(width: 18, height: 18,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.white))
                                   : const Text('Passwort ändern'),
                             ),
                           ),

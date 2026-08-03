@@ -37,7 +37,9 @@ Future<void> _open(WidgetTester tester, String route, Size size) async {
   addTearDown(tester.view.reset);
 
   _container = ProviderContainer(
-    overrides: [authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_azubi))],
+    overrides: [
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_azubi))
+    ],
   );
   addTearDown(_container.dispose);
 
@@ -103,12 +105,15 @@ void main() {
     expect(find.text('Azubi'), findsOneWidget);
   });
 
-  testWidgets('Einstellungen benennen den Schalterzustand als Text', (tester) async {
+  testWidgets('Einstellungen benennen den Schalterzustand als Text',
+      (tester) async {
     await _open(tester, '/settings', const Size(1440, 900));
 
     // Zustand darf nicht allein an Farbe und Position haengen.
-    expect(find.textContaining('Andere Nutzer sehen deinen Namen · Aus'), findsOneWidget);
-    expect(find.textContaining('Antworten und Statusänderungen · An'), findsOneWidget);
+    expect(find.textContaining('Andere Nutzer sehen deinen Namen · Aus'),
+        findsOneWidget);
+    expect(find.textContaining('Antworten und Statusänderungen · An'),
+        findsOneWidget);
   });
 
   testWidgets('Profilmenue zeigt Kopfbereich und alle Ziele', (tester) async {
@@ -135,7 +140,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      _container.read(routerProvider).routerDelegate.currentConfiguration.uri.toString(),
+      _container
+          .read(routerProvider)
+          .routerDelegate
+          .currentConfiguration
+          .uri
+          .toString(),
       '/settings',
     );
   });

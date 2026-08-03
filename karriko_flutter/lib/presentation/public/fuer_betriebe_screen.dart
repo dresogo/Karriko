@@ -40,7 +40,8 @@ class _HeroSection extends StatelessWidget {
         border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: ContentBand(
-        padding: EdgeInsets.symmetric(vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
+        padding: EdgeInsets.symmetric(
+            vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -69,7 +70,8 @@ class _HeroSection extends StatelessWidget {
               child: const Text(
                 'Verwalte dein Profil, verstehe Feedback und zeige Bewerbern, '
                 'warum dein Betrieb die richtige Wahl ist.',
-                style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+                style: TextStyle(
+                    color: AppColors.muted, fontSize: 17, height: 1.55),
               ),
             ),
             const SizedBox(height: AppLayout.s32),
@@ -88,14 +90,26 @@ class _HeroSection extends StatelessWidget {
 
 class _FeaturesSection extends StatelessWidget {
   static const _features = [
-    (Icons.manage_accounts_outlined, 'Profil verwalten',
-        'Präsentiere deinen Betrieb mit Logo, Beschreibung und Ansprechpartnern.'),
-    (Icons.star_outline, 'Bewertungen einsehen',
-        'Erhalte detailliertes Feedback von aktuellen und ehemaligen Azubis.'),
-    (Icons.reply_outlined, 'Auf Bewertungen antworten',
-        'Reagiere professionell auf Kritik und zeige, dass du Feedback ernst nimmst.'),
-    (Icons.analytics_outlined, 'Analytics nutzen',
-        'Verstehe Trends und vergleiche dich mit anderen Betrieben deiner Branche.'),
+    (
+      Icons.manage_accounts_outlined,
+      'Profil verwalten',
+      'Präsentiere deinen Betrieb mit Logo, Beschreibung und Ansprechpartnern.'
+    ),
+    (
+      Icons.star_outline,
+      'Bewertungen einsehen',
+      'Erhalte detailliertes Feedback von aktuellen und ehemaligen Azubis.'
+    ),
+    (
+      Icons.reply_outlined,
+      'Auf Bewertungen antworten',
+      'Reagiere professionell auf Kritik und zeige, dass du Feedback ernst nimmst.'
+    ),
+    (
+      Icons.analytics_outlined,
+      'Analytics nutzen',
+      'Verstehe Trends und vergleiche dich mit anderen Betrieben deiner Branche.'
+    ),
   ];
 
   static const _gap = AppLayout.s24;
@@ -133,7 +147,8 @@ class _FeaturesSection extends StatelessWidget {
                     for (final f in _features)
                       SizedBox(
                         width: cardWidth,
-                        child: _FeatureCard(icon: f.$1, title: f.$2, description: f.$3),
+                        child: _FeatureCard(
+                            icon: f.$1, title: f.$2, description: f.$3),
                       ),
                   ],
                 );
@@ -151,7 +166,8 @@ class _FeatureCard extends StatelessWidget {
   final String title;
   final String description;
 
-  const _FeatureCard({required this.icon, required this.title, required this.description});
+  const _FeatureCard(
+      {required this.icon, required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +202,8 @@ class _FeatureCard extends StatelessWidget {
           const SizedBox(height: AppLayout.s8),
           Text(
             description,
-            style: const TextStyle(color: AppColors.muted, fontSize: 15, height: 1.5),
+            style: const TextStyle(
+                color: AppColors.muted, fontSize: 15, height: 1.5),
           ),
         ],
       ),
@@ -204,7 +221,11 @@ class _PricingSection extends StatelessWidget {
     const basis = _PricingCard(
       name: 'BASIS',
       price: 'Kostenlos',
-      features: ['Öffentliches Profil', 'Bewertungen einsehen', 'Auf Bewertungen antworten'],
+      features: [
+        'Öffentliches Profil',
+        'Bewertungen einsehen',
+        'Auf Bewertungen antworten'
+      ],
       isPrimary: false,
     );
     const premium = _PricingCard(
@@ -333,7 +354,8 @@ class _PricingCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       f,
-                      style: TextStyle(color: titleColor, fontSize: 15, height: 1.4),
+                      style: TextStyle(
+                          color: titleColor, fontSize: 15, height: 1.4),
                     ),
                   ),
                 ],
@@ -366,7 +388,8 @@ class _CtaSection extends StatelessWidget {
         border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: ContentBand(
-        padding: EdgeInsets.symmetric(vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
+        padding: EdgeInsets.symmetric(
+            vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -382,7 +405,8 @@ class _CtaSection extends StatelessWidget {
             const SizedBox(height: AppLayout.s16),
             const Text(
               'Erstelle jetzt dein kostenloses Betriebsprofil.',
-              style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+              style:
+                  TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
             ),
             const SizedBox(height: AppLayout.s32),
             ElevatedButton(
