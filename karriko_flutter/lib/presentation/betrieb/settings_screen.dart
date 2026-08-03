@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
-import '../common/app_bar_widget.dart';
+import '../common/app_page.dart';
 
 class BetriebSettingsScreen extends ConsumerStatefulWidget {
   const BetriebSettingsScreen({super.key});
@@ -19,115 +19,176 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = ref.watch(authProvider);
+    final user = ref.watch(authProvider).user;
 
-    return Scaffold(
-      appBar: const KarrikoAppBar(title: 'Einstellungen'),
-      drawer: const KarrikoDrawer(),
-      body: ListView(
-        children: [
-          _SectionHeader('Konto'),
-          ListTile(
-            leading: const Icon(Icons.business_outlined, color: AppColors.textSecondary),
-            title: const Text('Unternehmensprofil'),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () => context.go('/betrieb-profile'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.lock_outline, color: AppColors.textSecondary),
-            title: const Text('Passwort ändern'),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () => context.go('/forgot-password'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.email_outlined, color: AppColors.textSecondary),
-            title: const Text('Kontakt-E-Mail'),
-            subtitle: Text(auth.user?.email ?? ''),
-          ),
-          const Divider(),
-          _SectionHeader('Abonnement'),
-          ListTile(
-            leading: const Icon(Icons.card_membership_outlined, color: AppColors.textSecondary),
-            title: const Text('Abonnement verwalten'),
-            subtitle: const Text('Aktuell: Basis (Kostenlos)'),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () => context.go('/subscription'),
-          ),
-          const Divider(),
-          _SectionHeader('Benachrichtigungen'),
-          SwitchListTile(
-            secondary: const Icon(Icons.star_outline, color: AppColors.textSecondary),
-            title: const Text('Neue Bewertungen'),
-            subtitle: const Text('E-Mail bei neuen Bewertungen.'),
-            value: _emailNewReviews,
-            activeColor: AppColors.primary,
-            onChanged: (v) => setState(() => _emailNewReviews = v),
-          ),
-          SwitchListTile(
-            secondary: const Icon(Icons.summarize_outlined, color: AppColors.textSecondary),
-            title: const Text('Wöchentlicher Digest'),
-            subtitle: const Text('Zusammenfassung jede Woche.'),
-            value: _emailWeeklyDigest,
-            activeColor: AppColors.primary,
-            onChanged: (v) => setState(() => _emailWeeklyDigest = v),
-          ),
-          SwitchListTile(
-            secondary: const Icon(Icons.campaign_outlined, color: AppColors.textSecondary),
-            title: const Text('Marketing-E-Mails'),
-            value: _emailMarketing,
-            activeColor: AppColors.primary,
-            onChanged: (v) => setState(() => _emailMarketing = v),
-          ),
-          const Divider(),
-          _SectionHeader('API'),
-          ListTile(
-            leading: const Icon(Icons.code, color: AppColors.textSecondary),
-            title: const Text('API-Schlüssel'),
-            subtitle: const Text('Nur in Premium verfügbar.'),
-            trailing: const Icon(Icons.lock, size: 16, color: AppColors.textMuted),
-          ),
-          const Divider(),
-          _SectionHeader('Rechtliches'),
-          ListTile(
-            leading: const Icon(Icons.gavel_outlined, color: AppColors.textSecondary),
-            title: const Text('Datenschutzerklärung'),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () => context.go('/datenschutz'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.article_outlined, color: AppColors.textSecondary),
-            title: const Text('AGB'),
-            trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () => context.go('/agb'),
-          ),
-          const Divider(),
-          _SectionHeader('Konto verwalten'),
-          ListTile(
-            leading: const Icon(Icons.logout, color: AppColors.textSecondary),
-            title: const Text('Abmelden'),
-            onTap: () {
-              ref.read(authProvider.notifier).signOut();
-              context.go('/');
-            },
-          ),
-          const SizedBox(height: 32),
-        ],
-      ),
+    return AppPage(
+      appBarTitle: 'Einstellungen',
+      eyebrow: 'EINSTELLUNGEN',
+      title: 'Konto, Tarif\nund Benachrichtigungen.',
+      lede: user?.companyName?.isNotEmpty == true
+          ? 'Einstellungen für ${user!.companyName}'
+          : 'Alles rund um deinen Betriebszugang.',
+      children: [
+        const SectionLabel('Konto'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.business_outlined,
+              title: 'Unternehmensprofil',
+              subtitle: 'Angaben, Beschreibung und Standort',
+              onTap: () => context.go('/betrieb-profile'),
+            ),
+            AppRow(
+              icon: Icons.lock_outline,
+              title: 'Passwort ändern',
+              subtitle: 'Wir schicken dir einen Link per E-Mail',
+              onTap: () => context.go('/forgot-password'),
+            ),
+            AppRow(
+              icon: Icons.mail_outline,
+              title: 'Kontakt-E-Mail',
+              value: user?.email ?? '–',
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Team & Tarif'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.group_outlined,
+              title: 'Team',
+              subtitle: 'Zugriffe im Unternehmen verwalten',
+              onTap: () => context.go('/team'),
+            ),
+            AppRow(
+              icon: Icons.card_membership_outlined,
+              title: 'Abonnement',
+              subtitle: 'Aktuell: Basis (kostenlos)',
+              onTap: () => context.go('/subscription'),
+            ),
+            AppRow(
+              icon: Icons.flag_outlined,
+              title: 'Bewertungen melden',
+              subtitle: 'Regelverstösse prüfen lassen',
+              onTap: () => context.go('/reports'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Benachrichtigungen'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppSwitchRow(
+              icon: Icons.star_outline,
+              title: 'Neue Bewertungen',
+              subtitle: 'E-Mail bei jeder neuen Bewertung',
+              value: _emailNewReviews,
+              onChanged: (v) => setState(() => _emailNewReviews = v),
+            ),
+            AppSwitchRow(
+              icon: Icons.summarize_outlined,
+              title: 'Wöchentlicher Digest',
+              subtitle: 'Zusammenfassung jeden Montag',
+              value: _emailWeeklyDigest,
+              onChanged: (v) => setState(() => _emailWeeklyDigest = v),
+            ),
+            AppSwitchRow(
+              icon: Icons.campaign_outlined,
+              title: 'Produktneuigkeiten',
+              subtitle: 'Neue Funktionen und Tipps',
+              value: _emailMarketing,
+              onChanged: (v) => setState(() => _emailMarketing = v),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s16),
+        const _NotPersistedHint(),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Schnittstelle'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.code,
+              title: 'API-Schlüssel',
+              subtitle: 'Teil des Premium-Tarifs',
+              value: 'Gesperrt',
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Rechtliches'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.shield_outlined,
+              title: 'Datenschutzerklärung',
+              onTap: () => context.go('/datenschutz'),
+            ),
+            AppRow(
+              icon: Icons.article_outlined,
+              title: 'AGB',
+              onTap: () => context.go('/agb'),
+            ),
+            AppRow(
+              icon: Icons.help_outline,
+              title: 'Häufige Fragen',
+              onTap: () => context.go('/faq'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Konto verwalten'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.logout,
+              title: 'Abmelden',
+              subtitle: 'Auf diesem Gerät',
+              onTap: () async {
+                await ref.read(authProvider.notifier).signOut();
+                if (context.mounted) context.go('/');
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  const _SectionHeader(this.title);
+/// Solange die Schalter nicht gespeichert werden, wird das offen gesagt.
+class _NotPersistedHint extends StatelessWidget {
+  const _NotPersistedHint();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-      child: Text(title,
-          style: const TextStyle(
-              color: AppColors.textMuted, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+    return Container(
+      padding: const EdgeInsets.all(AppLayout.s16),
+      decoration: const BoxDecoration(
+        color: AppColors.paper,
+        border: Border(left: BorderSide(color: AppColors.line, width: 3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
+          const SizedBox(width: AppLayout.s8),
+          Expanded(
+            child: Text(
+              'Diese Schalter werden noch nicht gespeichert und stehen nach dem '
+              'Neuladen wieder auf dem Ausgangswert.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

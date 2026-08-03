@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/app_theme.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
-import '../common/app_bar_widget.dart';
+import '../../providers/auth_provider.dart';
+import '../common/app_page.dart';
 
 class BetriebProfileScreen extends ConsumerStatefulWidget {
   const BetriebProfileScreen({super.key});
@@ -14,12 +16,19 @@ class BetriebProfileScreen extends ConsumerStatefulWidget {
 
 class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController(text: 'Musterbetrieb GmbH');
+  final _nameCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   final _websiteCtrl = TextEditingController();
   final _cityCtrl = TextEditingController();
   String? _industry;
   bool _editing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Echter Unternehmensname aus dem Konto statt eines erfundenen Beispiels.
+    _nameCtrl.text = ref.read(authProvider).user?.companyName ?? '';
+  }
 
   @override
   void dispose() {
@@ -30,158 +39,152 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const KarrikoAppBar(title: 'Unternehmensprofil'),
-      drawer: const KarrikoDrawer(),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 3,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _ProfileHeader(),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Text('Profildaten', style: Theme.of(context).textTheme.headlineSmall),
-                      const Spacer(),
-                      if (!_editing)
-                        TextButton.icon(
-                          icon: const Icon(Icons.edit, size: 16),
-                          label: const Text('Bearbeiten'),
-                          onPressed: () => setState(() => _editing = true),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  _editing
-                      ? Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                controller: _nameCtrl,
-                                decoration: const InputDecoration(labelText: 'Unternehmensname'),
-                                validator: (v) => Validators.required(v, label: 'Name'),
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _descCtrl,
-                                maxLines: 4,
-                                decoration: const InputDecoration(
-                                  labelText: 'Beschreibung',
-                                  alignLabelWithHint: true,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              DropdownButtonFormField<String>(
-                                value: _industry,
-                                decoration: const InputDecoration(labelText: 'Branche'),
-                                items: AppConstants.industries
-                                    .where((i) => i != 'Alle Branchen')
-                                    .map((i) => DropdownMenuItem(value: i, child: Text(i)))
-                                    .toList(),
-                                onChanged: (v) => setState(() => _industry = v),
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _cityCtrl,
-                                decoration: const InputDecoration(labelText: 'Stadt'),
-                              ),
-                              const SizedBox(height: 12),
-                              TextFormField(
-                                controller: _websiteCtrl,
-                                decoration: const InputDecoration(labelText: 'Website'),
-                                validator: Validators.url,
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () => setState(() => _editing = false),
-                                      child: const Text('Abbrechen'),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          setState(() => _editing = false);
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Profil gespeichert!')));
-                                        }
-                                      },
-                                      child: const Text('Speichern'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
-                      : Column(
-                          children: [
-                            _InfoRow('Name', _nameCtrl.text.isNotEmpty ? _nameCtrl.text : '–'),
-                            _InfoRow('Branche', _industry ?? '–'),
-                            _InfoRow('Stadt', _cityCtrl.text.isNotEmpty ? _cityCtrl.text : '–'),
-                            _InfoRow('Website', _websiteCtrl.text.isNotEmpty ? _websiteCtrl.text : '–'),
-                            if (_descCtrl.text.isNotEmpty) ...[
-                              const SizedBox(height: 16),
-                              Text('Beschreibung', style: Theme.of(context).textTheme.headlineSmall),
-                              const SizedBox(height: 8),
-                              Text(_descCtrl.text, style: Theme.of(context).textTheme.bodyLarge),
-                            ],
-                          ],
-                        ),
-                ],
-              ),
-            ),
-          ),
-        ],
+  void _cancel() {
+    setState(() {
+      _nameCtrl.text = ref.read(authProvider).user?.companyName ?? '';
+      _editing = false;
+    });
+  }
+
+  void _save() {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _editing = false);
+
+    // Bewusst keine Erfolgsmeldung: CompanyRepository.updateCompanyProfile wird
+    // von hier noch nicht aufgerufen, weil dem Betriebskonto die Verknüpfung zu
+    // einem companies-Dokument fehlt. Vorher stand hier „Profil gespeichert!",
+    // ohne dass etwas gespeichert wurde.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.ink,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 6),
+        content: const Text(
+          'Das Speichern ist noch nicht angebunden – deine Eingaben gelten nur '
+          'für diese Sitzung.',
+          style: TextStyle(color: AppColors.paper),
+        ),
       ),
     );
   }
-}
 
-class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final user = ref.watch(authProvider).user;
+    final name = _nameCtrl.text.trim();
+
+    return AppPage(
+      appBarTitle: 'Unternehmensprofil',
+      eyebrow: 'UNTERNEHMENSPROFIL',
+      title: name.isNotEmpty ? name : 'Dein Unternehmen',
+      lede: user?.email,
+      headerAction: _editing
+          ? null
+          : OutlinedButton.icon(
+              onPressed: () => setState(() => _editing = true),
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              label: const Text('Bearbeiten'),
+            ),
       children: [
-        Container(
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-            color: AppColors.lightGreen,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
+        const _NotConnectedHint(),
+        const SizedBox(height: AppLayout.s32),
+        const SectionLabel('Unternehmensdaten'),
+        const SizedBox(height: AppLayout.s16),
+        if (_editing)
+          _EditForm(
+            formKey: _formKey,
+            nameCtrl: _nameCtrl,
+            descCtrl: _descCtrl,
+            cityCtrl: _cityCtrl,
+            websiteCtrl: _websiteCtrl,
+            industry: _industry,
+            onIndustry: (v) => setState(() => _industry = v),
+            onCancel: _cancel,
+            onSave: _save,
+          )
+        else ...[
+          AppRowGroup(
+            children: [
+              AppRow(
+                icon: Icons.business_outlined,
+                title: 'Unternehmensname',
+                value: name.isNotEmpty ? name : '–',
+              ),
+              AppRow(
+                icon: Icons.category_outlined,
+                title: 'Branche',
+                value: _industry ?? '–',
+              ),
+              AppRow(
+                icon: Icons.place_outlined,
+                title: 'Standort',
+                value: _cityCtrl.text.trim().isNotEmpty ? _cityCtrl.text.trim() : '–',
+              ),
+              AppRow(
+                icon: Icons.link,
+                title: 'Website',
+                value:
+                    _websiteCtrl.text.trim().isNotEmpty ? _websiteCtrl.text.trim() : '–',
+              ),
+            ],
           ),
-          child: const Icon(Icons.business, size: 36, color: AppColors.primary),
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Musterbetrieb GmbH', style: Theme.of(context).textTheme.headlineMedium),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight,
-                    borderRadius: BorderRadius.circular(100),
+          const SizedBox(height: AppLayout.s32),
+          const SectionLabel('Beschreibung'),
+          const SizedBox(height: AppLayout.s16),
+          AppCard(
+            child: Text(
+              _descCtrl.text.trim().isNotEmpty
+                  ? _descCtrl.text.trim()
+                  : 'Noch keine Beschreibung hinterlegt. Erzähl Azubis, was deine '
+                      'Ausbildung ausmacht.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    height: 1.6,
+                    color: _descCtrl.text.trim().isNotEmpty
+                        ? AppColors.ink
+                        : AppColors.muted,
                   ),
-                  child: const Text('Betrieb', style: TextStyle(color: AppColors.primaryDark, fontSize: 11, fontWeight: FontWeight.w600)),
-                ),
-              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Ansprechpartner'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.person_outline,
+              title: 'Name',
+              value: user?.fullName.isNotEmpty == true ? user!.fullName : '–',
+            ),
+            AppRow(
+              icon: Icons.mail_outline,
+              title: 'E-Mail',
+              value: user?.email ?? '–',
+            ),
+            AppRow(
+              icon: Icons.verified_outlined,
+              title: 'E-Mail bestätigt',
+              value: (user?.emailVerified ?? false) ? 'Ja' : 'Nein',
+              onTap: (user?.emailVerified ?? false)
+                  ? null
+                  : () => context.go('/verify-email'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Weiter zu'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.rate_review_outlined,
+              title: 'Bewertungen',
+              onTap: () => context.go('/betrieb-reviews'),
+            ),
+            AppRow(
+              icon: Icons.tune,
+              title: 'Einstellungen',
+              onTap: () => context.go('/betrieb-settings'),
             ),
           ],
         ),
@@ -190,20 +193,175 @@ class _ProfileHeader extends StatelessWidget {
   }
 }
 
-class _InfoRow extends StatelessWidget {
+class _EditForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController nameCtrl;
+  final TextEditingController descCtrl;
+  final TextEditingController cityCtrl;
+  final TextEditingController websiteCtrl;
+  final String? industry;
+  final ValueChanged<String?> onIndustry;
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
+
+  const _EditForm({
+    required this.formKey,
+    required this.nameCtrl,
+    required this.descCtrl,
+    required this.cityCtrl,
+    required this.websiteCtrl,
+    required this.industry,
+    required this.onIndustry,
+    required this.onCancel,
+    required this.onSave,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Form(
+        key: formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _Labeled(
+              label: 'Unternehmensname',
+              child: TextFormField(
+                controller: nameCtrl,
+                textInputAction: TextInputAction.next,
+                style: const TextStyle(fontSize: 16, color: AppColors.ink),
+                validator: (v) => Validators.required(v, label: 'Unternehmensname'),
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            _Labeled(
+              label: 'Beschreibung',
+              child: TextFormField(
+                controller: descCtrl,
+                maxLines: 4,
+                style: const TextStyle(fontSize: 16, color: AppColors.ink),
+                decoration: const InputDecoration(
+                  hintText: 'Was macht die Ausbildung bei euch aus?',
+                  alignLabelWithHint: true,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            _Labeled(
+              label: 'Branche',
+              child: DropdownButtonFormField<String>(
+                initialValue: industry,
+                style: const TextStyle(fontSize: 16, color: AppColors.ink),
+                items: AppConstants.industries
+                    .where((i) => i != 'Alle Branchen')
+                    .map((i) => DropdownMenuItem(value: i, child: Text(i)))
+                    .toList(),
+                onChanged: onIndustry,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            _Labeled(
+              label: 'Standort',
+              child: TextFormField(
+                controller: cityCtrl,
+                textInputAction: TextInputAction.next,
+                style: const TextStyle(fontSize: 16, color: AppColors.ink),
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            _Labeled(
+              label: 'Website',
+              child: TextFormField(
+                controller: websiteCtrl,
+                keyboardType: TextInputType.url,
+                textInputAction: TextInputAction.done,
+                style: const TextStyle(fontSize: 16, color: AppColors.ink),
+                decoration: const InputDecoration(hintText: 'https://'),
+                validator: Validators.url,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s32),
+            Wrap(
+              spacing: AppLayout.s16,
+              runSpacing: AppLayout.s16,
+              children: [
+                SizedBox(
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: onCancel,
+                    child: const Text('Abbrechen'),
+                  ),
+                ),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: onSave,
+                    child: const Text('Übernehmen'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Labeled extends StatelessWidget {
   final String label;
-  final String value;
-  const _InfoRow(this.label, this.value);
+  final Widget child;
+
+  const _Labeled({required this.label, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return MergeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+          ),
+          const SizedBox(height: AppLayout.s8),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+/// Macht transparent, dass die Unternehmensdaten noch nicht gespeichert werden.
+class _NotConnectedHint extends StatelessWidget {
+  const _NotConnectedHint();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.border))),
+      padding: const EdgeInsets.all(AppLayout.s16),
+      decoration: const BoxDecoration(
+        color: AppColors.paper,
+        border: Border(left: BorderSide(color: AppColors.line, width: 3)),
+      ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 120, child: Text(label, style: Theme.of(context).textTheme.bodySmall)),
-          Text(value, style: Theme.of(context).textTheme.bodyLarge),
+          const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
+          const SizedBox(width: AppLayout.s8),
+          Expanded(
+            child: Text(
+              'Die Unternehmensdaten werden noch nicht dauerhaft gespeichert. '
+              'Änderungen gelten nur für diese Sitzung.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
         ],
       ),
     );
