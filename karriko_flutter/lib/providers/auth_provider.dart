@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/models/user_model.dart';
 import '../data/repositories/auth_repository.dart';
 
@@ -56,11 +55,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: 'Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.',
+        error: _message(e, 'Anmeldung fehlgeschlagen.'),
         clearUser: true,
       );
     }
   }
+
+  /// Gibt die Meldung aus [AuthFailure] durch. Nur wenn keine vorliegt, greift
+  /// der allgemeine Text – eine pauschale Meldung über falsche Zugangsdaten
+  /// führt sonst in die Irre, wenn die eigentliche Ursache eine andere ist.
+  String _message(Object error, String fallback) =>
+      error is AuthFailure ? error.message : fallback;
 
   Future<void> registerAzubi({
     required String email,
@@ -82,7 +87,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Registrierung fehlgeschlagen: ${e.toString()}');
+      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
@@ -108,7 +113,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Registrierung fehlgeschlagen: ${e.toString()}');
+      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
@@ -155,12 +160,4 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 
 final currentUserProvider = Provider<UserModel?>((ref) {
   return ref.watch(authProvider).user;
-});
-
-final authStateChangesProvider = StreamProvider<AuthState>((ref) {
-  return Supabase.instance.client.auth.onAuthStateChange.asyncMap((_) async {
-    final repo = ref.read(authRepositoryProvider);
-    final user = await repo.getCurrentUser();
-    return AuthState(user: user);
-  });
 });

@@ -47,7 +47,7 @@ class _HomeSearchBarState extends ConsumerState<HomeSearchBar> {
 
     return Column(
       children: [
-        // search-row: bordered container with input + red button
+        // search-row: bordered container with input + red button (kept square)
         Container(
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.ink, width: 2),
@@ -133,11 +133,11 @@ class _SuggestionList extends StatelessWidget {
       margin: const EdgeInsets.only(top: 12),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.98),
+        color: Colors.white.withValues(alpha: 0.98),
         border: Border.all(color: AppColors.line),
         boxShadow: [
           BoxShadow(
-            color: AppColors.ink.withOpacity(0.12),
+            color: AppColors.ink.withValues(alpha: 0.12),
             blurRadius: 40,
             offset: const Offset(0, 18),
           ),
@@ -170,75 +170,6 @@ class _SuggestionList extends StatelessWidget {
               ),
             )
             .toList(),
-      ),
-    );
-  }
-}
-
-class SearchFilterBar extends StatelessWidget {
-  final String selectedIndustry;
-  final ValueChanged<String> onIndustryChanged;
-  final String searchQuery;
-  final ValueChanged<String> onQueryChanged;
-  final VoidCallback onSearch;
-
-  const SearchFilterBar({
-    super.key,
-    required this.selectedIndustry,
-    required this.onIndustryChanged,
-    required this.searchQuery,
-    required this.onQueryChanged,
-    required this.onSearch,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final industries = ['Alle Branchen', 'Handwerk', 'IT & Technik', 'Kaufmännisch', 'Gesundheit & Pflege', 'Industrie'];
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
-      ),
-      child: Column(
-        children: [
-          TextField(
-            onChanged: onQueryChanged,
-            onSubmitted: (_) => onSearch(),
-            decoration: const InputDecoration(
-              hintText: 'Betrieb oder Beruf suchen ...',
-              prefixIcon: Icon(Icons.search, color: AppColors.textMuted),
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 36,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: industries.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
-              itemBuilder: (_, i) {
-                final selected = industries[i] == selectedIndustry;
-                return FilterChip(
-                  label: Text(industries[i]),
-                  selected: selected,
-                  onSelected: (_) => onIndustryChanged(industries[i]),
-                  selectedColor: AppColors.ink,
-                  checkmarkColor: Colors.white,
-                  labelStyle: TextStyle(
-                    color: selected ? Colors.white : AppColors.muted,
-                    fontSize: 12,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                  ),
-                  side: BorderSide(
-                    color: selected ? AppColors.primary : AppColors.border,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

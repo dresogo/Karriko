@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
-import '../../data/services/supabase_service.dart';
+import '../../data/repositories/auth_repository.dart';
 
 class VerifyEmailScreen extends ConsumerStatefulWidget {
   const VerifyEmailScreen({super.key});
@@ -21,7 +21,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     if (email == null) return;
     setState(() => _isResending = true);
     try {
-      await SupabaseService.resendVerificationEmail(email);
+      await AuthRepository().resendVerificationEmail();
       if (mounted) setState(() { _isResending = false; _resent = true; });
     } catch (_) {
       if (mounted) setState(() => _isResending = false);

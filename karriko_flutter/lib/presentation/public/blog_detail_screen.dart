@@ -10,6 +10,7 @@ class BlogDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(),
+      drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(

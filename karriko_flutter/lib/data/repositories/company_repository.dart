@@ -1,8 +1,11 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart' as aw;
+import '../../core/constants/appwrite_constants.dart';
 import '../models/company_model.dart';
-import '../services/supabase_service.dart';
+import '../services/appwrite_service.dart';
 
 class CompanyRepository {
-  final _client = SupabaseService.client;
+  Databases get _db => Databases(AppwriteService.client);
 
   Future<List<CompanyModel>> searchCompanies({
     String? query,
@@ -12,64 +15,72 @@ class CompanyRepository {
     int limit = 20,
     int offset = 0,
   }) async {
-    var q = _client.from('companies').select();
-
+    final queries = <String>[
+      Query.orderDesc('average_rating'),
+      Query.limit(limit),
+      Query.offset(offset),
+    ];
     if (query != null && query.isNotEmpty) {
-      q = q.ilike('name', '%$query%');
+      queries.add(Query.search('name', query));
     }
     if (industry != null && industry != 'Alle Branchen') {
-      q = q.eq('industry', industry);
+      queries.add(Query.equal('industry', industry));
     }
     if (city != null && city.isNotEmpty) {
-      q = q.ilike('city', '%$city%');
+      queries.add(Query.search('city', city));
     }
     if (minRating != null) {
-      q = q.gte('average_rating', minRating);
+      queries.add(Query.greaterThanEqual('average_rating', minRating));
     }
 
-    final data = await q
-        .order('average_rating', ascending: false)
-        .range(offset, offset + limit - 1);
-
-    return (data as List).map((e) => CompanyModel.fromJson(e as Map<String, dynamic>)).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      queries: queries,
+    );
+    return result.documents.map((d) => CompanyModel.fromJson(_toMap(d))).toList();
   }
 
   Future<CompanyModel> getCompanyBySlug(String slug) async {
-    final data = await _client
-        .from('companies')
-        .select()
-        .eq('slug', slug)
-        .single();
-    return CompanyModel.fromJson(data);
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      queries: [Query.equal('slug', slug), Query.limit(1)],
+    );
+    if (result.documents.isEmpty) throw Exception('Unternehmen nicht gefunden');
+    return CompanyModel.fromJson(_toMap(result.documents.first));
   }
 
   Future<CompanyModel> getCompanyById(String id) async {
-    final data = await _client
-        .from('companies')
-        .select()
-        .eq('id', id)
-        .single();
-    return CompanyModel.fromJson(data);
+    final doc = await _db.getDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      documentId: id,
+    );
+    return CompanyModel.fromJson(_toMap(doc));
   }
 
   Future<List<CompanyModel>> getFeaturedCompanies({int limit = 6}) async {
-    final data = await _client
-        .from('companies')
-        .select()
-        .eq('is_premium', true)
-        .order('average_rating', ascending: false)
-        .limit(limit);
-    return (data as List).map((e) => CompanyModel.fromJson(e as Map<String, dynamic>)).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      queries: [
+        Query.equal('is_premium', true),
+        Query.orderDesc('average_rating'),
+        Query.limit(limit),
+      ],
+    );
+    return result.documents.map((d) => CompanyModel.fromJson(_toMap(d))).toList();
   }
 
   Future<List<String>> getSearchSuggestions(String query) async {
     if (query.length < 2) return [];
-    final data = await _client
-        .from('companies')
-        .select('name')
-        .ilike('name', '%$query%')
-        .limit(5);
-    return (data as List).map((e) => e['name'] as String).toList();
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      queries: [Query.search('name', query), Query.limit(5)],
+    );
+    return result.documents.map((d) => d.data['name'] as String).toList();
   }
 
   Future<CompanyModel> updateCompanyProfile({
@@ -82,50 +93,92 @@ class CompanyRepository {
     String? country,
     String? industry,
   }) async {
-    await _client.from('companies').update({
-      if (name != null) 'name': name,
-      if (description != null) 'description': description,
-      if (website != null) 'website': website,
-      if (logoUrl != null) 'logo_url': logoUrl,
-      if (city != null) 'city': city,
-      if (country != null) 'country': country,
-      if (industry != null) 'industry': industry,
-    }).eq('id', companyId);
+    await _db.updateDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.companiesCollection,
+      documentId: companyId,
+      data: {
+        if (name != null) 'name': name,
+        if (description != null) 'description': description,
+        if (website != null) 'website': website,
+        if (logoUrl != null) 'logo_url': logoUrl,
+        if (city != null) 'city': city,
+        if (country != null) 'country': country,
+        if (industry != null) 'industry': industry,
+      },
+    );
     return getCompanyById(companyId);
   }
 
   Future<void> bookmarkCompany(String userId, String companyId) async {
-    await _client.from('bookmarks').upsert({
-      'user_id': userId,
-      'company_id': companyId,
-    });
+    final existing = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      queries: [
+        Query.equal('user_id', userId),
+        Query.equal('company_id', companyId),
+        Query.limit(1),
+      ],
+    );
+    if (existing.documents.isNotEmpty) return;
+    await _db.createDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      documentId: ID.unique(),
+      data: {'user_id': userId, 'company_id': companyId},
+      permissions: [
+        Permission.read(Role.user(userId)),
+        Permission.delete(Role.user(userId)),
+      ],
+    );
   }
 
   Future<void> removeBookmark(String userId, String companyId) async {
-    await _client
-        .from('bookmarks')
-        .delete()
-        .eq('user_id', userId)
-        .eq('company_id', companyId);
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      queries: [
+        Query.equal('user_id', userId),
+        Query.equal('company_id', companyId),
+        Query.limit(1),
+      ],
+    );
+    if (result.documents.isEmpty) return;
+    await _db.deleteDocument(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      documentId: result.documents.first.$id,
+    );
   }
 
   Future<List<CompanyModel>> getBookmarkedCompanies(String userId) async {
-    final data = await _client
-        .from('bookmarks')
-        .select('companies(*)')
-        .eq('user_id', userId);
-    return (data as List)
-        .map((e) => CompanyModel.fromJson(e['companies'] as Map<String, dynamic>))
-        .toList();
+    final bookmarks = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      queries: [Query.equal('user_id', userId), Query.limit(100)],
+    );
+    final companies = await Future.wait(
+      bookmarks.documents.map((b) => getCompanyById(b.data['company_id'] as String)),
+    );
+    return companies;
   }
 
   Future<bool> isBookmarked(String userId, String companyId) async {
-    final data = await _client
-        .from('bookmarks')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('company_id', companyId)
-        .maybeSingle();
-    return data != null;
+    final result = await _db.listDocuments(
+      databaseId: AppwriteConstants.databaseId,
+      collectionId: AppwriteConstants.bookmarksCollection,
+      queries: [
+        Query.equal('user_id', userId),
+        Query.equal('company_id', companyId),
+        Query.limit(1),
+      ],
+    );
+    return result.documents.isNotEmpty;
   }
+
+  Map<String, dynamic> _toMap(aw.Document doc) => {
+        'id': doc.$id,
+        'created_at': doc.$createdAt,
+        ...doc.data,
+      };
 }

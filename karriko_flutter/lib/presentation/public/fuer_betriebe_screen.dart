@@ -28,37 +28,165 @@ class FuerBetriebeScreen extends StatelessWidget {
   }
 }
 
+// ─── Hero ────────────────────────────────────────────────────────────────────
+
 class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
-      padding: const EdgeInsets.all(40),
-      color: AppColors.darkGreen,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: ContentBand(
+        padding: EdgeInsets.symmetric(vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'FÜR AUSBILDUNGSBETRIEBE',
+              style: TextStyle(
+                color: AppColors.accent,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.32,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s16),
+            Text(
+              'Ausbildung als\nQualitätsmerkmal.',
+              style: TextStyle(
+                color: AppColors.ink,
+                fontSize: (width * 0.05).clamp(34.0, 60.0),
+                fontWeight: FontWeight.w800,
+                height: 0.98,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 620),
+              child: const Text(
+                'Verwalte dein Profil, verstehe Feedback und zeige Bewerbern, '
+                'warum dein Betrieb die richtige Wahl ist.',
+                style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+              ),
+            ),
+            const SizedBox(height: AppLayout.s32),
+            ElevatedButton(
+              onPressed: () => context.go('/register/betrieb'),
+              child: const Text('Jetzt registrieren'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Features ────────────────────────────────────────────────────────────────
+
+class _FeaturesSection extends StatelessWidget {
+  static const _features = [
+    (Icons.manage_accounts_outlined, 'Profil verwalten',
+        'Präsentiere deinen Betrieb mit Logo, Beschreibung und Ansprechpartnern.'),
+    (Icons.star_outline, 'Bewertungen einsehen',
+        'Erhalte detailliertes Feedback von aktuellen und ehemaligen Azubis.'),
+    (Icons.reply_outlined, 'Auf Bewertungen antworten',
+        'Reagiere professionell auf Kritik und zeige, dass du Feedback ernst nimmst.'),
+    (Icons.analytics_outlined, 'Analytics nutzen',
+        'Verstehe Trends und vergleiche dich mit anderen Betrieben deiner Branche.'),
+  ];
+
+  static const _gap = AppLayout.s24;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: ContentBand(
+        padding: const EdgeInsets.symmetric(vertical: AppLayout.s48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'WAS KARRIKO FÜR BETRIEBE BIETET',
+              style: TextStyle(
+                color: AppColors.muted,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.96,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final avail = constraints.maxWidth;
+                final cols = avail >= 640 ? 2 : 1;
+                final cardWidth = (avail - (cols - 1) * _gap) / cols;
+                return Wrap(
+                  spacing: _gap,
+                  runSpacing: _gap,
+                  children: [
+                    for (final f in _features)
+                      SizedBox(
+                        width: cardWidth,
+                        child: _FeatureCard(icon: f.$1, title: f.$2, description: f.$3),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FeatureCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _FeatureCard({required this.icon, required this.title, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minHeight: 168),
+      padding: const EdgeInsets.all(AppLayout.s24),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.line),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(100),
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: AppColors.audienceBeige,
+              border: Border.fromBorderSide(BorderSide(color: AppColors.line)),
             ),
-            child: const Text('Für Ausbildungsbetriebe',
-                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+            child: Icon(icon, size: 22, color: AppColors.ink),
           ),
-          const SizedBox(height: 16),
-          Text('Ausbildung als Qualitätsmerkmal.',
-              style: Theme.of(context).textTheme.displaySmall?.copyWith(color: Colors.white)),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppLayout.s16),
           Text(
-            'Verwalte dein Profil, verstehe Feedback und zeige Bewerbern, warum dein Betrieb die richtige Wahl ist.',
-            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, height: 1.5),
+            title,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+            ),
           ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: AppColors.darkGreen),
-            child: const Text('Jetzt registrieren'),
+          const SizedBox(height: AppLayout.s8),
+          Text(
+            description,
+            style: const TextStyle(color: AppColors.muted, fontSize: 15, height: 1.5),
           ),
         ],
       ),
@@ -66,86 +194,69 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-class _FeaturesSection extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    const features = [
-      (Icons.manage_accounts_outlined, 'Profil verwalten', 'Präsentiere deinen Betrieb mit Logo, Beschreibung und Ansprechpartnern.'),
-      (Icons.star_outline, 'Bewertungen einsehen', 'Erhalte detailliertes Feedback von aktuellen und ehemaligen Azubis.'),
-      (Icons.reply_outlined, 'Auf Bewertungen antworten', 'Reagiere professionell auf Kritik und zeige, dass du Feedback ernst nimmst.'),
-      (Icons.analytics_outlined, 'Analytics nutzen', 'Verstehe Trends und vergleiche dich mit anderen Betrieben deiner Branche.'),
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Was Karriko für Betriebe bietet', style: Theme.of(context).textTheme.headlineLarge),
-          const SizedBox(height: 24),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.2,
-            children: features.map((f) => Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(f.$1, size: 24, color: AppColors.primary),
-                  const SizedBox(height: 10),
-                  Text(f.$2, style: Theme.of(context).textTheme.labelLarge),
-                  const SizedBox(height: 6),
-                  Text(f.$3, style: Theme.of(context).textTheme.bodySmall, maxLines: 3, overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            )).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// ─── Pricing ─────────────────────────────────────────────────────────────────
 
 class _PricingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width >= 720;
+
+    const basis = _PricingCard(
+      name: 'BASIS',
+      price: 'Kostenlos',
+      features: ['Öffentliches Profil', 'Bewertungen einsehen', 'Auf Bewertungen antworten'],
+      isPrimary: false,
+    );
+    const premium = _PricingCard(
+      name: 'PREMIUM',
+      price: '49 €/Monat',
+      features: [
+        'Alles aus Basis',
+        'Detaillierte Analytics',
+        'Team-Verwaltung',
+        'Bewerbermanagement',
+        'Prioritäts-Support',
+      ],
+      isPrimary: true,
+    );
+
     return Container(
-      color: AppColors.background,
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Pläne & Preise', style: Theme.of(context).textTheme.headlineLarge),
-          const SizedBox(height: 20),
-          _PricingCard(
-            name: 'Basis',
-            price: 'Kostenlos',
-            features: const ['Öffentliches Profil', 'Bewertungen einsehen', 'Auf Bewertungen antworten'],
-            isPrimary: false,
-          ),
-          const SizedBox(height: 12),
-          _PricingCard(
-            name: 'Premium',
-            price: '49 €/Monat',
-            features: const [
-              'Alles aus Basis',
-              'Detaillierte Analytics',
-              'Team-Verwaltung',
-              'Bewerbermanagement',
-              'Prioritäts-Support',
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: ContentBand(
+        padding: const EdgeInsets.symmetric(vertical: AppLayout.s48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'PLÄNE & PREISE',
+              style: TextStyle(
+                color: AppColors.muted,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.96,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s24),
+            if (isWide)
+              const IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: basis),
+                    SizedBox(width: AppLayout.s24),
+                    Expanded(child: premium),
+                  ],
+                ),
+              )
+            else ...[
+              basis,
+              const SizedBox(height: AppLayout.s24),
+              premium,
             ],
-            isPrimary: true,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -166,62 +277,74 @@ class _PricingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bg = isPrimary ? AppColors.ink : AppColors.surface;
+    final titleColor = isPrimary ? Colors.white : AppColors.ink;
+    final mutedColor = isPrimary ? Colors.white70 : AppColors.muted;
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppLayout.s32),
       decoration: BoxDecoration(
-        color: isPrimary ? AppColors.primary : AppColors.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: isPrimary ? AppColors.primary : AppColors.border),
-        boxShadow: const [AppColors.cardShadow],
+        color: bg,
+        border: Border.all(color: isPrimary ? AppColors.ink : AppColors.line),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isPrimary)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: const Text('Empfohlen',
-                  style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
+          Text(
+            isPrimary ? 'EMPFOHLEN' : name,
+            style: TextStyle(
+              color: isPrimary ? AppColors.accent : mutedColor,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.96,
             ),
-          Text(name,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: isPrimary ? Colors.white : AppColors.textPrimary,
-              )),
-          const SizedBox(height: 4),
-          Text(price,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: isPrimary ? Colors.white : AppColors.primary,
-              )),
-          const SizedBox(height: 16),
+          ),
+          if (isPrimary) ...[
+            const SizedBox(height: AppLayout.s8),
+            Text(
+              name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.96,
+              ),
+            ),
+          ],
+          const SizedBox(height: AppLayout.s16),
+          Text(
+            price,
+            style: TextStyle(
+              color: titleColor,
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              height: 1.0,
+            ),
+          ),
+          const SizedBox(height: AppLayout.s24),
           ...features.map(
             (f) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(bottom: AppLayout.s8),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.check_circle, size: 16, color: isPrimary ? Colors.white : AppColors.success),
-                  const SizedBox(width: 8),
-                  Text(f, style: TextStyle(color: isPrimary ? Colors.white : AppColors.textPrimary, fontSize: 14)),
+                  const Icon(Icons.check, size: 18, color: AppColors.accent),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      f,
+                      style: TextStyle(color: titleColor, fontSize: 15, height: 1.4),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppLayout.s24),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isPrimary ? Colors.white : AppColors.primary,
-                foregroundColor: isPrimary ? AppColors.primary : Colors.white,
-              ),
+              onPressed: () => context.go('/register/betrieb'),
               child: Text(isPrimary ? 'Premium starten' : 'Kostenlos starten'),
             ),
           ),
@@ -231,28 +354,43 @@ class _PricingCard extends StatelessWidget {
   }
 }
 
+// ─── CTA ─────────────────────────────────────────────────────────────────────
+
 class _CtaSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Container(
-      margin: const EdgeInsets.all(24),
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: AppColors.lightGreen,
-        borderRadius: BorderRadius.circular(12),
+      decoration: const BoxDecoration(
+        color: AppColors.audienceBeige,
+        border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
-      child: Column(
-        children: [
-          Text('Bereit loszulegen?', style: Theme.of(context).textTheme.headlineLarge, textAlign: TextAlign.center),
-          const SizedBox(height: 8),
-          Text('Erstelle jetzt dein kostenloses Betriebsprofil.',
-              style: Theme.of(context).textTheme.bodyLarge, textAlign: TextAlign.center),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () => context.go('/register/betrieb'),
-            child: const Text('Jetzt registrieren'),
-          ),
-        ],
+      child: ContentBand(
+        padding: EdgeInsets.symmetric(vertical: width > 720 ? AppLayout.s64 : AppLayout.s48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Bereit loszulegen?',
+              style: TextStyle(
+                color: AppColors.ink,
+                fontSize: (width * 0.045).clamp(30.0, 48.0),
+                fontWeight: FontWeight.w800,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: AppLayout.s16),
+            const Text(
+              'Erstelle jetzt dein kostenloses Betriebsprofil.',
+              style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+            ),
+            const SizedBox(height: AppLayout.s32),
+            ElevatedButton(
+              onPressed: () => context.go('/register/betrieb'),
+              child: const Text('Jetzt registrieren'),
+            ),
+          ],
+        ),
       ),
     );
   }

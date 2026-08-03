@@ -15,6 +15,7 @@ class BetriebReviewsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Bewertungen'),
+      drawer: const KarrikoDrawer(),
       body: reviews.when(
         data: (list) => list.isEmpty
             ? const Center(

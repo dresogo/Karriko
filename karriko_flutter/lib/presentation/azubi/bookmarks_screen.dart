@@ -16,6 +16,7 @@ class BookmarksScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Merkliste'),
+      drawer: const KarrikoDrawer(),
       body: bookmarks.when(
         data: (companies) => companies.isEmpty
             ? Center(

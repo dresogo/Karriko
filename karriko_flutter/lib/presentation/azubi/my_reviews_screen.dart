@@ -18,6 +18,7 @@ class MyReviewsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Meine Bewertungen'),
+      drawer: const KarrikoDrawer(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.go('/reviews/new'),
         backgroundColor: AppColors.primary,

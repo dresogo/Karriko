@@ -9,6 +9,7 @@ class AnalyticsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Analytics'),
+      drawer: const KarrikoDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

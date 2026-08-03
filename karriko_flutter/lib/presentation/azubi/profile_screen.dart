@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/date_format.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
-import '../common/app_bar_widget.dart';
+import '../common/app_page.dart';
 
 class AzubiProfileScreen extends ConsumerStatefulWidget {
   const AzubiProfileScreen({super.key});
@@ -14,14 +16,18 @@ class AzubiProfileScreen extends ConsumerStatefulWidget {
 
 class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  late final _firstNameCtrl = TextEditingController();
-  late final _lastNameCtrl = TextEditingController();
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl = TextEditingController();
   bool _editing = false;
   bool _saved = false;
 
   @override
   void initState() {
     super.initState();
+    _resetFields();
+  }
+
+  void _resetFields() {
     final user = ref.read(authProvider).user;
     _firstNameCtrl.text = user?.firstName ?? '';
     _lastNameCtrl.text = user?.lastName ?? '';
@@ -37,10 +43,22 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     await ref.read(authProvider.notifier).updateProfile(
-      firstName: _firstNameCtrl.text.trim(),
-      lastName: _lastNameCtrl.text.trim(),
-    );
-    if (mounted) setState(() { _editing = false; _saved = true; });
+          firstName: _firstNameCtrl.text.trim(),
+          lastName: _lastNameCtrl.text.trim(),
+        );
+    if (!mounted) return;
+    final failed = ref.read(authProvider).error != null;
+    setState(() {
+      _editing = failed;
+      _saved = !failed;
+    });
+  }
+
+  void _cancel() {
+    // Verworfene Eingaben zurücksetzen, sonst stehen sie beim naechsten
+    // Bearbeiten wieder da.
+    _resetFields();
+    setState(() => _editing = false);
   }
 
   @override
@@ -48,112 +66,178 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
     final auth = ref.watch(authProvider);
     final user = auth.user;
 
-    return Scaffold(
-      appBar: const KarrikoAppBar(title: 'Mein Profil'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: AppColors.lightGreen,
-                    child: Text(
-                      user?.displayName.substring(0, 1).toUpperCase() ?? 'U',
-                      style: const TextStyle(color: AppColors.primaryDark, fontSize: 32, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(user?.displayName ?? '', style: Theme.of(context).textTheme.headlineMedium),
-                  Text(user?.email ?? '', style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const Text('Azubi', style: TextStyle(color: AppColors.primaryDark, fontSize: 12, fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
+    return AppPage(
+      appBarTitle: 'Mein Profil',
+      eyebrow: 'MEIN PROFIL',
+      title: user?.displayName ?? 'Profil',
+      lede: user?.email,
+      headerAction: _editing
+          ? null
+          : OutlinedButton.icon(
+              onPressed: () => setState(() {
+                _editing = true;
+                _saved = false;
+              }),
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              label: const Text('Bearbeiten'),
             ),
-            const SizedBox(height: 32),
-            if (_saved) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.lightGreen,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.check_circle, color: AppColors.success, size: 16),
-                    SizedBox(width: 8),
-                    Text('Profil gespeichert!', style: TextStyle(color: AppColors.darkGreen)),
-                  ],
-                ),
+      children: [
+        if (_saved) ...[
+          const _SavedBanner(),
+          const SizedBox(height: AppLayout.s24),
+        ],
+        if (auth.error != null) ...[
+          _ErrorBanner(auth.error!),
+          const SizedBox(height: AppLayout.s24),
+        ],
+        const SectionLabel('Profildaten'),
+        const SizedBox(height: AppLayout.s16),
+        if (_editing)
+          _EditForm(
+            formKey: _formKey,
+            firstNameCtrl: _firstNameCtrl,
+            lastNameCtrl: _lastNameCtrl,
+            isSaving: auth.isLoading,
+            onCancel: _cancel,
+            onSave: _save,
+          )
+        else
+          AppRowGroup(
+            children: [
+              AppRow(
+                icon: Icons.badge_outlined,
+                title: 'Vorname',
+                value: user?.firstName?.isNotEmpty == true ? user!.firstName! : '–',
               ),
-              const SizedBox(height: 16),
+              AppRow(
+                icon: Icons.badge_outlined,
+                title: 'Nachname',
+                value: user?.lastName?.isNotEmpty == true ? user!.lastName! : '–',
+              ),
+              AppRow(
+                icon: Icons.mail_outline,
+                title: 'E-Mail',
+                value: user?.email ?? '–',
+              ),
             ],
-            Row(
+          ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Konto'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.verified_outlined,
+              title: 'E-Mail bestätigt',
+              value: (user?.emailVerified ?? false) ? 'Ja' : 'Nein',
+              subtitle: (user?.emailVerified ?? false)
+                  ? null
+                  : 'Bestätige deine Adresse, um alle Bereiche zu nutzen.',
+              onTap: (user?.emailVerified ?? false) ? null : () => context.go('/verify-email'),
+            ),
+            AppRow(
+              icon: Icons.school_outlined,
+              title: 'Rolle',
+              value: (user?.isBetrieb ?? false) ? 'Betrieb' : 'Azubi',
+            ),
+            if (user != null)
+              AppRow(
+                icon: Icons.event_outlined,
+                title: 'Mitglied seit',
+                value: germanDate(user.createdAt),
+              ),
+          ],
+        ),
+        const SizedBox(height: AppLayout.s48),
+        const SectionLabel('Weiter zu'),
+        const SizedBox(height: AppLayout.s16),
+        AppRowGroup(
+          children: [
+            AppRow(
+              icon: Icons.rate_review_outlined,
+              title: 'Meine Bewertungen',
+              onTap: () => context.go('/my-reviews'),
+            ),
+            AppRow(
+              icon: Icons.tune,
+              title: 'Einstellungen',
+              onTap: () => context.go('/settings'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _EditForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController firstNameCtrl;
+  final TextEditingController lastNameCtrl;
+  final bool isSaving;
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
+
+  const _EditForm({
+    required this.formKey,
+    required this.firstNameCtrl,
+    required this.lastNameCtrl,
+    required this.isSaving,
+    required this.onCancel,
+    required this.onSave,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCard(
+      child: Form(
+        key: formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _Field(
+              label: 'Vorname',
+              controller: firstNameCtrl,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: AppLayout.s24),
+            _Field(
+              label: 'Nachname',
+              controller: lastNameCtrl,
+              textInputAction: TextInputAction.done,
+              onSubmitted: isSaving ? null : onSave,
+            ),
+            const SizedBox(height: AppLayout.s32),
+            // Umbruchfaehig statt zwei feste Haelften – bei grosser Schrift
+            // passen die Beschriftungen sonst nicht nebeneinander.
+            Wrap(
+              spacing: AppLayout.s16,
+              runSpacing: AppLayout.s16,
               children: [
-                Text('Profildaten', style: Theme.of(context).textTheme.headlineSmall),
-                const Spacer(),
-                if (!_editing)
-                  TextButton.icon(
-                    icon: const Icon(Icons.edit, size: 16),
-                    label: const Text('Bearbeiten'),
-                    onPressed: () => setState(() { _editing = true; _saved = false; }),
+                SizedBox(
+                  height: 48,
+                  child: OutlinedButton(
+                    onPressed: isSaving ? null : onCancel,
+                    child: const Text('Abbrechen'),
                   ),
+                ),
+                SizedBox(
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: isSaving ? null : onSave,
+                    child: isSaving
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white),
+                          )
+                        : const Text('Speichern'),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
-            _editing
-                ? Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _firstNameCtrl,
-                          decoration: const InputDecoration(labelText: 'Vorname'),
-                          validator: (v) => Validators.required(v, label: 'Vorname'),
-                        ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _lastNameCtrl,
-                          decoration: const InputDecoration(labelText: 'Nachname'),
-                          validator: (v) => Validators.required(v, label: 'Nachname'),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(child: OutlinedButton(
-                              onPressed: () => setState(() => _editing = false),
-                              child: const Text('Abbrechen'),
-                            )),
-                            const SizedBox(width: 12),
-                            Expanded(child: ElevatedButton(
-                              onPressed: auth.isLoading ? null : _save,
-                              child: auth.isLoading
-                                  ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                  : const Text('Speichern'),
-                            )),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                : Column(
-                    children: [
-                      _InfoRow('Vorname', user?.firstName ?? '–'),
-                      _InfoRow('Nachname', user?.lastName ?? '–'),
-                      _InfoRow('E-Mail', user?.email ?? '–'),
-                    ],
-                  ),
           ],
         ),
       ),
@@ -161,26 +245,114 @@ class _AzubiProfileScreenState extends ConsumerState<AzubiProfileScreen> {
   }
 }
 
-class _InfoRow extends StatelessWidget {
+class _Field extends StatelessWidget {
   final String label;
-  final String value;
-  const _InfoRow(this.label, this.value);
+  final TextEditingController controller;
+  final TextInputAction textInputAction;
+  final VoidCallback? onSubmitted;
+
+  const _Field({
+    required this.label,
+    required this.controller,
+    required this.textInputAction,
+    this.onSubmitted,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.border)),
-      ),
-      child: Row(
+    return MergeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: 120,
-            child: Text(label, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
           ),
-          Text(value, style: Theme.of(context).textTheme.bodyLarge),
+          const SizedBox(height: AppLayout.s8),
+          TextFormField(
+            controller: controller,
+            textInputAction: textInputAction,
+            style: const TextStyle(fontSize: 16, color: AppColors.ink),
+            validator: (v) => Validators.required(v, label: label),
+            onFieldSubmitted: onSubmitted == null ? null : (_) => onSubmitted!(),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _SavedBanner extends StatelessWidget {
+  const _SavedBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      child: Container(
+        padding: const EdgeInsets.all(AppLayout.s16),
+        decoration: const BoxDecoration(
+          color: AppColors.audienceBeige,
+          border: Border(left: BorderSide(color: AppColors.green, width: 3)),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.check, size: 18, color: AppColors.green),
+            const SizedBox(width: AppLayout.s8),
+            Expanded(
+              child: Text(
+                'Profil gespeichert.',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  final String message;
+
+  const _ErrorBanner(this.message);
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      container: true,
+      child: Container(
+        padding: const EdgeInsets.all(AppLayout.s16),
+        decoration: const BoxDecoration(
+          color: AppColors.paper,
+          border: Border(left: BorderSide(color: AppColors.accent, width: 3)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.error_outline, size: 18, color: AppColors.accentDark),
+            const SizedBox(width: AppLayout.s8),
+            Expanded(
+              child: Text(
+                message,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColors.ink, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -2,8 +2,7 @@ class AppConstants {
   static const appName = 'Karriko';
   static const appTagline = 'Bewertungsplattform für duale Ausbildung im DACH-Markt';
 
-  static const supabaseUrlEnvKey = 'SUPABASE_URL';
-  static const supabaseAnonKeyEnvKey = 'SUPABASE_ANON_KEY';
+  static const appwriteProjectIdEnvKey = 'APPWRITE_PROJECT_ID';
 
   static const roleAzubi = 'azubi';
   static const roleBetrieb = 'betrieb';
