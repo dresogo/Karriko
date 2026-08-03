@@ -1,257 +1,291 @@
 # Karriko – Statusbericht
 
-**Stand:** 2. August 2026 · Branch `redesign/swiss-style-search-fuer-betriebe`
-**Grundlage:** Vollständige Durchsicht von `karriko_flutter/lib`, automatisierter Layout-Sweep über alle 38 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections.
+**Stand:** 3. August 2026 · Erstfassung: 2. August 2026
+**Branch:** `redesign/swiss-style-search-fuer-betriebe`
+**Grundlage:** Neu gemessen — automatisierter Layout-Durchlauf über alle 37 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections, Analyzer- und Testlauf.
 
 ---
 
 ## Kurzfassung
 
-Das Grundgerüst steht: Routing, Auth, Datenmodelle und Repositories sind vorhanden und größtenteils sauber gebaut. Die öffentlichen Seiten sind auf das Swiss-Design umgestellt.
+Seit der Erstfassung ist die **Oberfläche** ein großes Stück vorangekommen: alle sechs Seiten des eingeloggten Bereichs, die dort täglich benutzt werden, laufen jetzt auf dem Swiss-Design, und vier Fehler in Navigation und Auth sind behoben, die Nutzer schlicht ausgesperrt haben.
 
-Der Bruch verläuft zwischen **Datenschicht und Oberfläche**. Es existieren Repository-Methoden, die keine einzige Seite aufruft — und es existieren Seiten, die dem Nutzer Erfolg melden, ohne irgendetwas zu speichern. Drei dieser Fälle sind ernst genug, um vor allem anderen behoben zu werden.
+Die **Datenschicht** steht dagegen fast unverändert da. Der Bruch zwischen Repositories und Oberfläche besteht weiter: `deleteAccount` und `updateCompanyProfile` haben nach wie vor null Aufrufer, und die Kernfunktion der Plattform — eine Bewertung schreiben — schreibt weiterhin in die Datenbank, aber auf eine Firma, die es nicht gibt.
 
-Der zweite große Block ist der eingeloggte Bereich: Dashboard, Profil, Analytics, Team, Abo und Berichte sind noch die ursprünglichen Entwürfe — altes Design, feste Layouts, überwiegend erfundene Zahlen.
+Was sich geändert hat: Die Stellen, die dem Nutzer Erfolg vorgespielt haben, tun das nicht mehr. Sie sagen jetzt, dass sie nicht angebunden sind. Das ist ehrlich, aber keine Lösung — die Arbeit steht noch aus.
 
-| Bereich | Zustand |
-|---|---|
-| Routing & Navigation | weitgehend fertig, zwei verwaiste Seiten |
-| Auth (Registrierung, Login, Verifizierung) | funktioniert, Layout bricht auf Mobil |
-| Öffentliche Seiten | Design fertig, Inhalte teils statisch |
-| Azubi-Bereich | Design alt, ein datenzerstörender Fehler |
-| Betrieb-Bereich | überwiegend Attrappe |
-| Datenschicht | solide, aber nicht überall angebunden |
-| Tests | 54 Tests, nur Login und Blog abgedeckt |
+| Bereich | 2. August | 3. August |
+|---|---|---|
+| Routing & Navigation | zwei verwaiste Seiten | **fertig**, alles verlinkt |
+| Auth (Login, Registrierung) | Layout bricht auf Mobil | **funktioniert**, Layout offen |
+| Öffentliche Seiten | Design fertig, Inhalte statisch | unverändert |
+| Azubi-Bereich | Design alt, ein Datenfehler | **Design neu**, Datenfehler offen |
+| Betrieb-Bereich | überwiegend Attrappe | **3 von 8 Seiten neu**, Rest Attrappe |
+| Datenschicht | nicht überall angebunden | unverändert |
+| Tests | 54 | **111** |
+| Layout-Befunde | 28 | **24** |
+| Analyzer-Hinweise | 86 | **67** |
 
 ---
 
-## 1. Kritische Fehler
+## 1. Erledigt seit der Erstfassung
 
-Diese vier täuschen den Nutzer aktiv oder schreiben falsche Daten. Sie sollten vor allem anderen kommen.
+### Fehler, die Nutzer ausgesperrt haben
 
-### 1.1 Bewertungen werden auf eine nicht existierende Firma geschrieben
+- **Weiterleitungsschleife bei unbestätigter E-Mail.** `/verify-email` stand in der Liste der Auth-Pfade und schickte jeden angemeldeten Nutzer aufs Dashboard, das ihn mangels Bestätigung sofort zurückwarf. Ergebnis: Dashboard, Profil und Einstellungen waren **überhaupt nicht erreichbar**, und die Bestätigungsseite selbst auch nicht. Jetzt Sonderfall vor der allgemeinen Regel.
+- **Sitzungskonflikt beim Login.** Nach einer abgebrochenen Registrierung blieb eine aktive Appwrite-Sitzung zurück. Jeder weitere Anmeldeversuch scheiterte an `user_session_already_exists` — gemeldet als „Bitte überprüfe deine Zugangsdaten". `signIn()` räumt jetzt vorher auf.
+- **Registrierung brach nach dem Konto-Anlegen ab.** Profildokument und Bestätigungsmail hingen in derselben ungeschützten Kette. Schlug einer der beiden fehl, meldete die App „Registrierung fehlgeschlagen", obwohl Konto und Sitzung längst existierten. Beide Schritte sind jetzt entkoppelt und melden ihr Scheitern in der Konsole.
+- **`/reviews/new` war nicht erreichbar.** Die Route stand hinter `/reviews/:id` und wurde vom Platzhalter geschluckt.
+- **Der Menü-Button der mobilen Kopfzeile lief auf 15 Seiten ins Leere**, weil dort kein `drawer` gesetzt war.
 
-`lib/presentation/azubi/new_review_screen.dart:240`
+### Fehlende Seiten
+
+| Seite | Route |
+|---|---|
+| Login-Auswahl (Azubi / Betrieb) | `/login` |
+| Login Azubi / Login Betrieb | `/login/azubi`, `/login/betrieb` |
+| Häufige Fragen | `/faq` |
+| Fragebogen „Fragen bewerten" | `/fragen-bewerten` |
+
+### Design
+
+Auf Swiss-Design umgestellt: Login (drei Seiten), Blog als Blog- und Neuigkeiten-Stream, Impressum/Datenschutz/AGB auf gemeinsamem Gerüst, Profil-Dropdown der Kopfzeile — und der komplette **tägliche Arbeitsbereich**: Azubi-Dashboard, -Profil, -Einstellungen sowie Betrieb-Dashboard, -Unternehmensprofil, -Einstellungen.
+
+Dabei entstand ein Baukasten in `presentation/common/app_page.dart` (`AppPage`, `AppCard`, `AppRowGroup`, `AppRow`, `AppSwitchRow`, `StatTile`, `AppEmptyState`), auf dem die restlichen Seiten aufsetzen können.
+
+### Weitere behobene Layoutfehler
+
+- Kopfzeile lief bei schmaler Breite über (Markenschriftzug ohne `Flexible`).
+- Footer lief ab 720 px über — vier Spalten in fester `Row`, jetzt `Wrap`. Betraf jede Seite mit Footer.
+- `/team` und `/reports` sind über Betriebs-Dashboard und -Einstellungen verlinkt; die Erreichbarkeitslücke ist geschlossen.
+
+### Selbst verursacht und behoben
+
+Ein Bulk-Edit über `Get-Content`/`Set-Content` (PowerShell 5.1 liest mit ANSI-Codepage) hat in 12 Dateien sämtliche Umlaute doppelt kodiert. Rückgängig gemacht, per `git diff` verifiziert. **Lehre:** keine Bulk-Edits mehr über diese Cmdlets.
+
+---
+
+## 2. Kritische Fehler — weiterhin offen
+
+### 2.1 Bewertungen werden auf eine nicht existierende Firma geschrieben
+
+`lib/presentation/azubi/new_review_screen.dart:240` — **unverändert**
 
 ```dart
 onTap: () => onSelect('placeholder-id', s),
 ```
 
-Bei der Betriebsauswahl im Bewertungs-Assistenten wird als Firmen-ID die Zeichenkette `placeholder-id` übergeben. Jede abgesendete Bewertung landet in der Datenbank mit `company_id: 'placeholder-id'` und taucht damit bei keinem Betrieb auf.
+Jede abgesendete Bewertung landet mit `company_id: 'placeholder-id'` in der Datenbank und taucht bei keinem Betrieb auf.
 
-**Ursache:** `CompanyRepository.getSearchSuggestions()` gibt nur `List<String>` mit Namen zurück, keine IDs.
+**Ursache:** `CompanyRepository.getSearchSuggestions()` liefert nur `List<String>` mit Namen, keine IDs.
 
-**Behebung:** Vorschlagsabfrage auf `List<CompanyModel>` (oder Name+ID-Paare) umstellen und die echte ID durchreichen. Betrifft `company_repository.dart:76`, `company_provider.dart:134` und den Screen.
+**Behebung:** Vorschlagsabfrage auf Name+ID umstellen und die echte ID durchreichen — `company_repository.dart:76`, `company_provider.dart:134`, Screen.
 
-**Auswirkung:** Kernfunktion der Plattform. Alle bisher erzeugten Bewertungen mit dieser ID sind unbrauchbar und müssen bereinigt werden.
+**Auswirkung:** Kernfunktion der Plattform. Bestehende Datensätze mit dieser ID sind unbrauchbar und müssen bereinigt werden.
 
-### 1.2 „Konto löschen" löscht kein Konto
+### 2.2 „Konto löschen" löscht kein Konto
 
-`lib/presentation/azubi/settings_screen.dart:110-131`
+**Status geändert: ehrlich, aber weiterhin nicht funktional.**
 
-Der Dialog sagt zu: *„Dein Konto und alle deine Bewertungen werden unwiderruflich gelöscht."* Nach Bestätigung passiert ausschließlich:
+Die Seite spielt keine Löschung mehr vor. Nach der Bestätigung erscheint ein Hinweis, dass die Löschung nicht freigeschaltet ist, mit Link zum Kontakt. Vorher wurde der Nutzer stillschweigend abgemeldet und glaubte, sein Konto sei weg.
 
-```dart
-await ref.read(authProvider.notifier).signOut();
-if (mounted) context.go('/');
-```
-
-`AuthRepository.deleteAccount()` existiert (`auth_repository.dart:196`), wird aber von keiner Stelle aufgerufen.
-
-**Auswirkung:** Der Nutzer glaubt, sein Konto sei gelöscht. Das ist nicht nur ein Bug, sondern berührt Art. 17 DSGVO (Recht auf Löschung). Muss vor Go-Live behoben sein.
-
-### 1.3 Das Unternehmensprofil speichert nicht
-
-`lib/presentation/betrieb/profile_screen.dart:115-120`
+Der eigentliche Mangel bleibt: `AuthRepository.deleteAccount()` ist ein Stub —
 
 ```dart
-onPressed: () {
-  ...
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Profil gespeichert!')));
+throw UnimplementedError('Account deletion requires a server-side Appwrite Function.');
 ```
 
-Es wird eine Erfolgsmeldung angezeigt, ohne dass gespeichert wird. `CompanyRepository.updateCompanyProfile()` (`company_repository.dart:86`) wird nirgends aufgerufen. Nach einem Reload sind alle Eingaben weg.
+**Auswirkung:** Art. 17 DSGVO (Recht auf Löschung) ist nicht erfüllt. Braucht eine serverseitige Appwrite-Function mit API-Schlüssel. Muss vor Go-Live stehen.
 
-Zum Vergleich: Das Azubi-Profil (`azubi/profile_screen.dart:39`) ruft `updateProfile()` korrekt auf. Nur die Betriebsseite fehlt.
+### 2.3 Das Unternehmensprofil speichert nicht
 
-### 1.4 Das Kontaktformular verschickt nichts
+**Status geändert: ehrlich, aber weiterhin nicht funktional.**
 
-`lib/presentation/public/kontakt_screen.dart:31-34`
+Die falsche Erfolgsmeldung „Profil gespeichert!" ist weg; der Knopf heißt „Übernehmen" und sagt, dass die Eingaben nur für die Sitzung gelten. Der erfundene Startwert „Musterbetrieb GmbH" wurde durch den echten Firmennamen ersetzt (dafür wanderte `companyName` ins `UserModel`).
+
+**Tiefere Ursache, jetzt klar benannt:** `registerBetrieb()` legt **kein `companies`-Dokument** an, sondern schreibt den Namen nur ins Profil. Damit fehlt dem Betriebskonto jede Verknüpfung zu einer Firma — `updateCompanyProfile()` hat gar keine ID, gegen die es schreiben könnte. Das ist auch der Grund, warum das Betriebs-Dashboard keine echten Bewertungen zeigen kann.
+
+**Behebung:** Bei der Registrierung ein `companies`-Dokument anlegen und dessen ID im Profil hinterlegen. Danach lassen sich Profil-Speichern, Dashboard-Kennzahlen und Bewertungszuordnung in einem Zug lösen.
+
+### 2.4 Das Kontaktformular verschickt nichts
+
+`lib/presentation/public/kontakt_screen.dart:33` — **unverändert**
 
 ```dart
-void _submit() {
-  if (!_formKey.currentState!.validate()) return;
-  setState(() => _sent = true);
-}
+setState(() => _sent = true);
 ```
 
-Die Bestätigung erscheint, die Nachricht existiert nirgends. Es gibt weder eine Collection noch eine Funktion dafür.
+Die Bestätigung erscheint, die Nachricht existiert nirgends. Weder Collection noch Funktion.
 
-**Behebung:** Entweder eine Appwrite-Collection `contact_messages` plus Repository, oder — als Zwischenlösung — den Formularpfad durch einen `mailto:`-Link ersetzen, der ehrlich ist.
+**Behebung:** Appwrite-Collection `contact_messages` plus Repository, oder als Zwischenlösung ein ehrlicher `mailto:`-Link.
 
 ---
 
-## 2. Nicht angebundene Bereiche
+## 3. Nicht angebundene Bereiche
 
-### 2.1 Benachrichtigungen
+### 3.1 Benachrichtigungen — unverändert
 
 `lib/presentation/azubi/notifications_screen.dart`
 
-- Greift als einziger Screen **direkt** auf Appwrite zu, an der Repository-Schicht vorbei (`Databases(AppwriteService.client)` im Widget).
-- Die Collection `'notifications'` steht als Zeichenkette im Code und fehlt in `AppwriteConstants` — es ist unklar, ob sie im Backend überhaupt existiert.
-- Kein Fehlerzustand: Schlägt der Client fehl, fliegt die Exception ungefangen durch. Im Testlauf reicht ein nicht initialisierter Client, um den Screen zu sprengen (`LateInitializationError`).
+- Greift als einziger Screen **direkt** auf Appwrite zu, an der Repository-Schicht vorbei.
+- Collection `'notifications'` steht als Zeichenkette im Code, fehlt in `AppwriteConstants`.
+- Kein Fehlerzustand — im Testlauf reicht ein nicht initialisierter Client, um den Screen zu sprengen (`LateInitializationError`, reproduzierbar auf allen fünf Breiten).
 - Es gibt keine Stelle, die Benachrichtigungen **erzeugt**.
 
-**Behebung:** `NotificationRepository` anlegen, Collection in `AppwriteConstants` aufnehmen, über einen Provider mit `AsyncValue` einbinden — wie überall sonst.
-
-### 2.2 Reine Attrappen (erfundene Zahlen)
+### 3.2 Attrappen
 
 | Seite | Route | Zustand |
 |---|---|---|
-| Betrieb-Dashboard | `/betrieb-dashboard` | KPIs (4.2 ⌀, 24 Bewertungen, 1.2k Aufrufe) und Score-Verlauf fest verdrahtet |
 | Analytics | `/analytics` | vollständig statisch |
 | Team | `/team` | statisch, keine Mitgliederverwaltung |
 | Abonnement | `/subscription` | statisch, keine Zahlungsanbindung |
 | Blog-Detail | `/blog/:slug` | zeigt für **jeden** Slug denselben Artikel |
+| Blog-Übersicht | `/blog` | statisch, Modell vorbereitet |
 | FAQ | `/faq` | statisch (bewusst so gebaut) |
-| Blog-Übersicht | `/blog` | statisch, Modell dafür vorbereitet |
 
-Das Betrieb-Dashboard verdient besondere Erwähnung: Ein Betrieb sieht dort Kennzahlen, die nichts mit seinen echten Bewertungen zu tun haben.
+**Vom Vorbericht gestrichen:** Das Betrieb-Dashboard zeigt keine erfundenen Kennzahlen mehr. Die Kacheln (4,2 ⌀ / 24 Bewertungen / 1.2k Aufrufe) und der Score-Verlauf aus sieben fest verdrahteten Werten sind ersetzt durch leere Kennzahlen mit dem Hinweis, dass die Auswertung fehlt.
 
-### 2.3 Fragebogen speichert keine Antworten
+### 3.3 Fragebogen speichert keine Antworten — unverändert
 
-`lib/presentation/azubi/fragen_bewerten_screen.dart`
+Die Fragen kommen aus der Datenbank bzw. dem Platzhalterkatalog. Für die Antworten gibt es weder Collection noch Schreibfunktion.
 
-Die Fragen kommen korrekt aus der Datenbank (bzw. aus dem Platzhalterkatalog). Das Absenden zeigt nur den Fortschritt an — es gibt weder eine Collection für Antworten noch eine Schreibfunktion.
+### 3.4 Einstellungs-Schalter ohne Wirkung
 
-### 2.4 Einstellungs-Schalter ohne Wirkung
+**Status geändert: ausgewiesen, aber weiterhin ohne Wirkung.** Unter den Schaltern in beiden Einstellungsseiten steht jetzt, dass sie nach dem Neuladen zurückspringen. Persistenz fehlt weiter.
 
-`azubi/settings_screen.dart:51-75` — „Öffentliches Profil", „E-Mail-Benachrichtigungen", „Push-Benachrichtigungen" sind reiner lokaler `setState`. Nach Reload alles zurückgesetzt. Dasselbe in den Betriebs-Einstellungen.
+### 3.5 Stellenanzeigen sind eine Behelfslösung — unverändert
 
-### 2.5 Stellenanzeigen sind eine Behelfslösung
+`lib/providers/company_provider.dart:146` — Einträge werden aus Firmendaten abgeleitet, es gibt keine Jobs-Collection.
 
-`lib/providers/company_provider.dart:146` — der Kommentar sagt es selbst: Die Einträge werden aus Firmendaten abgeleitet, es gibt keine echte Jobs-Collection. `job_model.dart` und `job_card.dart` existieren bereits.
+### 3.6 Repository-Methoden ohne Aufrufer
+
+Gemessen über `lib/presentation` und `lib/providers`:
+
+| Methode | Aufrufe |
+|---|---|
+| `deleteAccount` | 0 (zudem Stub) |
+| `updateCompanyProfile` | 0 |
+| `isBookmarked` | 0 |
+| `getCompanyById` | 0 |
+
+`updatePassword`, `resendVerificationEmail`, `reportReview` und `addBetriebReply` sind angebunden.
 
 ---
 
-## 3. Layout- und Responsive-Fehler
+## 4. Layout- und Responsive-Fehler
 
-Automatisierter Durchlauf aller 38 Routen in fünf Breiten (1440 / 1200 / 900 / 760 / 375 px), Überlauf-Exceptions mitgeschnitten. **28 Befunde.**
+Neuer Durchlauf, 37 Routen × fünf Breiten (1440 / 1200 / 900 / 760 / 375 px): **24 Befunde**, vorher 28.
 
-> **Einordnung:** Im Widget-Test steht die Ersatzschrift zur Verfügung, nicht Inter. Deren Glyphen sind breiter, kleine Werte (1–20 px) reproduzieren sich real womöglich nicht. Die großen Befunde sind eindeutig echt.
+> **Einordnung:** Im Widget-Test steht Inter nicht zur Verfügung, die Ersatzschrift läuft breiter. Kleine Werte (1–20 px) reproduzieren sich real womöglich nicht; die dreistelligen sind eindeutig.
+
+**Behoben** — diese vier standen im Vorbericht ganz oben und sind weg:
+
+| Route | vorher |
+|---|---|
+| `/betrieb-dashboard` @375 | 303 px |
+| `/dashboard` @375 | 237 px |
+| `/betrieb-profile` @375 | 157 px |
+| `/profile` @375 | 73 px |
+
+**Noch offen:**
 
 | Route | Breite | Überlauf |
 |---|---|---|
-| `/betrieb-dashboard` | 375 | **303 px** rechts (+133 px, +16 px unten) |
-| `/dashboard` | 375 | **237 px** rechts |
 | `/subscription` | 375 | **224 px** rechts (+4 weitere) |
-| `/betrieb-profile` | 375 | **157 px** rechts (+2 weitere) |
+| `/register/betrieb` | 375 | **154 px** rechts (+4 weitere) |
 | `/kontakt` | 375 | **137 px** rechts |
-| `/register/betrieb` | 375 | 154 px rechts (+4 weitere) |
 | `/register/azubi` | 375 | 77 px rechts (+3 weitere) |
-| `/profile` | 375 | 73 px rechts (+1) |
 | `/reports` | 375 | 56 px rechts |
 | `/reviews/new` | 375 | 16 px rechts |
 | `/register/azubi` | alle | 14 px rechts |
 | `/register/betrieb` | alle | 1,5 px rechts |
 
-**Durchgängige Ursache:** `Text` direkt in einer `Row`, ohne `Expanded`/`Flexible`. Beispiel `kontakt_screen.dart:140`:
+**Durchgängige Ursache:** `Text` direkt in einer `Row` ohne `Expanded`/`Flexible`. Beispiel `kontakt_screen.dart:140` — Icon, Abstand, dann eine E-Mail-Adresse, die nie umbricht. Die Behebung ist mechanisch und in allen Fällen gleich.
 
-```dart
-Row(children: [
-  Icon(icon, size: 18, ...),
-  const SizedBox(width: 8),
-  Text(label, ...),   // E-Mail-Adresse — bricht nie um
-])
-```
-
-Dasselbe Muster in Dashboard-Kacheln, Profilzeilen und Abo-Karten. Die Behebung ist mechanisch und gleichförmig.
-
-**Zusätzlich:** `/faq` meldet auf allen Breiten eine Flutter-Warnung — die `ExpansionTile`-Elemente liegen in einer `DecoratedBox` mit Hintergrundfarbe, dadurch bleiben Ripple und Hintergrund unsichtbar. Kosmetisch, aber schnell behoben (eigenes `Material` um die Kacheln).
+**Zusätzlich, unverändert:** `/faq` meldet auf allen Breiten eine Flutter-Warnung — die `ExpansionTile`-Elemente liegen in einer `DecoratedBox` mit Hintergrundfarbe, dadurch bleiben Ripple und Hintergrund unsichtbar. Ein eigenes `Material` um die Kacheln behebt es.
 
 ---
 
-## 4. Design-Konsistenz
+## 5. Design-Konsistenz
 
-Die öffentlichen Seiten (Start, Suche, Für Betriebe, Blog, FAQ, Über uns, Rechtliches, Login) laufen auf dem Swiss-Design: scharfe Ecken, Haarlinien, Papier/Tinte, `ContentBand`-Raster.
+Auf Swiss-Design: alle öffentlichen Seiten, alle Login-Seiten, der Blog, die Rechtstexte, das Profil-Dropdown und die sechs Seiten des täglichen Arbeitsbereichs.
 
-**25 Dateien** nutzen noch die alte Formensprache — abgerundete Ecken mit festen Zahlen, `cardShadow`, Farbverläufe, rosa Pillen-Badges:
+**21 Dateien** nutzen noch die alte Formensprache (vorher 25) — abgerundete Ecken mit festen Zahlen, `cardShadow`, Farbverläufe, rosa Pillen-Badges:
 
-- **Auth:** `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email` — diese fünf haben zudem **gar keine Kopfzeile** (`KarrikoAppBar` fehlt), man landet dort ohne Navigation.
-- **Azubi:** `dashboard` (Farbverlauf-Banner), `profile`, `bookmarks`, `my_reviews`, `new_review`, `notifications`
-- **Betrieb:** alle acht Seiten
+- **Gemeinsam:** `review_card`, `job_card` — wirken auf viele Seiten gleichzeitig, **hier lohnt sich der Anfang**
+- **Auth:** `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email` — diese fünf haben zudem **gar keine Kopfzeile** (`KarrikoAppBar` fehlt), man landet dort ohne Navigation
+- **Betrieb:** `analytics`, `subscription`, `team`, `reviews`, `reports`
+- **Azubi:** `new_review`, `bookmarks`, `my_reviews`, `notifications`
 - **Öffentlich:** `company_detail`, `review_detail`, `blog_detail`, `kontakt`, `ueber_uns`
-- **Gemeinsam:** `review_card`, `job_card` — diese beiden wirken auf viele Seiten gleichzeitig, hier lohnt sich der Anfang
 
-Empfehlung: Reihenfolge `review_card`/`job_card` → Auth → Azubi → Betrieb.
-
----
-
-## 5. Erreichbarkeit
-
-Zwei Seiten sind ausschließlich über direkte URL-Eingabe erreichbar — kein Link, kein Menüeintrag:
-
-- `/team` (Teamverwaltung) — 0 Verweise
-- `/reports` (Bewertungen melden) — 0 Verweise
-
-Beide gehören in den Betriebs-Drawer oder in die Betriebs-Einstellungen.
-
-`/reset-password` hat ebenfalls keine Verweise, das ist aber korrekt so — der Einstieg erfolgt über den E-Mail-Link.
+Empfehlung unverändert: `review_card`/`job_card` → Auth → restliche Betriebsseiten → restliche Azubi-Seiten.
 
 ---
 
 ## 6. Technische Schulden
 
-- `lib/data/services/supabase_service.dart` — Restdatei der Migration, 2 Zeilen, tote Referenz. Kann weg.
-- `AppwriteConstants.verificationUrl` fällt ohne `--dart-define` auf `http://localhost` zurück. In einem Produktions-Build zeigen alle Bestätigungs-E-Mails auf localhost. Muss im Build-Prozess gesetzt werden.
-- Repository-Methoden ohne Aufrufer: `deleteAccount`, `updateCompanyProfile`, `isBookmarked`, `getCompanyById`, `updatePassword`, `resendVerificationEmail` — teils Folge der Punkte oben, teils tote Fläche.
-- 86 Analyzer-Hinweise (keine Fehler, keine Warnungen) — überwiegend `prefer_const_constructors` und `withOpacity`-Veraltung. Mit `dart fix --apply` weitgehend automatisch behebbar.
+- `lib/data/services/supabase_service.dart` — Restdatei der Migration, 2 Zeilen. Kann weg.
+- `AppwriteConstants.verificationUrl` fällt ohne `--dart-define` auf `http://localhost` zurück. In einem Produktions-Build zeigen alle Bestätigungs-E-Mails dorthin. Muss im Build gesetzt und als Web-Plattform im Appwrite-Projekt eingetragen sein — sonst schlägt `createVerification` fehl (siehe 1., Registrierungsabbruch).
+- **67 Analyzer-Hinweise** (vorher 86), keine Fehler, keine Warnungen — überwiegend `prefer_const_constructors` und `withOpacity`-Veraltung. Mit `dart fix --apply` weitgehend automatisch behebbar.
 - `old_tsx/` und `node_modules/` liegen im Repo-Wurzelverzeichnis.
+- GitHub meldet **21 Dependabot-Warnungen auf `main`** (11 hoch, 8 mittel, 2 niedrig). Betrifft den Altbestand, nicht diesen Branch.
 
 ---
 
 ## 7. Tests
 
-Aktuell **54 Tests**, alle grün — aber nur Login-Bereich und Blog abgedeckt (Layout über Viewports, Filter-Deep-Linking, Navigation).
+**111 Tests, alle grün** (vorher 54), verteilt auf sechs Dateien:
 
-Nicht abgedeckt: Repositories, Provider, Auth-Ablauf, Bewertungs-Assistent, Lesezeichen, sämtliche Betriebsseiten.
+| Datei | Inhalt |
+|---|---|
+| `login_layout_test.dart` | Login über sieben Breiten, vertikale Ausrichtung, `next`-Parameter |
+| `blog_layout_test.dart` | drei Filter über sechs Breiten, Deep-Linking, Artikel-Navigation |
+| `azubi_pages_layout_test.dart` | Dashboard/Profil/Einstellungen über sechs Breiten, Dropdown |
+| `betrieb_pages_layout_test.dart` | dieselben drei Betriebsseiten, plus Prüfung, dass die erfundenen Werte nicht zurückkehren |
+| `router_guard_test.dart` | Wächterlogik: unbestätigte Adresse, Rollen, Rückziel |
+| `auth_error_message_test.dart` | Fehlermeldungen werden nicht durch pauschalen Text ersetzt |
 
-Der Layout-Sweep aus diesem Bericht existiert als Technik, aber nicht als dauerhafter Test. Sinnvoll wäre, ihn als Regressionsschutz zu etablieren — sobald die 28 Befunde abgearbeitet sind, kann er scharf gestellt werden.
+Das Generator-Template `widget_test.dart` ist entfernt — sein Compile-Fehler ließ die gesamte Suite scheitern.
+
+**Nicht abgedeckt:** Repositories, Bewertungs-Assistent, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten.
+
+Der Layout-Durchlauf aus diesem Bericht existiert als Technik, aber nicht als dauerhafter Test. Sobald die 24 Befunde abgearbeitet sind, sollte er scharf gestellt werden.
 
 ---
 
 ## 8. Vor Go-Live
 
-- Impressum, Datenschutz und AGB enthalten ausschließlich Platzhaltertexte und müssen anwaltlich geprüft werden (steht bereits als Hinweiskasten auf den Seiten).
-- Punkt 1.2 (Kontolöschung) ist DSGVO-relevant.
+- Impressum, Datenschutz und AGB enthalten ausschließlich Platzhaltertexte und müssen anwaltlich geprüft werden.
+- Punkt 2.2 (Kontolöschung) ist DSGVO-relevant und braucht eine serverseitige Function.
 - Kein Cookie-/Consent-Banner vorhanden.
-- Keine Fehlerseite mit Design — `errorBuilder` im Router zeigt nur rohen Text auf leerem Scaffold (`router.dart:112`).
+- Keine gestaltete Fehlerseite — `errorBuilder` im Router zeigt rohen Text auf leerem Scaffold.
+- `verificationUrl` und Appwrite-Plattformen konfigurieren, sonst kommt keine Bestätigungsmail an.
 
 ---
 
 ## 9. Vorgeschlagene Reihenfolge
 
-**Zuerst — Dinge, die Daten zerstören oder den Nutzer täuschen**
-1. Firmen-ID im Bewertungs-Assistenten (1.1) + Bereinigung der Altdaten
-2. Kontolöschung tatsächlich ausführen (1.2)
-3. Unternehmensprofil speichern (1.3)
-4. Kontaktformular ehrlich machen (1.4)
+**Zuerst — Daten und Wahrheit**
+1. `companies`-Dokument bei der Betriebsregistrierung anlegen und im Profil verknüpfen. **Schlüsselstück:** löst 2.3, ermöglicht echte Dashboard-Kennzahlen und die Bewertungszuordnung.
+2. Firmen-ID im Bewertungs-Assistenten (2.1) + Bereinigung der Altdaten
+3. Kontolöschung über eine Appwrite-Function (2.2)
+4. Kontaktformular anbinden oder auf `mailto:` umstellen (2.4)
 
 **Danach — Substanz**
 5. Betrieb-Dashboard und Analytics an echte Bewertungsdaten hängen
-6. Benachrichtigungen sauber über Repository und Provider
+6. Benachrichtigungen über Repository und Provider statt Direktzugriff
 7. Antworten des Fragebogens speichern
-8. Einstellungs-Schalter persistieren
+8. Einstellungs-Schalter persistieren, Hinweise entfernen
 
 **Parallel — Oberfläche**
-9. Die 28 Layout-Überläufe (mechanisch, gleiches Muster)
-10. `review_card` und `job_card` auf Swiss-Design, danach Auth-Seiten (inklusive fehlender Kopfzeile)
-11. Azubi-Bereich, dann Betrieb-Bereich
-12. `/team` und `/reports` verlinken
+9. Die 24 Layout-Überläufe (mechanisch, gleiches Muster)
+10. `review_card` und `job_card` auf Swiss-Design
+11. Auth-Seiten inklusive fehlender Kopfzeile
+12. Restliche Betriebs- und Azubi-Seiten
+13. `/faq` ListTile-Warnung
 
 **Zum Schluss**
-13. Fehlerseite gestalten
-14. Layout-Sweep als dauerhaften Test etablieren
-15. `dart fix --apply`, Migrationsreste entfernen
-16. Rechtstexte, Consent, `verificationUrl` im Build
+14. Fehlerseite gestalten
+15. Layout-Durchlauf als dauerhaften Test etablieren
+16. `dart fix --apply`, Migrationsreste entfernen
+17. Rechtstexte, Consent, `verificationUrl` im Build
