@@ -48,7 +48,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final auth = ref.read(authProvider);
       final path = state.uri.path;
 
-      const authPaths = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
+      // '/verify-email' gehoert bewusst nicht hierher – siehe Sonderfall unten.
+      const authPaths = ['/login', '/register', '/forgot-password', '/reset-password'];
       const azubiPaths = ['/dashboard', '/profile', '/reviews/new', '/fragen-bewerten', '/my-reviews', '/bookmarks', '/notifications', '/settings'];
       const betriebPaths = ['/betrieb-dashboard', '/betrieb-profile', '/betrieb-reviews', '/analytics', '/team', '/subscription', '/reports', '/betrieb-settings'];
 
@@ -57,6 +58,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       bool isBetriebPath = betriebPaths.any((p) => path == p || path.startsWith('$p/'));
 
       if (auth.isLoading) return null;
+
+      // Die Bestaetigungsseite ist erst erledigt, wenn die Adresse bestaetigt
+      // ist. Als gewoehnlicher Auth-Pfad behandelt, schickte sie jeden
+      // angemeldeten Nutzer aufs Dashboard – das ihn mangels Bestaetigung
+      // sofort zurueckwarf. Ergebnis war ein Hin und Her, bei dem weder
+      // Dashboard, Profil noch Einstellungen erreichbar waren.
+      if (path == '/verify-email') {
+        if (!auth.isAuthenticated) return '/login';
+        if (!auth.emailVerified) return null;
+        return auth.isBetrieb ? '/betrieb-dashboard' : '/dashboard';
+      }
 
       if (isAuthPath) {
         if (!auth.isAuthenticated) return null;

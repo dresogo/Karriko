@@ -55,11 +55,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: 'Anmeldung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.',
+        error: _message(e, 'Anmeldung fehlgeschlagen.'),
         clearUser: true,
       );
     }
   }
+
+  /// Gibt die Meldung aus [AuthFailure] durch. Nur wenn keine vorliegt, greift
+  /// der allgemeine Text – eine pauschale Meldung über falsche Zugangsdaten
+  /// führt sonst in die Irre, wenn die eigentliche Ursache eine andere ist.
+  String _message(Object error, String fallback) =>
+      error is AuthFailure ? error.message : fallback;
 
   Future<void> registerAzubi({
     required String email,
@@ -81,7 +87,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Registrierung fehlgeschlagen: ${e.toString()}');
+      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
@@ -107,7 +113,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = AuthState(user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: 'Registrierung fehlgeschlagen: ${e.toString()}');
+      state = state.copyWith(isLoading: false, error: _message(e, 'Registrierung fehlgeschlagen.'));
     }
   }
 
