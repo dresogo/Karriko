@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/review_provider.dart';
 import '../common/app_bar_widget.dart';
 
@@ -31,6 +32,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Die Meldung wird der angemeldeten Person zugeordnet. Ohne Sitzung
+    // bleibt der Knopf gesperrt, statt einen Platzhalter zu schreiben.
+    final reporterId = ref.watch(currentUserProvider)?.id;
+
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Bewertungen melden'),
       drawer: const KarrikoDrawer(),
@@ -95,11 +100,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: _selectedReviewId != null
+                onPressed: _selectedReviewId != null && reporterId != null
                     ? () async {
                         await ref.read(reviewRepositoryProvider).reportReview(
                               reviewId: _selectedReviewId!,
-                              reporterId: 'current-user',
+                              reporterId: reporterId,
                               reason: _reasonCtrl.text.isEmpty
                                   ? _selectedReason
                                   : '$_selectedReason: ${_reasonCtrl.text}',

@@ -203,10 +203,12 @@ class AuthRepository {
         ],
       );
     } on AppwriteException catch (e) {
-      debugPrint(
-        'Profildokument konnte nicht angelegt werden (${e.type}): ${e.message}. '
-        'Die Rolle wird aus den Account-Prefs gelesen.',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          'Profildokument konnte nicht angelegt werden (${e.type}): ${e.message}. '
+          'Die Rolle wird aus den Account-Prefs gelesen.',
+        );
+      }
     }
   }
 
@@ -219,10 +221,12 @@ class AuthRepository {
     try {
       await _account.createVerification(url: AppwriteConstants.verificationUrl);
     } on AppwriteException catch (e) {
-      debugPrint(
-        'Bestätigungsmail konnte nicht verschickt werden (${e.type}): ${e.message}. '
-        'Prüfe AppwriteConstants.verificationUrl und die Plattformen des Projekts.',
-      );
+      if (kDebugMode) {
+        debugPrint(
+          'Bestätigungsmail konnte nicht verschickt werden (${e.type}): ${e.message}. '
+          'Prüfe AppwriteConstants.verificationUrl und die Plattformen des Projekts.',
+        );
+      }
     }
   }
 
