@@ -1,17 +1,22 @@
 # karriko_flutter
 
-A new Flutter project.
+Die Flutter-Anwendung von Karriko — Bewertungsplattform für die duale Ausbildung im DACH-Markt.
 
-## Getting Started
+Projektübersicht, Tech-Stack, Konfiguration und der aktuelle Entwicklungsstand stehen in der [README im Repository-Wurzelverzeichnis](../README.md).
 
-This project is a starting point for a Flutter application.
+## Kurzbefehle
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
+flutter run -d chrome
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+dart format --output=none --set-exit-if-changed lib test
+flutter analyze
+flutter test
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Für Bestätigungs- und Passwort-Reset-Mails muss die Ziel-URL gesetzt sein, sonst zeigen alle Links auf `http://localhost`:
+
+```bash
+flutter run -d chrome --dart-define=APPWRITE_VERIFICATION_URL=https://deine-domain.example
+```
