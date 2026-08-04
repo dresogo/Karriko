@@ -70,7 +70,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     try {
       final result = await _db.listDocuments(
         databaseId: AppwriteConstants.databaseId,
-        collectionId: 'notifications',
+        collectionId: AppwriteConstants.notificationsCollection,
         queries: [
           Query.equal('user_id', userId),
           Query.orderDesc('\$createdAt'),
@@ -96,7 +96,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     if (userId == null) return;
     final realtime = Realtime(AppwriteService.client);
     _subscription = realtime.subscribe([
-      'databases.${AppwriteConstants.databaseId}.collections.notifications.documents',
+      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.notificationsCollection}.documents',
     ]);
     _subscription!.stream.listen((event) {
       if (mounted) _loadNotifications();
@@ -110,7 +110,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     await Future.wait(
       unread.map((n) => _db.updateDocument(
             databaseId: AppwriteConstants.databaseId,
-            collectionId: 'notifications',
+            collectionId: AppwriteConstants.notificationsCollection,
             documentId: n.id,
             data: {'is_read': true},
           )),

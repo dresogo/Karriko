@@ -17,4 +17,5 @@ class AppwriteConstants {
   static const bookmarksCollection = 'bookmarks';
   static const reviewReportsCollection = 'review_reports';
   static const questionsCollection = 'questions';
+  static const notificationsCollection = 'notifications';
 }

@@ -148,18 +148,24 @@ class FaqScreen extends StatelessWidget {
                               color: AppColors.surface,
                               border: Border.all(color: AppColors.line),
                             ),
-                            child: Column(
-                              children: [
-                                for (var i = 0; i < group.$2.length; i++) ...[
-                                  if (i > 0)
-                                    const Divider(
-                                        color: AppColors.line, height: 1),
-                                  _FaqItem(
-                                    question: group.$2[i].$1,
-                                    answer: group.$2[i].$2,
-                                  ),
+                            // Material liefert die Zeichenflaeche fuer den
+                            // Ripple der ExpansionTile. Ohne sie hat der Ink
+                            // keinen Untergrund und Flutter meldet das.
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: Column(
+                                children: [
+                                  for (var i = 0; i < group.$2.length; i++) ...[
+                                    if (i > 0)
+                                      const Divider(
+                                          color: AppColors.line, height: 1),
+                                    _FaqItem(
+                                      question: group.$2[i].$1,
+                                      answer: group.$2[i].$2,
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: AppLayout.s32),
