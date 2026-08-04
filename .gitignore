@@ -9,6 +9,11 @@ target/
 .next/
 .nuxt/
 
+# Release-Artefakte (Mobile)
+*.apk
+*.aab
+*.ipa
+
 # Logs & temp files
 logs/
 log/
@@ -25,6 +30,8 @@ yarn-debug.log*
 .env.local
 .env.*
 *.env
+# Ausnahme: dokumentierende Vorlage ohne echte Werte
+!.env.example
 config/.env
 secrets.env
 *.token
@@ -85,9 +92,9 @@ backup/
 Thumbs.db
 
 # Other sensitive / generated files
-package-lock.json
-yarn.lock
-Pipfile.lock
+# Hinweis: Lockdateien (package-lock.json, yarn.lock, Pipfile.lock, pubspec.lock)
+# gehoeren bewusst ins Repository - nur so sind Installationen reproduzierbar
+# und nur so kann Dependabot transitive Schwachstellen melden.
 personal_access_token.txt
 __pycache__/
 .pytest_cache/
