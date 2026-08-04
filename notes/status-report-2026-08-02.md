@@ -25,7 +25,7 @@ Was sich geändert hat: Die Stellen, die dem Nutzer Erfolg vorgespielt haben, tu
 | Tests | 54 | **111** |
 | Layout-Befunde | 28 | **24** |
 | Analyzer-Hinweise | 86 | **0** |
-| Sicherheit | nicht geprüft | **8 Befunde, 1 behoben** |
+| Sicherheit | nicht geprüft | **8 Befunde, 5 behoben** |
 
 ---
 
@@ -129,7 +129,7 @@ Die Bestätigung erscheint, die Nachricht existiert nirgends. Weder Collection n
 `lib/presentation/azubi/notifications_screen.dart`
 
 - Greift als einziger Screen **direkt** auf Appwrite zu, an der Repository-Schicht vorbei.
-- Collection `'notifications'` steht als Zeichenkette im Code, fehlt in `AppwriteConstants`.
+- ~~Collection `'notifications'` steht als Zeichenkette im Code, fehlt in `AppwriteConstants`.~~ **Behoben:** `AppwriteConstants.notificationsCollection` ergänzt und an allen drei Stellen verwendet, auch im Realtime-Kanal. Der Direktzugriff an der Repository-Schicht vorbei bleibt bestehen.
 - Kein Fehlerzustand — im Testlauf reicht ein nicht initialisierter Client, um den Screen zu sprengen (`LateInitializationError`, reproduzierbar auf allen fünf Breiten).
 - Es gibt keine Stelle, die Benachrichtigungen **erzeugt**.
 
@@ -203,7 +203,7 @@ Neuer Durchlauf, 37 Routen × fünf Breiten (1440 / 1200 / 900 / 760 / 375 px): 
 
 **Durchgängige Ursache:** `Text` direkt in einer `Row` ohne `Expanded`/`Flexible`. Beispiel `kontakt_screen.dart:140` — Icon, Abstand, dann eine E-Mail-Adresse, die nie umbricht. Die Behebung ist mechanisch und in allen Fällen gleich.
 
-**Zusätzlich, unverändert:** `/faq` meldet auf allen Breiten eine Flutter-Warnung — die `ExpansionTile`-Elemente liegen in einer `DecoratedBox` mit Hintergrundfarbe, dadurch bleiben Ripple und Hintergrund unsichtbar. Ein eigenes `Material` um die Kacheln behebt es.
+**Zusätzlich — behoben:** `/faq` meldete auf allen Breiten eine Flutter-Warnung, weil die `ExpansionTile`-Elemente in einem `Container` mit Hintergrundfarbe lagen und der Ripple keine Zeichenfläche hatte. Die Kacheln stecken jetzt in einem `Material(type: MaterialType.transparency)`, das Erscheinungsbild bleibt unverändert.
 
 ---
 
@@ -225,7 +225,7 @@ Empfehlung unverändert: `review_card`/`job_card` → Auth → restliche Betrieb
 
 ## 6. Technische Schulden
 
-- `lib/data/services/supabase_service.dart` — Restdatei der Migration, 2 Zeilen. Kann weg.
+- ~~`lib/data/services/supabase_service.dart` — Restdatei der Migration, 2 Zeilen.~~ **Entfernt.** War unreferenziert und exportierte nur `appwrite_service.dart` weiter.
 - `AppwriteConstants.verificationUrl` fällt ohne `--dart-define` auf `http://localhost` zurück. In einem Produktions-Build zeigen alle Bestätigungs-E-Mails dorthin. Muss im Build gesetzt und als Web-Plattform im Appwrite-Projekt eingetragen sein — sonst schlägt `createVerification` fehl (siehe 1., Registrierungsabbruch).
 - **Analyzer: 0 Hinweise** (vorher 67, davor 86). `dart fix --apply` in zwei Durchläufen hat 62 Fixes in 17 Dateien erledigt (`prefer_const_constructors`, `withOpacity` → `withValues`, `curly_braces_in_flow_control_structures`), dazu `dart format` über 61 Dateien. Drei Restbefunde von Hand: toter `?? false`-Operand in `company_model.dart:34`, `mounted` → `context.mounted` in `reports_screen.dart:107`, `_NavLink` → `_navLink` in `app_bar_widget.dart:153`.
 - **CI umgestellt.** SonarCloud analysierte nur noch toten Legacy-Code und lieferte ein dauerhaft rotes Quality Gate — Sonar hat keinen Dart-Analyzer, die eigentliche App war unsichtbar. `sonar-project.properties` entfernt (zeigte ohnehin auf das nicht mehr existierende `src/`), stattdessen `.github/workflows/flutter.yml`: Format-Prüfung, `flutter analyze`, `flutter test` gegen `karriko_flutter`. Die Automatic Analysis muss zusätzlich in der SonarCloud-Oberfläche abgeschaltet werden, sonst läuft sie mit Defaults weiter.
@@ -238,7 +238,7 @@ Empfehlung unverändert: `review_card`/`job_card` → Auth → restliche Betrieb
 
 Statische Prüfung am 3. August 2026: Git-Historie, Dart-Code unter `lib/`, Web-Bundle, Android-/iOS-Konfiguration, beide `.gitignore`. Kein Pen-Test, keine Laufzeitanalyse — jeder Befund ist aus dem Quellcode ableitbar.
 
-**8 Befunde: 1 hoch, 5 mittel, 2 niedrig.** Einer davon ist mit diesem Stand erledigt. Ein neunter, zunächst als kritisch eingestufter Punkt hat sich bei genauer Prüfung als gegenstandslos erwiesen — siehe 7.1.
+**8 Befunde: 1 hoch, 5 mittel, 2 niedrig.** **Fünf davon sind mit diesem Stand erledigt** (7.2, 7.4, 7.6, 7.8, 7.9), dazu alle drei `.gitignore`-Anmerkungen. Offen bleiben die drei, die nicht im Code liegen oder mehr als einen Handgriff kosten: 7.3 (Appwrite-Console), 7.5 (Schriften lokal einbetten), 7.7 (Build-Konfiguration). Ein neunter, zunächst als kritisch eingestufter Punkt hat sich bei genauer Prüfung als gegenstandslos erwiesen — siehe 7.1.
 
 ### 7.1 `.env.local` in der Historie — geprüft, kein Leak
 
@@ -281,35 +281,31 @@ Die Weiterleitungen in `router.dart:94-111` sind reine Oberflächen-Wächter und
 
 Konkret nachzuhalten: `review_repository.dart:94` setzt die Dokumentrechte aus dem vom Client übergebenen `authorId`. Erlaubt die Collection „Create" für alle angemeldeten Nutzer und wird `author_id` nicht serverseitig erzwungen, lassen sich Bewertungen unter fremder Identität anlegen. Absicherung über eine Appwrite Function, die `author_id` aus der Sitzung setzt.
 
-### 7.4 Meldungen werden mit einem Platzhalter gespeichert — mittel
+### 7.4 Meldungen werden mit einem Platzhalter gespeichert — mittel, behoben
 
-`lib/presentation/betrieb/reports_screen.dart:102`
+`lib/presentation/betrieb/reports_screen.dart` schrieb den literalen Wert `'current-user'` statt der echten Nutzer-ID. Zwei Folgen: `Permission.read(Role.user('current-user'))` vergab Leserechte an eine nicht existierende Rolle, der Melder kam an seine eigene Meldung nicht heran — und Missbrauchsmuster ließen sich keiner Person zuordnen.
 
-```dart
-reporterId: 'current-user',
-```
-
-Der literale Zeichenkettenwert statt der echten Nutzer-ID. Zwei Folgen: `Permission.read(Role.user('current-user'))` vergibt Leserechte an eine nicht existierende Rolle, der Melder kommt an seine eigene Meldung nicht heran — und Missbrauchsmuster lassen sich keiner Person zuordnen.
+Die ID kommt jetzt aus `currentUserProvider`. Besteht keine Sitzung, bleibt der Absendeknopf gesperrt, statt einen Platzhalter in die Datenbank zu schreiben.
 
 ### 7.5 Google Fonts zur Laufzeit — mittel, DSGVO
 
 `google_fonts` lädt Schriften von `fonts.gstatic.com` nach und überträgt dabei die IP-Adressen der Nutzer an Google. Für eine Plattform mit DACH-Zielgruppe einschlägig (LG München I, 3 O 17493/20). Schriften lokal einbetten.
 
-### 7.6 `android:allowBackup` nicht gesetzt — mittel
+### 7.6 `android:allowBackup` nicht gesetzt — mittel, behoben
 
-`android/app/src/main/AndroidManifest.xml` setzt das Attribut nicht, der Android-Standard ist `true`. Damit lassen sich App-Daten per `adb backup` auslesen. Explizit auf `false` setzen.
+`android/app/src/main/AndroidManifest.xml` setzte das Attribut nicht, der Android-Standard ist `true` — App-Daten waren damit per `adb backup` auslesbar. Steht jetzt explizit auf `false`.
 
 ### 7.7 `verificationUrl` fällt auf localhost zurück — mittel
 
 Bereits unter Abschnitt 6 als technische Schuld geführt, hat aber eine Sicherheitsseite: Ohne `--dart-define` zeigen **auch die Passwort-Reset-Links** auf `http://localhost`, nicht nur die Bestätigungsmails.
 
-### 7.8 Ungenutzte Abhängigkeit `flutter_secure_storage` — niedrig
+### 7.8 Ungenutzte Abhängigkeit `flutter_secure_storage` — niedrig, behoben
 
-In `pubspec.yaml` deklariert, in `lib/` nirgends verwendet. Unnötige Angriffsfläche und irreführend, weil sie sichere Ablage suggeriert, wo keine stattfindet. Entfernen oder tatsächlich nutzen.
+War in `pubspec.yaml` deklariert, in `lib/` nirgends verwendet — unnötige Angriffsfläche und irreführend, weil sie sichere Ablage suggerierte, wo keine stattfand. Aus `pubspec.yaml` entfernt, `pubspec.lock` neu aufgelöst.
 
-### 7.9 `debugPrint` in der Auth-Schicht — niedrig
+### 7.9 `debugPrint` in der Auth-Schicht — niedrig, behoben
 
-`auth_repository.dart:206` und `:222` geben Appwrite-Fehlertexte aus, keine Token und keine personenbezogenen Daten. Die Aufrufe bleiben allerdings auch im Release-Build aktiv.
+`auth_repository.dart` gibt Appwrite-Fehlertexte aus, keine Token und keine personenbezogenen Daten. Die Aufrufe blieben allerdings auch im Release-Build aktiv; beide sind jetzt in `if (kDebugMode)` gefasst und werden im Release wegoptimiert.
 
 ### Unauffällig
 
@@ -319,11 +315,11 @@ Kein `http://` im Code, `setSelfSigned(status: false)`, keine hartkodierten Schl
 
 Die Abdeckung ist solide. Gegengeprüft wurde besonders das häufigste Flutter-Leck — generierte Dateien, die `--dart-define`-Werte enthalten: `Generated.xcconfig`, `flutter_export_environment.sh` und `local.properties` sind über `ios/.gitignore` und `android/.gitignore` ausgeschlossen, keine davon wird verfolgt. Ebenfalls abgedeckt: `.env*`, Keystores, Zertifikate, `key.properties`, `google-services.json`, Datenbank-Abzüge, `coverage/`, `build/`.
 
-Drei Anmerkungen:
+Drei Anmerkungen — **alle drei umgesetzt**:
 
-1. **`package-lock.json`, `yarn.lock` und `Pipfile.lock` werden ignoriert** (`.gitignore:88-90`). Das ist ein Fehlgriff: Lockdateien gehören ins Repository, sonst gibt es weder reproduzierbare Installationen noch eine Grundlage für Dependabot, transitive Schwachstellen zu melden. Für `old_tsx/` derzeit folgenlos, als Dauerregel falsch. `pubspec.lock` wird korrekt verfolgt.
-2. Release-Artefakte fehlen: `*.apk`, `*.aab`, `*.ipa` ergänzen.
-3. Für eine dokumentierende `.env.example` braucht es wegen der breiten `.env.*`-Regel eine Ausnahme (`!.env.example`).
+1. **`package-lock.json`, `yarn.lock` und `Pipfile.lock` wurden ignoriert.** Ein Fehlgriff: Lockdateien gehören ins Repository, sonst gibt es weder reproduzierbare Installationen noch eine Grundlage für Dependabot, transitive Schwachstellen zu melden. Die drei Regeln sind entfernt, an ihrer Stelle steht ein Kommentar, der die Absicht festhält. `pubspec.lock` wurde ohnehin korrekt verfolgt.
+2. Release-Artefakte ergänzt: `*.apk`, `*.aab`, `*.ipa`.
+3. Ausnahme `!.env.example` ergänzt, damit eine dokumentierende Vorlage trotz der breiten `.env.*`-Regel möglich bleibt.
 
 **Grenze der Regel:** `.gitignore` wirkt nur nach vorn. Für 7.1 ändert keine Regel etwas.
 
@@ -359,14 +355,14 @@ Der Layout-Durchlauf aus diesem Bericht existiert als Technik, aber nicht als da
 - `verificationUrl` und Appwrite-Plattformen konfigurieren, sonst kommt keine Bestätigungsmail an.
 - **Appwrite-Collection-Permissions in der Console prüfen** (7.3) — der einzige serverseitige Zugriffsschutz, aus dem Code nicht verifizierbar.
 - **Google Fonts lokal einbetten** (7.5) — sonst fließen Nutzer-IPs an Google ab.
-- **`android:allowBackup="false"`** setzen (7.6), bevor eine Android-Fassung ausgeliefert wird.
+- **SonarCloud Automatic Analysis abschalten** — die Konfiguration ist aus dem Repository entfernt, die Analyse läuft ohne diesen Schritt aber mit Defaults weiter (siehe Abschnitt 6).
 
 ---
 
 ## 10. Vorgeschlagene Reihenfolge
 
 **Vorab — Sicherheit**
-0. `reporterId`-Platzhalter (7.4), `allowBackup` (7.6), ungenutztes `flutter_secure_storage` (7.8) und die `.gitignore`-Korrekturen. Alles kleinteilig, keines davon hängt an einer anderen Baustelle. Die Prüfung der Appwrite-Permissions (7.3) gehört zeitlich vor den ersten echten Nutzer. Die Historienbereinigung (7.1) ist erledigt, war aber nach Prüfung ohnehin nicht sicherheitsrelevant.
+0. ~~`reporterId`-Platzhalter (7.4), `allowBackup` (7.6), `flutter_secure_storage` (7.8), `debugPrint` (7.9), `.gitignore`-Korrekturen.~~ **Erledigt.** Die Historienbereinigung (7.1) ebenfalls, war nach Prüfung aber ohnehin nicht sicherheitsrelevant. Offen bleiben drei: die Prüfung der Appwrite-Permissions (7.3) gehört zeitlich vor den ersten echten Nutzer, die Schriften (7.5) und die Build-Konfiguration (7.7) vor den Go-Live.
 
 **Zuerst — Daten und Wahrheit**
 1. `companies`-Dokument bei der Betriebsregistrierung anlegen und im Profil verknüpfen. **Schlüsselstück:** löst 2.3, ermöglicht echte Dashboard-Kennzahlen und die Bewertungszuordnung.
