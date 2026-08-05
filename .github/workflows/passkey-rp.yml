@@ -1,0 +1,41 @@
+name: Passkey-Dienst CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/passkey-rp/**'
+      - '.github/workflows/passkey-rp.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/passkey-rp/**'
+      - '.github/workflows/passkey-rp.yml'
+
+jobs:
+  typecheck-and-test:
+    name: Typecheck & Test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: services/passkey-rp
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: services/passkey-rp/package-lock.json
+
+      # --ignore-scripts: Installationsskripte von Abhaengigkeiten laufen bei
+      # jedem CI-Lauf mit vollen Rechten. Fuer diesen Dienst braucht sie keine.
+      - run: npm ci --ignore-scripts
+
+      - run: npm run typecheck
+
+      - run: npm test
+
+      - run: npm audit --audit-level=high

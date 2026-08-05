@@ -22,6 +22,12 @@ import '../presentation/auth/register_betrieb_screen.dart';
 import '../presentation/auth/forgot_password_screen.dart';
 import '../presentation/auth/reset_password_screen.dart';
 import '../presentation/auth/verify_email_screen.dart';
+import '../presentation/auth/mfa_challenge_screen.dart';
+import '../presentation/auth/magic_link_screen.dart';
+import '../presentation/auth/magic_link_callback_screen.dart';
+import '../presentation/auth/oauth_callback_screen.dart';
+import '../presentation/settings/mfa_setup_screen.dart';
+import '../presentation/settings/passkey_manage_screen.dart';
 import '../presentation/azubi/dashboard_screen.dart';
 import '../presentation/azubi/profile_screen.dart';
 import '../presentation/azubi/new_review_screen.dart';
@@ -40,7 +46,11 @@ import '../presentation/betrieb/reports_screen.dart';
 import '../presentation/betrieb/settings_screen.dart' as betrieb;
 
 final routerProvider = Provider<GoRouter>((ref) {
-  ref.watch(authProvider);
+  // Bewusst kein ref.watch(authProvider): Das wuerde bei jeder Zustands-
+  // aenderung einen neuen GoRouter erzeugen, und ein neuer Router faengt bei
+  // initialLocation an. Der Navigationsstand ginge also bei jeder Anmeldung,
+  // jedem Ladewechsel und jeder Fehlermeldung verloren. Die Neuberechnung der
+  // Weiterleitung erledigt refreshListenable – dafuer ist es da.
   return GoRouter(
     initialLocation: '/',
     refreshListenable: _AuthNotifierListenable(ref),
@@ -83,7 +93,40 @@ final routerProvider = Provider<GoRouter>((ref) {
       bool isBetriebPath =
           betriebPaths.any((p) => path == p || path.startsWith('$p/'));
 
+      // Callback-Routen sind vom Waechter vollstaendig ausgenommen, und zwar
+      // noch vor der Ladepruefung. Sie tragen ein Einmal-Geheimnis in der Query
+      // und navigieren selbst weiter, sobald sie es eingeloest haben. Jede
+      // Weiterleitung von hier verschluckt das Geheimnis, bevor es benutzt
+      // wurde – der Link waere dann verbraucht und die Anmeldung gescheitert.
+      const callbackPaths = ['/auth/magic', '/auth/oauth'];
+      if (callbackPaths.contains(path)) return null;
+
+      // Reihenfolge der Tore: Laden -> zweiter Faktor -> E-Mail-Bestaetigung
+      // -> Rolle. Wer sie umstellt, baut sich eine Weiterleitungsschleife: die
+      // spaeteren Tore setzen eine vollstaendige Sitzung voraus, die die
+      // frueheren erst herstellen.
       if (auth.isLoading) return null;
+
+      // Wie '/verify-email' ein Zwischenzustand mit eigener Seite. Stuende der
+      // Pfad in authPaths, schickte ihn der Block dort aufs Dashboard, das den
+      // Nutzer mangels vollstaendiger Sitzung sofort zurueckwirft.
+      if (path == '/mfa-challenge') {
+        if (auth.mfaRequired) return null;
+        if (!auth.isAuthenticated) return '/login';
+        return auth.isBetrieb ? '/betrieb-dashboard' : '/dashboard';
+      }
+
+      if (auth.mfaRequired) {
+        // Oeffentliche Seiten bleiben erreichbar – wer mitten in der Anmeldung
+        // steckt, darf trotzdem das Impressum lesen.
+        if (isAuthPath ||
+            isAzubiPath ||
+            isBetriebPath ||
+            path == '/verify-email') {
+          return '/mfa-challenge';
+        }
+        return null;
+      }
 
       // Die Bestaetigungsseite ist erst erledigt, wenn die Adresse bestaetigt
       // ist. Als gewoehnlicher Auth-Pfad behandelt, schickte sie jeden
@@ -160,6 +203,22 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (_, __) => const ResetPasswordScreen()),
       GoRoute(
           path: '/verify-email', builder: (_, __) => const VerifyEmailScreen()),
+      // Zwischenzustand der Anmeldung. Bewusst kein Eintrag in authPaths –
+      // siehe den Sonderfall im redirect.
+      GoRoute(
+          path: '/mfa-challenge',
+          builder: (_, __) => const MfaChallengeScreen()),
+      // Anmeldung ohne Passwort. Der Anforderungspfad liegt unter '/login/' und
+      // ist damit ueber den Praefixvergleich in authPaths bereits abgedeckt.
+      GoRoute(
+          path: '/login/azubi/magic',
+          builder: (_, __) => const MagicLinkScreen()),
+      // Callback mit Einmal-Geheimnis in der Query – vom Waechter ausgenommen.
+      GoRoute(
+          path: '/auth/magic',
+          builder: (_, __) => const MagicLinkCallbackScreen()),
+      GoRoute(
+          path: '/auth/oauth', builder: (_, __) => const OAuthCallbackScreen()),
       GoRoute(
           path: '/dashboard', builder: (_, __) => const AzubiDashboardScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const AzubiProfileScreen()),
@@ -173,6 +232,13 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (_, __) => const NotificationsScreen()),
       GoRoute(
           path: '/settings', builder: (_, __) => const AzubiSettingsScreen()),
+      // Ueber den Praefixvergleich in azubiPaths bereits geschuetzt.
+      GoRoute(
+          path: '/settings/mfa',
+          builder: (_, __) => const MfaSetupScreen(settingsPath: '/settings')),
+      GoRoute(
+          path: '/settings/passkeys',
+          builder: (_, __) => const PasskeyManageScreen()),
       GoRoute(
           path: '/betrieb-dashboard',
           builder: (_, __) => const betrieb.BetriebDashboardScreen()),
@@ -191,6 +257,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/betrieb-settings',
           builder: (_, __) => const betrieb.BetriebSettingsScreen()),
+      GoRoute(
+          path: '/betrieb-settings/mfa',
+          builder: (_, __) =>
+              const MfaSetupScreen(settingsPath: '/betrieb-settings')),
+      GoRoute(
+          path: '/betrieb-settings/passkeys',
+          builder: (_, __) => const PasskeyManageScreen()),
     ],
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Seite nicht gefunden: ${state.uri}')),
@@ -198,11 +271,20 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
+/// Stoesst die Neuberechnung der Weiterleitung an, wenn sich der Anmeldezustand
+/// aendert.
+///
+/// Das Abonnement wird **im Konstruktor** eingerichtet, nicht als `late final`
+/// Feld. Ein `late final` wird erst beim ersten Lesen ausgewertet – und gelesen
+/// wurde es nur in [dispose]. Das Abonnement kam damit nie zustande, der
+/// Listener hat nie gefeuert, und die Weiterleitung wurde allein dadurch neu
+/// berechnet, dass der Provider den ganzen Router neu baute.
 class _AuthNotifierListenable extends ChangeNotifier {
-  final Ref _ref;
-  late final _sub = _ref.listen(authProvider, (_, __) => notifyListeners());
+  late final ProviderSubscription<AuthState> _sub;
 
-  _AuthNotifierListenable(this._ref);
+  _AuthNotifierListenable(Ref ref) {
+    _sub = ref.listen(authProvider, (_, __) => notifyListeners());
+  }
 
   @override
   void dispose() {

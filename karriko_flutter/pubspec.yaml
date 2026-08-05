@@ -13,7 +13,7 @@ dependencies:
   go_router: ^14.2.0
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
-  appwrite: ^12.0.0
+  appwrite: ^25.4.0
   dio: ^5.4.3
   reactive_forms: ^17.0.1
   flutter_svg: ^2.0.10
@@ -21,6 +21,13 @@ dependencies:
   intl: ^0.20.0
   cached_network_image: ^3.3.1
   google_fonts: ^6.2.1
+  # QR-Code fuer die TOTP-Einrichtung. Reines Dart (zieht nur `qr` nach),
+  # keine nativen Bindungen und kein Netzwerkzugriff.
+  qr_flutter: ^4.1.0
+  # Nur fuer die Seitenweiterleitung beim Anbieter-Login (siehe
+  # data/services/oauth_redirect.dart). Lag ohnehin transitiv vor; hier
+  # deklariert, damit der direkte Zugriff nicht auf einem Zufall beruht.
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:

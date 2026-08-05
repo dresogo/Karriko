@@ -10,6 +10,10 @@ class UserModel {
   final String? companyName;
 
   final bool emailVerified;
+
+  /// Ob fuer dieses Konto eine Zwei-Faktor-Bestaetigung aktiv ist.
+  final bool mfaEnabled;
+
   final DateTime createdAt;
 
   const UserModel({
@@ -21,6 +25,7 @@ class UserModel {
     this.avatarUrl,
     this.companyName,
     required this.emailVerified,
+    this.mfaEnabled = false,
     required this.createdAt,
   });
 
@@ -42,6 +47,7 @@ class UserModel {
       avatarUrl: json['avatar_url'] as String?,
       companyName: json['company_name'] as String?,
       emailVerified: json['email_verified'] as bool? ?? false,
+      mfaEnabled: json['mfa_enabled'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
@@ -55,6 +61,7 @@ class UserModel {
         'avatar_url': avatarUrl,
         'company_name': companyName,
         'email_verified': emailVerified,
+        'mfa_enabled': mfaEnabled,
         'created_at': createdAt.toIso8601String(),
       };
 
@@ -64,6 +71,7 @@ class UserModel {
     String? avatarUrl,
     String? companyName,
     bool? emailVerified,
+    bool? mfaEnabled,
   }) {
     return UserModel(
       id: id,
@@ -74,6 +82,7 @@ class UserModel {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       companyName: companyName ?? this.companyName,
       emailVerified: emailVerified ?? this.emailVerified,
+      mfaEnabled: mfaEnabled ?? this.mfaEnabled,
       createdAt: createdAt,
     );
   }

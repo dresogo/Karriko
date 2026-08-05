@@ -10,26 +10,24 @@ import '../services/appwrite_service.dart';
 /// nicht befüllt ist, liefert [fetchQuestions] den unten hinterlegten
 /// Standardkatalog zurück, damit die Seite bereits bedienbar ist.
 class QuestionRepository {
-  Databases get _db => Databases(AppwriteService.client);
+  TablesDB get _db => TablesDB(AppwriteService.client);
 
   Future<List<QuestionModel>> fetchQuestions() async {
     try {
-      final result = await _db.listDocuments(
+      final result = await _db.listRows(
         databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.questionsCollection,
+        tableId: AppwriteConstants.questionsCollection,
         queries: [Query.orderAsc('sort_order'), Query.limit(100)],
       );
-      if (result.documents.isEmpty) return defaultQuestions;
-      return result.documents
-          .map((d) => QuestionModel.fromJson(_toMap(d)))
-          .toList();
+      if (result.rows.isEmpty) return defaultQuestions;
+      return result.rows.map((d) => QuestionModel.fromJson(_toMap(d))).toList();
     } on AppwriteException {
       // Collection existiert noch nicht oder ist nicht lesbar.
       return defaultQuestions;
     }
   }
 
-  Map<String, dynamic> _toMap(aw.Document doc) => {
+  Map<String, dynamic> _toMap(aw.Row doc) => {
         ...doc.data,
         '\$id': doc.$id,
       };
