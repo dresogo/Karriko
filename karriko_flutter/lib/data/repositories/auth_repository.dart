@@ -5,6 +5,7 @@ import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart' as models;
 import 'package:flutter/foundation.dart';
 import '../../core/constants/appwrite_constants.dart';
+import '../models/company_model.dart';
 import '../models/passkey_credential.dart';
 import '../models/user_model.dart';
 import '../services/appwrite_service.dart';
@@ -12,6 +13,7 @@ import '../services/oauth_redirect.dart';
 import '../services/passkey_api.dart';
 import '../services/passkey_client.dart';
 import 'auth_error_mapper.dart';
+import 'company_repository.dart';
 
 // AuthFailure liegt beim Mapper, wird hier aber weitergereicht: Aufrufer
 // beziehen Repository und Fehlertyp seit jeher aus derselben Datei.
@@ -40,10 +42,18 @@ class AuthRepository {
   ///
   /// Ueber den Konstruktor austauschbar, damit Tests ihn ersetzen koennen –
   /// die Appwrite-Aufrufe daneben sind das bis heute nicht.
-  AuthRepository({PasskeyApi? passkeyApi})
-      : _passkeys = passkeyApi ?? PasskeyApi();
+  AuthRepository({PasskeyApi? passkeyApi, CompanyRepository? companyRepository})
+      : _passkeys = passkeyApi ?? PasskeyApi(),
+        _companies = companyRepository ?? CompanyRepository();
 
   final PasskeyApi _passkeys;
+
+  /// Zugriff auf die Unternehmen.
+  ///
+  /// Die Betriebsregistrierung legt beides an – Konto und Firma –, deshalb
+  /// braucht die Auth-Schicht hier eine Abhaengigkeit. Ueber den Konstruktor
+  /// austauschbar, damit Tests sie ersetzen koennen.
+  final CompanyRepository _companies;
 
   Account get _account => AppwriteService.account;
   TablesDB get _db => TablesDB(AppwriteService.client);
@@ -199,6 +209,18 @@ class AuthRepository {
       throw _mapError(e, 'Registrierung fehlgeschlagen.');
     }
 
+    // Das Unternehmen entsteht vor dem Profil, weil dessen ID hineingehoert.
+    // Scheitert es, bleibt companyId leer und die Registrierung laeuft trotzdem
+    // durch – Konto und Sitzung bestehen an dieser Stelle bereits, ein Abbruch
+    // hinterliesse ein Konto, das die App als Fehlschlag meldet. [ensureCompany]
+    // zieht die Verknuepfung beim naechsten Zugriff nach.
+    final companyId = await _createCompanyForOwner(
+      ownerId: created.$id,
+      companyName: companyName,
+      industry: industry,
+      city: city,
+    );
+
     await _createProfileDocument(
       userId: created.$id,
       data: {
@@ -207,6 +229,7 @@ class AuthRepository {
         'first_name': contactFirstName,
         'last_name': contactLastName,
         'company_name': companyName,
+        if (companyId != null) 'company_id': companyId,
         if (industry != null) 'industry': industry,
         if (city != null) 'city': city,
       },
@@ -220,9 +243,118 @@ class AuthRepository {
       firstName: contactFirstName,
       lastName: contactLastName,
       companyName: companyName,
+      companyId: companyId,
       emailVerified: false,
       createdAt: DateTime.now(),
     );
+  }
+
+  /// Legt das Unternehmen an und haelt die ID auch in den Account-Prefs fest.
+  ///
+  /// Die Prefs sind der Rueckfallweg von [_fetchCurrentUser]: Ist das
+  /// Profildokument nicht lesbar, kommt die Verknuepfung von dort. Ohne diesen
+  /// zweiten Ort waere die Firma bei jedem Ausfall der Profil-Collection
+  /// unerreichbar, obwohl sie existiert.
+  ///
+  /// Liefert `null`, wenn das Anlegen fehlschlaegt. Der Aufrufer darf daran
+  /// nicht scheitern.
+  Future<String?> _createCompanyForOwner({
+    required String ownerId,
+    required String companyName,
+    String? industry,
+    String? city,
+  }) async {
+    try {
+      final company = await _companies.createCompany(
+        ownerId: ownerId,
+        name: companyName,
+        industry: industry,
+        city: city,
+      );
+      try {
+        final prefs = await _account.getPrefs();
+        await _account
+            .updatePrefs(prefs: {...prefs.data, 'company_id': company.id});
+      } on AppwriteException catch (e) {
+        if (kDebugMode) {
+          debugPrint('company_id konnte nicht in die Prefs (${e.type}).');
+        }
+      }
+      return company.id;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(
+          'Unternehmen konnte nicht angelegt werden: $e. '
+          'Die Verknuepfung wird beim naechsten Zugriff nachgezogen.',
+        );
+      }
+      return null;
+    }
+  }
+
+  /// Stellt sicher, dass ein Betriebskonto ein Unternehmen hat, und liefert es.
+  ///
+  /// Deckt zwei Faelle ab, die sonst dauerhaft ohne Firma blieben:
+  /// Konten aus der Zeit vor dieser Verknuepfung, und Registrierungen, bei
+  /// denen das Anlegen fehlschlug.
+  ///
+  /// **Sucht erst, legt dann an.** Ohne die Suche ueber `owner_id` entstuende
+  /// bei jedem Konto mit verlorener Verknuepfung ein zweites Unternehmen – mit
+  /// eigener Adresse, eigenen Bewertungen und ohne Weg zurueck.
+  ///
+  /// Wird bewusst **nicht** bei jedem Laden aufgerufen, sondern erst, wenn ein
+  /// Betrieb seine Daten tatsaechlich braucht: Sonst kostete jeder Seitenaufruf
+  /// eine zusaetzliche Abfrage.
+  Future<CompanyModel?> ensureCompany(UserModel user) async {
+    if (!user.isBetrieb) return null;
+
+    if (user.companyId != null) {
+      try {
+        return await _companies.getCompanyById(user.companyId!);
+      } on AppwriteException {
+        // Verknuepfung zeigt ins Leere – unten weitersuchen.
+      }
+    }
+
+    final vorhanden = await _companies.findCompanyByOwner(user.id);
+    final company = vorhanden ??
+        await _companies.createCompany(
+          ownerId: user.id,
+          name: user.companyName?.trim().isNotEmpty == true
+              ? user.companyName!
+              : user.displayName,
+        );
+
+    await _linkCompany(userId: user.id, companyId: company.id);
+    return company;
+  }
+
+  /// Schreibt die Verknuepfung an beide Orte, an denen sie gelesen wird.
+  Future<void> _linkCompany({
+    required String userId,
+    required String companyId,
+  }) async {
+    try {
+      await _db.updateRow(
+        databaseId: AppwriteConstants.databaseId,
+        tableId: AppwriteConstants.profilesCollection,
+        rowId: userId,
+        data: {'company_id': companyId},
+      );
+    } on AppwriteException catch (e) {
+      if (kDebugMode) {
+        debugPrint('company_id konnte nicht ins Profil (${e.type}).');
+      }
+    }
+    try {
+      final prefs = await _account.getPrefs();
+      await _account
+          .updatePrefs(prefs: {...prefs.data, 'company_id': companyId});
+    } on AppwriteException catch (e) {
+      if (kDebugMode) {
+        debugPrint('company_id konnte nicht in die Prefs (${e.type}).');
+      }
+    }
   }
 
   /// Legt das Profildokument an, aus dem die App die Rolle liest.
@@ -737,6 +869,7 @@ class AuthRepository {
         lastName: doc.data['last_name'] as String?,
         avatarUrl: doc.data['avatar_url'] as String?,
         companyName: doc.data['company_name'] as String?,
+        companyId: doc.data['company_id'] as String?,
         emailVerified: user.emailVerification,
         mfaEnabled: user.mfa,
         createdAt: DateTime.parse(user.$createdAt),
@@ -750,6 +883,7 @@ class AuthRepository {
         firstName: prefs.data['first_name'] as String?,
         lastName: prefs.data['last_name'] as String?,
         companyName: prefs.data['company_name'] as String?,
+        companyId: prefs.data['company_id'] as String?,
         emailVerified: user.emailVerification,
         mfaEnabled: user.mfa,
         createdAt: DateTime.parse(user.$createdAt),

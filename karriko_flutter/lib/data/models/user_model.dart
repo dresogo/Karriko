@@ -9,6 +9,15 @@ class UserModel {
   /// Name des Unternehmens. Nur bei Betriebskonten gesetzt.
   final String? companyName;
 
+  /// Verknuepfung zum `companies`-Dokument. Nur bei Betriebskonten gesetzt.
+  ///
+  /// Ohne sie hat das Betriebskonto keine Firma, gegen die es schreiben
+  /// koennte – weder das Unternehmensprofil noch die Zuordnung von Bewertungen
+  /// haetten eine Zieladresse. Bei Konten, die vor der Einfuehrung dieses
+  /// Feldes entstanden sind, ist der Wert `null`; [AuthRepository.ensureCompany]
+  /// zieht ihn dann nach.
+  final String? companyId;
+
   final bool emailVerified;
 
   /// Ob fuer dieses Konto eine Zwei-Faktor-Bestaetigung aktiv ist.
@@ -24,6 +33,7 @@ class UserModel {
     this.lastName,
     this.avatarUrl,
     this.companyName,
+    this.companyId,
     required this.emailVerified,
     this.mfaEnabled = false,
     required this.createdAt,
@@ -46,6 +56,7 @@ class UserModel {
       lastName: json['last_name'] as String?,
       avatarUrl: json['avatar_url'] as String?,
       companyName: json['company_name'] as String?,
+      companyId: json['company_id'] as String?,
       emailVerified: json['email_verified'] as bool? ?? false,
       mfaEnabled: json['mfa_enabled'] as bool? ?? false,
       createdAt: DateTime.parse(json['created_at'] as String),
@@ -60,6 +71,7 @@ class UserModel {
         'last_name': lastName,
         'avatar_url': avatarUrl,
         'company_name': companyName,
+        'company_id': companyId,
         'email_verified': emailVerified,
         'mfa_enabled': mfaEnabled,
         'created_at': createdAt.toIso8601String(),
@@ -70,6 +82,7 @@ class UserModel {
     String? lastName,
     String? avatarUrl,
     String? companyName,
+    String? companyId,
     bool? emailVerified,
     bool? mfaEnabled,
   }) {
@@ -81,6 +94,7 @@ class UserModel {
       lastName: lastName ?? this.lastName,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       companyName: companyName ?? this.companyName,
+      companyId: companyId ?? this.companyId,
       emailVerified: emailVerified ?? this.emailVerified,
       mfaEnabled: mfaEnabled ?? this.mfaEnabled,
       createdAt: createdAt,

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/company_model.dart';
 import '../data/models/job_model.dart';
 import '../data/repositories/company_repository.dart';
+import 'auth_provider.dart';
 
 final companyRepositoryProvider =
     Provider<CompanyRepository>((ref) => CompanyRepository());
@@ -128,6 +129,20 @@ final searchProvider =
 
 final featuredCompaniesProvider = FutureProvider<List<CompanyModel>>((ref) {
   return ref.watch(companyRepositoryProvider).getFeaturedCompanies();
+});
+
+/// Das Unternehmen des angemeldeten Betriebskontos.
+///
+/// Liefert `null` fuer alle, die kein Betrieb sind – Azubis und Besucher haben
+/// keine Firma, und das ist kein Fehlerfall.
+///
+/// Geht ueber [AuthRepository.ensureCompany] statt direkt ueber die ID im
+/// Profil: Konten aus der Zeit vor dieser Verknuepfung haetten sonst dauerhaft
+/// keine Firma, obwohl sich das beim ersten Zugriff beheben laesst.
+final myCompanyProvider = FutureProvider<CompanyModel?>((ref) async {
+  final user = ref.watch(authProvider).user;
+  if (user == null || !user.isBetrieb) return null;
+  return ref.read(authRepositoryProvider).ensureCompany(user);
 });
 
 final companyBySlugProvider =

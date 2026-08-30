@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
+import '../../data/models/company_model.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/company_provider.dart';
 import '../common/app_page.dart';
 
 class BetriebProfileScreen extends ConsumerStatefulWidget {
@@ -23,12 +25,22 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
   final _cityCtrl = TextEditingController();
   String? _industry;
   bool _editing = false;
+  bool _saving = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Echter Unternehmensname aus dem Konto statt eines erfundenen Beispiels.
-    _nameCtrl.text = ref.read(authProvider).user?.companyName ?? '';
+  /// Stand, aus dem die Felder zuletzt befuellt wurden.
+  ///
+  /// Verhindert, dass ein erneutes Bauen die Eingaben ueberschreibt, waehrend
+  /// der Nutzer tippt: Befuellt wird nur, wenn sich das Unternehmen tatsaechlich
+  /// geaendert hat.
+  String? _befuelltVon;
+
+  void _befuellen(CompanyModel company) {
+    _befuelltVon = company.id;
+    _nameCtrl.text = company.name;
+    _descCtrl.text = company.description ?? '';
+    _websiteCtrl.text = company.website ?? '';
+    _cityCtrl.text = company.city ?? '';
+    _industry = company.industry;
   }
 
   @override
@@ -41,29 +53,48 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
   }
 
   void _cancel() {
+    final company = ref.read(myCompanyProvider).valueOrNull;
     setState(() {
-      _nameCtrl.text = ref.read(authProvider).user?.companyName ?? '';
+      if (company != null) _befuellen(company);
       _editing = false;
     });
   }
 
-  void _save() {
+  Future<void> _save(CompanyModel company) async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _editing = false);
+    setState(() => _saving = true);
 
-    // Bewusst keine Erfolgsmeldung: CompanyRepository.updateCompanyProfile wird
-    // von hier noch nicht aufgerufen, weil dem Betriebskonto die Verknüpfung zu
-    // einem companies-Dokument fehlt. Vorher stand hier „Profil gespeichert!",
-    // ohne dass etwas gespeichert wurde.
+    String? fehler;
+    try {
+      await ref.read(companyRepositoryProvider).updateCompanyProfile(
+            companyId: company.id,
+            name: _nameCtrl.text.trim(),
+            description: _descCtrl.text.trim(),
+            website: _websiteCtrl.text.trim(),
+            city: _cityCtrl.text.trim(),
+            industry: _industry,
+          );
+      // Der Provider haelt den Stand, aus dem die Felder befuellt werden. Ohne
+      // das Verwerfen zeigte die Seite nach dem Speichern weiter die alten
+      // Werte – genau die Art stiller Abweichung, die hier vorher stand.
+      ref.invalidate(myCompanyProvider);
+    } catch (e) {
+      fehler = 'Die Änderungen konnten nicht gespeichert werden.';
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _saving = false;
+      if (fehler == null) _editing = false;
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         backgroundColor: AppColors.ink,
         behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 6),
         content: Text(
-          'Das Speichern ist noch nicht angebunden – deine Eingaben gelten nur '
-          'für diese Sitzung.',
-          style: TextStyle(color: AppColors.paper),
+          fehler ?? 'Unternehmensprofil gespeichert.',
+          style: const TextStyle(color: AppColors.paper),
         ),
       ),
     );
@@ -72,14 +103,28 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
-    final name = _nameCtrl.text.trim();
+    final company = ref.watch(myCompanyProvider);
+
+    // Befuellen gehoert nicht in den Bauvorgang, sondern daneben: setState
+    // waehrend build ist verboten, und die Controller zu aendern waehrend das
+    // Formular gebaut wird, verwirft die Eingabemarke.
+    final geladen = company.valueOrNull;
+    if (geladen != null && geladen.id != _befuelltVon && !_editing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _befuellen(geladen));
+      });
+    }
+
+    final name = _nameCtrl.text.trim().isNotEmpty
+        ? _nameCtrl.text.trim()
+        : (geladen?.name ?? user?.companyName ?? '');
 
     return AppPage(
       appBarTitle: 'Unternehmensprofil',
       eyebrow: 'UNTERNEHMENSPROFIL',
       title: name.isNotEmpty ? name : 'Dein Unternehmen',
       lede: user?.email,
-      headerAction: _editing
+      headerAction: _editing || geladen == null
           ? null
           : OutlinedButton.icon(
               onPressed: () => setState(() => _editing = true),
@@ -87,11 +132,16 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
               label: const Text('Bearbeiten'),
             ),
       children: [
-        const _NotConnectedHint(),
-        const SizedBox(height: AppLayout.s32),
+        if (company.isLoading) ...[
+          const _Ladehinweis(),
+          const SizedBox(height: AppLayout.s32),
+        ] else if (company.hasError) ...[
+          const _Fehlerhinweis(),
+          const SizedBox(height: AppLayout.s32),
+        ],
         const SectionLabel('Unternehmensdaten'),
         const SizedBox(height: AppLayout.s16),
-        if (_editing)
+        if (_editing && geladen != null)
           _EditForm(
             formKey: _formKey,
             nameCtrl: _nameCtrl,
@@ -99,9 +149,10 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
             cityCtrl: _cityCtrl,
             websiteCtrl: _websiteCtrl,
             industry: _industry,
+            saving: _saving,
             onIndustry: (v) => setState(() => _industry = v),
             onCancel: _cancel,
-            onSave: _save,
+            onSave: () => _save(geladen),
           )
         else ...[
           AppRowGroup(
@@ -204,6 +255,7 @@ class _EditForm extends StatelessWidget {
   final TextEditingController cityCtrl;
   final TextEditingController websiteCtrl;
   final String? industry;
+  final bool saving;
   final ValueChanged<String?> onIndustry;
   final VoidCallback onCancel;
   final VoidCallback onSave;
@@ -215,6 +267,7 @@ class _EditForm extends StatelessWidget {
     required this.cityCtrl,
     required this.websiteCtrl,
     required this.industry,
+    required this.saving,
     required this.onIndustry,
     required this.onCancel,
     required this.onSave,
@@ -294,15 +347,15 @@ class _EditForm extends StatelessWidget {
                 SizedBox(
                   height: 48,
                   child: OutlinedButton(
-                    onPressed: onCancel,
+                    onPressed: saving ? null : onCancel,
                     child: const Text('Abbrechen'),
                   ),
                 ),
                 SizedBox(
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: onSave,
-                    child: const Text('Übernehmen'),
+                    onPressed: saving ? null : onSave,
+                    child: Text(saving ? 'Wird gespeichert …' : 'Speichern'),
                   ),
                 ),
               ],
@@ -343,9 +396,12 @@ class _Labeled extends StatelessWidget {
   }
 }
 
-/// Macht transparent, dass die Unternehmensdaten noch nicht gespeichert werden.
-class _NotConnectedHint extends StatelessWidget {
-  const _NotConnectedHint();
+/// Gemeinsames Geruest der beiden Zustandshinweise.
+class _Hinweis extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _Hinweis({required this.icon, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -358,17 +414,36 @@ class _NotConnectedHint extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
+          Icon(icon, size: 18, color: AppColors.muted),
           const SizedBox(width: AppLayout.s8),
           Expanded(
-            child: Text(
-              'Die Unternehmensdaten werden noch nicht dauerhaft gespeichert. '
-              'Änderungen gelten nur für diese Sitzung.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            child: Text(text, style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
       ),
     );
   }
+}
+
+class _Ladehinweis extends StatelessWidget {
+  const _Ladehinweis();
+
+  @override
+  Widget build(BuildContext context) => const _Hinweis(
+        icon: Icons.hourglass_empty,
+        text: 'Die Unternehmensdaten werden geladen.',
+      );
+}
+
+/// Der Unterschied zum frueheren Hinweis ist wesentlich: Hier steht, dass
+/// gerade etwas **nicht** funktioniert – nicht, dass es nie vorgesehen war.
+class _Fehlerhinweis extends StatelessWidget {
+  const _Fehlerhinweis();
+
+  @override
+  Widget build(BuildContext context) => const _Hinweis(
+        icon: Icons.error_outline,
+        text: 'Die Unternehmensdaten konnten nicht geladen werden. '
+            'Bearbeiten ist deshalb gerade nicht möglich.',
+      );
 }

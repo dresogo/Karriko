@@ -37,8 +37,23 @@ Die Berichte sind der Stand vom 4./5. August; seitdem ist im Repository nur der 
 
 Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem mehrere andere hängen.
 
-- [ ] **1. `companies`-Dokument bei der Betriebsregistrierung anlegen** und die ID im Profil hinterlegen (Status 2.3)
-  Ohne diese Verknüpfung hat `updateCompanyProfile()` keine ID, gegen die es schreiben könnte, und das Betriebs-Dashboard keine Datengrundlage. Löst 2.3 und öffnet 5 und 6 unten.
+- [x] **1. `companies`-Dokument bei der Betriebsregistrierung anlegen** und die ID im Profil hinterlegen (Status 2.3) — **erledigt am 30. August 2026**
+
+  `registerBetrieb()` legt jetzt vor dem Profil ein `companies`-Dokument an und hinterlegt dessen ID an beiden Orten, an denen die App sie liest: im Profildokument und in den Account-Prefs. Damit ist **2.3 mit erledigt** — das Unternehmensprofil speichert wirklich, der Hinweis „gilt nur für diese Sitzung" ist weg, und `updateCompanyProfile()` hat erstmals einen Aufrufer.
+
+  Drei Entscheidungen, die nicht offensichtlich sind:
+  - **`ensureCompany()` als Reparaturweg.** Ohne ihn hätte die Änderung nur neuen Registrierungen geholfen; **bestehende Betriebskonten hätten dauerhaft keine Firma.** Der Weg sucht erst über `owner_id` und legt nur an, wenn nichts gefunden wird — sonst entstünde bei jedem Konto mit verlorener Verknüpfung ein zweites Unternehmen mit eigener Adresse und eigenen Bewertungen. Aufgerufen wird er nicht bei jedem Laden, sondern erst, wenn ein Betrieb seine Daten braucht.
+  - **Der Slug bleibt bei Umbenennung stehen.** Er steht in der öffentlichen Adresse; eine Umbenennung ändert die Anzeige, nicht den Link.
+  - **Kein Löschrecht am Firmendokument**, auch nicht für den Eigentümer. Beim Löschen eines Betriebskontos bleiben die Bewertungen erhalten (Projektreferenz §3.4) — ein Löschrecht würde genau das aushebeln.
+
+  **Nicht gelöst:** Schlägt das Anlegen bei der Registrierung fehl, läuft sie trotzdem durch (Konto und Sitzung bestehen zu dem Zeitpunkt schon). Die Verknüpfung zieht dann `ensureCompany` nach.
+
+- [ ] **1b. Schema in der Appwrite Console nachziehen** — **blockiert Punkt 1 im echten Betrieb**
+  Der Code schreibt zwei Felder, die es in der Console geben muss:
+  - `profiles.company_id` — String
+  - `companies.owner_id` — String, **mit Index** (ohne ihn findet `findCompanyByOwner` nichts und der Reparaturweg legt Doppel-Firmen an)
+
+  Dazu die Collection `companies` auf „Create" für angemeldete Nutzer stellen, sonst scheitert die Betriebsregistrierung am Anlegen. Ein eindeutiger Index auf `slug` wäre die einzige verbindliche Absicherung gegen doppelte Adressen — die Kollisionsprüfung im Client ist gegen den realistischen Fall wirksam, aber kein Ersatz.
 - [ ] **2. Echte Firmen-ID im Bewertungs-Assistenten** statt `'placeholder-id'` (Status 2.1)
   `new_review_screen.dart:273`, dazu `company_repository.dart:76` und `company_provider.dart:134` auf Name+ID umstellen. **Bestehende Datensätze mit `company_id: 'placeholder-id'` müssen bereinigt werden.**
 - [ ] **3. Kontolöschung umsetzen** — serverseitige Appwrite-Function mit API-Schlüssel (Status 2.2)
