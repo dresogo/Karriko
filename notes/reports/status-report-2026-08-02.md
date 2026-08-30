@@ -1,8 +1,8 @@
 # Karriko – Statusbericht
 
-**Stand:** 5. August 2026 · Erstfassung: 2. August 2026
-**Branch:** `main`
-**Grundlage:** Gemessen am 3. August — automatisierter Layout-Durchlauf über alle 37 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections, Analyzer- und Testlauf. Ergänzt um eine **statische Sicherheitsprüfung** (Git-Historie, Dart-Code, Web-Bundle, Plattform-Konfiguration, `.gitignore`) — siehe Abschnitt 7. Nachtrag vom 4. August: Umbau der Seite „Für Betriebe", Test- und Analyzer-Lauf neu, zwei neue Befunde (Abschnitt 4 und 5). Nachtrag vom 5. August: Ausbau der Anmeldeverfahren — eigenes Kapitel, siehe **Abschnitt 9**.
+**Stand:** 30. August 2026 · Erstfassung: 2. August 2026
+**Branch:** `main` — seit dem 30. August der **einzige** Branch, siehe Abschnitt 12
+**Grundlage:** Gemessen am 3. August — automatisierter Layout-Durchlauf über alle 37 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections, Analyzer- und Testlauf. Ergänzt um eine **statische Sicherheitsprüfung** (Git-Historie, Dart-Code, Web-Bundle, Plattform-Konfiguration, `.gitignore`) — siehe Abschnitt 7. Nachtrag vom 4. August: Umbau der Seite „Für Betriebe", Test- und Analyzer-Lauf neu, zwei neue Befunde (Abschnitt 4 und 5). Nachtrag vom 5. August: Ausbau der Anmeldeverfahren — eigenes Kapitel, siehe **Abschnitt 9**. Nachtrag vom 30. August: Repository aufgeräumt, Zugangsdaten-Befund geschlossen, **die Verknüpfung zwischen Betriebskonto und Firma gebaut** — siehe **Abschnitt 12**.
 
 ---
 
@@ -27,18 +27,24 @@ Zwei Dinge daran sind bemerkenswert:
 - Das **SDK-Upgrade über 13 Hauptversionen war nicht brechend**: null Compile-Fehler, nur Deprecation-Hinweise. Die erwartete große Migration entpuppte sich als 33 Aufrufstellen.
 - Beim Einbau der neuen Bildschirme kamen **zwei Fehler im Router-Provider** zutage, die sich gegenseitig verdeckt hatten und die **ganze App** betrafen: Der Provider baute bei jeder Zustandsänderung einen neuen `GoRouter` und warf damit den Navigationsstand weg, und der `refreshListenable` hatte durch eine fehlerhafte `late final`-Initialisierung noch nie gefeuert. Beides behoben — die Testsuite läuft seitdem in 13 statt 44 Sekunden. Siehe 9.7.
 
-| Bereich | 2. August | 3. August | 4. August | 5. August |
-|---|---|---|---|---|
-| Routing & Navigation | zwei verwaiste Seiten | **fertig**, alles verlinkt | unverändert | **6 Routen dazu, 3 Fehler behoben** (9.8) |
-| Auth (Login, Registrierung) | Layout bricht auf Mobil | **funktioniert**, Layout offen | unverändert | **alle vier Verfahren eingebaut** |
-| Öffentliche Seiten | Design fertig, Inhalte statisch | unverändert | **„Für Betriebe" im Startseiten-Layout** | unverändert |
-| Azubi-Bereich | Design alt, ein Datenfehler | **Design neu**, Datenfehler offen | unverändert | unverändert |
-| Betrieb-Bereich | überwiegend Attrappe | **3 von 8 Seiten neu**, Rest Attrappe | unverändert | unverändert |
-| Datenschicht | nicht überall angebunden | unverändert | unverändert | **SDK 12 → 25**, sonst unverändert |
-| Tests | 54 | 111 | 134 | **185** (+ 25 im Passkey-Dienst) |
-| Layout-Befunde | 28 | 24 | **25** (ein neuer, siehe 4.) | unverändert |
-| Analyzer-Hinweise | 86 | **0** | 0 | 0 |
-| Sicherheit | nicht geprüft | **8 Befunde, 5 behoben** | unverändert | **7.7 entschärft**, siehe dort |
+**Am 30. August** ist erstmals seit der Erstfassung ein Stück **Datenschicht** dazugekommen, und zwar das, an dem mehrere andere hängen: Betriebskonten haben jetzt eine Firma. `registerBetrieb()` legt ein `companies`-Dokument an und verknüpft es; das Unternehmensprofil speichert damit wirklich, statt eine Sitzungs-Einschränkung einzugestehen. Damit ist Punkt 2.3 erledigt und das Schlüsselstück aus der empfohlenen Reihenfolge gesetzt.
+
+Daneben zwei Aufräumarbeiten: Der seit dem 4. August offene Zugangsdaten-Befund (7.10) ist geschlossen, und das Repository hat nur noch einen Branch. **Der Befund war dabei ernster als hier beschrieben** — Einzelheiten in 12.1.
+
+Eine Einschränkung, die für alles vom 30. August gilt: **Der Code steht, das Schema in der Appwrite Console nicht.** Zwei Felder und ein Index fehlen dort; bis sie angelegt sind, greift die Verknüpfung im echten Betrieb nicht (12.2).
+
+| Bereich | 2. Aug. | 3. Aug. | 4. Aug. | 5. Aug. | 30. Aug. |
+|---|---|---|---|---|---|
+| Routing & Navigation | zwei verwaiste Seiten | **fertig**, alles verlinkt | unverändert | **6 Routen dazu, 3 Fehler behoben** (9.8) | unverändert |
+| Auth (Login, Registrierung) | Layout bricht auf Mobil | **funktioniert**, Layout offen | unverändert | **alle vier Verfahren eingebaut** | **Betriebsregistrierung legt Firma an** |
+| Öffentliche Seiten | Design fertig, Inhalte statisch | unverändert | **„Für Betriebe" im Startseiten-Layout** | unverändert | unverändert |
+| Azubi-Bereich | Design alt, ein Datenfehler | **Design neu**, Datenfehler offen | unverändert | unverändert | unverändert |
+| Betrieb-Bereich | überwiegend Attrappe | **3 von 8 Seiten neu**, Rest Attrappe | unverändert | unverändert | **Profil speichert wirklich** |
+| Datenschicht | nicht überall angebunden | unverändert | unverändert | **SDK 12 → 25**, sonst unverändert | **erste echte Anbindung** (12.2) |
+| Tests | 54 | 111 | 134 | **185** (+ 25 im Passkey-Dienst) | **194** (+ 25) |
+| Layout-Befunde | 28 | 24 | **25** (ein neuer, siehe 4.) | unverändert | unverändert |
+| Analyzer-Hinweise | 86 | **0** | 0 | 0 | 0 |
+| Sicherheit | nicht geprüft | **8 Befunde, 5 behoben** | unverändert | **7.7 entschärft**, siehe dort | **7.10 geschlossen** (12.1) |
 
 ---
 
@@ -123,15 +129,15 @@ throw UnimplementedError('Account deletion requires a server-side Appwrite Funct
 
 **Auswirkung:** Art. 17 DSGVO (Recht auf Löschung) ist nicht erfüllt. Braucht eine serverseitige Appwrite-Function mit API-Schlüssel. Muss vor Go-Live stehen.
 
-### 2.3 Das Unternehmensprofil speichert nicht
+### 2.3 Das Unternehmensprofil speichert nicht — ~~offen~~ **behoben am 30. August**
 
-**Status geändert: ehrlich, aber weiterhin nicht funktional.**
+Die Geschichte dieses Punktes in drei Stufen: Erst log die Seite („Profil gespeichert!", ohne dass etwas gespeichert wurde). Dann war sie ehrlich, aber wirkungslos („gilt nur für diese Sitzung"). Seit dem 30. August speichert sie.
 
-Die falsche Erfolgsmeldung „Profil gespeichert!" ist weg; der Knopf heißt „Übernehmen" und sagt, dass die Eingaben nur für die Sitzung gelten. Der erfundene Startwert „Musterbetrieb GmbH" wurde durch den echten Firmennamen ersetzt (dafür wanderte `companyName` ins `UserModel`).
+**Die tiefere Ursache ist beseitigt.** `registerBetrieb()` legte **kein `companies`-Dokument** an, sondern schrieb den Namen nur ins Profil — dem Betriebskonto fehlte jede Verknüpfung zu einer Firma, und `updateCompanyProfile()` hatte keine ID, gegen die es hätte schreiben können. Jetzt entsteht das Unternehmen bei der Registrierung, und seine ID liegt an beiden Orten, aus denen die App liest: im Profildokument und in den Account-Prefs.
 
-**Tiefere Ursache, jetzt klar benannt:** `registerBetrieb()` legt **kein `companies`-Dokument** an, sondern schreibt den Namen nur ins Profil. Damit fehlt dem Betriebskonto jede Verknüpfung zu einer Firma — `updateCompanyProfile()` hat gar keine ID, gegen die es schreiben könnte. Das ist auch der Grund, warum das Betriebs-Dashboard keine echten Bewertungen zeigen kann.
+Einzelheiten und die nicht offensichtlichen Entscheidungen dabei stehen in **Abschnitt 12.2**.
 
-**Behebung:** Bei der Registrierung ein `companies`-Dokument anlegen und dessen ID im Profil hinterlegen. Danach lassen sich Profil-Speichern, Dashboard-Kennzahlen und Bewertungszuordnung in einem Zug lösen.
+**Was daran noch offen ist:** Das Schema in der Appwrite Console fehlt (12.2), und die Dashboard-Kennzahlen hängen weiterhin nicht an echten Bewertungen — das ist jetzt aber eine eigene Aufgabe und kein Folgefehler mehr.
 
 ### 2.4 Das Kontaktformular verschickt nichts
 
@@ -187,12 +193,14 @@ Die Fragen kommen aus der Datenbank bzw. dem Platzhalterkatalog. Für die Antwor
 
 Gemessen über `lib/presentation` und `lib/providers`:
 
-| Methode | Aufrufe |
-|---|---|
-| `deleteAccount` | 0 (zudem Stub) |
-| `updateCompanyProfile` | 0 |
-| `isBookmarked` | 0 |
-| `getCompanyById` | 0 |
+| Methode | Aufrufe (5. Aug.) | Aufrufe (30. Aug.) |
+|---|---|---|
+| `deleteAccount` | 0 (zudem Stub) | unverändert 0 |
+| `updateCompanyProfile` | 0 | **1** — Unternehmensprofil (12.2) |
+| `isBookmarked` | 0 | unverändert 0 |
+| `getCompanyById` | 0 | **2** — `ensureCompany`, `updateCompanyProfile` |
+
+Neu und angebunden seit dem 30. August: `createCompany`, `findCompanyByOwner`, `ensureCompany`.
 
 `updatePassword`, `resendVerificationEmail`, `reportReview` und `addBetriebReply` sind angebunden.
 
@@ -277,7 +285,8 @@ Empfehlung unverändert: `review_card`/`job_card` → Auth → restliche Betrieb
 - **CI umgestellt.** SonarCloud analysierte nur noch toten Legacy-Code und lieferte ein dauerhaft rotes Quality Gate — Sonar hat keinen Dart-Analyzer, die eigentliche App war unsichtbar. `sonar-project.properties` entfernt (zeigte ohnehin auf das nicht mehr existierende `src/`), stattdessen `.github/workflows/flutter.yml`: Format-Prüfung, `flutter analyze`, `flutter test` gegen `karriko_flutter`. Die Automatic Analysis muss zusätzlich in der SonarCloud-Oberfläche abgeschaltet werden, sonst läuft sie mit Defaults weiter.
 - **Nachtrag 4. August:** `actions/checkout` in beiden Workflows auf `v5` gehoben (`9d25f8d`). `v4` zielt auf Node.js 20, GitHub hebt das zwangsweise auf Node 24 und erzeugte bei jedem Lauf eine Annotation. Ebenfalls neu: eine `README.md` im Wurzelverzeichnis (`720ba53`).
 - `old_tsx/` und `node_modules/` liegen im Repo-Wurzelverzeichnis. `codeql.yml` scannt `javascript-typescript` und deckt damit ebenfalls nur `old_tsx/` ab — CodeQL kann Dart genauso wenig wie Sonar.
-- GitHub meldet **21 Dependabot-Warnungen auf `main`** (11 hoch, 8 mittel, 2 niedrig). Betrifft den Altbestand, nicht die Flutter-App.
+- GitHub meldet **22 Dependabot-Warnungen auf `main`** (11 hoch, 9 mittel, 2 niedrig; am 30. August beim Push abgelesen — am 4. August waren es 21, der Sicherheitsbericht nennt 30 inklusive Karteileichen). Betrifft durchgehend den Altbestand in `old_tsx/`, nicht die Flutter-App.
+- **Keine `.gitattributes`** (30. August). Flutter schreibt die generierten Plugin-Registranten mit LF, Git erwartet CRLF — fünf Dateien erscheinen nach jedem `flutter test` als geändert, ohne Inhaltsunterschied. Kosmetisch, verrauscht aber `git status`.
 
 ---
 
@@ -288,6 +297,8 @@ Statische Prüfung am 3. August 2026: Git-Historie, Dart-Code unter `lib/`, Web-
 **8 Befunde: 1 hoch, 5 mittel, 2 niedrig.** **Fünf davon sind mit diesem Stand erledigt** (7.2, 7.4, 7.6, 7.8, 7.9), dazu alle drei `.gitignore`-Anmerkungen. Offen bleiben die drei, die nicht im Code liegen oder mehr als einen Handgriff kosten: 7.3 (Appwrite-Console), 7.5 (Schriften lokal einbetten), 7.7 (Build-Konfiguration). Ein neunter, zunächst als kritisch eingestufter Punkt hat sich bei genauer Prüfung als gegenstandslos erwiesen — siehe 7.1.
 
 **Nachtrag 4. August:** Ein weiterer Punkt ist beim Aktualisieren dieses Berichts aufgefallen und **noch nicht eingestuft** — siehe 7.10. Er lag außerhalb des am 3. August geprüften Umfangs.
+
+**Nachtrag 30. August:** 7.10 ist geprüft und geschlossen (12.1). Offen bleiben damit 7.3 (Appwrite-Console), 7.5 (Schriften) und 7.7 (Build-Konfiguration) — dieselben drei wie am 5. August.
 
 ### 7.1 `.env.local` in der Historie — geprüft, kein Leak
 
@@ -362,7 +373,13 @@ War in `pubspec.yaml` deklariert, in `lib/` nirgends verwendet — unnötige Ang
 
 `auth_repository.dart` gibt Appwrite-Fehlertexte aus, keine Token und keine personenbezogenen Daten. Die Aufrufe blieben allerdings auch im Release-Build aktiv; beide sind jetzt in `if (kDebugMode)` gefasst und werden im Release wegoptimiert.
 
-### 7.10 Zugangsdaten-Zeile in `notes/fehler.md` — neu am 4. August, ungeprüft
+### 7.10 Zugangsdaten-Zeile in `notes/fehler.md` — ~~ungeprüft~~ **geschlossen am 30. August**
+
+> **Prüfergebnis: kein Konto dahinter**, vom Betreiber bestätigt. Eine Rotation war damit gegenstandslos. Die Zeile ist trotzdem aus `main` und aus der Historie entfernt.
+>
+> **Der Befund war schwerer als der Text unten beschreibt.** Er ging von „liegt in der Historie" aus. Tatsächlich stand die Zeile im **aktuellen Stand von `main`** eines **öffentlichen** Repositories — 26 Tage lang in der Standardansicht abrufbar. Bei einem echten Wert wäre das der Unterschied zwischen Aufräumen und sofortiger Rotation gewesen. Vollständige Aufarbeitung in **Abschnitt 12.1**.
+
+Der ursprüngliche Text vom 4. August, unverändert stehengelassen:
 
 Die letzte Zeile von `notes/fehler.md` hat die Form `benutzer:passwort`. Sie ist **verfolgt und committet**, liegt also in der Historie des Repositories.
 
@@ -392,7 +409,7 @@ Drei Anmerkungen — **alle drei umgesetzt**:
 
 ## 8. Tests
 
-**185 Tests, alle grün** (vorher 134, davor 111, davor 54), verteilt auf vierzehn Dateien; dazu **25 Tests im Passkey-Dienst** (vitest, eigener Workflow). Die sechs neuen Flutter-Dateien vom 5. August stehen unten und gehören zum Ausbau der Anmeldeverfahren (Abschnitt 9):
+**194 Tests, alle grün** (vorher 185, davor 134, davor 111, davor 54), verteilt auf fünfzehn Dateien; dazu **25 Tests im Passkey-Dienst** (vitest, eigener Workflow). Die sechs Flutter-Dateien vom 5. August gehören zum Ausbau der Anmeldeverfahren (Abschnitt 9), die vom 30. August zur Firmen-Verknüpfung (Abschnitt 12):
 
 | Datei | Tests | Inhalt |
 |---|---|---|
@@ -410,6 +427,7 @@ Drei Anmerkungen — **alle drei umgesetzt**:
 | `passkey_test.dart` | 8 | **neu** — Sichtbarkeit je Browser und Rolle, Anmeldung, Abbruch, Verwaltung |
 | `register_azubi_layout_test.dart` | 11 | **neu** — Überlauf über sechs Breiten, Reihenfolge der Schritte, kein Passkey-Knopf |
 | `auth_error_message_test.dart` | 4 | Fehlermeldungen werden nicht durch pauschalen Text ersetzt |
+| `company_link_test.dart` | 8 | **neu (30. Aug.)** — Slug-Bildung inklusive Umlauten, Speichern gegen die verknüpfte ID, gesperrtes Bearbeiten ohne Firma |
 
 Das Generator-Template `widget_test.dart` ist entfernt — sein Compile-Fehler ließ die gesamte Suite scheitern.
 
@@ -423,6 +441,8 @@ Zwei weitere Erkenntnisse aus dem Umbau, die für künftige Layout-Tests gelten:
 
 - **Die Ersatzschrift verfälscht Höhenmessungen.** Ein Test, der eine Pixelhöhe gegen die Viewporthöhe prüft, misst die breitere Testschrift mit. Robuster ist es, die *Eigenschaft* zu prüfen: Die Hero-Höhe wird bei 900 px und 1400 px Fensterhöhe verglichen — sind beide gleich, folgt die Höhe dem Inhalt und nicht dem Bildschirm.
 - **Nicht jeder Überlauf gehört der geprüften Seite.** Der Kopfzeilenfehler tauchte zuerst als Fehlschlag im Seitentest auf. Erst ein Testlauf mit ausschließlich der `KarrikoAppBar` hat gezeigt, wo er wirklich sitzt.
+
+**Neu am 30. August — eine Falle, die sich wiederholt hat.** Der Fake in `betrieb_pages_layout_test.dart` beantwortete die neue Methode `ensureCompany` nicht. Weil sie in einem `FutureProvider` steckt, wurde daraus kein Absturz, sondern ein stiller Fehlerzustand: Der Bildschirm rendert seinen Fehlerzweig, und die Tests wären grün geblieben, während sie den falschen Zustand prüfen. Das ist dieselbe Fehlerklasse wie beim Passkey-Getter am 5. August (9.6), nur leiser — dort krachten 21 Tests, hier hätte niemand etwas gemerkt. **Merke: Ein Fake, der eine neue Methode nicht kennt, macht Tests nicht rot, sondern bedeutungslos.**
 
 **Nicht abgedeckt:** Repositories, Bewertungs-Assistent, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten.
 
@@ -817,11 +837,11 @@ Das Muster dahinter: Hier wurde vermutlich einmal „Enable all" geklickt. In de
 
 **Vorab — Sicherheit**
 0. ~~`reporterId`-Platzhalter (7.4), `allowBackup` (7.6), `flutter_secure_storage` (7.8), `debugPrint` (7.9), `.gitignore`-Korrekturen.~~ **Erledigt.** Die Historienbereinigung (7.1) ebenfalls, war nach Prüfung aber ohnehin nicht sicherheitsrelevant. Offen bleiben drei: die Prüfung der Appwrite-Permissions (7.3) gehört zeitlich vor den ersten echten Nutzer, die Schriften (7.5) und die Build-Konfiguration (7.7) vor den Go-Live.
-0b. **Zuerst überhaupt:** die Zugangsdaten-Zeile in `notes/fehler.md` prüfen (7.10) — ein Handgriff, und solange sie ungeklärt ist, steht sie über allem anderen auf dieser Liste.
+0b. ~~**Zuerst überhaupt:** die Zugangsdaten-Zeile in `notes/fehler.md` prüfen (7.10).~~ **Erledigt am 30. August** — geprüft, kein Konto dahinter, aus `main` und Historie entfernt (12.1).
 
 **Zuerst — Daten und Wahrheit**
-1. `companies`-Dokument bei der Betriebsregistrierung anlegen und im Profil verknüpfen. **Schlüsselstück:** löst 2.3, ermöglicht echte Dashboard-Kennzahlen und die Bewertungszuordnung.
-2. Firmen-ID im Bewertungs-Assistenten (2.1) + Bereinigung der Altdaten
+1. ~~`companies`-Dokument bei der Betriebsregistrierung anlegen und im Profil verknüpfen.~~ **Erledigt am 30. August** (12.2). Das Schlüsselstück sitzt; 2.3 ist damit gelöst. **Offen bleibt das Schema in der Console** — bis dahin greift es im echten Betrieb nicht.
+2. Firmen-ID im Bewertungs-Assistenten (2.1) + Bereinigung der Altdaten. **Jetzt an der Reihe** — die Grundlage dafür steht seit Punkt 1.
 3. Kontolöschung über eine Appwrite-Function (2.2)
 4. Kontaktformular anbinden oder auf `mailto:` umstellen (2.4)
 
@@ -851,3 +871,80 @@ Das Muster dahinter: Hier wurde vermutlich einmal „Enable all" geklickt. In de
 17. Verbleibende `IntrinsicHeight`-Konstruktionen umstellen (Abschnitt 1, Nachtrag)
 18. `dart fix --apply`, Migrationsreste entfernen
 19. Rechtstexte, Consent, `verificationUrl` im Build
+
+---
+
+## 12. Nachtrag 30. August
+
+Drei Vorgänge, in der Reihenfolge, in der sie stattfanden. Der erste war ein Sicherheitsbefund, der zweite Aufräumarbeit, der dritte das erste Stück echter Datenschicht seit der Erstfassung.
+
+### 12.1 Die Zugangsdaten-Zeile — geprüft, geschlossen
+
+**Ergebnis: kein Konto dahinter.** Vom Betreiber bestätigt, eine Rotation entfiel damit.
+
+**Der Befund war schwerer, als beide Berichte ihn beschrieben.** 7.10 und S10 gingen davon aus, die Zeile liege „in der Historie". Die Prüfung ergab etwas anderes:
+
+| | |
+|---|---|
+| Hinzugefügt | `9d25f8d`, 4. August, 13:53 |
+| Gelöscht | `60ec9e6` — **nur auf dem Feature-Branch** |
+| `origin/main` stand auf | `9d25f8d` |
+| Repository | **öffentlich** |
+
+Die Datei war damit **26 Tage lang im aktuellen Stand des Standard-Branches** öffentlich abrufbar, nicht in einer alten Version. Bei einem echten Wert wäre das der Unterschied zwischen Aufräumen und sofortiger Rotation gewesen.
+
+Bemerkenswert am Rande: Die Zeile kam mit **demselben Commit** ins Repository, der den `.env.local`-Fehlalarm aus 7.1 richtigstellte.
+
+**Vorgehen:** Bundle-Backup aller Refs → `notes/fehler.md` auf `main` per regulärem Commit entfernt → `git filter-repo --replace-text` über die eine Zeile → Gegenprobe über alle erreichbaren Blobs und alle Commit-Diffs → Force-Push mit `--force-with-lease`.
+
+Bewusst **nicht** die ganze Datei aus der Historie entfernt, anders als seinerzeit bei `.env.local`: Ein Textersatz ändert nur die drei Commits ab `9d25f8d`, eine Pfad-Entfernung hätte jeden Commit ab `4d7d598` neu geschrieben. Der kleinere Eingriff reicht, weil der übrige Dateiinhalt harmlos war.
+
+**Der Restpunkt, der bleibt — und der methodisch der wichtigste ist:** Der alte Commit ist über die GitHub-API **weiterhin per SHA abrufbar**, samt Dateiinhalt. Nachgeprüft, nicht angenommen. GitHub räumt unerreichbar gewordene Objekte nicht zuverlässig ab.
+
+> **Ein Force-Push entfernt ein Geheimnis aus der Ansicht, nicht aus dem Speicher.** Vollständig beseitigen lässt es sich nur über eine Anfrage an den GitHub-Support („purge unreachable objects"), bei Forks zusätzlich dort. Hier verzichtbar, weil der Wert bedeutungslos ist — beim nächsten echten Fund ist es der Schritt, der sonst vergessen wird.
+
+### 12.2 Betriebskonto und Firma — die Verknüpfung steht
+
+Das Schlüsselstück aus Abschnitt 11. Vorher schrieb `registerBetrieb()` den Firmennamen nur ins Profil; ein `companies`-Dokument entstand nie. Jetzt entsteht es **vor** dem Profil, weil dessen ID hineingehört, und liegt an beiden Orten, aus denen die App liest: Profildokument und Account-Prefs.
+
+| Datei | Änderung |
+|---|---|
+| `user_model.dart` | `companyId` |
+| `company_model.dart` | `ownerId` |
+| `company_repository.dart` | `createCompany`, `findCompanyByOwner`, `companySlug` |
+| `auth_repository.dart` | Firma bei der Registrierung, `ensureCompany` |
+| `company_provider.dart` | `myCompanyProvider` |
+| `betrieb/profile_screen.dart` | lädt und speichert echt |
+
+**Vier Entscheidungen, die nicht offensichtlich sind:**
+
+- **`ensureCompany()` als Reparaturweg.** Ohne ihn hätte die Änderung ausschließlich neuen Registrierungen geholfen — **bestehende Betriebskonten wären dauerhaft ohne Firma geblieben**, der Fehler für sie unverändert bestehen. Der Weg sucht erst über `owner_id` und legt nur an, wenn nichts gefunden wird. Andernfalls entstünde bei jedem Konto mit verlorener Verknüpfung ein zweites Unternehmen mit eigener Adresse und eigenen Bewertungen, ohne Weg zurück. Aufgerufen wird er nicht bei jedem Laden, sondern erst, wenn ein Betrieb seine Daten braucht — sonst kostete jeder Seitenaufruf eine zusätzliche Abfrage.
+- **Der Slug bleibt bei einer Umbenennung stehen.** Er steht in der öffentlichen Adresse des Profils; eine Umbenennung ändert die Anzeige, nicht den Link. Sonst bräche jeder geteilte Link weg, sobald ein Betrieb seinen Namen korrigiert.
+- **`companySlug()` schreibt Umlaute aus statt sie zu filtern.** Aus „Müller GmbH" wird `mueller-gmbh`, nicht `mller-gmbh`. Für den DACH-Zielmarkt ist das kein Randfall.
+- **Kein Löschrecht am Firmendokument**, auch nicht für den Eigentümer. Beim Löschen eines Betriebskontos bleiben die Bewertungen erhalten und das Profil wird nur inaktiv (`projekt-referenz.md` §3.4) — ein Löschrecht würde genau das aushebeln.
+
+**Bewusst nicht abgesichert:** Schlägt das Anlegen bei der Registrierung fehl, läuft diese trotzdem durch. Konto und Sitzung bestehen zu dem Zeitpunkt bereits; ein Abbruch hinterließe ein Konto, das die App als Fehlschlag meldet — derselbe Fehler, der am 3. August behoben wurde. Die Verknüpfung zieht `ensureCompany` beim nächsten Zugriff nach.
+
+**Was zum Wirken fehlt — Konfiguration, kein Code:**
+
+| Nötig | Warum |
+|---|---|
+| `profiles.company_id` (String) | trägt die Verknüpfung |
+| `companies.owner_id` (String) **mit Index** | ohne Index findet `findCompanyByOwner` nichts, und der Reparaturweg legt Doppel-Firmen an |
+| `companies`: „Create" für angemeldete Nutzer | sonst scheitert die Registrierung am Anlegen der Firma |
+| Eindeutiger Index auf `slug` | die einzige verbindliche Absicherung gegen doppelte Adressen |
+
+Die Kollisionsprüfung im Client greift gegen den realistischen Fall — gleicher Name, verschiedene Zeitpunkte — ist aber kein Ersatz für den Index: Zwischen Prüfung und Anlegen kann ein zweiter Client dazwischenkommen.
+
+### 12.3 Repository aufgeräumt
+
+- **Nur noch ein Branch.** `feat/anmeldeverfahren` ist per Merge-Commit auf `main` gebracht und samt `redesign/swiss-style-search-fuer-betriebe` gelöscht — letzterer hatte keine eigenen Commits mehr. Vor dem Löschen über `git merge-base --is-ancestor` geprüft, dass nichts verlorengeht. Kein Rebase: Nach dem Rewrite aus 12.1 sollten die Hashes nicht ein zweites Mal wandern.
+- **Die alte `notes/todo.md` ist verschwunden** — sie verwies auf Supabase, `src/app` und Stripe und beschrieb damit ein Projekt, das so nie gebaut wurde. An ihrer Stelle steht eine neue, die Projektreferenz und beide Berichte zusammenführt.
+- **README auf Stand gebracht.** Zwei Angaben waren nicht nur veraltet, sondern irreführend: Der Link auf diesen Bericht war tot (die Datei liegt seit der Konsolidierung unter `notes/reports/`), und als Dart-Define stand `APPWRITE_VERIFICATION_URL` — die Konstante heißt seit dem 5. August `APP_ORIGIN` und trägt inzwischen alle Rückleitungen. Wer der Anleitung folgte, baute eine wirkungslose Konfiguration und merkte es erst am ausbleibenden Passwort-Reset.
+- **Nebenbefund, nicht behoben:** Es gibt keine `.gitattributes`. Flutter schreibt `generated_plugin_registrant.*` bei jedem Testlauf mit LF, Git erwartet CRLF — fünf Dateien erscheinen deshalb nach jedem `flutter test` als geändert, ohne Inhaltsunterschied. Kosmetisch, aber es verrauscht `git status` und damit die Wahrnehmung echter Änderungen.
+
+### 12.4 Was weiterhin nicht geprüft ist
+
+Unverändert seit dem 5. August, und durch diesen Nachtrag eher gewichtiger geworden: **Nichts davon ist gegen die echte Appwrite-Instanz gelaufen.** Alle 194 Tests arbeiten gegen Fakes.
+
+Für die Verknüpfung aus 12.2 heißt das konkret: Ob das Anlegen der Firma mit den tatsächlichen Collection-Berechtigungen durchgeht, ob `Query.equal('owner_id', …)` ohne Index etwas zurückgibt, und ob die Dokumentrechte so greifen wie gesetzt — all das entscheidet sich erst an der Console. Der Code ist an dieser Stelle die kleinere Hälfte der Arbeit.
