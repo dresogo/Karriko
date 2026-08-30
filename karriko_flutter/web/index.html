@@ -41,6 +41,9 @@
     For more details:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
+  <!-- Bruecke zur WebAuthn-API. Muss vor dem Flutter-Bundle geladen sein,
+       damit window.karrikoPasskey beim ersten Aufbau der Anmeldeseite steht. -->
+  <script src="passkey.js"></script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

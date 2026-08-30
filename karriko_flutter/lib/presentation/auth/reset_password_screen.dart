@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
-import '../../data/repositories/auth_repository.dart';
+import '../../providers/auth_provider.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -37,7 +37,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       _error = null;
     });
     try {
-      await AuthRepository().updatePassword(_passwordCtrl.text);
+      await ref.read(authRepositoryProvider).updatePassword(_passwordCtrl.text);
       if (mounted) {
         setState(() {
           _isLoading = false;

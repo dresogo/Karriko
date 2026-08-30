@@ -135,6 +135,10 @@ void main() {
   testWidgets('Einstellungen fuehren auf das Team', (tester) async {
     await _open(tester, '/betrieb-settings', const Size(1440, 900));
 
+    // Die Konto-Sektion ist um Passkeys und Zwei-Faktor-Bestaetigung
+    // gewachsen; 'Team' liegt dadurch unterhalb der Sichtkante.
+    await tester.ensureVisible(find.text('Team'));
+    await tester.pump();
     await tester.tap(find.text('Team'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));

@@ -45,6 +45,19 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
               onTap: () => context.go('/forgot-password'),
             ),
             AppRow(
+              icon: Icons.fingerprint,
+              title: 'Passkeys',
+              subtitle: 'Anmelden mit Fingerabdruck, Gesicht oder Geräte-PIN',
+              onTap: () => context.go('/settings/passkeys'),
+            ),
+            AppRow(
+              icon: Icons.shield_outlined,
+              title: 'Zwei-Faktor-Bestätigung',
+              subtitle: 'Zusätzlicher Code bei jeder Anmeldung',
+              value: (auth.user?.mfaEnabled ?? false) ? 'Aktiv' : 'Inaktiv',
+              onTap: () => context.go('/settings/mfa'),
+            ),
+            AppRow(
               icon: Icons.mail_outline,
               title: 'E-Mail-Adresse',
               value: auth.user?.email ?? '–',

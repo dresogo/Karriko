@@ -49,7 +49,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   bool _isLoading = true;
   RealtimeSubscription? _subscription;
 
-  Databases get _db => Databases(AppwriteService.client);
+  TablesDB get _db => TablesDB(AppwriteService.client);
 
   @override
   void initState() {
@@ -68,9 +68,9 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
     try {
-      final result = await _db.listDocuments(
+      final result = await _db.listRows(
         databaseId: AppwriteConstants.databaseId,
-        collectionId: AppwriteConstants.notificationsCollection,
+        tableId: AppwriteConstants.notificationsCollection,
         queries: [
           Query.equal('user_id', userId),
           Query.orderDesc('\$createdAt'),
@@ -79,7 +79,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
       );
       if (mounted) {
         setState(() {
-          _notifications = result.documents
+          _notifications = result.rows
               .map(
                   (d) => _NotificationItem.fromDoc(d.data, d.$id, d.$createdAt))
               .toList();
@@ -95,8 +95,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final userId = ref.read(authProvider).user?.id;
     if (userId == null) return;
     final realtime = Realtime(AppwriteService.client);
+    // Kanalname folgt der TablesDB-Benennung (tables/rows); die alte Form
+    // collections/documents gilt ab Appwrite 1.8 als veraltet. Anders als der
+    // Rest der Migration ist das eine Zeichenkette, die der Compiler nicht
+    // prueft – Aenderungen hier gegen eine echte Instanz gegentesten.
     _subscription = realtime.subscribe([
-      'databases.${AppwriteConstants.databaseId}.collections.${AppwriteConstants.notificationsCollection}.documents',
+      'databases.${AppwriteConstants.databaseId}.tables.${AppwriteConstants.notificationsCollection}.rows',
     ]);
     _subscription!.stream.listen((event) {
       if (mounted) _loadNotifications();
@@ -108,10 +112,10 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     if (userId == null) return;
     final unread = _notifications.where((n) => !n.isRead).toList();
     await Future.wait(
-      unread.map((n) => _db.updateDocument(
+      unread.map((n) => _db.updateRow(
             databaseId: AppwriteConstants.databaseId,
-            collectionId: AppwriteConstants.notificationsCollection,
-            documentId: n.id,
+            tableId: AppwriteConstants.notificationsCollection,
+            rowId: n.id,
             data: {'is_read': true},
           )),
     );

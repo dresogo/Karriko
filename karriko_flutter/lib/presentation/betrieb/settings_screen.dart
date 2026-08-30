@@ -47,6 +47,19 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
               onTap: () => context.go('/forgot-password'),
             ),
             AppRow(
+              icon: Icons.fingerprint,
+              title: 'Passkeys',
+              subtitle: 'Anmelden mit Fingerabdruck, Gesicht oder Geräte-PIN',
+              onTap: () => context.go('/betrieb-settings/passkeys'),
+            ),
+            AppRow(
+              icon: Icons.shield_outlined,
+              title: 'Zwei-Faktor-Bestätigung',
+              subtitle: 'Zusätzlicher Code bei jeder Anmeldung',
+              value: (user?.mfaEnabled ?? false) ? 'Aktiv' : 'Inaktiv',
+              onTap: () => context.go('/betrieb-settings/mfa'),
+            ),
+            AppRow(
               icon: Icons.mail_outline,
               title: 'Kontakt-E-Mail',
               value: user?.email ?? '–',

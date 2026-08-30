@@ -1,0 +1,26 @@
+{
+  "name": "karriko-passkey-rp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebAuthn Relying Party fuer Karriko. Prueft Passkeys und uebersetzt sie ueber einen Appwrite Custom Token in eine Sitzung.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --experimental-strip-types --watch src/server.ts",
+    "start": "node --experimental-strip-types src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "audit": "npm audit --audit-level=high"
+  },
+  "dependencies": {
+    "@simplewebauthn/server": "^13.3.2",
+    "node-appwrite": "^27.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

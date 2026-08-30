@@ -101,6 +101,7 @@ __pycache__/
 graphify-out/
 coverage/
 *.lcov
+old_tsx/
 
 # Legacy / local
 _legacy/

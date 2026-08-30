@@ -6,6 +6,8 @@ import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import 'login_shell.dart';
+import 'widgets/passkey_button.dart';
+import 'widgets/social_sign_in_buttons.dart';
 
 /// Zielgruppe der Anmeldemaske. Die Maske ist technisch identisch, unterscheidet
 /// sich aber in Ansprache und Registrierungs-Link.
@@ -28,6 +30,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
 
   bool get _isBetrieb => widget.role == LoginRole.betrieb;
+
+  /// Steuert allein die Sichtbarkeit – ein Knopf, der beim Druecken scheitert,
+  /// ist schlechter als gar keiner.
+  bool get _passkeysMoeglich => ref.watch(passkeySupportProvider);
 
   @override
   void dispose() {
@@ -167,6 +173,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       : const Text('Anmelden'),
                 ),
               ),
+              // Passkeys stehen beiden Rollen offen – sie sind phishingresistent
+              // und gerade fuer Betriebe wertvoll. Anmeldelink und Anbieter nur
+              // Azubis: Betriebe brauchen die menschliche Firmenpruefung.
+              if (_passkeysMoeglich || !_isBetrieb) ...[
+                const SizedBox(height: AppLayout.s16),
+                const _Trenner('oder'),
+                const SizedBox(height: AppLayout.s8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (_passkeysMoeglich)
+                      const Expanded(child: PasskeyButton()),
+                    if (_passkeysMoeglich && !_isBetrieb)
+                      const SizedBox(width: AppLayout.s8),
+                    if (!_isBetrieb)
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: OutlinedButton.icon(
+                            onPressed: () => context.go('/login/azubi/magic'),
+                            icon: const Icon(Icons.mail_outline, size: 18),
+                            label: const Text('E-Mail-Link',
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                if (!_isBetrieb) ...[
+                  const SizedBox(height: AppLayout.s8),
+                  const SocialSignInButtons(),
+                ],
+              ],
               const SizedBox(height: AppLayout.s32),
               const Divider(color: AppColors.line, height: 1),
               const SizedBox(height: AppLayout.s24),
@@ -228,6 +267,34 @@ class _LabeledField extends StatelessWidget {
           field,
         ],
       ),
+    );
+  }
+}
+
+/// Haarlinie mit Beschriftung in der Mitte, um zwei Anmeldewege zu trennen.
+class _Trenner extends StatelessWidget {
+  final String label;
+
+  const _Trenner(this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(child: Divider(color: AppColors.line, height: 1)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.muted,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const Expanded(child: Divider(color: AppColors.line, height: 1)),
+      ],
     );
   }
 }
