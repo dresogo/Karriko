@@ -156,14 +156,11 @@ class _ManagementActions extends StatelessWidget {
       'Angaben und Beschreibung pflegen',
       '/betrieb-profile',
     ),
-    // Führt in denselben Bereich wie „Unternehmensprofil“ – die Stellen stehen
-    // dort. Als eigene Kachel, weil hier gesucht wird, wer eine ausschreiben
-    // will, und nicht unter „Angaben pflegen“.
     (
       Icons.work_outline,
       'Ausbildungsstellen',
       'Stellen ausschreiben und verwalten',
-      '/betrieb-profile',
+      '/betrieb-stellen',
     ),
     (
       Icons.insights_outlined,

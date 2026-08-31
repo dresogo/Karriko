@@ -118,11 +118,18 @@ void main() {
 
     expect(await _goTo(tester, '/dashboard'), '/betrieb-dashboard');
     expect(await _goTo(tester, '/betrieb-profile'), '/betrieb-profile');
+    expect(await _goTo(tester, '/betrieb-stellen'), '/betrieb-stellen');
   });
 
   testWidgets('Abgemeldet fuehrt auf den Login mit Rueckziel', (tester) async {
     await _pump(tester, null);
 
     expect(await _goTo(tester, '/dashboard'), '/login?next=%2Fdashboard');
+    // Die Stellenseite gehoert dem Betrieb: ohne Anmeldung kein Zutritt, und
+    // nach der Anmeldung zurueck an dieselbe Stelle.
+    expect(
+      await _goTo(tester, '/betrieb-stellen'),
+      '/login?next=%2Fbetrieb-stellen',
+    );
   });
 }

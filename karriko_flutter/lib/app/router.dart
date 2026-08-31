@@ -39,6 +39,7 @@ import '../presentation/azubi/notifications_screen.dart';
 import '../presentation/azubi/settings_screen.dart';
 import '../presentation/betrieb/dashboard_screen.dart' as betrieb;
 import '../presentation/betrieb/profile_screen.dart' as betrieb;
+import '../presentation/betrieb/jobs_screen.dart';
 import '../presentation/betrieb/reviews_screen.dart' as betrieb;
 import '../presentation/betrieb/analytics_screen.dart';
 import '../presentation/betrieb/team_screen.dart';
@@ -79,6 +80,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       const betriebPaths = [
         '/betrieb-dashboard',
         '/betrieb-profile',
+        '/betrieb-stellen',
         '/betrieb-reviews',
         '/analytics',
         '/team',
@@ -249,6 +251,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/betrieb-profile',
           builder: (_, __) => const betrieb.BetriebProfileScreen()),
+      GoRoute(
+          path: '/betrieb-stellen',
+          builder: (_, __) => const BetriebJobsScreen()),
       GoRoute(
           path: '/betrieb-reviews',
           builder: (_, __) => const betrieb.BetriebReviewsScreen()),
