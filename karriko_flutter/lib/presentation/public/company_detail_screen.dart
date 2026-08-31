@@ -8,6 +8,7 @@ import '../../providers/company_provider.dart';
 import '../../providers/review_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../data/models/company_model.dart';
+import '../../data/models/job_model.dart';
 import '../../data/models/review_model.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
@@ -56,6 +57,7 @@ class _CompanyDetailBody extends ConsumerWidget {
         children: [
           _ProfileBand(company: company, stats: stats, isAzubi: auth.isAzubi),
           _MetricsBand(company: company),
+          _JobsBand(company: company),
           if (stats.categories.isNotEmpty) _CategoryBand(stats: stats),
           if (company.description != null &&
               company.description!.trim().isNotEmpty)
@@ -460,21 +462,19 @@ class _MetricsBand extends StatelessWidget {
         border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: ContentBand(
+        // Table statt Row mit IntrinsicHeight: Die Zeilenhöhe stimmt auch bei
+        // umbrechenden Werten, und die Trennlinien laufen über die volle Höhe.
         child: isWide
-            ? IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (var i = 0; i < cells.length; i++)
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              right: i == cells.length - 1
-                                  ? BorderSide.none
-                                  : const BorderSide(color: AppColors.line),
-                            ),
-                          ),
+            ? Table(
+                defaultColumnWidth: const FlexColumnWidth(),
+                border: const TableBorder(
+                  verticalInside: BorderSide(color: AppColors.line),
+                ),
+                children: [
+                  TableRow(
+                    children: [
+                      for (var i = 0; i < cells.length; i++)
+                        Padding(
                           padding: EdgeInsets.only(
                             top: AppLayout.s32,
                             bottom: AppLayout.s32,
@@ -484,9 +484,9 @@ class _MetricsBand extends StatelessWidget {
                           child: _MetricCell(
                               value: cells[i].$1, label: cells[i].$2),
                         ),
-                      ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -545,6 +545,251 @@ class _MetricCell extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─── Offene Stellen ──────────────────────────────────────────────────────────
+
+/// Stellenangebote des Betriebs als kleine Karten nebeneinander. Der Bereich
+/// erscheint nur, wenn tatsächlich eine Stelle ausgeschrieben ist.
+class _JobsBand extends ConsumerWidget {
+  final CompanyModel company;
+
+  const _JobsBand({required this.company});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final jobs = ref.watch(companyJobsProvider(company.slug)).valueOrNull;
+    if (jobs == null || jobs.isEmpty) return const SizedBox.shrink();
+
+    final isWide = MediaQuery.sizeOf(context).width > 720;
+    final count = jobs.length == 1 ? '1 ANGEBOT' : '${jobs.length} ANGEBOTE';
+
+    final heading = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Auf schmalen Viewports steht die Zahl im Eyebrow, sonst drängt sie
+        // sich neben die Überschrift.
+        _Eyebrow(
+          text: isWide ? 'OFFENE STELLEN' : 'OFFENE STELLEN · $count',
+          color: AppColors.accent,
+        ),
+        const SizedBox(height: AppLayout.s8),
+        Text(
+          'Hier kannst du\ndich bewerben.',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+      ],
+    );
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: ContentBand(
+        padding: const EdgeInsets.symmetric(vertical: AppLayout.s48),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (isWide)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(child: heading),
+                  Text(
+                    count,
+                    style: const TextStyle(
+                      color: AppColors.muted,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.96,
+                    ),
+                  ),
+                ],
+              )
+            else
+              heading,
+            const SizedBox(height: AppLayout.s24),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                // Karten stehen nebeneinander und brechen um, statt in einen
+                // horizontalen Scrollbereich zu wandern – so bleibt jede Karte
+                // sichtbar und erreichbar.
+                const gap = AppLayout.s16;
+                final columns = constraints.maxWidth >= 900
+                    ? 3
+                    : (constraints.maxWidth >= 600 ? 2 : 1);
+                final width =
+                    (constraints.maxWidth - gap * (columns - 1)) / columns;
+
+                return Wrap(
+                  spacing: gap,
+                  runSpacing: gap,
+                  children: [
+                    for (final job in jobs)
+                      SizedBox(width: width, child: _JobMiniCard(job: job)),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _JobMiniCard extends StatefulWidget {
+  final JobModel job;
+
+  const _JobMiniCard({required this.job});
+
+  @override
+  State<_JobMiniCard> createState() => _JobMiniCardState();
+}
+
+class _JobMiniCardState extends State<_JobMiniCard> {
+  bool _hovered = false;
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final job = widget.job;
+    final active = _hovered || _focused;
+
+    return Semantics(
+      button: true,
+      label: 'Stellenangebot: ${job.title} in ${job.location}',
+      excludeSemantics: true,
+      child: Material(
+        color: AppColors.surface,
+        child: InkWell(
+          onTap: () => context.go('/stellen/${job.id}'),
+          onHover: (v) => setState(() => _hovered = v),
+          onFocusChange: (v) => setState(() => _focused = v),
+          hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
+          focusColor: AppColors.audienceBeige,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            constraints: const BoxConstraints(minHeight: 180),
+            padding: const EdgeInsets.all(AppLayout.s24),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: active ? AppColors.ink : AppColors.line,
+                width: active ? 2 : 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: const BoxDecoration(
+                        color: AppColors.audienceBeige,
+                        border: Border.fromBorderSide(
+                            BorderSide(color: AppColors.line)),
+                      ),
+                      child: const Icon(Icons.work_outline,
+                          size: 18, color: AppColors.ink),
+                    ),
+                    const Spacer(),
+                    if (job.badge.isNotEmpty) _JobBadge(job: job),
+                  ],
+                ),
+                const SizedBox(height: AppLayout.s16),
+                Text(
+                  job.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: AppLayout.s8),
+                if (job.location.isNotEmpty)
+                  _MetaItem(icon: Icons.place_outlined, label: job.location),
+                const SizedBox(height: AppLayout.s16),
+                Row(
+                  children: [
+                    Text(
+                      job.startDate != null
+                          ? 'Start ${DateFormat('MM.yyyy').format(job.startDate!)}'
+                          : 'Zur Stelle',
+                      style: const TextStyle(
+                        color: AppColors.muted,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    AnimatedSlide(
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.easeOut,
+                      offset: active ? const Offset(0.25, 0) : Offset.zero,
+                      child: const Icon(Icons.arrow_forward,
+                          size: 18, color: AppColors.ink),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Kennzeichnung der Stelle. „Neu“ trägt die Akzentfarbe, ältere Angebote
+/// bleiben zurückhaltend.
+class _JobBadge extends StatelessWidget {
+  final JobModel job;
+
+  const _JobBadge({required this.job});
+
+  @override
+  Widget build(BuildContext context) {
+    final (background, foreground, border) = switch (job.badgeVariant) {
+      JobBadgeVariant.isNew => (
+          AppColors.accent,
+          Colors.white,
+          AppColors.accent
+        ),
+      JobBadgeVariant.recent => (
+          AppColors.audienceBeige,
+          AppColors.ink,
+          AppColors.line
+        ),
+      JobBadgeVariant.days => (
+          AppColors.paper,
+          AppColors.muted,
+          AppColors.line
+        ),
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration:
+          BoxDecoration(color: background, border: Border.all(color: border)),
+      child: Text(
+        job.badge.toUpperCase(),
+        style: TextStyle(
+          color: foreground,
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.5,
+        ),
+      ),
     );
   }
 }

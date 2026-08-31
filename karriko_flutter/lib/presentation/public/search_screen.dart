@@ -882,7 +882,7 @@ class _JobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.go('/company/${job.companySlug}'),
+      onTap: () => context.go('/stellen/${job.id}'),
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.all(AppLayout.s24),

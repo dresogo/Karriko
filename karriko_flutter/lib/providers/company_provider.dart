@@ -161,18 +161,17 @@ final bookmarkedCompaniesProvider =
   return ref.watch(companyRepositoryProvider).getBookmarkedCompanies(userId);
 });
 
-/// Suggested Ausbildungsstellen for the search page carousel.
+/// Stellenangebote eines Unternehmens.
 ///
 /// NOTE: There is no jobs backend yet (no jobs collection / repository), so
 /// these entries are derived from real companies as a placeholder. Replace this
 /// with a proper jobs source once one exists.
-final jobSuggestionsProvider = FutureProvider<List<JobModel>>((ref) async {
-  final companies =
-      await ref.watch(companyRepositoryProvider).searchCompanies(limit: 12);
-  return [
-    for (final c in companies)
+///
+/// Die Kennung traegt den Slug des Unternehmens, damit [jobByIdProvider] eine
+/// Stelle allein aus ihrer Adresse wiederfinden kann.
+List<JobModel> jobsForCompany(CompanyModel c) => [
       JobModel(
-        id: 'job-${c.id}',
+        id: 'job-${c.slug}',
         title: c.industry != null
             ? 'Ausbildung · ${c.industry}'
             : 'Ausbildungsplatz',
@@ -187,5 +186,31 @@ final jobSuggestionsProvider = FutureProvider<List<JobModel>>((ref) async {
         isActive: true,
         createdAt: c.createdAt,
       ),
-  ];
+    ];
+
+/// Suggested Ausbildungsstellen for the search page carousel.
+final jobSuggestionsProvider = FutureProvider<List<JobModel>>((ref) async {
+  final companies =
+      await ref.watch(companyRepositoryProvider).searchCompanies(limit: 12);
+  return [for (final c in companies) ...jobsForCompany(c)];
+});
+
+/// Offene Stellen eines Unternehmens – Grundlage des Stellenbereichs auf dem
+/// Betriebsprofil. Eine leere Liste blendet den Bereich dort aus.
+final companyJobsProvider =
+    FutureProvider.family<List<JobModel>, String>((ref, slug) async {
+  final company = await ref.watch(companyBySlugProvider(slug).future);
+  return jobsForCompany(company).where((j) => j.isActive).toList();
+});
+
+/// Einzelne Stelle. Die Kennung hat die Form `job-<company-slug>`; daraus
+/// laesst sich das Unternehmen laden, ohne eine eigene Stellensammlung zu
+/// haben.
+final jobByIdProvider =
+    FutureProvider.family<JobModel, String>((ref, id) async {
+  final slug = id.startsWith('job-') ? id.substring(4) : id;
+  final company = await ref.watch(companyBySlugProvider(slug).future);
+  final job = jobsForCompany(company).where((j) => j.id == id).firstOrNull;
+  if (job == null) throw StateError('Stelle nicht gefunden: $id');
+  return job;
 });
