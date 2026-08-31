@@ -1,10 +1,10 @@
 # Karriko – Offene Aufgaben
 
-**Erstellt:** 30. August 2026
-**Grundlage:** `notes/projekt-referenz.md`, `notes/reports/status-report-2026-08-02.md` (Stand 5. August), `notes/reports/sicherheitsbericht-2026-08-04.md`
-**Branch:** `feat/anmeldeverfahren` · letzter Commit `97338c8`
+**Erstellt:** 30. August 2026 · **Fortgeschrieben:** 31. August 2026
+**Grundlage:** `notes/projekt-referenz.md`, `notes/reports/status-report-2026-08-02.md` (Stand 31. August), `notes/reports/sicherheitsbericht-2026-08-04.md`
+**Branch:** `main` · letzter Commit `fe8d780`
 
-Die Berichte sind der Stand vom 4./5. August; seitdem ist im Repository nur der Auth-Ausbau dazugekommen. Diese Liste führt zusammen, was in beiden Berichten als offen steht — sortiert nach Art der Arbeit, nicht nach Herkunftsdokument. Die Kürzel in Klammern verweisen auf die Abschnitte dort.
+Diese Liste führt zusammen, was in beiden Berichten als offen steht — sortiert nach Art der Arbeit, nicht nach Herkunftsdokument. Die Kürzel in Klammern verweisen auf die Abschnitte dort.
 
 **Wichtig zum Umgang mit dieser Datei:** Erledigtes wird abgehakt, nicht gelöscht. Die Lehre aus dem ZAP-Scan vom Juni (Projektreferenz §4.3) war genau die: Ein Befund verschwindet nicht dadurch, dass ihn niemand mehr weiterführt.
 
@@ -54,6 +54,15 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
   - `companies.owner_id` — String, **mit Index** (ohne ihn findet `findCompanyByOwner` nichts und der Reparaturweg legt Doppel-Firmen an)
 
   Dazu die Collection `companies` auf „Create" für angemeldete Nutzer stellen, sonst scheitert die Betriebsregistrierung am Anlegen. Ein eindeutiger Index auf `slug` wäre die einzige verbindliche Absicherung gegen doppelte Adressen — die Kollisionsprüfung im Client ist gegen den realistischen Fall wirksam, aber kein Ersatz.
+
+  **Am 31. August bestätigt, dass es im echten Betrieb nicht greift** (Status 13.5): Das Unternehmensprofil eines Testkontos meldet „Die Unternehmensdaten konnten nicht geladen werden." Damit ist dieser Punkt nicht mehr vorsorglich, sondern ein laufender Fehler — und er blockiert zusätzlich das Ausschreiben von Stellen, denn die Stelle braucht Kennung und Adresse des Unternehmens.
+
+- [ ] **1c. Collection `jobs` in der Console anlegen** — **blockiert das Veröffentlichen von Stellen** (Status 13.4)
+  Der Code schreibt und liest sie vollständig, angelegt ist sie nicht. Ohne sie bleiben Stellenband, Stellenseite und das Vorschlagsband der Suche leer, und jedes Speichern meldet einen Fehler.
+  - String: `company_id`, `company`, `company_slug`, `title`, `location`, `company_logo_url`, `profession`, `industry`, `employment_type`, `duration`, `salary`, `apply_url`, `contact_email`
+  - `description` (String, groß), `tasks` / `requirements` / `benefits` (String-Array), `start_date` (Datetime), `is_active` (Boolean)
+  - „Create" für angemeldete Nutzer, „Read" für alle
+  - Index auf `company_id` und `is_active` — jede Abfrage filtert darüber
 - [ ] **2. Echte Firmen-ID im Bewertungs-Assistenten** statt `'placeholder-id'` (Status 2.1)
   `new_review_screen.dart:273`, dazu `company_repository.dart:76` und `company_provider.dart:134` auf Name+ID umstellen. **Bestehende Datensätze mit `company_id: 'placeholder-id'` müssen bereinigt werden.**
 - [ ] **3. Kontolöschung umsetzen** — serverseitige Appwrite-Function mit API-Schlüssel (Status 2.2)
@@ -64,6 +73,7 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
   Dazu fehlt weiterhin **jede Stelle, die Benachrichtigungen erzeugt**, und ein Fehlerzustand im Screen (aktuell `LateInitializationError` bei nicht initialisiertem Client).
 - [ ] **7. Antworten des Fragebogens speichern** — weder Collection noch Schreibfunktion (Status 3.3)
 - [ ] **8. Einstellungs-Schalter persistieren** und die Hinweistexte entfernen (Status 3.4)
+- [ ] **9. Stelle bearbeiten** (Status 13.4) — anlegen, zurückziehen und löschen gehen; ändern nicht. Ein Tippfehler im Titel heißt derzeit: zurückziehen, neu anlegen. `JobRepository.updateJob` fehlt, das Formular kennt keinen Bearbeitungsmodus.
 - [ ] Repository-Methoden ohne Aufrufer klären: `isBookmarked`, `getCompanyById` (Status 3.6) — anbinden oder entfernen
 
 ---
@@ -72,6 +82,7 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
 
 Alle vier Verfahren stehen im Code. Was fehlt, ist überwiegend **Konfiguration in der Appwrite Console** und ein Durchlauf gegen die echte Instanz (Status 9.9, 9.10).
 
+- [ ] **Anmeldung des Betriebs-Testkontos klären** (Status 13.5) — meldet `user_invalid_credentials`. Am Code liegt es nicht: Die App reicht das Passwort unverändert weiter, und derselbe Fehler kommt auch für ein Konto, das es gar nicht gibt — Appwrite unterscheidet beides absichtlich nicht. Zu prüfen, in dieser Reihenfolge: Stimmt die Projekt-ID (`6a3c45ef003356d7f16d`, Region Frankfurt)? Hat das Konto überhaupt einen Passwort-Faktor, oder ist es über OAuth, Magic Link oder Passkey entstanden? Neues Passwort in der Console setzen ist der schnellste Test.
 - [ ] **MFA in der Console einschalten** — Reiter **Auth → Security**, *nicht* Settings. Ein Handgriff; ohne ihn antworten sämtliche `mfa*`-Endpunkte nicht.
 - [ ] **`http://localhost:8080` als Web-Plattform eintragen** — sonst weist Appwrite die Ziel-URLs von Bestätigungsmail, Reset und Magic Link zurück.
 - [ ] **SMTP einrichten** (EU-Standort, SPF, DKIM, DMARC) plus deutsches Template — daran hängt der Magic Link mehr als am Schalter. Fallback steht bereit: **Email OTP ist bereits aktiv.**
@@ -130,14 +141,16 @@ Reihenfolge bewusst: erst was jede Seite betrifft, dann Einzelseiten, dann wiede
 
 - [ ] **Kopfzeilen-Überlauf bei vergrößerter Systemschrift** (Status 4) — betrifft **jede Seite**: 142 px bei 1,3-facher Schrift zwischen 981 und ~1150 px Breite. Navigationslinks in `Flexible` mit Ellipse, Abstände relativ, oder Umbruchpunkt an die tatsächlich benötigte Breite koppeln statt an feste 980 px. Danach die Ausnahme für 1000 px in `fuer_betriebe_layout_test.dart` entfernen.
 - [ ] **Die 24 Layout-Überläufe abarbeiten** (Status 4) — durchgängig dieselbe Ursache: `Text` direkt in einer `Row` ohne `Expanded`/`Flexible`. Mechanisch. Die größten: `/subscription` @375 (224 px), `/register/betrieb` @375 (154 px), `/kontakt` @375 (137 px).
-- [ ] **`review_card` und `job_card` auf Swiss-Design** — wirken auf viele Seiten gleichzeitig, deshalb der beste Anfang
+- [ ] **`review_card` auf Swiss-Design** — wirkt auf Startseite und Suche gleichzeitig, deshalb der beste Anfang
+- [ ] **`presentation/common/job_card.dart` entfernen** — seit dem 31. August toter Code: Die Suche bringt ihre eigene Karte mit, das Betriebsprofil ebenfalls. Die Datei verweist zudem noch aufs Betriebsprofil statt auf die Stellenseite und wäre beim nächsten Einsatz eine Falle.
 - [ ] **Auth-Seiten umstellen** — `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`; diese fünf haben zudem **gar keine Kopfzeile**, man landet dort ohne Navigation
 - [ ] **Restliche Betriebsseiten:** `analytics`, `subscription`, `team`, `reviews`, `reports`
 - [ ] **Restliche Azubi-Seiten:** `new_review`, `bookmarks`, `my_reviews`, `notifications`
-- [ ] **Restliche öffentliche Seiten:** `company_detail`, `review_detail`, `blog_detail`, `kontakt`, `ueber_uns`
+- [ ] **Restliche öffentliche Seiten:** `review_detail`, `blog_detail`, `kontakt`, `ueber_uns` — `company_detail` ist am 31. August umgestellt (Status 13.2)
 - [ ] **Akzentfarbe auf `accentDark` umstellen** (Status 5) — `#E3342F` kommt auf 4,47:1, WCAG AA verlangt 4,5:1. Betrifft alle Kicker und jede rote Schaltfläche. Gehört ins Theme (`app_theme.dart`), **nicht** in einzelne Seiten. Vorher am laufenden Build beurteilen, wie der dunklere Ton auf großen Flächen wirkt. Bewusst **nach** den Einzelseiten.
 - [ ] **Fehlerseite gestalten** — `errorBuilder` zeigt rohen Text auf leerem Scaffold
-- [ ] **Verbleibende `IntrinsicHeight`-Konstruktionen umstellen** — `home_screen.dart:483`, `fuer_betriebe_screen.dart:586`, `login_shell.dart:88`. Kein Überlauf bekannt, die Bauart bleibt aber anfällig: beim nächsten Anfassen mitnehmen.
+- [ ] **Verbleibende `IntrinsicHeight`-Konstruktionen umstellen** — `home_screen.dart:483`, `fuer_betriebe_screen.dart:586`, `login_shell.dart:88` sowie neu `company_detail_screen.dart:109` und `:1248`. Kein Überlauf bekannt, die Bauart bleibt aber anfällig: beim nächsten Anfassen mitnehmen.
+  **Am 31. August zum dritten Mal aufgetreten** (Status 13.6): Beide Kennzahlenbänder liefen über, weil `IntrinsicHeight` umbrechenden Text falsch misst. Wo Zellen mit durchgehenden Trennlinien nebeneinanderstehen sollen, ist `Table` das Mittel — es misst die Zeilenhöhe aus den Zellen und zieht die Linien über die volle Höhe.
 
 ---
 
@@ -146,14 +159,19 @@ Reihenfolge bewusst: erst was jede Seite betrifft, dann Einzelseiten, dann wiede
 - [ ] **Schriftskalierung (`textScaleFactorTestValue = 1.3`) in allen Layout-Testdateien ergänzen** — zwei Zeilen pro Datei, deckt eine ganze Fehlerklasse ab, die bisher nirgends geprüft wurde. Hat auf Anhieb drei Überläufe gefunden.
 - [ ] **Layout-Durchlauf als dauerhaften Test etablieren** — existiert als Technik, nicht als Test. Scharfstellen, sobald Abschnitt E abgearbeitet ist.
 - [ ] **Nicht abgedeckte Bereiche testen:** Repositories, Bewertungs-Assistent, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten
+- [ ] **Die Stellen haben keinen einzigen Test** (Status 13.7) — `JobRepository`, das Formular im Betriebsprofil, Stellenseite und Stellenband entstanden am 31. August ohne Testabdeckung; die Testzahl steht seit dem 30. August unverändert bei 194. Mindestens: Formular ohne Titel speichert nicht, Entwurf erscheint nicht im öffentlichen Band, die Zeilenaufteilung bei Aufgaben und Anforderungen (Leerzeilen und Aufzählungszeichen fallen weg).
 - [ ] **Kritische Testfälle aus `projekt-referenz.md` §5 absichern** — insbesondere: anonyme Bewertung gibt **keinerlei** Nutzerdaten preis, auch nicht in der API-Antwort; Gewichtung 0,5 / 1,0 wirkt korrekt; zweite Antwort auf dieselbe Bewertung wird blockiert. Das Muster aus `auth_error_mapper_test.dart` — eine Anforderung prüfen statt eines Layouts — gehört hierher ausgeweitet.
 
 ---
 
 ## G. Produktentscheidungen — nicht technisch, aber blockierend
 
-- [ ] **Über die Ausbildungsbörse entscheiden** (`projekt-referenz.md` §1.3)
-  Es gibt keine Jobs-Collection, keine Bewerbungen, keinen Datei-Upload. Die Stellenanzeigen sind eine Behelfslösung aus Firmendaten (`company_provider.dart:146`). Entweder die Börse kommt zurück auf die Roadmap, oder die Behelfslösung verschwindet aus der Oberfläche. **Der Zwischenzustand verspricht dem Nutzer etwas, das es nicht gibt.**
+- [x] **Über die Ausbildungsbörse entscheiden** (`projekt-referenz.md` §1.3) — **entschieden am 31. August: Sie kommt.**
+
+  Die Behelfslösung aus Firmendaten ist weg; Stellen liegen in einer eigenen Ablage, Betriebe schreiben sie selbst aus, und es gibt eine eigene Stellenseite (Status 13.3, 13.4). Der Zwischenzustand, der dem Nutzer etwas versprach, das es nicht gab, ist damit aufgelöst.
+
+- [ ] **Umfang der Börse festlegen** — was jetzt entschieden werden muss, weil die Grundlage steht
+  Noch nicht vorhanden: **Bewerbungen** (die Stellenseite verweist auf E-Mail oder Formular des Betriebs), **Datei-Upload** für Lebenslauf und Zeugnisse, **Suche nach Stellen** (die Suche findet weiterhin Betriebe, Stellen erscheinen nur als Vorschlagsband). Jeder dieser drei Punkte ist eine eigene Entscheidung mit eigenen Datenschutzfolgen — Bewerbungsunterlagen sind besondere Daten, der AVV und die Löschfristen aus §3.3 gälten dann auch für sie.
 - [ ] **Blog-Detail:** zeigt für jeden Slug denselben Artikel — echte Inhalte oder Seite zurückbauen
 
 ---

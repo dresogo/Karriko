@@ -1,8 +1,8 @@
 # Karriko – Statusbericht
 
-**Stand:** 30. August 2026 · Erstfassung: 2. August 2026
+**Stand:** 31. August 2026 · Erstfassung: 2. August 2026
 **Branch:** `main` — seit dem 30. August der **einzige** Branch, siehe Abschnitt 12
-**Grundlage:** Gemessen am 3. August — automatisierter Layout-Durchlauf über alle 37 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections, Analyzer- und Testlauf. Ergänzt um eine **statische Sicherheitsprüfung** (Git-Historie, Dart-Code, Web-Bundle, Plattform-Konfiguration, `.gitignore`) — siehe Abschnitt 7. Nachtrag vom 4. August: Umbau der Seite „Für Betriebe", Test- und Analyzer-Lauf neu, zwei neue Befunde (Abschnitt 4 und 5). Nachtrag vom 5. August: Ausbau der Anmeldeverfahren — eigenes Kapitel, siehe **Abschnitt 9**. Nachtrag vom 30. August: Repository aufgeräumt, Zugangsdaten-Befund geschlossen, **die Verknüpfung zwischen Betriebskonto und Firma gebaut** — siehe **Abschnitt 12**.
+**Grundlage:** Gemessen am 3. August — automatisierter Layout-Durchlauf über alle 37 Routen in fünf Viewportbreiten, Abgleich Screens ↔ Repositories ↔ Appwrite-Collections, Analyzer- und Testlauf. Ergänzt um eine **statische Sicherheitsprüfung** (Git-Historie, Dart-Code, Web-Bundle, Plattform-Konfiguration, `.gitignore`) — siehe Abschnitt 7. Nachtrag vom 4. August: Umbau der Seite „Für Betriebe", Test- und Analyzer-Lauf neu, zwei neue Befunde (Abschnitt 4 und 5). Nachtrag vom 5. August: Ausbau der Anmeldeverfahren — eigenes Kapitel, siehe **Abschnitt 9**. Nachtrag vom 30. August: Repository aufgeräumt, Zugangsdaten-Befund geschlossen, **die Verknüpfung zwischen Betriebskonto und Firma gebaut** — siehe **Abschnitt 12**. Nachtrag vom 31. August: Suchzeile, Betriebsprofil und Stellenangebote überarbeitet, **Stellen sind keine Behelfslösung mehr** — siehe **Abschnitt 13**.
 
 ---
 
@@ -33,18 +33,27 @@ Daneben zwei Aufräumarbeiten: Der seit dem 4. August offene Zugangsdaten-Befund
 
 Eine Einschränkung, die für alles vom 30. August gilt: **Der Code steht, das Schema in der Appwrite Console nicht.** Zwei Felder und ein Index fehlen dort; bis sie angelegt sind, greift die Verknüpfung im echten Betrieb nicht (12.2).
 
-| Bereich | 2. Aug. | 3. Aug. | 4. Aug. | 5. Aug. | 30. Aug. |
-|---|---|---|---|---|---|
-| Routing & Navigation | zwei verwaiste Seiten | **fertig**, alles verlinkt | unverändert | **6 Routen dazu, 3 Fehler behoben** (9.8) | unverändert |
-| Auth (Login, Registrierung) | Layout bricht auf Mobil | **funktioniert**, Layout offen | unverändert | **alle vier Verfahren eingebaut** | **Betriebsregistrierung legt Firma an** |
-| Öffentliche Seiten | Design fertig, Inhalte statisch | unverändert | **„Für Betriebe" im Startseiten-Layout** | unverändert | unverändert |
-| Azubi-Bereich | Design alt, ein Datenfehler | **Design neu**, Datenfehler offen | unverändert | unverändert | unverändert |
-| Betrieb-Bereich | überwiegend Attrappe | **3 von 8 Seiten neu**, Rest Attrappe | unverändert | unverändert | **Profil speichert wirklich** |
-| Datenschicht | nicht überall angebunden | unverändert | unverändert | **SDK 12 → 25**, sonst unverändert | **erste echte Anbindung** (12.2) |
-| Tests | 54 | 111 | 134 | **185** (+ 25 im Passkey-Dienst) | **194** (+ 25) |
-| Layout-Befunde | 28 | 24 | **25** (ein neuer, siehe 4.) | unverändert | unverändert |
-| Analyzer-Hinweise | 86 | **0** | 0 | 0 | 0 |
-| Sicherheit | nicht geprüft | **8 Befunde, 5 behoben** | unverändert | **7.7 entschärft**, siehe dort | **7.10 geschlossen** (12.1) |
+**Am 31. August** ist die Ausbildungsbörse aus dem Zwischenzustand heraus: Stellen kommen nicht mehr aus abgeleiteten Firmendaten, sondern aus einer eigenen Ablage, und Betriebe schreiben sie im Unternehmensprofil selbst aus — Entwurf oder veröffentlicht, mit allen Feldern, die die neue Stellenseite zeigt. Damit ist Punkt 3.5 erledigt. Dazu drei Oberflächenarbeiten: die Suchzeile der Startseite (drei Fehler, darunter Vorschläge, die man nicht anklicken konnte), das Betriebsprofil im Bandraster der Website und die Stellenseite selbst.
+
+Zwei Dinge, die dabei zutage kamen und über den Tag hinausweisen:
+
+- **Ein Kind, das über seinen Container hinausragt, wird gezeichnet, nimmt aber keine Klicks an** (13.1). Genau so waren die Suchvorschläge tot.
+- **`IntrinsicHeight` misst umbrechenden Text falsch** — derselbe Fehler wie am 4. August im Hero von „Für Betriebe", diesmal zweimal in den Kennzahlenbändern (13.6).
+
+Die Einschränkung vom 30. August gilt verschärft weiter: **Auch die Stellen brauchen erst eine Collection in der Console**, sonst schlägt jedes Veröffentlichen fehl (13.4). Und der Screenshot des Betreibers zeigt, dass die Verknüpfung aus 12.2 im echten Betrieb noch nicht greift — ohne sie ist der neue Bereich gar nicht benutzbar (13.5).
+
+| Bereich | 2. Aug. | 3. Aug. | 4. Aug. | 5. Aug. | 30. Aug. | 31. Aug. |
+|---|---|---|---|---|---|---|
+| Routing & Navigation | zwei verwaiste Seiten | **fertig**, alles verlinkt | unverändert | **6 Routen dazu, 3 Fehler behoben** (9.8) | unverändert | **`/stellen/:id` dazu** |
+| Auth (Login, Registrierung) | Layout bricht auf Mobil | **funktioniert**, Layout offen | unverändert | **alle vier Verfahren eingebaut** | **Betriebsregistrierung legt Firma an** | Anmeldefehler geprüft: **kein Codefehler** (13.5) |
+| Öffentliche Seiten | Design fertig, Inhalte statisch | unverändert | **„Für Betriebe" im Startseiten-Layout** | unverändert | unverändert | **Suche, Betriebsprofil, Stellenseite** |
+| Azubi-Bereich | Design alt, ein Datenfehler | **Design neu**, Datenfehler offen | unverändert | unverändert | unverändert | unverändert |
+| Betrieb-Bereich | überwiegend Attrappe | **3 von 8 Seiten neu**, Rest Attrappe | unverändert | unverändert | **Profil speichert wirklich** | **Stellen anlegen und veröffentlichen** |
+| Datenschicht | nicht überall angebunden | unverändert | unverändert | **SDK 12 → 25**, sonst unverändert | **erste echte Anbindung** (12.2) | **`JobRepository`**, Platzhalter weg (13.4) |
+| Tests | 54 | 111 | 134 | **185** (+ 25 im Passkey-Dienst) | **194** (+ 25) | unverändert 194 — **keiner für die Stellen** |
+| Layout-Befunde | 28 | 24 | **25** (ein neuer, siehe 4.) | unverändert | unverändert | **2 gefunden und behoben** (13.6) |
+| Analyzer-Hinweise | 86 | **0** | 0 | 0 | 0 | 0 |
+| Sicherheit | nicht geprüft | **8 Befunde, 5 behoben** | unverändert | **7.7 entschärft**, siehe dort | **7.10 geschlossen** (12.1) | unverändert |
 
 ---
 
@@ -185,9 +194,11 @@ Die Fragen kommen aus der Datenbank bzw. dem Platzhalterkatalog. Für die Antwor
 
 **Status geändert: ausgewiesen, aber weiterhin ohne Wirkung.** Unter den Schaltern in beiden Einstellungsseiten steht jetzt, dass sie nach dem Neuladen zurückspringen. Persistenz fehlt weiter.
 
-### 3.5 Stellenanzeigen sind eine Behelfslösung — unverändert
+### 3.5 Stellenanzeigen sind eine Behelfslösung — ~~offen~~ **erledigt am 31. August**
 
-`lib/providers/company_provider.dart:146` — Einträge werden aus Firmendaten abgeleitet, es gibt keine Jobs-Collection.
+Bis dahin leitete `lib/providers/company_provider.dart:146` die Einträge aus Firmendaten ab; eine Jobs-Collection gab es nicht.
+
+Seit dem 31. August lesen Betriebsprofil, Stellenseite und das Vorschlagsband der Suche aus `JobRepository`, und Betriebe schreiben ihre Stellen selbst aus (13.4). **Die Collection `jobs` muss dafür in der Console angelegt sein** — bis dahin bleiben die Bänder leer und jedes Speichern schlägt fehl.
 
 ### 3.6 Repository-Methoden ohne Aufrufer
 
@@ -948,3 +959,106 @@ Die Kollisionsprüfung im Client greift gegen den realistischen Fall — gleiche
 Unverändert seit dem 5. August, und durch diesen Nachtrag eher gewichtiger geworden: **Nichts davon ist gegen die echte Appwrite-Instanz gelaufen.** Alle 194 Tests arbeiten gegen Fakes.
 
 Für die Verknüpfung aus 12.2 heißt das konkret: Ob das Anlegen der Firma mit den tatsächlichen Collection-Berechtigungen durchgeht, ob `Query.equal('owner_id', …)` ohne Index etwas zurückgibt, und ob die Dokumentrechte so greifen wie gesetzt — all das entscheidet sich erst an der Console. Der Code ist an dieser Stelle die kleinere Hälfte der Arbeit.
+
+---
+
+## 13. Nachtrag 31. August
+
+Fünf Vorgänge: drei Umbauten an der Oberfläche, ein Stück Datenschicht — und eine Fehlersuche, die ohne Codeänderung endete, weil der Fehler nicht im Code lag.
+
+Commits: `930fef8`, `168e4be`, `00573f2`, `8372547`, `b813f7d`, `fe8d780`. Analyzer 0, Tests unverändert 194 — **für nichts von hier gibt es einen Test** (13.7).
+
+### 13.1 Suchzeile der Startseite — drei Fehler, eine Ursache
+
+| Symptom | Ursache |
+|---|---|
+| Eingegebener Text klebte am oberen Rand | `contentPadding: vertical: 0` bei fester Mindesthöhe |
+| Vorschläge waren sichtbar, aber nicht anklickbar | Die Liste ragte aus dem Hero-Panel heraus |
+| Der Klick ging auch dann ins Leere, wenn sie im Bild lag | Das Textfeld verlor den Fokus, die Liste verschwand vor dem `onTap` |
+
+Der zweite Punkt ist der lehrreiche: **Flutter verwirft Treffer außerhalb der Grenzen des Elternelements.** Ein Kind, das über seinen Container hinausragt, wird gezeichnet, nimmt aber keine Klicks an. Die Liste war nie kaputt — sie lag außerhalb dessen, was die Trefferprüfung erreicht.
+
+Gelöst über eine Overlay-Ebene: Beim Fokus fährt die Leiste in 340 ms (`easeOutCubic`) in die Mitte der Bildschirmhöhe, der Hintergrund dunkelt ab, darunter bleibt Platz für die Vorschläge. Dort liegen sie frei, ohne fremde Grenzen. Zusätzlich reagieren die Einträge auf `onPointerDown` statt `onTap`, damit der Klick greift, auch wenn das Feld im selben Moment den Fokus verliert.
+
+> **Sichtbar heißt in Flutter nicht klickbar.** Wer einen Überlauf nur optisch löst, baut sich eine tote Fläche.
+
+### 13.2 Betriebsprofil im Bandraster
+
+Die Seite folgte noch dem alten Muster: runde Karten mit Schatten. Jetzt trägt sie dieselbe Sprache wie Startseite und Blog — vollflächige Bänder mit Haarlinien, Inhalt auf lesbarem Maß, scharfe Kanten.
+
+Aufbau: Profilband mit Monogramm und großer Gesamtnote samt Sterneverteilung · Kennzahlenband · Kategoriemittel als Balken · zweispaltiges Beschreibungsband · Bewertungen als haarliniengetrennte Zeilen mit Positiv- und Kritisch-Blöcken sowie Betriebsantwort.
+
+Zwei Entscheidungen, die nicht offensichtlich sind:
+
+- **Verteilung und Kategoriemittel werden aus den geladenen Bewertungen gerechnet**, nicht aus dem Unternehmensdokument — das kennt nur Schnitt und Anzahl.
+- **Die Balken normieren auf die Gesamtzahl, nicht auf den größten Balken.** Bei drei Bewertungen mit je einer Stimme sah sonst jede wie ein Maximum aus. Jeder Balken trägt seinen Wert zusätzlich als Zahl: Die Länge ist Zugabe, nicht die einzige Information.
+
+### 13.3 Stellenseite
+
+Eigene Seite unter `/stellen/:id`, anders gewichtet als das Betriebsprofil: Der Titel trägt die Seite (bis 72 px), darunter Eckdaten als Tabellenband, Aufgaben, Anforderungen und Angebote als nummerierte Listen, Abschluss auf einer Tintenfläche mit der Bewerbung. **Der Betrieb kommt nur als schmaler Streifen vor**, der auf sein Profil führt.
+
+Auf dem Betriebsprofil steht dafür ein Bereich mit den offenen Stellen als kleine Karten nebeneinander — drei, zwei oder eine Spalte je nach Breite, umbrechend statt horizontal scrollend, damit keine Karte hinter einem Scrollrand verschwindet. Er erscheint nur, wenn eine Stelle ausgeschrieben ist. Die Stellenkarten der Suche zeigen jetzt ebenfalls dorthin statt aufs Betriebsprofil.
+
+**Ohne hinterlegten Bewerbungsweg** führt die Handlung auf das Betriebsprofil, statt einen zu behaupten. Mit Adresse öffnet sie einen Dialog zum Kopieren — die App kann Mail- und Web-Adressen nicht selbst öffnen, `url_launcher` ist keine Abhängigkeit.
+
+### 13.4 Stellen anlegen und veröffentlichen — der Platzhalter aus 3.5 ist weg
+
+Betriebe verwalten ihre Stellen im Unternehmensprofil: Liste der eigenen Ausschreibungen mit Zustand (veröffentlicht oder Entwurf), Ansehen, Zurückziehen, Löschen mit Rückfrage — und ein Formular, das erst auf Wunsch aufklappt. Es deckt alle Felder der Stellenseite ab; ein Schalter entscheidet zwischen sofort veröffentlichen und Entwurf, die Beschriftung der Schaltfläche folgt ihm.
+
+| Datei | Änderung |
+|---|---|
+| `data/models/job_model.dart` | `companyId`, `isActive`, Detailfelder; Kennzeichnung berechnet |
+| `data/repositories/job_repository.dart` | **neu** — `jobsForCompany`, `recentJobs`, `getJob`, `createJob`, `setActive`, `deleteJob` |
+| `providers/job_provider.dart` | **neu** — löst die Stellen-Provider aus `company_provider.dart` heraus |
+| `presentation/betrieb/widgets/jobs_section.dart` | **neu** — Liste und Formular |
+| `presentation/betrieb/dashboard_screen.dart` | Kachel „Ausbildungsstellen" |
+
+**Die Kennzeichnung („Neu", „Vor 6 Tagen") wird aus dem Alter gerechnet statt gespeichert.** Ein gespeichertes „Neu" wäre nach einer Woche schlicht falsch — und niemand pflegt es nach.
+
+Damit ist **3.5 erledigt**: Betriebsprofil, Stellenseite und das Vorschlagsband der Suche lesen aus derselben echten Quelle. Der Zwischenzustand, den die Projektreferenz §1.3 zu Recht kritisiert — die Oberfläche verspricht eine Börse, dahinter stehen abgeleitete Firmendaten — ist aufgelöst.
+
+**Was zum Wirken fehlt — Konfiguration, kein Code:**
+
+| Nötig | Warum |
+|---|---|
+| Collection `jobs` | ohne sie schlägt jedes Speichern fehl |
+| Spalten (String): `company_id`, `company`, `company_slug`, `title`, `location`, `company_logo_url`, `profession`, `industry`, `employment_type`, `duration`, `salary`, `apply_url`, `contact_email` | tragen die Stelle |
+| `description` (String, groß), `tasks` / `requirements` / `benefits` (String-Array), `start_date` (Datetime), `is_active` (Boolean) | Inhalt der Stellenseite und Veröffentlichungszustand |
+| „Create" für angemeldete Nutzer, „Read" für alle | sonst kann kein Betrieb ausschreiben — oder niemand die Stelle sehen |
+| Index auf `company_id` und `is_active` | jede Abfrage filtert darüber |
+
+**Bewusst nicht gebaut: Bearbeiten.** Eine Stelle lässt sich anlegen, zurückziehen und löschen — nicht ändern. Ein Tippfehler im Titel bedeutet derzeit: zurückziehen, neu anlegen. Das ist eine Lücke, keine Entscheidung gegen die Funktion.
+
+Nebenwirkung, die die ganze App betrifft: Die deutschen Material-Localizations sind jetzt registriert, weil der Datumswähler sonst „Cancel" sagte. Damit stehen **alle** eingebauten Dialoge auf Deutsch.
+
+### 13.5 Anmeldung schlägt fehl — geprüft, kein Codefehler
+
+Gemeldet als `user_invalid_credentials`, bei nach Aussage des Betreibers korrekten Zugangsdaten.
+
+Zwei Befunde:
+
+1. **Was gemeldet wurde, war die Debug-Ausgabe**, nicht die Oberfläche. `auth_error_mapper.dart:118` gibt den Appwrite-Rohtext im Debug-Modus auf der Konsole aus; in der Maske steht die deutsche Meldung. Vier Zeilen heißen vier Versuche.
+2. **Die Meldung beweist nicht, dass das Passwort falsch ist.** Eine Probe gegen `fra.cloud.appwrite.io` mit einer frei erfundenen Adresse liefert dieselbe Antwort. Appwrite unterscheidet absichtlich nicht zwischen „Konto unbekannt" und „Passwort falsch" — sonst wäre die Anmeldung ein Konto-Orakel.
+
+Die App selbst verändert nichts: E-Mail getrimmt, Passwort unverändert weitergereicht, Client auf Projekt `6a3c45ef003356d7f16d` am Frankfurter Endpunkt. Projekt erreichbar, Origin akzeptiert, E-Mail/Passwort-Anmeldung aktiv.
+
+Bleiben drei Ursachen, alle außerhalb des Codes: Das Konto liegt in einem anderen Projekt oder einer anderen Region · es hat keinen Passwort-Faktor (über OAuth, Magic Link oder Passkey entstanden) · das Passwort weicht doch ab. Schnellster Test: in der Console ein neues Passwort setzen.
+
+**Zweiter Befund aus demselben Screenshot, der schwerer wiegt:** Im Unternehmensprofil steht „Die Unternehmensdaten konnten nicht geladen werden." Das ist die Verknüpfung aus 12.2, die im echten Betrieb nicht greift — mutmaßlich, weil die Konfiguration aus 12.2 noch aussteht. **Solange sie fehlt, lässt sich auch keine Stelle ausschreiben**, denn die Stelle braucht Kennung und Adresse des Unternehmens.
+
+### 13.6 Ein Layoutfehler, der zweimal auftrat: `IntrinsicHeight`
+
+Beide Kennzahlenbänder liefen über — erst um 15 px, nach einer Zwischenlösung um 1,66 px. Die Ursache ist dieselbe, die Abschnitt 1 schon für den Hero von „Für Betriebe" beschreibt: **`IntrinsicHeight` misst die Höhe umbrechender Texte in `Expanded`-Spalten falsch.** Der Zwischenversuch, die Werte einzeilig zu setzen, hat den Fehler nur verschoben.
+
+Gelöst mit `Table`: Es misst die Zeilenhöhe aus den Zellen und zieht die senkrechten Trennlinien über die volle Höhe — genau das, wofür `IntrinsicHeight` hier zweckentfremdet war.
+
+> Wo Zellen mit durchgehenden Trennlinien nebeneinanderstehen sollen, ist `Table` das Mittel — nicht `Row` mit `IntrinsicHeight`.
+
+Verbleibende Stellen dieser Bauart: `home_screen.dart:483`, `fuer_betriebe_screen.dart:586`, `login_shell.dart:88` sowie neu `company_detail_screen.dart:109` und `:1248`. Dort ist kein Überlauf bekannt; die Konstruktion bleibt anfällig.
+
+### 13.7 Was nicht geprüft ist
+
+- **Kein einziger Test für die Stellen.** Weder `JobRepository` noch das Formular noch die neuen Seiten. Die Testzahl steht unverändert bei 194 — alles aus diesem Nachtrag ist ausschließlich am laufenden Web-Build angesehen worden.
+- **Das Speichern ist nie durchgelaufen.** Ohne die Collection aus 13.4 lässt sich nicht prüfen, ob Berechtigungen, Dokumentrechte und Abfragen greifen. Wie bei 12.2 gilt: Der Code ist die kleinere Hälfte.
+- **Die Prüfung lief mit Demo-Daten.** Betriebsprofil, Stellenseite und Stellenbereich wurden über vorübergehend eingesetzte Beispieldaten begutachtet, weil das Backend lokal nichts liefert. Die Daten sind wieder entfernt; wie sich die Seiten mit echten Inhalten verhalten, ist damit **nicht** gezeigt.
+- **Mobil nur angesehen, nicht bedient.** Die Klickwege sind auf dem Desktop durchgespielt; in der Mobil-Emulation des Vorschaufensters blieben Klicks hängen — ein Werkzeugproblem, aber die Bedienung auf einem echten Telefon bleibt offen.
