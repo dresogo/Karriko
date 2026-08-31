@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/validators.dart';
 import '../../../data/models/company_model.dart';
 import '../../../data/models/job_model.dart';
+import '../../../providers/company_provider.dart';
 import '../../../providers/job_provider.dart';
 import '../../common/app_page.dart';
 
@@ -110,6 +111,10 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
   @override
   Widget build(BuildContext context) {
     final company = widget.company;
+    // Ohne Unternehmen laesst sich keine Stelle anlegen – sie braucht dessen
+    // Kennung und Adresse. Ob das Laden noch laeuft oder gescheitert ist,
+    // entscheidet, was hier steht: Warten hilft nur im ersten Fall.
+    final companyState = ref.watch(myCompanyProvider);
     final jobs = ref.watch(myJobsProvider);
     final liste = jobs.valueOrNull ?? const <JobModel>[];
     final veroeffentlicht = liste.where((j) => j.isActive).length;
@@ -129,11 +134,18 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
         ),
         const SizedBox(height: AppLayout.s16),
         if (company == null)
-          const _Hinweis(
-            icon: Icons.hourglass_empty,
-            text: 'Die Unternehmensdaten werden geladen. Danach lassen sich '
-                'Stellen anlegen.',
-          )
+          companyState.hasError
+              ? const _Hinweis(
+                  icon: Icons.error_outline,
+                  text: 'Die Unternehmensdaten konnten nicht geladen werden. '
+                      'Solange sie fehlen, lässt sich keine Stelle '
+                      'ausschreiben – lade die Seite neu.',
+                )
+              : const _Hinweis(
+                  icon: Icons.hourglass_empty,
+                  text: 'Die Unternehmensdaten werden geladen. Danach lassen '
+                      'sich Stellen anlegen.',
+                )
         else if (jobs.hasError)
           const _Hinweis(
             icon: Icons.error_outline,
