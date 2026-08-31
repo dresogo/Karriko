@@ -2,15 +2,20 @@ enum JobBadgeVariant { isNew, recent, days }
 
 class JobModel {
   final String id;
-  final String title;
+
+  /// Unternehmen, dem die Stelle gehoert. Die Kennung traegt die Abfrage, der
+  /// Slug die oeffentliche Adresse, der Name die Anzeige.
+  final String companyId;
   final String company;
   final String companySlug;
   final String? companyLogoUrl;
+
+  final String title;
   final String location;
   final String? profession;
   final String? industry;
-  final String badge;
-  final JobBadgeVariant badgeVariant;
+
+  /// Veroeffentlicht oder Entwurf. Nur aktive Stellen erscheinen oeffentlich.
   final bool isActive;
   final DateTime createdAt;
 
@@ -43,6 +48,7 @@ class JobModel {
 
   const JobModel({
     required this.id,
+    required this.companyId,
     required this.title,
     required this.company,
     required this.companySlug,
@@ -50,9 +56,7 @@ class JobModel {
     required this.location,
     this.profession,
     this.industry,
-    required this.badge,
-    required this.badgeVariant,
-    required this.isActive,
+    this.isActive = true,
     required this.createdAt,
     this.description,
     this.tasks = const [],
@@ -73,14 +77,27 @@ class JobModel {
       requirements.isNotEmpty ||
       benefits.isNotEmpty;
 
-  factory JobModel.fromJson(Map<String, dynamic> json) {
-    final badgeStr = json['badge_variant'] as String? ?? 'days';
-    final badgeVariant = switch (badgeStr) {
-      'new' => JobBadgeVariant.isNew,
-      'recent' => JobBadgeVariant.recent,
-      _ => JobBadgeVariant.days,
-    };
+  /// Alter der Ausschreibung in Tagen.
+  int get _ageInDays => DateTime.now().difference(createdAt).inDays;
 
+  /// Kennzeichnung aus dem Alter der Ausschreibung – nicht gespeichert,
+  /// sondern gerechnet: Ein gespeichertes „Neu“ waere nach einer Woche falsch.
+  String get badge {
+    final days = _ageInDays;
+    if (days <= 7) return 'Neu';
+    if (days <= 30) return 'Vor $days Tagen';
+    final months = days ~/ 30;
+    return months <= 1 ? 'Vor einem Monat' : 'Vor $months Monaten';
+  }
+
+  JobBadgeVariant get badgeVariant {
+    final days = _ageInDays;
+    if (days <= 7) return JobBadgeVariant.isNew;
+    if (days <= 30) return JobBadgeVariant.recent;
+    return JobBadgeVariant.days;
+  }
+
+  factory JobModel.fromJson(Map<String, dynamic> json) {
     List<String> list(String key) =>
         (json[key] as List?)?.whereType<String>().toList() ?? const [];
 
@@ -91,17 +108,16 @@ class JobModel {
 
     return JobModel(
       id: json['id'] as String,
+      companyId: json['company_id'] as String? ?? '',
       title: json['title'] as String,
-      company: json['company'] as String,
-      companySlug: json['company_slug'] as String,
+      company: json['company'] as String? ?? '',
+      companySlug: json['company_slug'] as String? ?? '',
       companyLogoUrl: json['company_logo_url'] as String?,
-      location: json['location'] as String,
+      location: json['location'] as String? ?? '',
       profession: json['profession'] as String?,
       industry: json['industry'] as String?,
-      badge: json['badge'] as String? ?? 'Neu',
-      badgeVariant: badgeVariant,
       isActive: json['is_active'] as bool? ?? true,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: date('created_at') ?? DateTime.now(),
       description: json['description'] as String?,
       tasks: list('tasks'),
       requirements: list('requirements'),
@@ -117,6 +133,7 @@ class JobModel {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'company_id': companyId,
         'title': title,
         'company': company,
         'company_slug': companySlug,
@@ -124,8 +141,6 @@ class JobModel {
         'location': location,
         'profession': profession,
         'industry': industry,
-        'badge': badge,
-        'badge_variant': badgeVariant.name,
         'is_active': isActive,
         'created_at': createdAt.toIso8601String(),
         'description': description,

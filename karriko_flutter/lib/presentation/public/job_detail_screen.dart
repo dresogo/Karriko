@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../../providers/company_provider.dart';
+import '../../providers/job_provider.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 

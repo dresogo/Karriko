@@ -8,6 +8,7 @@ import '../../data/models/company_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
 import '../common/app_page.dart';
+import 'widgets/jobs_section.dart';
 
 class BetriebProfileScreen extends ConsumerStatefulWidget {
   const BetriebProfileScreen({super.key});
@@ -201,6 +202,8 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
             ),
           ),
         ],
+        const SizedBox(height: AppLayout.s48),
+        BetriebJobsSection(company: geladen, ownerId: user?.id),
         const SizedBox(height: AppLayout.s48),
         const SectionLabel('Ansprechpartner'),
         const SizedBox(height: AppLayout.s16),

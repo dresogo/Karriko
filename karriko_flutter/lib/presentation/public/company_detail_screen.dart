@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/company_provider.dart';
+import '../../providers/job_provider.dart';
 import '../../providers/review_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../data/models/company_model.dart';
