@@ -48,8 +48,8 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
 
   **Nicht gelöst:** Schlägt das Anlegen bei der Registrierung fehl, läuft sie trotzdem durch (Konto und Sitzung bestehen zu dem Zeitpunkt schon). Die Verknüpfung zieht dann `ensureCompany` nach.
 
-- [ ] **1b. Schema in der Appwrite Console nachziehen** — **blockiert Punkt 1 im echten Betrieb**
-  Der Code schreibt zwei Felder, die es in der Console geben muss:
+- [x] **1b. Schema in der Appwrite Console nachziehen** — **erledigt am 31. August 2026**
+  Der Code schrieb zwei Felder, die es in der Console geben musste:
   - `profiles.company_id` — String
   - `companies.owner_id` — String, **mit Index** (ohne ihn findet `findCompanyByOwner` nichts und der Reparaturweg legt Doppel-Firmen an)
 
@@ -57,8 +57,14 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
 
   **Am 31. August bestätigt, dass es im echten Betrieb nicht greift** (Status 13.5): Das Unternehmensprofil eines Testkontos meldet „Die Unternehmensdaten konnten nicht geladen werden." Damit ist dieser Punkt nicht mehr vorsorglich, sondern ein laufender Fehler — und er blockiert zusätzlich das Ausschreiben von Stellen, denn die Stelle braucht Kennung und Adresse des Unternehmens.
 
-- [ ] **1c. Collection `jobs` in der Console anlegen** — **blockiert das Veröffentlichen von Stellen** (Status 13.4)
-  Der Code schreibt und liest sie vollständig, angelegt ist sie nicht. Ohne sie bleiben Stellenband, Stellenseite und das Vorschlagsband der Suche leer, und jedes Speichern meldet einen Fehler.
+  **Ursache am 31. August direkt gegen die Instanz nachgewiesen:** `companies` hatte keine Spalte `owner_id` — die Abfrage antwortete mit `400 Invalid query: Attribute not found in schema: owner_id`. Sie steht in `findCompanyByOwner()`, an dem `ensureCompany()` hängt; deshalb erschien die Meldung auf *jeder* Betriebsseite, nicht nur im Profil. Der Probelauf zeigte zusätzlich, dass auch `profiles.company_id` fehlte — deshalb scheiterte schon `_createProfileDocument()` bei jeder Betriebsregistrierung, und die Verknüpfung war an *beiden* vorgesehenen Orten leer.
+
+  **Nachgezogen mit [`tools/appwrite-setup.mjs`](../tools/appwrite-setup.mjs)** statt per Hand in der Console: idempotent, legt nur an, was fehlt, und dokumentiert damit den Soll-Zustand des Schemas an einer Stelle, die mit dem Code mitwandert. Rechte ändert es nur mit `--fix-permissions` — Rechte zu weiten ist eine Entscheidung, keine Reparatur. Angelegt wurden `companies.owner_id` samt Index, der eindeutige Index auf `slug`, `profiles.company_id` und das „Create"-Recht für angemeldete Nutzer auf `companies`.
+
+  **Ein Handgriff blieb bewusst manuell:** Die bestehende „Test GmbH" bekam ihre `owner_id` in der Console eingetragen. Ein Skript hätte raten müssen, welches Konto welche Firma besitzt; bei einem einzigen Altbestand ist das die falsche Sorte Automatik.
+
+- [x] **1c. Collection `jobs` in der Console anlegen** — **erledigt am 31. August 2026**
+  Der Code schrieb und las sie vollständig, angelegt war sie nicht (bestätigt: `404 table_not_found`). Ohne sie blieben Stellenband, Stellenseite und das Vorschlagsband der Suche leer, und jedes Speichern meldete einen Fehler. Dasselbe Skript legt sie mit allen Spalten, Indizes und Rechten an.
   - String: `company_id`, `company`, `company_slug`, `title`, `location`, `company_logo_url`, `profession`, `industry`, `employment_type`, `duration`, `salary`, `apply_url`, `contact_email`
   - `description` (String, groß), `tasks` / `requirements` / `benefits` (String-Array), `start_date` (Datetime), `is_active` (Boolean)
   - „Create" für angemeldete Nutzer, „Read" für alle

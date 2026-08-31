@@ -316,14 +316,27 @@ class AuthRepository {
       }
     }
 
-    final vorhanden = await _companies.findCompanyByOwner(user.id);
-    final company = vorhanden ??
-        await _companies.createCompany(
-          ownerId: user.id,
-          name: user.companyName?.trim().isNotEmpty == true
-              ? user.companyName!
-              : user.displayName,
-        );
+    final CompanyModel company;
+    try {
+      final vorhanden = await _companies.findCompanyByOwner(user.id);
+      company = vorhanden ??
+          await _companies.createCompany(
+            ownerId: user.id,
+            name: user.companyName?.trim().isNotEmpty == true
+                ? user.companyName!
+                : user.displayName,
+          );
+    } catch (e) {
+      // Scheitert hier etwas, meldet die Oberflaeche nur „Unternehmensdaten
+      // konnten nicht geladen werden" – ohne Grund. Der haeufigste Grund ist
+      // ein Schema, das hinter dem Code herhinkt (fehlende Spalte `owner_id`,
+      // kein Anlegerecht auf `companies`); `tools/appwrite-setup.mjs` zieht das
+      // nach. Deshalb den echten Fehler wenigstens im Debug-Build nennen.
+      if (kDebugMode) {
+        debugPrint('ensureCompany fuer ${user.id} fehlgeschlagen: $e');
+      }
+      rethrow;
+    }
 
     await _linkCompany(userId: user.id, companyId: company.id);
     return company;
