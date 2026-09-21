@@ -1,0 +1,23 @@
+name: questionnaire_core
+description: >-
+  Fragebogenlogik von Karriko: Definition lesen, Bedingungen auswerten, Ablauf
+  steuern, Einreichungen prüfen, Werte berechnen, Auffälligkeiten markieren.
+publish_to: 'none'
+version: 1.0.0
+
+# Reines Dart, bewusst ohne Flutter. Derselbe Code läuft im Browser und in der
+# Appwrite Function unter einer nackten Dart-Runtime; eine Flutter-Abhängigkeit
+# würde Letzteres unmöglich machen.
+#
+# Die Untergrenze ist dieselbe wie in karriko_flutter/pubspec.yaml, damit die
+# beiden nicht auseinanderlaufen.
+environment:
+  sdk: ^3.4.0
+
+# Keine Laufzeitabhängigkeiten. Absicht: Was die Function mitschleppt, muss sie
+# auch bauen können.
+dependencies:
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0
