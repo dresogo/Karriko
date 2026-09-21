@@ -37,6 +37,20 @@ class Module {
   /// „Konflikte und Grenzen" zu.
   final bool gated;
 
+  /// Beschriftung der Zustimmung. Fehlt sie, greift `texts["module.accept"]`.
+  ///
+  /// Beim Konfliktmodul steht dort nicht „Weiter", sondern „Zeig mir das" —
+  /// und dieser Unterschied ist der ganze Punkt eines Tors. Deshalb gehört die
+  /// Beschriftung in die Definition und nicht ins Widget.
+  final TextVariants? acceptLabel;
+
+  /// Beschriftung des Überspringens. Fehlt sie, greift `texts["module.skip"]`.
+  final TextVariants? skipLabel;
+
+  /// Von mir ergänzt, nicht wörtlich aus der Spezifikation. Landet in
+  /// REVIEW_TEXTE.md.
+  final bool review;
+
   const Module({
     required this.id,
     required this.label,
@@ -47,6 +61,9 @@ class Module {
     this.estimatedSeconds,
     this.featureFlag,
     this.gated = false,
+    this.acceptLabel,
+    this.skipLabel,
+    this.review = false,
   });
 
   /// Die ID der Teaserfrage.
@@ -91,5 +108,8 @@ class Module {
             ? node.child('featureFlag').asString
             : null,
         gated: node.child('gated').boolOr(false),
+        acceptLabel: TextVariants.parseOrNull(node.child('acceptLabel')),
+        skipLabel: TextVariants.parseOrNull(node.child('skipLabel')),
+        review: node.child('review').boolOr(false),
       );
 }

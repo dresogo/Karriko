@@ -41,3 +41,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    # Die Fragendefinition. Im Betrieb wird die aktive Version aus dem
+    # Appwrite-Storage geladen; dieses Asset ist der Rueckfall, wenn das
+    # scheitert. Es muss Zeichen fuer Zeichen mit
+    # appwrite/questionnaires/questionnaire_v1.json uebereinstimmen — dafuer
+    # gibt es `dart run tools/sync_questionnaire.dart`.
+    - assets/questionnaire/questionnaire_v1.json
+    # Beispielliste der Ausbildungsberufe fuer S3. Die vollstaendige Liste
+    # entsteht mit `dart run tools/import_berufe.dart` aus einer CSV der
+    # Bundesagentur fuer Arbeit; siehe notes/REVIEW_TEXTE.md.
+    - assets/data/berufe_beispiel.json

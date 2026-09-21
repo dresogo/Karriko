@@ -133,6 +133,13 @@ class Question {
   /// Umgekehrt gepolt (K10). Nur für den Straightlining-Index von Belang.
   final bool reversePolarity;
 
+  /// Merkmalsschalter, an dem diese Frage hängt.
+  ///
+  /// Steht er aus, erscheint die Frage nie — unabhängig von [condition]. Ein
+  /// ganzes Modul hängt über `Module.featureFlag` an einem Schalter; das hier
+  /// ist der Fall für einzelne Fragen, etwa den Kleinbetriebshinweis in Phase 3.
+  final String? featureFlag;
+
   /// Von mir ergänzt, nicht aus der Spezifikation. Landet in REVIEW_TEXTE.md.
   final bool review;
 
@@ -153,6 +160,7 @@ class Question {
     this.required = false,
     this.scoringRef,
     this.reversePolarity = false,
+    this.featureFlag,
     this.review = false,
   });
 
@@ -205,6 +213,9 @@ class Question {
           ? node.child('scoringRef').asString
           : null,
       reversePolarity: node.child('reversePolarity').boolOr(false),
+      featureFlag: node.child('featureFlag').exists
+          ? node.child('featureFlag').asString
+          : null,
       review: node.child('review').boolOr(false),
     );
   }

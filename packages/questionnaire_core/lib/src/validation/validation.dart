@@ -246,8 +246,7 @@ String? _checkNumber(Question question, num value) {
 }
 
 String? _checkScalar(Question question, Object value) {
-  final special = _list(question.config['special']);
-  if (special != null && special.any((item) => deepEquals(item, value))) {
+  if (specialValues(question).any((item) => deepEquals(item, value))) {
     return null;
   }
 
@@ -275,6 +274,29 @@ String? _checkScalar(Question question, Object value) {
     }
   }
   return null;
+}
+
+/// Die zusätzlich erlaubten Werte einer Frage.
+///
+/// `config.special` darf zweierlei Form haben: eine Liste nackter Werte, oder
+/// eine Liste aus `{"id": …, "label": …, "value": …}`. Die zweite Form ist die
+/// gebräuchliche, weil der Sonderknopf eine Beschriftung braucht — und die
+/// gehört in die Definition, nicht ins Widget. Fehlt `value`, gilt `id`.
+///
+/// Bei K3 sind das die beiden Knöpfe neben dem Stepper. „Ich mache keine
+/// Überstunden" trägt dort `"value": 0`: Es ist inhaltlich dieselbe Aussage wie
+/// eine Null im Stepper, und die Folgefrage K3.1 soll in beiden Fällen gleich
+/// ausbleiben.
+Iterable<Object?> specialValues(Question question) sync* {
+  final special = question.config['special'];
+  if (special is! List) return;
+  for (final entry in special) {
+    if (entry is Map) {
+      yield entry.containsKey('value') ? entry['value'] : entry['id'];
+    } else {
+      yield entry;
+    }
+  }
 }
 
 bool _hasNumericBounds(Question question) =>

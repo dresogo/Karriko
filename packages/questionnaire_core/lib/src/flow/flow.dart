@@ -129,6 +129,8 @@ class QuestionnaireFlow {
   }
 
   bool _passes(Question question, EvalContext ctx) {
+    final flag = question.featureFlag;
+    if (flag != null && !questionnaire.flagEnabled(flag)) return false;
     final condition = question.condition;
     return condition == null || condition.evaluate(ctx);
   }

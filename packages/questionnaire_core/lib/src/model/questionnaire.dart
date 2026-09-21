@@ -86,6 +86,9 @@ class Questionnaire {
   /// Alle Einträge, die ich ergänzt habe und die durchgesehen werden müssen.
   List<String> get reviewFlagged {
     final out = <String>[];
+    for (final module in modules) {
+      if (module.review) out.add('module:${module.id}');
+    }
     for (final question in questions) {
       if (question.review) out.add(question.id);
       for (final option in question.options) {

@@ -2,50 +2,15 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 import 'package:test/test.dart';
 
 import 'fixture.dart';
+import 'walkthrough.dart';
 
-/// Vier vollständige Durchläufe, je einer pro Persona aus A7.
+/// Vier vollständige Durchläufe gegen den Testfragebogen, je einer pro Persona
+/// aus A7. Dieselben vier laufen in `v1_personas_test.dart` noch einmal gegen
+/// die echte Fragendefinition.
 ///
-/// Der Kern dieser Tests ist [walk]: Es läuft den Bogen ab, wie ein Azubi ihn
-/// abliefe — immer die nächste unbeantwortete Frage —, und vergleicht die
-/// Strecke mit einem Drehbuch. Eine Frage, die auftaucht und nicht im Drehbuch
-/// steht, lässt den Test scheitern. Eine Frage im Drehbuch, die nie kommt,
-/// ebenso. Damit prüft jeder Persona-Test beides zugleich: **welche Fragen
-/// erscheinen und welche nicht.**
-class Walkthrough {
-  final Answers answers;
-  final List<String> asked;
-
-  const Walkthrough(this.answers, this.asked);
-}
-
-Walkthrough walk(QuestionnaireFlow flow, Map<String, Object?> script) {
-  var answers = const Answers.empty();
-  final asked = <String>[];
-
-  while (true) {
-    final next = flow.nextUnanswered(answers);
-    if (next == null) break;
-    if (!script.containsKey(next.id)) {
-      fail('Unerwartete Frage "${next.id}".\n'
-          'Bis dahin: ${asked.join(' → ')}');
-    }
-    asked.add(next.id);
-    answers = answers.set(next.id, script[next.id]);
-  }
-
-  final nieGefragt = [
-    for (final id in script.keys)
-      if (!asked.contains(id)) id,
-  ];
-  expect(
-    nieGefragt,
-    isEmpty,
-    reason: 'Im Drehbuch, aber nie gefragt: ${nieGefragt.join(', ')}',
-  );
-
-  return Walkthrough(answers, asked);
-}
-
+/// Hier geht es um die Mechanik: Der Testfragebogen ist klein genug, dass sich
+/// jeder Wert von Hand nachrechnen lässt, und die Zahlen stehen deshalb
+/// ausgeschrieben in den Erwartungen.
 void main() {
   final questionnaire = fixtureQuestionnaire();
   final flow = QuestionnaireFlow(questionnaire);

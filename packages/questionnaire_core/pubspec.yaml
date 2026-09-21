@@ -19,5 +19,9 @@ environment:
 dependencies:
 
 dev_dependencies:
+  # Nur für den Test, der questionnaire_v1.json gegen questionnaire.schema.json
+  # prüft. Bewusst keine Laufzeitabhängigkeit: Die Function prüft die Definition
+  # über Questionnaire.parse, nicht über ein Schema.
+  json_schema: ^5.2.2
   lints: ^4.0.0
   test: ^1.25.0

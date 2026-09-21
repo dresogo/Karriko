@@ -47,7 +47,18 @@ double? _fromCards(Question question, Map<Object?, Object?> answer) {
   return positive / counted;
 }
 
-/// Mehrfachauswahl: das Mittel der Punktwerte der gewählten Optionen.
+/// Mehrfachauswahl.
+///
+/// Standardmäßig das **Mittel** der Punktwerte der gewählten Optionen. Mit
+/// `config.selectionScoring: "sum"` stattdessen die **Summe**, gedeckelt bei
+/// 1,0.
+///
+/// Der Unterschied entscheidet mehr, als er aussieht. „Was übernimmt der
+/// Betrieb?" mit sechs Häkchen: Beim Mittel bekäme ein Betrieb, der nur die
+/// Fahrtkosten zahlt, denselben vollen Wert wie einer, der alles zahlt — denn
+/// beide Male ist das Mittel der angekreuzten Punkte 1,0. Bei der Summe zählt,
+/// wie viel tatsächlich übernommen wird. Umgekehrt ist das Mittel richtig, wo
+/// die Optionen Alternativen sind und nicht Bausteine.
 double? _fromSelection(Question question, Iterable<Object?> answer) {
   final scores = <double>[];
   for (final value in answer) {
@@ -55,7 +66,11 @@ double? _fromSelection(Question question, Iterable<Object?> answer) {
     if (score != null) scores.add(score);
   }
   if (scores.isEmpty) return null;
-  return scores.reduce((a, b) => a + b) / scores.length;
+  final sum = scores.reduce((a, b) => a + b);
+  if (question.config['selectionScoring'] == 'sum') {
+    return sum.clamp(0.0, 1.0).toDouble();
+  }
+  return sum / scores.length;
 }
 
 /// Stufen für Zahlen, bei denen der Zusammenhang nicht linear ist — etwa

@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://karriko.de/schema/questionnaire.schema.json",
+  "title": "Karriko-Fragebogendefinition",
+  "description": "Struktur einer versionierten Fragendefinition. Prüft die Form, nicht den Zusammenhang: Dass jeder Antwortverweis auf eine Frage zeigt, die es gibt, prüft Questionnaire.parse im Paket questionnaire_core — das kann ein JSON-Schema nicht.",
+  "type": "object",
+  "required": ["id", "version", "locale", "phases", "flow", "questions", "scoring"],
+  "additionalProperties": false,
+
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "locale": { "type": "string", "pattern": "^[a-z]{2}-[A-Z]{2}$" },
+
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/phase" }
+    },
+
+    "flow": { "$ref": "#/$defs/flow" },
+
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/question" }
+    },
+
+    "modules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/module" }
+    },
+
+    "scoring": { "$ref": "#/$defs/scoring" },
+    "visibility": { "$ref": "#/$defs/visibility" },
+    "quality": { "$ref": "#/$defs/quality" },
+
+    "featureFlags": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" }
+    },
+
+    "texts": {
+      "type": "object",
+      "description": "Anonymitätshinweise, Rechtshinweise, Anlaufstellen. Je Schlüssel ein Text oder eine Liste von Texten.",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/text" },
+          { "type": "array", "items": { "$ref": "#/$defs/text" } }
+        ]
+      }
+    }
+  },
+
+  "$defs": {
+    "text": {
+      "description": "Ein Text in beiden Zeitformen. Eine nackte Zeichenkette gilt als Präsens.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["current"],
+          "additionalProperties": false,
+          "properties": {
+            "current": { "type": "string", "minLength": 1 },
+            "past": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$",
+      "description": "Kleinbuchstaben, Ziffern und Unterstriche. Eine Kennung bekommt nie eine andere Bedeutung."
+    },
+
+    "phase": {
+      "type": "object",
+      "required": ["id", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "label": { "$ref": "#/$defs/text" },
+        "estimatedSeconds": { "type": "integer", "minimum": 0 },
+        "holdsModules": {
+          "type": "boolean",
+          "description": "Genau eine Phase trägt true. In ihr laufen die Module."
+        }
+      }
+    },
+
+    "flow": {
+      "type": "object",
+      "required": ["tenseQuestion", "pastValues", "priorityQuestion"],
+      "additionalProperties": false,
+      "properties": {
+        "tenseQuestion": { "$ref": "#/$defs/identifier" },
+        "pastValues": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "priorityQuestion": { "$ref": "#/$defs/identifier" },
+        "priorityTopN": { "type": "integer", "minimum": 1 },
+        "secondsPerQuestion": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "operand": {
+      "description": "Ein Antwortverweis, ein abgeleiteter Wert oder ein Literal.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["answer"],
+          "additionalProperties": false,
+          "properties": {
+            "answer": { "$ref": "#/$defs/identifier" },
+            "field": {
+              "type": "string",
+              "description": "Ein einzelnes Feld innerhalb der Antwort, für die Wischkarten."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["computed"],
+          "additionalProperties": false,
+          "properties": { "computed": { "type": "string", "minLength": 1 } }
+        },
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array" }
+      ]
+    },
+
+    "condition": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } },
+        "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } },
+        "not": { "$ref": "#/$defs/condition" },
+        "answered": {
+          "oneOf": [
+            { "$ref": "#/$defs/operand" },
+            { "type": "array", "minItems": 1, "maxItems": 1, "items": { "$ref": "#/$defs/operand" } }
+          ]
+        },
+        "eq": { "$ref": "#/$defs/operandPair" },
+        "neq": { "$ref": "#/$defs/operandPair" },
+        "in": { "$ref": "#/$defs/operandPair" },
+        "selected": { "$ref": "#/$defs/operandPair" },
+        "gt": { "$ref": "#/$defs/operandPair" },
+        "gte": { "$ref": "#/$defs/operandPair" },
+        "lt": { "$ref": "#/$defs/operandPair" },
+        "lte": { "$ref": "#/$defs/operandPair" },
+        "ranked_top": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            { "$ref": "#/$defs/operand" },
+            { "$ref": "#/$defs/operand" },
+            { "type": "integer", "minimum": 1 }
+          ]
+        }
+      }
+    },
+
+    "operandPair": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/operand" }
+    },
+
+    "option": {
+      "type": "object",
+      "required": ["id", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "label": { "$ref": "#/$defs/text" },
+        "value": {},
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Immer „höher ist besser“. Die umgekehrte Polung steckt in den Werten, nicht in einem Vorzeichen anderswo."
+        },
+        "review": { "type": "boolean" }
+      }
+    },
+
+    "question": {
+      "type": "object",
+      "required": ["id", "type", "phase", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "specRef": {
+          "type": "string",
+          "description": "Kennung aus der Spezifikation, damit sich die Frage im Fachdokument wiederfinden lässt."
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Typkennung. Die Liste der Kennungen steht in der Widget-Registry der Flutter-Seite, nicht hier — ein neuer Typ soll das Schema nicht ändern müssen."
+        },
+        "phase": { "$ref": "#/$defs/identifier" },
+        "module": { "$ref": "#/$defs/identifier" },
+        "text": { "$ref": "#/$defs/text" },
+        "intro": { "$ref": "#/$defs/text" },
+        "placeholder": { "$ref": "#/$defs/text" },
+        "options": { "type": "array", "items": { "$ref": "#/$defs/option" } },
+        "config": { "type": "object" },
+        "condition": { "$ref": "#/$defs/condition" },
+        "sensitive": { "type": "boolean" },
+        "public": { "type": "boolean" },
+        "required": { "type": "boolean" },
+        "scoringRef": { "type": "string" },
+        "reversePolarity": { "type": "boolean" },
+        "featureFlag": { "type": "string" },
+        "review": { "type": "boolean" }
+      }
+    },
+
+    "module": {
+      "type": "object",
+      "required": ["id", "label", "questions"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "label": { "$ref": "#/$defs/text" },
+        "teaser": { "$ref": "#/$defs/text" },
+        "acceptLabel": { "$ref": "#/$defs/text" },
+        "skipLabel": { "$ref": "#/$defs/text" },
+        "trigger": { "$ref": "#/$defs/condition" },
+        "priorityKey": { "$ref": "#/$defs/identifier" },
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "estimatedSeconds": { "type": "integer", "minimum": 0 },
+        "featureFlag": { "type": "string" },
+        "gated": { "type": "boolean" },
+        "review": { "type": "boolean" }
+      }
+    },
+
+    "scoring": {
+      "type": "object",
+      "required": ["dimensions", "subscores", "defaultWeights"],
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "separate": { "type": "array", "items": { "$ref": "#/$defs/identifier" } },
+        "overallQuestion": { "$ref": "#/$defs/identifier" },
+        "recommendQuestion": { "$ref": "#/$defs/identifier" },
+        "subscores": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "required": ["items"],
+            "additionalProperties": false,
+            "properties": {
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": ["question"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "question": { "$ref": "#/$defs/identifier" },
+                    "weight": { "type": "number", "exclusiveMinimum": 0 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "defaultWeights": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "type": "number", "minimum": 0 }
+        },
+        "dimensionFlags": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "priorityToDimension": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/identifier" }
+        },
+        "weightFloor": { "type": "number", "minimum": 0, "maximum": 1 },
+        "priorMean": { "type": "number", "minimum": 1, "maximum": 5 },
+        "shrinkage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "strength": { "type": "number", "minimum": 0 } }
+        },
+        "aging": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "years": { "type": "number", "exclusiveMinimum": 0 },
+            "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+
+    "visibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scoreMinReviews": { "type": "integer", "minimum": 1 },
+        "numbersMinReviews": { "type": "integer", "minimum": 1 },
+        "numberBands": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "additionalProperties": false,
+              "properties": {
+                "max": { "type": "number" },
+                "label": { "$ref": "#/$defs/text" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minScreenMillis": { "type": "integer", "minimum": 0 },
+        "straightlining": {
+          "type": "object",
+          "required": ["questions"],
+          "additionalProperties": false,
+          "properties": {
+            "questions": {
+              "type": "array",
+              "minItems": 3,
+              "items": { "$ref": "#/$defs/identifier" }
+            },
+            "maxVariance": { "type": "number", "minimum": 0 }
+          }
+        },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "a", "b"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/identifier" },
+              "a": { "$ref": "#/$defs/identifier" },
+              "b": { "$ref": "#/$defs/identifier" },
+              "maxDelta": { "type": "number", "minimum": 0, "maximum": 1 },
+              "reason": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "overallMismatch": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "maxDelta": { "type": "number", "minimum": 0, "maximum": 4 } }
+        },
+        "impossible": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "condition"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/identifier" },
+              "condition": { "$ref": "#/$defs/condition" },
+              "reason": { "$ref": "#/$defs/text" }
+            }
+          }
+        },
+        "freeTextQuestions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    }
+  }
+}
