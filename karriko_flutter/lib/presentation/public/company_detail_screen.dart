@@ -10,10 +10,11 @@ import '../../providers/review_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
-import '../../data/models/review_model.dart';
+import '../../data/models/company_scores.dart';
+import '../../data/models/public_review.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
-import '../common/review_card.dart' show StarRating;
+import '../common/public_review_card.dart';
 
 /// Profilseite eines Betriebs im Bandraster der Website: Vollbreite Bänder mit
 /// Haarlinien, Inhalt auf lesbarem Mass ([ContentBand]), scharfe Kanten.
@@ -44,13 +45,15 @@ class _CompanyDetailBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reviews = ref.watch(companyReviewsProvider(company.id));
+    final scores = ref.watch(companyScoresProvider(company.id));
     final auth = ref.watch(authProvider);
 
-    // Verteilung und Kategoriemittel stammen aus den geladenen Bewertungen;
-    // solange die noch laufen, bleiben die betroffenen Bänder leer statt zu
-    // springen.
-    final list = reviews.valueOrNull ?? const <ReviewModel>[];
-    final stats = _ReviewStats.from(list);
+    // Score und Subscores kommen aus `company_scores` — der Client rechnet sie
+    // nicht nach, er käme an die Grundlage gar nicht heran. Nur die Verteilung
+    // über die geladenen Einzelbewertungen entsteht hier, und sie behauptet
+    // auch nicht mehr als das.
+    final list = reviews.valueOrNull ?? const <PublicReview>[];
+    final stats = _ReviewStats.from(list, scores.valueOrNull);
 
     return SingleChildScrollView(
       child: Column(
@@ -330,15 +333,11 @@ class _RatingPanel extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppLayout.s16),
-        Row(
-          children: [
-            StarRating(rating: average.round(), size: 18),
-            const SizedBox(width: AppLayout.s8),
-            Text(
-              total == 1 ? '1 Bewertung' : '$total Bewertungen',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+        // Keine Sterne: Fünf Sterne suggerieren eine Genauigkeit, die ein
+        // geschrumpfter Mittelwert aus drei Bewertungen nicht hat.
+        Text(
+          total == 1 ? '1 Bewertung' : '$total Bewertungen',
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         if (stats.total > 0) ...[
           const SizedBox(height: AppLayout.s24),
@@ -980,7 +979,7 @@ class _AboutBand extends StatelessWidget {
 // ─── Bewertungen ─────────────────────────────────────────────────────────────
 
 class _ReviewsBand extends StatelessWidget {
-  final AsyncValue<List<ReviewModel>> reviews;
+  final AsyncValue<List<PublicReview>> reviews;
   final bool isAzubi;
 
   const _ReviewsBand({required this.reviews, required this.isAzubi});
@@ -1040,10 +1039,17 @@ class _ReviewsBand extends StatelessWidget {
   }
 }
 
-/// Bewertung als redaktionelle Zeile statt als Karte: Haarlinien trennen, der
-/// Hover- und Fokuszustand liegt auf der ganzen Zeile.
+/// Eine Bewertung in der Liste des Betriebsprofils.
+///
+/// Innen dieselbe [PublicReviewCard] wie in der Vorschau vor dem Absenden und
+/// in der Einzelansicht. Eine eigene Darstellung an dieser Stelle liefe
+/// unweigerlich auseinander — und dann zeigte das Profil etwas anderes, als
+/// der Azubi vorher gesehen hat.
+///
+/// Aussen bleibt die redaktionelle Zeile: Haarlinien trennen, Hover und Fokus
+/// liegen auf der ganzen Zeile.
 class _ReviewRow extends StatefulWidget {
-  final ReviewModel review;
+  final PublicReview review;
 
   const _ReviewRow({required this.review});
 
@@ -1058,21 +1064,11 @@ class _ReviewRowState extends State<_ReviewRow> {
   @override
   Widget build(BuildContext context) {
     final review = widget.review;
-    final isWide = MediaQuery.sizeOf(context).width > 720;
-
-    final meta = [
-      if (review.profession != null && review.profession!.isNotEmpty)
-        review.profession!.toUpperCase(),
-      if (review.apprenticeshipYear != null &&
-          review.apprenticeshipYear!.isNotEmpty)
-        review.apprenticeshipYear!.toUpperCase(),
-      DateFormat('dd.MM.yyyy').format(review.createdAt),
-    ].join(' · ');
 
     return Semantics(
       button: true,
-      label: 'Bewertung: ${review.title}, '
-          '${review.overallRating} von 5 Sternen. ${review.displayAuthor}',
+      label: 'Bewertung von ${review.berufName ?? 'einem Azubi'}'
+          '${review.zeitraum.isEmpty ? '' : ', ${review.zeitraum}'}',
       excludeSemantics: true,
       child: Material(
         color: Colors.transparent,
@@ -1085,283 +1081,37 @@ class _ReviewRowState extends State<_ReviewRow> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             curve: Curves.easeOut,
-            padding: const EdgeInsets.symmetric(vertical: AppLayout.s32),
+            padding: const EdgeInsets.symmetric(vertical: AppLayout.s24),
             foregroundDecoration: BoxDecoration(
               border: Border.all(
                 color: _focused ? AppColors.ink : Colors.transparent,
                 width: 2,
               ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _Eyebrow(text: meta),
-                          const SizedBox(height: AppLayout.s8),
-                          Text(
-                            review.title,
-                            style: TextStyle(
-                              color: AppColors.ink,
-                              fontSize: isWide ? 24 : 20,
-                              fontWeight: FontWeight.w800,
-                              height: 1.15,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: AppLayout.s24),
-                    _ScoreTag(rating: review.overallRating),
-                  ],
-                ),
-                const SizedBox(height: AppLayout.s16),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 680),
-                  child: Text(
-                    review.text,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-                if (review.pros != null || review.cons != null) ...[
-                  const SizedBox(height: AppLayout.s24),
-                  _ProsCons(
-                    pros: review.pros,
-                    cons: review.cons,
-                    isWide: isWide,
-                  ),
-                ],
-                if (review.betriebReply != null) ...[
-                  const SizedBox(height: AppLayout.s24),
-                  _BetriebReply(text: review.betriebReply!),
-                ],
-                const SizedBox(height: AppLayout.s24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            review.displayAuthor,
-                            style: const TextStyle(
-                              color: AppColors.muted,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (review.isVerified) ...[
-                            const SizedBox(width: AppLayout.s8),
-                            const _VerifiedTag(compact: true),
-                          ],
-                        ],
-                      ),
-                    ),
-                    AnimatedSlide(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOut,
-                      offset: _hovered || _focused
-                          ? const Offset(0.25, 0)
-                          : Offset.zero,
-                      child: const Icon(Icons.arrow_forward,
-                          size: 20, color: AppColors.ink),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Note der Bewertung als Tintenfläche – gut lesbar und ohne Farbcodierung.
-class _ScoreTag extends StatelessWidget {
-  final int rating;
-
-  const _ScoreTag({required this.rating});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-          width: 52,
-          height: 52,
-          color: AppColors.ink,
-          alignment: Alignment.center,
-          child: Text(
-            '$rating',
-            style: const TextStyle(
-              color: AppColors.paper,
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-        const SizedBox(height: AppLayout.s8),
-        StarRating(rating: rating, size: 12),
-      ],
-    );
-  }
-}
-
-class _ProsCons extends StatelessWidget {
-  final String? pros;
-  final String? cons;
-  final bool isWide;
-
-  const _ProsCons(
-      {required this.pros, required this.cons, required this.isWide});
-
-  @override
-  Widget build(BuildContext context) {
-    final items = <Widget>[
-      if (pros != null && pros!.trim().isNotEmpty)
-        _ProsConsBlock(
-          icon: Icons.add,
-          label: 'Positiv',
-          text: pros!,
-          accent: AppColors.green,
-        ),
-      if (cons != null && cons!.trim().isNotEmpty)
-        _ProsConsBlock(
-          icon: Icons.remove,
-          label: 'Kritisch',
-          text: cons!,
-          accent: AppColors.accent,
-        ),
-    ];
-    if (items.isEmpty) return const SizedBox.shrink();
-
-    return isWide && items.length == 2
-        ? IntrinsicHeight(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(child: items[0]),
-                const SizedBox(width: AppLayout.s16),
-                Expanded(child: items[1]),
+                Expanded(child: PublicReviewCard(review: review)),
+                AnimatedSlide(
+                  duration: const Duration(milliseconds: 150),
+                  curve: Curves.easeOut,
+                  offset:
+                      _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: AppLayout.s16),
+                    child: Icon(Icons.arrow_forward,
+                        size: 20, color: AppColors.ink),
+                  ),
+                ),
               ],
             ),
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (var i = 0; i < items.length; i++) ...[
-                if (i > 0) const SizedBox(height: AppLayout.s16),
-                items[i],
-              ],
-            ],
-          );
-  }
-}
-
-class _ProsConsBlock extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String text;
-  final Color accent;
-
-  const _ProsConsBlock({
-    required this.icon,
-    required this.label,
-    required this.text,
-    required this.accent,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppLayout.s16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border(
-          top: const BorderSide(color: AppColors.line),
-          right: const BorderSide(color: AppColors.line),
-          bottom: const BorderSide(color: AppColors.line),
-          left: BorderSide(color: accent, width: 3),
+          ),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 14, color: accent),
-              const SizedBox(width: 6),
-              Text(
-                label.toUpperCase(),
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.88,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppLayout.s8),
-          Text(text, style: Theme.of(context).textTheme.bodySmall),
-        ],
-      ),
     );
   }
 }
 
-class _BetriebReply extends StatelessWidget {
-  final String text;
 
-  const _BetriebReply({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppLayout.s16),
-      decoration: const BoxDecoration(
-        color: AppColors.audienceBeige,
-        border: Border(left: BorderSide(color: AppColors.green, width: 3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.reply, size: 14, color: AppColors.green),
-              SizedBox(width: 6),
-              Text(
-                'ANTWORT DES BETRIEBS',
-                style: TextStyle(
-                  color: AppColors.green,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.88,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppLayout.s8),
-          Text(
-            text,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Zustände ────────────────────────────────────────────────────────────────
 
@@ -1579,31 +1329,26 @@ class _MetaItem extends StatelessWidget {
 }
 
 class _VerifiedTag extends StatelessWidget {
-  final bool compact;
-
-  const _VerifiedTag({this.compact = false});
+  const _VerifiedTag();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: compact ? 8 : 10,
-        vertical: compact ? 3 : 5,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: AppColors.audienceBeige,
         border: Border.all(color: AppColors.green),
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.verified, size: compact ? 11 : 14, color: AppColors.green),
-          const SizedBox(width: 5),
+          Icon(Icons.verified, size: 14, color: AppColors.green),
+          SizedBox(width: 5),
           Text(
             'VERIFIZIERT',
             style: TextStyle(
               color: AppColors.green,
-              fontSize: compact ? 10 : 11,
+              fontSize: 11,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.88,
             ),
@@ -1631,44 +1376,47 @@ class _ReviewStats {
     required this.categories,
   });
 
-  factory _ReviewStats.from(List<ReviewModel> reviews) {
-    if (reviews.isEmpty) {
-      return const _ReviewStats(
-        distribution: {},
-        total: 0,
-        average: null,
-        categories: {},
-      );
-    }
-
+  /// Score und Subscores kommen aus [CompanyScores], die Verteilung aus den
+  /// geladenen Einzelbewertungen.
+  ///
+  /// Die Trennung ist kein Zufall: Der Gesamtscore ist geschrumpft, alters-
+  /// gewichtet und mit den aggregierten K12-Prioritäten gewichtet — das lässt
+  /// sich aus einer Seite Einzelbewertungen nicht nachrechnen, und ein hier
+  /// gebildeter Mittelwert wäre eine zweite, abweichende Zahl. Die Verteilung
+  /// dagegen behauptet nur, was über die geladenen Einträge zu sehen ist.
+  factory _ReviewStats.from(
+    List<PublicReview> reviews,
+    CompanyScores? scores,
+  ) {
     final distribution = <int, int>{};
-    var sum = 0;
     for (final review in reviews) {
-      final star = review.overallRating.clamp(1, 5);
-      distribution[star] = (distribution[star] ?? 0) + 1;
-      sum += review.overallRating;
+      final wert = review.overallScore;
+      if (wert == null) continue;
+      final stufe = wert.round().clamp(1, 5);
+      distribution[stufe] = (distribution[stufe] ?? 0) + 1;
     }
 
-    double? mean(int? Function(ReviewModel) pick) {
-      final values = reviews.map(pick).whereType<int>().toList();
-      if (values.isEmpty) return null;
-      return values.reduce((a, b) => a + b) / values.length;
-    }
+    // Unterhalb der Schwelle steht kein Score. Drei Bewertungen sind die
+    // Untergrenze, ab der ein Mittelwert etwas über den Betrieb sagt und
+    // nicht über den Zufall.
+    final sichtbar = scores != null && scores.scoreVisible;
 
     final categories = <String, double>{};
-    void add(String label, double? value) {
-      if (value != null) categories[label] = value;
+    if (sichtbar) {
+      for (final eintrag in scores.subscores.entries) {
+        categories[PublicReviewCard.dimensionLabel(eintrag.key)] =
+            eintrag.value;
+      }
+      final schule = scores.berufsschule;
+      if (schule != null) {
+        categories[PublicReviewCard.dimensionLabel('berufsschule')] = schule;
+      }
     }
-
-    add('Ausbildungsqualität', mean((r) => r.trainingQuality));
-    add('Betreuung', mean((r) => r.mentoring));
-    add('Work-Life-Balance', mean((r) => r.workLifeBalance));
-    add('Übernahmechancen', mean((r) => r.careerOpportunities));
 
     return _ReviewStats(
       distribution: distribution,
-      total: reviews.length,
-      average: sum / reviews.length,
+      total: scores?.reviewCount ?? reviews.length,
+      average: sichtbar ? scores.overall : null,
       categories: categories,
     );
   }

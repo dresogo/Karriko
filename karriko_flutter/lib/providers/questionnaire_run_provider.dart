@@ -8,6 +8,7 @@ import '../core/constants/questionnaire_constants.dart';
 import '../data/models/review_draft.dart';
 import '../data/repositories/review_submit_repository.dart';
 import '../data/services/device_key.dart';
+import '../data/services/submitted_reviews_log.dart';
 import 'auth_provider.dart';
 import 'questionnaire_provider.dart';
 
@@ -367,6 +368,18 @@ class QuestionnaireRunNotifier extends StateNotifier<QuestionnaireRunState> {
                 draftId: state.draftId,
                 deviceKey: await DeviceKey().readOrCreate(),
               );
+      if (!mounted) return;
+
+      // Lokal merken, damit der Azubi seine Bewertung wiederfindet. Server-
+      // seitig geht das nicht: public_reviews trägt keine user_id, und genau
+      // das ist der Sinn der Trennung.
+      await SubmittedReviewsLog().add(SubmittedReview(
+        reviewId: ergebnis.reviewId,
+        companyId: key.companyId,
+        companyName: key.companyName,
+        submittedAt: DateTime.now(),
+        status: ergebnis.status,
+      ));
       if (!mounted) return;
 
       _draftTimer?.cancel();
