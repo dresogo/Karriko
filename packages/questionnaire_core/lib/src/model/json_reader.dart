@@ -75,7 +75,15 @@ class JsonNode {
 
   /// Kind unter [key]. Fehlt der Schlüssel, ist [JsonNode.exists] falsch —
   /// der Aufrufer entscheidet, ob das ein Fehler ist.
-  JsonNode child(String key) => JsonNode(asMap[key], '$path.$key');
+  ///
+  /// Fehlt schon der Knoten selbst, ist auch sein Kind nicht da. Das ist kein
+  /// Fehler: `visibility` und `quality` sind optionale Blöcke, und ihre Leser
+  /// sollen sie durchgehen können, ohne vorher zu prüfen, ob es sie gibt.
+  /// Wo das Fehlen ein Fehler ist, steht [require] davor.
+  JsonNode child(String key) {
+    if (!exists) return JsonNode(null, '$path.$key');
+    return JsonNode(asMap[key], '$path.$key');
+  }
 
   JsonNode at(int index) => JsonNode(asList[index], '$path[$index]');
 

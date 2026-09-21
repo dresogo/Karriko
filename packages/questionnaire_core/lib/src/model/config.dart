@@ -120,6 +120,16 @@ class ScoringConfig {
   /// Die Weiterempfehlungsfrage K5.
   final String? recommendQuestionId;
 
+  /// Der Korrekturregler aus A2, mit dem jemand sein Gesamturteil neu setzt.
+  final String? correctionQuestionId;
+
+  /// Die Rückfrage aus A2 selbst.
+  final String? overallDecisionQuestionId;
+
+  /// Die Antwort auf [overallDecisionQuestionId], die bedeutet „die späteren
+  /// Antworten treffen es besser".
+  final String? overallDecisionDetailValue;
+
   /// Welche Option der Prioritätenfrage K12 auf welche Dimension zeigt.
   ///
   /// K12 hat acht Karten, der Betriebsscore sechs Dimensionen — die beiden
@@ -135,6 +145,9 @@ class ScoringConfig {
     this.separate = const [],
     this.overallQuestionId,
     this.recommendQuestionId,
+    this.correctionQuestionId,
+    this.overallDecisionQuestionId,
+    this.overallDecisionDetailValue,
     this.priorityToDimension = const {},
     this.weightFloor = 0.05,
     this.priorMean = 3.2,
@@ -182,6 +195,16 @@ class ScoringConfig {
       recommendQuestionId: node.child('recommendQuestion').exists
           ? node.child('recommendQuestion').asString
           : null,
+      correctionQuestionId: node.child('correctionQuestion').exists
+          ? node.child('correctionQuestion').asString
+          : null,
+      overallDecisionQuestionId: node.child('overallDecisionQuestion').exists
+          ? node.child('overallDecisionQuestion').asString
+          : null,
+      overallDecisionDetailValue:
+          node.child('overallDecisionDetailValue').exists
+              ? node.child('overallDecisionDetailValue').asString
+              : null,
       priorityToDimension: priorityMap,
       items: items,
       defaultWeights: weights,

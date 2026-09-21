@@ -48,54 +48,6 @@ class ReviewRepository {
     return result.rows.map((d) => ReviewModel.fromJson(_toMap(d))).toList();
   }
 
-  Future<ReviewModel> createReview({
-    required String companyId,
-    required String authorId,
-    required bool isAnonymous,
-    required int overallRating,
-    int? trainingQuality,
-    int? mentoring,
-    int? workLifeBalance,
-    int? careerOpportunities,
-    required String title,
-    required String text,
-    String? pros,
-    String? cons,
-    String? apprenticeshipYear,
-    String? profession,
-  }) async {
-    final doc = await _db.createRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.reviewsCollection,
-      rowId: ID.unique(),
-      data: {
-        'company_id': companyId,
-        'author_id': authorId,
-        'is_anonymous': isAnonymous,
-        'overall_rating': overallRating,
-        if (trainingQuality != null) 'training_quality': trainingQuality,
-        if (mentoring != null) 'mentoring': mentoring,
-        if (workLifeBalance != null) 'work_life_balance': workLifeBalance,
-        if (careerOpportunities != null)
-          'career_opportunities': careerOpportunities,
-        'title': title,
-        'text': text,
-        if (pros != null) 'pros': pros,
-        if (cons != null) 'cons': cons,
-        if (apprenticeshipYear != null)
-          'apprenticeship_year': apprenticeshipYear,
-        if (profession != null) 'profession': profession,
-        'status': 'pending',
-      },
-      permissions: [
-        Permission.read(Role.user(authorId)),
-        Permission.update(Role.user(authorId)),
-        Permission.delete(Role.user(authorId)),
-      ],
-    );
-    return ReviewModel.fromJson(_toMap(doc));
-  }
-
   Future<void> deleteReview(String reviewId) async {
     await _db.deleteRow(
       databaseId: AppwriteConstants.databaseId,

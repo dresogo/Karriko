@@ -31,6 +31,14 @@ dependencies:
   # data/services/oauth_redirect.dart). Lag ohnehin transitiv vor; hier
   # deklariert, damit der direkte Zugriff nicht auf einem Zufall beruht.
   web: ^1.1.1
+  # Der Entwurf wird nach jeder Antwort lokal gespeichert, damit ein
+  # geschlossener Tab keine halbe Stunde Arbeit kostet. localStorage direkt
+  # ueber package:web ginge im Browser, traegt aber auf iOS und Android nicht.
+  shared_preferences: ^2.3.0
+  # Fragebogenlogik, die Client und Appwrite Function gemeinsam benutzen.
+  # Reines Dart, siehe packages/questionnaire_core/README.md.
+  questionnaire_core:
+    path: ../packages/questionnaire_core
 
 dev_dependencies:
   flutter_test:

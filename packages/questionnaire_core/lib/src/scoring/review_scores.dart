@@ -1,4 +1,5 @@
 import '../flow/answers.dart';
+import '../condition/condition.dart';
 import '../model/questionnaire.dart';
 import 'normalize.dart';
 
@@ -127,4 +128,60 @@ class ReviewScores {
         'detail_overall': detailOverall,
         'overall_from_question': overallFromQuestion,
       };
+}
+
+/// Die abgeleiteten Werte, auf die Bedingungen über `{"computed": "…"}`
+/// zugreifen.
+///
+/// Steht hier und nicht in der Oberfläche, weil zwei Seiten sie brauchen: Der
+/// Client entscheidet damit, ob die Rückfrage aus A2 erscheint, und die
+/// Function prüft mit denselben Werten nach, ob die Einreichung stimmig ist.
+/// Zwei Umsetzungen wären zwei Ergebnisse — und dann würde eine Einreichung
+/// abgelehnt, weil der Server eine Frage für sichtbar hält, die der Azubi nie
+/// gesehen hat.
+Map<String, Object?> computedValues(
+  Questionnaire questionnaire,
+  Answers answers, {
+  ReviewScores? scores,
+}) {
+  final werte = scores ?? ReviewScores.compute(questionnaire, answers);
+  return {
+    'detail_overall': werte.detailOverall,
+    'overall_delta': werte.overallDelta,
+    'overall_effective': effectiveOverall(questionnaire, answers, werte),
+  };
+}
+
+/// Das Gesamturteil, das am Ende zählt, auf der Skala 1,0 bis 5,0.
+///
+/// Normalerweise das frühe Urteil aus K6 — es entsteht, bevor die Detailfragen
+/// die Stimmung färben, und genau deshalb wird es veröffentlicht. Der Abgleich
+/// in A2 kann es überstimmen: Wer dort den Regler neu setzt, meint den neuen
+/// Wert; wer sagt „die späteren Antworten treffen es besser", meint den
+/// berechneten Detailwert.
+double? effectiveOverall(
+  Questionnaire questionnaire,
+  Answers answers,
+  ReviewScores scores,
+) {
+  final scoring = questionnaire.scoring;
+
+  final korrekturId = scoring.correctionQuestionId;
+  if (korrekturId != null) {
+    final frage = questionnaire.question(korrekturId);
+    if (frage != null) {
+      final wert = normalizedAnswer(frage, answers[korrekturId]);
+      if (wert != null) return toScale(wert);
+    }
+  }
+
+  final entscheidungId = scoring.overallDecisionQuestionId;
+  final detailWert = scoring.overallDecisionDetailValue;
+  if (entscheidungId != null && detailWert != null) {
+    if (deepEquals(answers[entscheidungId], detailWert)) {
+      return scores.detailOverall;
+    }
+  }
+
+  return scores.overallFromQuestion ?? scores.detailOverall;
 }

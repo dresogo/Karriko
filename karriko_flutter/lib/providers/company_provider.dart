@@ -149,6 +149,15 @@ final companyBySlugProvider =
   return ref.watch(companyRepositoryProvider).getCompanyBySlug(slug);
 });
 
+/// Ein Unternehmen ueber seine Kennung.
+///
+/// Der Fragebogen bekommt ueber die Adresse nur die ID mit — der Name gehoert
+/// nicht in eine URL, die im Verlauf des Browsers stehenbleibt.
+final companyByIdProvider =
+    FutureProvider.family<CompanyModel, String>((ref, id) {
+  return ref.watch(companyRepositoryProvider).getCompanyById(id);
+});
+
 final searchSuggestionsProvider =
     FutureProvider.family<List<String>, String>((ref, query) {
   if (query.length < 2) return Future.value([]);

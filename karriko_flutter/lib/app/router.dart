@@ -31,8 +31,7 @@ import '../presentation/settings/mfa_setup_screen.dart';
 import '../presentation/settings/passkey_manage_screen.dart';
 import '../presentation/azubi/dashboard_screen.dart';
 import '../presentation/azubi/profile_screen.dart';
-import '../presentation/azubi/new_review_screen.dart';
-import '../presentation/azubi/fragen_bewerten_screen.dart';
+import '../presentation/questionnaire/questionnaire_screen.dart';
 import '../presentation/azubi/my_reviews_screen.dart';
 import '../presentation/azubi/bookmarks_screen.dart';
 import '../presentation/azubi/notifications_screen.dart';
@@ -169,8 +168,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/stellen/:id',
           builder: (_, s) => JobDetailScreen(id: s.pathParameters['id']!)),
       // Muss vor '/reviews/:id' stehen, sonst schluckt der Platzhalter '/reviews/new'.
+      //
+      // Der Betrieb steht als Query-Parameter, nicht im Pfad: Ohne ihn zeigt
+      // der Bildschirm die Betriebsauswahl, und das ist derselbe Einstieg.
+      // `src` markiert eine Einladung — spontane Bewertungen fallen
+      // systematisch extremer aus als angeforderte.
       GoRoute(
-          path: '/reviews/new', builder: (_, __) => const NewReviewScreen()),
+          path: '/reviews/new',
+          builder: (_, s) => QuestionnaireScreen(
+                companyId: s.uri.queryParameters['company'],
+                inviteSource: s.uri.queryParameters['src'],
+              )),
       GoRoute(
           path: '/reviews/:id',
           builder: (_, s) => ReviewDetailScreen(id: s.pathParameters['id']!)),
@@ -228,9 +236,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/dashboard', builder: (_, __) => const AzubiDashboardScreen()),
       GoRoute(path: '/profile', builder: (_, __) => const AzubiProfileScreen()),
+      // Der alte Fragenkatalog ist im Fragebogen aufgegangen. Die Route
+      // bleibt als Weiterleitung stehen, damit Lesezeichen und der Verweis
+      // aus dem Azubi-Dashboard nicht ins Leere laufen.
       GoRoute(
           path: '/fragen-bewerten',
-          builder: (_, __) => const FragenBewertenScreen()),
+          redirect: (_, __) => '/reviews/new'),
       GoRoute(path: '/my-reviews', builder: (_, __) => const MyReviewsScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
       GoRoute(

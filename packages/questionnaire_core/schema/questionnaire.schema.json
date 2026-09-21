@@ -264,6 +264,9 @@
         "separate": { "type": "array", "items": { "$ref": "#/$defs/identifier" } },
         "overallQuestion": { "$ref": "#/$defs/identifier" },
         "recommendQuestion": { "$ref": "#/$defs/identifier" },
+        "correctionQuestion": { "$ref": "#/$defs/identifier" },
+        "overallDecisionQuestion": { "$ref": "#/$defs/identifier" },
+        "overallDecisionDetailValue": { "$ref": "#/$defs/identifier" },
         "subscores": {
           "type": "object",
           "minProperties": 1,
