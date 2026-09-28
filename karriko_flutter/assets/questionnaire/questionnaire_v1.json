@@ -45,7 +45,14 @@
     ],
     "priorityQuestion": "k12_prioritaeten",
     "priorityTopN": 3,
-    "secondsPerQuestion": 10
+    "secondsPerQuestion": 10,
+    "inviteSources": [
+      "probezeit",
+      "jahresbeginn",
+      "nach_ende",
+      "kammer",
+      "schule"
+    ]
   },
   "questions": [
     {
@@ -2991,7 +2998,10 @@
         }
       ],
       "config": {
-        "delayDays": 3
+        "delayDays": 3,
+        "publishActions": {
+          "in_drei_tagen": "delay"
+        }
       },
       "review": true
     },
@@ -3034,7 +3044,12 @@
           "review": true
         }
       ],
-      "review": true
+      "review": true,
+      "config": {
+        "publishActions": {
+          "nach_ausbildungsende": "until_training_end"
+        }
+      }
     },
     {
       "id": "a4_vorschau",
@@ -3672,6 +3687,10 @@
           }
         }
       ]
+    },
+    "numberSources": {
+      "verguetung": "mod_geld_verguetung",
+      "ueberstunden": "k3_ueberstunden"
     }
   },
   "quality": {

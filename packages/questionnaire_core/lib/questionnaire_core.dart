@@ -42,5 +42,6 @@ export 'src/model/questionnaire.dart';
 export 'src/quality/quality.dart';
 export 'src/scoring/company_aggregate.dart';
 export 'src/scoring/normalize.dart';
+export 'src/scoring/public_projection.dart';
 export 'src/scoring/review_scores.dart';
 export 'src/validation/validation.dart';

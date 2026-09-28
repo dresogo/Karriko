@@ -305,4 +305,4 @@ Die Zeitform folgt allein aus S1: Wer noch in der Ausbildung ist, liest die link
 
 ---
 
-*Erzeugt am 2026-09-21 aus Version 1 der Definition.*
+*Erzeugt am 2026-09-28 aus Version 1 der Definition.*

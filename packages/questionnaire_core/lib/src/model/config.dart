@@ -47,12 +47,22 @@ class FlowConfig {
   /// Schätzung pro Frage, wenn ein Modul keine eigene Angabe hat.
   final int secondsPerQuestion;
 
+  /// Welche Einladungsquellen gelten.
+  ///
+  /// Spontane Bewertungen fallen systematisch extremer aus als angeforderte;
+  /// wer über eine Einladung kommt, wird deshalb markiert. Die Liste steht
+  /// hier, weil **der Server** entscheidet, ob eine Quelle zählt — ließe der
+  /// Client das durchgehen, wäre die Markierung über eine selbstgebaute Adresse
+  /// zu erschleichen und damit wertlos. Ist sie leer, zählt jede Quelle.
+  final Set<String> inviteSources;
+
   const FlowConfig({
     required this.tenseQuestionId,
     required this.pastValues,
     required this.priorityQuestionId,
     this.priorityTopN = 3,
     this.secondsPerQuestion = 10,
+    this.inviteSources = const {},
   });
 
   static FlowConfig parse(JsonNode node) => FlowConfig(
@@ -61,6 +71,9 @@ class FlowConfig {
         priorityQuestionId: node.require('priorityQuestion').asString,
         priorityTopN: node.child('priorityTopN').intOr(3),
         secondsPerQuestion: node.child('secondsPerQuestion').intOr(10),
+        inviteSources: node.child('inviteSources').exists
+            ? node.child('inviteSources').asStringList.toSet()
+            : const {},
       );
 }
 
@@ -230,10 +243,18 @@ class VisibilityConfig {
   /// Spannen je Zahlenangabe: `{"verguetung": [{"max": 800, "label": "…"}, …]}`.
   final Map<String, List<NumberBand>> bands;
 
+  /// Aus welcher Frage eine veröffentlichte Spanne gebildet wird.
+  ///
+  /// Steht in der Definition, damit die Aggregation nicht wissen muss, dass die
+  /// Vergütung in `mod_geld_verguetung` steht. Wandert die Frage in ein anderes
+  /// Modul, ändert sich hier eine Zeile und sonst nichts.
+  final Map<String, String> numberSources;
+
   const VisibilityConfig({
     this.scoreMinReviews = 3,
     this.numbersMinReviews = 5,
     this.bands = const {},
+    this.numberSources = const {},
   });
 
   static VisibilityConfig parse(JsonNode node) {
@@ -245,10 +266,16 @@ class VisibilityConfig {
         ];
       }
     }
+    final quellen = <String, String>{};
+    for (final entry in node.child('numberSources').entries) {
+      quellen[entry.key] = entry.value.asString;
+    }
+
     return VisibilityConfig(
       scoreMinReviews: node.child('scoreMinReviews').intOr(3),
       numbersMinReviews: node.child('numbersMinReviews').intOr(5),
       bands: bands,
+      numberSources: quellen,
     );
   }
 

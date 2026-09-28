@@ -79,14 +79,4 @@ class QuestionnaireConstants {
   /// ist repraesentativer.
   static const inviteSourceParam = 'src';
 
-  /// Erlaubte Werte fuer [inviteSourceParam]. Alles andere wird verworfen,
-  /// damit sich die Markierung nicht ueber eine selbstgebaute URL erschleichen
-  /// laesst.
-  static const inviteSources = {
-    'probezeit',
-    'jahresbeginn',
-    'nach_ende',
-    'kammer',
-    'schule',
-  };
 }

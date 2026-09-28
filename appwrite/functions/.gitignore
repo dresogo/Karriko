@@ -1,0 +1,11 @@
+# Erzeugt von `dart pub get`.
+.dart_tool/
+
+# Erzeugt von `dart run tools/vendor_core.dart`. Auch ueber die .gitignore im
+# Wurzelverzeichnis ausgeschlossen; hier nochmal, damit es beim Lesen dieses
+# Ordners nicht wie ein Versehen aussieht.
+vendor/
+
+# `pubspec.lock` einer Function gehoert ins Repository — nur so ist der Build
+# reproduzierbar. Siehe die Begruendung in der .gitignore des
+# Wurzelverzeichnisses.

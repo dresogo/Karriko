@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:questionnaire_core/questionnaire_core.dart';
 
-import '../../core/constants/questionnaire_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/questionnaire_provider.dart';
@@ -44,7 +43,7 @@ class QuestionnaireScreen extends ConsumerWidget {
         schluessel: (
           companyId: firma.id,
           companyName: firma.name,
-          inviteSource: _gueltigeQuelle(inviteSource),
+          inviteSource: inviteSource,
         ),
       ),
       loading: () => const _Geruest(child: Center(child: CircularProgressIndicator())),
@@ -57,15 +56,11 @@ class QuestionnaireScreen extends ConsumerWidget {
     );
   }
 
-  /// Eine Einladungsquelle zählt nur, wenn sie in der Liste steht.
+  /// Die Einladungsquelle geht ungeprüft mit.
   ///
-  /// Wer über eine Einladung kommt, wird intern markiert, weil diese Stichprobe
-  /// repräsentativer ist. Ohne diese Prüfung ließe sich die Markierung über
-  /// eine selbstgebaute Adresse erschleichen — und dann wäre sie wertlos.
-  static String? _gueltigeQuelle(String? roh) {
-    if (roh == null) return null;
-    return QuestionnaireConstants.inviteSources.contains(roh) ? roh : null;
-  }
+  /// Ob sie zählt, entscheidet `submit_review` anhand von `flow.inviteSources`
+  /// in der Definition. Hier zu filtern hieße, die Liste zweimal zu pflegen —
+  /// und verbindlich ist ohnehin nur, was der Server annimmt.
 }
 
 // ── Betriebsauswahl ──────────────────────────────────────────────────────────
