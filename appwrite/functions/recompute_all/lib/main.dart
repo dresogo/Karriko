@@ -61,6 +61,11 @@ Future<dynamic> main(final context) async {
   var uebersprungen = 0;
   final betriebe = <String>{};
 
+  // Welche Versionen sich nicht laden liessen. Ohne das Gedaechtnis wuerde eine
+  // kaputte Version fuer jede einzelne Bewertung erneut heruntergeladen — der
+  // Zwischenspeicher im Loader merkt sich nur Erfolge.
+  final unbrauchbar = <int, String>{};
+
   await for (final row in tables.reviewsByStatus(ReviewStatus.approved)) {
     gesehen++;
     if (gesehen <= versatz) continue;
@@ -72,11 +77,19 @@ Future<dynamic> main(final context) async {
       continue;
     }
 
+    if (unbrauchbar.containsKey(version)) {
+      uebersprungen++;
+      continue;
+    }
+
     final Questionnaire fassung;
     try {
       fassung = await loader.load(version);
-    } on DefinitionNotFoundException catch (e) {
-      ctx.logError('Bewertung ${row.$id} uebersprungen: $e');
+    } on DefinitionException catch (e) {
+      // Einmal melden, nicht je Bewertung. Bei tausend Zeilen derselben Version
+      // waeren das tausend gleichlautende Zeilen im Protokoll.
+      unbrauchbar[version] = e.toString();
+      ctx.logError('Version $version nicht verwendbar: $e');
       uebersprungen++;
       continue;
     }
@@ -151,6 +164,13 @@ Future<dynamic> main(final context) async {
     FunctionResponse.ok({
       'recomputed': neuGerechnet,
       'skipped': uebersprungen,
+      // Ohne diese Liste sähe ein Lauf, in dem jede Bewertung übersprungen
+      // wurde, wie ein erfolgreicher mit nichts zu tun aus.
+      if (unbrauchbar.isNotEmpty)
+        'unusable_versions': {
+          for (final eintrag in unbrauchbar.entries)
+            eintrag.key.toString(): eintrag.value,
+        },
       'companies': betriebe.toList(),
       'done': fertig,
       if (!fertig) 'next_offset': versatz + neuGerechnet + uebersprungen,

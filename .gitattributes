@@ -1,0 +1,11 @@
+# Die Fragendefinition wird byteweise geprueft: In `questionnaire_releases`
+# steht eine SHA-256-Summe, und `DefinitionLoader` lehnt eine Datei ab, die nicht
+# dazu passt. Ohne diese Festlegung haette dieselbe Datei unter Windows eine
+# andere Summe als unter Linux — `core.autocrlf` macht beim Auschecken CRLF
+# daraus. Die Summe waere damit an den Rechner gebunden, auf dem sie berechnet
+# wurde, und das ist keine Pruefung.
+#
+# Aus demselben Grund vergleicht `tools/sync_questionnaire.dart` die beiden
+# Kopien Zeichen fuer Zeichen.
+karriko_flutter/assets/questionnaire/*.json text eol=lf
+appwrite/questionnaires/*.json text eol=lf

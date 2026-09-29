@@ -48,7 +48,7 @@ Future<dynamic> main(final context) async {
   final Questionnaire aktiv;
   try {
     aktiv = await loader.loadActive();
-  } on DefinitionNotFoundException catch (e) {
+  } on DefinitionException catch (e) {
     ctx.logError(e.toString());
     return context.res.json(
       FunctionResponse.unavailable('Keine aktive Fragebogenversion.').payload,
@@ -68,7 +68,7 @@ Future<dynamic> main(final context) async {
     final Questionnaire fassung;
     try {
       fassung = await loader.load(version);
-    } on DefinitionNotFoundException catch (e) {
+    } on DefinitionException catch (e) {
       // Eine einzelne unlesbare Fassung darf den Betriebsscore nicht kippen.
       ctx.logError('Bewertung ${row.$id} uebersprungen: $e');
       continue;

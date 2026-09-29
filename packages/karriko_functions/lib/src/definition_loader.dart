@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:crypto/crypto.dart';
 import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:questionnaire_core/questionnaire_core.dart';
 
@@ -62,6 +63,19 @@ class DefinitionLoader {
       fileId: fileId,
     );
 
+    // Die Pruefsumme, wenn eine hinterlegt ist. Sie ist nicht Pflicht — eine
+    // Version aus der Zeit vor dieser Pruefung hat keine —, aber wenn sie da
+    // ist, gilt sie. Die Versionsnummer allein faengt den Fall nicht: Zwei
+    // Dateien koennen dieselbe Version nennen und verschiedene Punktwerte
+    // tragen, und dann haengt jeder Score daran, welche gerade im Bucket liegt.
+    final hinterlegt = (zeile['checksum'] as String?)?.trim().toLowerCase();
+    if (hinterlegt != null && hinterlegt.isNotEmpty) {
+      final gerechnet = sha256.convert(bytes).toString();
+      if (gerechnet != hinterlegt) {
+        throw DefinitionChecksumException(locale, version, hinterlegt, gerechnet);
+      }
+    }
+
     final questionnaire = Questionnaire.parseJsonString(utf8.decode(bytes));
     if (questionnaire.version != version) {
       throw DefinitionMismatchException(version, questionnaire.version);
@@ -93,7 +107,16 @@ class DefinitionLoader {
   }
 }
 
-class DefinitionNotFoundException implements Exception {
+/// Oberbegriff für „diese Fassung der Definition ist nicht verwendbar".
+///
+/// Die drei Fälle darunter unterscheiden sich darin, was schiefgelaufen ist, und
+/// nicht darin, was eine Function tun soll: In allen drei Fällen wäre das
+/// Weiterrechnen ein Rechnen gegen eine unbekannte Fassung. Deshalb fangen die
+/// Functions diesen Typ und nicht die Einzelfälle — ein neuer Fall wird sonst an
+/// fünf Stellen vergessen.
+abstract interface class DefinitionException implements Exception {}
+
+class DefinitionNotFoundException implements DefinitionException {
   final String locale;
   final int version;
 
@@ -107,12 +130,39 @@ class DefinitionNotFoundException implements Exception {
           'notes/APPWRITE_SETUP.md.';
 }
 
+/// Die Datei im Storage ist nicht die, auf die das Release zeigt.
+///
+/// Anders als eine fehlende Version ist das kein Betriebszustand, mit dem sich
+/// weiterarbeiten lässt: Entweder wurde eine andere Datei hochgeladen, oder die
+/// hinterlegte Summe ist falsch. In beiden Fällen weiß niemand, gegen welche
+/// Fassung gerechnet würde.
+class DefinitionChecksumException implements DefinitionException {
+  final String locale;
+  final int version;
+  final String erwartet;
+  final String gefunden;
+
+  const DefinitionChecksumException(
+    this.locale,
+    this.version,
+    this.erwartet,
+    this.gefunden,
+  );
+
+  @override
+  String toString() =>
+      'Die Pruefsumme von Version $version ($locale) stimmt nicht. Hinterlegt '
+      'ist $erwartet, die Datei ergibt $gefunden. Entweder liegt eine andere '
+      'Datei im Bucket oder die Summe in questionnaire_releases ist falsch — '
+      'siehe notes/APPWRITE_SETUP.md.';
+}
+
 /// Die Datei im Storage gehört zu einer anderen Version als das Release.
 ///
 /// Das ist ein Einrichtungsfehler und kein Datenfehler: Jemand hat eine Datei
 /// unter der Kennung einer anderen Version hochgeladen. Still weiterzurechnen
 /// hieße, gegen die falsche Fassung zu prüfen.
-class DefinitionMismatchException implements Exception {
+class DefinitionMismatchException implements DefinitionException {
   final int erwartet;
   final int gefunden;
 

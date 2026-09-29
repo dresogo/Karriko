@@ -131,7 +131,7 @@ Future<dynamic> main(final context) async {
   final Questionnaire questionnaire;
   try {
     questionnaire = await loader.load(version);
-  } on DefinitionNotFoundException catch (e) {
+  } on DefinitionException catch (e) {
     ctx.logError(e.toString());
     return _antwort(
       context,
