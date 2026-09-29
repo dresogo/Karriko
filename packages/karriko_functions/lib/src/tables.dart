@@ -124,6 +124,24 @@ class Tables {
   Stream<aw.Row> allPublicReviews({int pageSize = 100}) =>
       _pages(tableId: config.publicReviewsTable, pageSize: pageSize);
 
+  // ── companies ─────────────────────────────────────────────────────────────
+
+  /// Name und Slug des Betriebs, für die öffentliche Zeile.
+  ///
+  /// `null`, wenn es den Betrieb nicht mehr gibt. Das ist kein Grund, eine
+  /// Freigabe abzubrechen: Die Bewertung gilt weiter, nur die Verlinkung fehlt.
+  Future<aw.Row?> getCompany(String id) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: id,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ── company_scores ────────────────────────────────────────────────────────
 
   Future<aw.Row?> findCompanyScores(String companyId) async {

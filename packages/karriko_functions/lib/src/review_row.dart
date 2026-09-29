@@ -114,15 +114,24 @@ Map<String, Object?> buildReviewRow({
 /// Tagesform, nichts aus dem Konfliktmodul. Appwrite vergibt Rechte pro Zeile,
 /// nicht pro Spalte — deshalb ist das eine eigene Tabelle und keine gefilterte
 /// Sicht.
+/// [companyName] und [companySlug] sind doppelt gehalten und nicht nachgeladen:
+/// Die Einzelansicht verlinkt auf den Betrieb, und die Liste zeigt bei
+/// betriebsübergreifenden Ansichten den Namen. Ohne die beiden Spalten bräuchte
+/// jede Liste eine zweite Abfrage je Zeile. Der Preis ist, dass eine Umbenennung
+/// des Betriebs hier nicht ankommt — derselbe Handel wie bei `jobs`.
 Map<String, Object?> buildPublicReviewRow({
   required String reviewId,
   required Map<String, Object?> reviewRow,
   required bool isAged,
   DateTime? publishedAt,
+  String? companyName,
+  String? companySlug,
 }) {
   return {
     'review_id': reviewId,
     'company_id': reviewRow['company_id'],
+    'company_name': companyName,
+    'company_slug': companySlug,
     'beruf_code': reviewRow['beruf_code'],
     'beruf_name': reviewRow['beruf_name'],
     'start_year': reviewRow['start_year'],

@@ -353,6 +353,8 @@ void main() {
         reviewId: 'r1',
         reviewRow: review,
         isAged: alt,
+        companyName: 'Muster GmbH',
+        companySlug: 'muster-gmbh',
       );
     }
 
@@ -383,6 +385,14 @@ void main() {
       ]) {
         expect(row.containsKey(verboten), isFalse, reason: verboten);
       }
+    });
+
+    test('verlinkt den Betrieb', () {
+      // Ohne Name und Slug zeigte die Einzelansicht keinen Verweis auf den
+      // Betrieb — der Knopf dorthin haengt an `company_slug`.
+      final row = oeffentlich();
+      expect(row['company_name'], 'Muster GmbH');
+      expect(row['company_slug'], 'muster-gmbh');
     });
 
     test('kennzeichnet alte Bewertungen', () {

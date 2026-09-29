@@ -13,13 +13,24 @@ Deployment **nur ein Verzeichnis** hochlädt.
 | `cleanup` | Cron, täglich | — | Verwaiste Entwürfe und geprüfte Nachweise |
 
 Runtime, Entrypoint, Variablen, Scopes und Cron-Ausdrücke stehen in
-[`notes/APPWRITE_SETUP.md`](../../notes/APPWRITE_SETUP.md).
+[`appwrite.config.template.json`](../appwrite.config.template.json) und mit
+Erklärung in [`notes/APPWRITE_SETUP.md`](../../notes/APPWRITE_SETUP.md).
 
-## Vor jedem Push: vendoring
+## Vor jedem Push: drei Schritte
 
 ```bash
 dart run tools/vendor_core.dart
+node tools/appwrite-config.mjs
+node tools/appwrite-function-env.mjs
 ```
+
+Der erste kopiert die gemeinsamen Pakete (unten), der zweite erzeugt
+`appwrite/appwrite.config.json` aus der Vorlage, der dritte die `.env` je
+Function. Alle drei haben `--pruefen`, und alle drei erzeugen Dateien, die nicht
+ins Repository gehören: Die Konfiguration trägt die echte Projekt- und
+Datenbankkennung, die `.env` von `submit_review` das Salz für den Gerätehash.
+
+## Das vendoring
 
 Die Functions benutzen zwei gemeinsame Pakete:
 

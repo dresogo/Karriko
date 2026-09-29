@@ -15,6 +15,11 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 /// Einreichen: `public_reviews` ist die Tabelle, die jeder lesen darf, und was
 /// dort steht, hat ein Mensch gesehen.
 ///
+/// **Der Nachweis wird hier quittiert.** Ob ein Ausbildungsverhältnis belegt
+/// ist, kann nur jemand entscheiden, der das Dokument gesehen hat — deshalb
+/// `verified` im Aufruf und nirgends sonst. Ohne die Angabe bleibt es beim
+/// bisherigen Stand.
+///
 /// **Ablehnen löscht nicht.** Die Bewertung bleibt in `reviews` mit Status
 /// `rejected` stehen, mit Begründung im Log. Löschen träfe erfahrungsgemäß vor
 /// allem die ausführlichen, ehrlichen Bewertungen — und wäre nicht umkehrbar.
@@ -51,6 +56,11 @@ Future<dynamic> main(final context) async {
   final aktion = ctx.body['action'];
   final begruendung = ctx.body['reason'] as String?;
 
+  // Ob das Ausbildungsverhältnis nachgewiesen ist, entscheidet der Moderator —
+  // er hat den Nachweis gesehen. Fehlt die Angabe, bleibt es beim bisherigen
+  // Stand: Eine Freigabe ohne Aussage dazu setzt kein Kennzeichen.
+  final nachgewiesen = ctx.body['verified'];
+
   if (reviewId is! String || reviewId.isEmpty) {
     return _antwort(context, FunctionResponse.invalid('review_id fehlt.'));
   }
@@ -58,6 +68,12 @@ Future<dynamic> main(final context) async {
     return _antwort(
       context,
       FunctionResponse.invalid('action muss "approve" oder "reject" sein.'),
+    );
+  }
+  if (nachgewiesen != null && nachgewiesen is! bool) {
+    return _antwort(
+      context,
+      FunctionResponse.invalid('verified muss wahr oder falsch sein.'),
     );
   }
   // Eine Ablehnung ohne Begründung ist für den Verfasser nicht nachvollziehbar
@@ -133,6 +149,19 @@ Future<dynamic> main(final context) async {
   // weil sie gerade freigegeben wurde.
   final gealtert = CompanyAggregate.isAged(questionnaire, eingereicht, jetzt);
 
+  if (nachgewiesen is bool) zeile['verified'] = nachgewiesen;
+
+  // Name und Slug wandern in die öffentliche Zeile. `companies` ist für jeden
+  // lesbar, die Betriebsseite also ohnehin offen — hier steht nichts, was nicht
+  // schon öffentlich wäre.
+  final betrieb = await tables.getCompany(zeile['company_id'] as String? ?? '');
+  if (betrieb == null) {
+    ctx.logError(
+      'Betrieb ${zeile['company_id']} nicht gefunden — die oeffentliche Zeile '
+      'entsteht ohne Name und Verweis.',
+    );
+  }
+
   final vorhanden = await tables.findPublicReview(reviewId);
   if (vorhanden == null) {
     final oeffentlich = await tables.createPublicReview(
@@ -141,6 +170,8 @@ Future<dynamic> main(final context) async {
         reviewRow: zeile,
         isAged: gealtert,
         publishedAt: jetzt,
+        companyName: betrieb?.data['name'] as String?,
+        companySlug: betrieb?.data['slug'] as String?,
       ),
     );
     ctx.log('Oeffentliche Zeile ${oeffentlich.$id} angelegt.');
@@ -148,7 +179,10 @@ Future<dynamic> main(final context) async {
     ctx.log('Oeffentliche Zeile besteht bereits — nichts angelegt.');
   }
 
-  await tables.updateReview(reviewId, {'status': ReviewStatus.approved});
+  await tables.updateReview(reviewId, {
+    'status': ReviewStatus.approved,
+    if (nachgewiesen is bool) 'verified': nachgewiesen,
+  });
   await tables.logModeration(
     reviewId: reviewId,
     moderatorId: userId,
@@ -159,7 +193,11 @@ Future<dynamic> main(final context) async {
 
   return _antwort(
     context,
-    FunctionResponse.ok({'status': ReviewStatus.approved, 'is_aged': gealtert}),
+    FunctionResponse.ok({
+      'status': ReviewStatus.approved,
+      'is_aged': gealtert,
+      'verified': zeile['verified'] ?? false,
+    }),
   );
 }
 

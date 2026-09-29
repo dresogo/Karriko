@@ -21,6 +21,10 @@ class FunctionConfig {
   final String moderationLogTable;
   final String releasesTable;
 
+  /// Bestand. Wird nur gelesen, und nur für Name und Slug des Betriebs in der
+  /// öffentlichen Zeile.
+  final String companiesTable;
+
   final String questionnairesBucket;
   final String verificationBucket;
 
@@ -54,6 +58,7 @@ class FunctionConfig {
     required this.companyScoresTable,
     required this.moderationLogTable,
     required this.releasesTable,
+    required this.companiesTable,
     required this.questionnairesBucket,
     required this.verificationBucket,
     required this.moderatorsTeam,
@@ -102,6 +107,7 @@ class FunctionConfig {
       companyScoresTable: mit('KARRIKO_TBL_COMPANY_SCORES', 'company_scores'),
       moderationLogTable: mit('KARRIKO_TBL_MODERATION_LOG', 'moderation_log'),
       releasesTable: mit('KARRIKO_TBL_RELEASES', 'questionnaire_releases'),
+      companiesTable: mit('KARRIKO_TBL_COMPANIES', 'companies'),
       questionnairesBucket:
           mit('KARRIKO_BUCKET_QUESTIONNAIRES', 'questionnaires'),
       verificationBucket:
