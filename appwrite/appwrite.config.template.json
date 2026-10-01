@@ -30,9 +30,9 @@
       "columns": [
         { "key": "locale", "type": "varchar", "size": 10, "required": true },
         { "key": "version", "type": "integer", "required": true, "min": 1 },
-        { "key": "bucket_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "file_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "checksum", "type": "varchar", "size": 128, "required": false },
+        { "key": "bucket_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "file_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "checksum", "type": "varchar", "size": 64, "required": false },
         { "key": "active", "type": "boolean", "required": false, "default": false },
         { "key": "published_at", "type": "datetime", "required": true }
       ],
@@ -60,8 +60,8 @@
       "rowSecurity": true,
       "$permissions": ["create(\"users\")"],
       "columns": [
-        { "key": "user_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "company_id", "type": "varchar", "size": 64, "required": true },
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
         { "key": "schema_version", "type": "integer", "required": true, "min": 1 },
         { "key": "answers_json", "type": "text", "required": false },
         { "key": "timings_json", "type": "text", "required": false },
@@ -99,17 +99,18 @@
       "rowSecurity": false,
       "$permissions": [],
       "_hinweis": [
-        "Keine Pflichtspalte. Diese Tabelle besteht im Bestand schon und",
-        "enthaelt Zeilen der alten Strecke. Eine Pflichtspalte nachzuruesten",
-        "scheitert dort, wo Zeilen ohne Wert stehen. Geschrieben wird hier nur",
-        "von submit_review, und die setzt jede dieser Spalten.",
-        "Rechte absichtlich leer: kein Client liest oder schreibt hier."
+        "Rechte absichtlich leer: kein Client liest oder schreibt hier. Was",
+        "oeffentlich sein darf, steht in public_reviews.",
+        "status ist bewusst varchar und kein Enum. Die Zustaende stehen in",
+        "ReviewStatus im Code; ein Enum in der Datenbank waere eine zweite",
+        "Liste davon, und ein neuer Zustand liesse sich nicht hinzufuegen,",
+        "sondern nur durch Loeschen und Neuanlegen der Spalte."
       ],
       "columns": [
-        { "key": "company_id", "type": "varchar", "size": 64, "required": false },
-        { "key": "user_id", "type": "varchar", "size": 64, "required": false },
-        { "key": "schema_version", "type": "integer", "required": false, "min": 1 },
-        { "key": "status", "type": "varchar", "size": 32, "required": false },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "schema_version", "type": "integer", "required": true, "min": 1 },
+        { "key": "status", "type": "varchar", "size": 32, "required": true },
 
         { "key": "respondent_status", "type": "varchar", "size": 32, "required": false },
         { "key": "beruf_code", "type": "varchar", "size": 32, "required": false },
@@ -142,7 +143,7 @@
         { "key": "answers_json", "type": "text", "required": false },
         { "key": "timings_json", "type": "text", "required": false },
 
-        { "key": "verification_file_id", "type": "varchar", "size": 64, "required": false },
+        { "key": "verification_file_id", "type": "varchar", "size": 36, "required": false },
         { "key": "verified", "type": "boolean", "required": false, "default": false },
         { "key": "verification_cleared_at", "type": "datetime", "required": false },
         { "key": "device_hash", "type": "varchar", "size": 64, "required": false }
@@ -183,10 +184,10 @@
       "rowSecurity": false,
       "$permissions": ["read(\"any\")"],
       "columns": [
-        { "key": "review_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "company_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "company_name", "type": "varchar", "size": 255, "required": false },
-        { "key": "company_slug", "type": "varchar", "size": 255, "required": false },
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_name", "type": "varchar", "size": 200, "required": false },
+        { "key": "company_slug", "type": "varchar", "size": 200, "required": false },
         { "key": "beruf_code", "type": "varchar", "size": 32, "required": false },
         { "key": "beruf_name", "type": "varchar", "size": 128, "required": false },
         { "key": "start_year", "type": "integer", "required": false, "min": 1950, "max": 2100 },
@@ -237,7 +238,7 @@
       "rowSecurity": false,
       "$permissions": ["read(\"any\")"],
       "columns": [
-        { "key": "company_id", "type": "varchar", "size": 64, "required": true },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
         { "key": "overall", "type": "double", "required": false, "min": 1, "max": 5 },
         { "key": "sub_fachlich", "type": "double", "required": false, "min": 1, "max": 5 },
         { "key": "sub_betreuung", "type": "double", "required": false, "min": 1, "max": 5 },
@@ -279,8 +280,8 @@
       "rowSecurity": false,
       "$permissions": ["read(\"team:${TEAM_MODERATORS}\")"],
       "columns": [
-        { "key": "review_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "moderator_id", "type": "varchar", "size": 64, "required": true },
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "moderator_id", "type": "varchar", "size": 36, "required": true },
         { "key": "action", "type": "varchar", "size": 16, "required": true },
         { "key": "reason", "type": "text", "required": false },
         { "key": "flags", "type": "varchar", "size": 64, "required": false, "array": true },
@@ -310,8 +311,8 @@
       "rowSecurity": true,
       "$permissions": ["create(\"users\")", "read(\"team:${TEAM_MODERATORS}\")"],
       "columns": [
-        { "key": "review_id", "type": "varchar", "size": 64, "required": true },
-        { "key": "reporter_id", "type": "varchar", "size": 64, "required": true },
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "reporter_id", "type": "varchar", "size": 36, "required": true },
         { "key": "reason", "type": "text", "required": true }
       ],
       "indexes": [

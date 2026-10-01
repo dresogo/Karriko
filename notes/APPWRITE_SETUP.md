@@ -20,6 +20,7 @@ bevor sie eingespielt wird.
 2. [Zwei Wege: CLI oder von Hand](#2-zwei-wege-cli-oder-von-hand)
 3. [Tabellen](#3-tabellen)
 4. [Ablagen](#4-ablagen)
+4a. [`companies`: Rechte und die gespiegelte Bewertung](#4a-companies-rechte-und-die-gespiegelte-bewertung)
 5. [Teams](#5-teams)
 6. [Functions](#6-functions)
 7. [Variablen](#7-variablen)
@@ -46,9 +47,45 @@ https://fra.cloud.appwrite.io/v1
 Der generische Host `cloud.appwrite.io` antwortet auch, leitet aber erst über den
 globalen Router in die Region. Er gehört nicht in die Konfiguration.
 
-Vorhanden sind die Tabellen `profiles`, `companies`, `jobs`, `bookmarks`,
-`reviews`, `questions`, `notifications`. Davon berührt die Bewertungsstrecke
-zwei: `reviews` bekommt Spalten dazu, `companies` wird gelesen.
+Vorhanden sind sechs Tabellen (Stand 1. Oktober 2026): `profiles`, `companies`,
+`reviews`, `bookmarks`, `review_reports`, `jobs`. Gefüllt ist nur `companies`,
+mit zwei Testzeilen; alle anderen haben **null Zeilen**.
+
+Davon berührt die Bewertungsstrecke vier:
+
+| Tabelle | Was passiert |
+|---|---|
+| `reviews` | **Wird gelöscht und neu angelegt.** Siehe unten |
+| `review_reports` | Besteht und wird geändert: Row Security an, Rechte dazu |
+| `companies` | Wird gelesen; bekommt den Score gespiegelt; Rechte werden engergezogen |
+| `profiles` | Unberührt |
+
+### Warum `reviews` neu angelegt wird
+
+Die Tabelle stammt aus der alten Strecke und ist mit der neuen unverträglich —
+nicht in Nuancen, sondern so, dass **jede Einreichung scheitern würde**:
+
+* Fünf Pflichtspalten, die `submit_review` nie schreibt: `author_id`,
+  `is_anonymous`, `overall_rating`, `title`, `text`. Appwrite lehnt jeden Insert
+  ab, dem eine Pflichtspalte fehlt.
+* `status` ist ein **Enum** mit `pending | published | rejected`. Der Code
+  schreibt `pending_moderation`, `scheduled`, `approved`, `rejected`. Drei von
+  vier Werten sind ungültig, und ein Enum lässt sich nicht erweitern — nur
+  löschen und neu anlegen.
+* `author_id` gegen `user_id`, `pros`/`cons` gegen
+  `freitext_gut`/`freitext_schlecht`, `profession` gegen `beruf_name`: dieselbe
+  Bedeutung unter zwei Namen.
+
+**Die Tabelle hat null Zeilen.** Es geht also nichts verloren, und Pflichtspalten
+lassen sich anlegen, was auf einer gefüllten Tabelle nicht möglich wäre.
+
+Das Löschen ist ein Schritt von Hand: Console → Databases → `reviews` →
+Settings → Delete. Danach legt sie der Push oder das Skript neu an.
+
+`tools/appwrite-setup.mjs` hätte das nicht gemerkt. Es legt nur fehlende Spalten
+an und rührt vorhandene nicht an — das Enum wäre stehen geblieben und die
+Pflichtspalten auch. Danach hätte alles richtig ausgesehen und nichts
+funktioniert.
 
 ### Was du brauchst
 
@@ -134,14 +171,27 @@ beschrieben; du brauchst nur einen.
 | Wiederholbar | ja | nein |
 | Risiko | ein Push kann mehr ändern als gedacht | ein Tippfehler in einem Spaltennamen |
 
-Empfehlung: **CLI für die sechs neuen Tabellen, die Buckets, die Teams und die
-Functions. Das Skript für `reviews`.**
+Empfehlung: **CLI für alle sieben Tabellen, die Buckets, die Teams und die
+Functions. Das Skript für `companies`.**
 
-Warum die Trennung: `reviews` besteht schon und enthält Zeilen der alten
-Strecke. Ein Push beschreibt die Tabelle vollständig — er könnte anbieten, die
-Spalten zu entfernen, die dort nicht stehen, und das wären die der alten
-Strecke, deren Inhalt du vor dem Löschen noch exportieren willst.
-`tools/appwrite-setup.mjs` legt nur an und nimmt nichts weg.
+Zwei Dinge vorher:
+
+1. **`reviews` in der Console löschen.** Begründung in Abschnitt 1. Ohne das
+   schreibt der Push die neuen Spalten neben die alten, und die Pflichtspalten
+   der alten Strecke lassen jede Einreichung scheitern.
+2. **`companies` steht nicht in der Konfiguration**, absichtlich. Die Tabelle
+   hat Spalten und Indizes, die ich nicht vollständig kenne; ein Push würde sie
+   nach meiner Teilbeschreibung umschreiben. Dafür ist
+   `tools/appwrite-setup.mjs` da — es legt nur an, nimmt nichts weg, und bei den
+   Rechten meldet es, was abweicht:
+
+```bash
+node tools/appwrite-setup.mjs --dry-run
+node tools/appwrite-setup.mjs --fix-permissions
+```
+
+Der zweite Aufruf **entfernt** `update("users")` von `companies` und schaltet
+Row Security ein. Siehe Abschnitt 4a, bevor du ihn ausführst.
 
 ### Vor jedem Push
 
@@ -187,9 +237,11 @@ appwrite push function --with-variables
 **Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt. Beim ersten
 Mal ist das der Moment, in dem du siehst, ob die Konfiguration stimmt:
 
-* Bei `push table` sollte sie sechs Tabellen **anlegen** und bei `reviews`
-  Änderungen melden. Wenn du dem Skript-Weg für `reviews` folgst, nimm `reviews`
-  aus der Auswahl heraus.
+* Bei `push table` sollte sie **sechs Tabellen anlegen** — `reviews` darunter,
+  wenn du sie vorher gelöscht hast — und bei `review_reports` Änderungen melden:
+  Row Security von aus auf an, Rechte dazu. Null Zeilen, also unkritisch, aber es
+  soll absichtlich passieren. Meldet sie bei `reviews` Änderungen statt
+  Anlegen, steht die alte Tabelle noch da.
 * Bei `push function` baut sie jede Function einzeln und zeigt das Build-Log.
   `dart pub get` muss durchlaufen; findet es `vendor/` nicht, hast du
   `vendor_core.dart` vergessen.
@@ -254,9 +306,9 @@ rowSecurity: false — Rechte: `read("any")`
 |---|---|---|---|---|---|---|
 | `locale` | varchar | 10 | ja |  |  |  |
 | `version` | integer |  | ja |  |  | 1– |
-| `bucket_id` | varchar | 64 | ja |  |  |  |
-| `file_id` | varchar | 64 | ja |  |  |  |
-| `checksum` | varchar | 128 |  |  |  |  |
+| `bucket_id` | varchar | 36 | ja |  |  |  |
+| `file_id` | varchar | 36 | ja |  |  |  |
+| `checksum` | varchar | 64 |  |  |  |  |
 | `active` | boolean |  |  |  | false |  |
 | `published_at` | datetime |  | ja |  |  |  |
 
@@ -271,8 +323,8 @@ rowSecurity: true — Rechte: `create("users")`
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `user_id` | varchar | 64 | ja |  |  |  |
-| `company_id` | varchar | 64 | ja |  |  |  |
+| `user_id` | varchar | 36 | ja |  |  |  |
+| `company_id` | varchar | 36 | ja |  |  |  |
 | `schema_version` | integer |  | ja |  |  | 1– |
 | `answers_json` | text |  |  |  |  |  |
 | `timings_json` | text |  |  |  |  |  |
@@ -292,10 +344,10 @@ rowSecurity: false — Rechte: _keine_
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `company_id` | varchar | 64 |  |  |  |  |
-| `user_id` | varchar | 64 |  |  |  |  |
-| `schema_version` | integer |  |  |  |  | 1– |
-| `status` | varchar | 32 |  |  |  |  |
+| `company_id` | varchar | 36 | ja |  |  |  |
+| `user_id` | varchar | 36 | ja |  |  |  |
+| `schema_version` | integer |  | ja |  |  | 1– |
+| `status` | varchar | 32 | ja |  |  |  |
 | `respondent_status` | varchar | 32 |  |  |  |  |
 | `beruf_code` | varchar | 32 |  |  |  |  |
 | `beruf_name` | varchar | 128 |  |  |  |  |
@@ -321,7 +373,7 @@ rowSecurity: false — Rechte: _keine_
 | `freitext_schlecht` | text |  |  |  |  |  |
 | `answers_json` | text |  |  |  |  |  |
 | `timings_json` | text |  |  |  |  |  |
-| `verification_file_id` | varchar | 64 |  |  |  |  |
+| `verification_file_id` | varchar | 36 |  |  |  |  |
 | `verified` | boolean |  |  |  | false |  |
 | `verification_cleared_at` | datetime |  |  |  |  |  |
 | `device_hash` | varchar | 64 |  |  |  |  |
@@ -339,10 +391,10 @@ rowSecurity: false — Rechte: `read("any")`
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `review_id` | varchar | 64 | ja |  |  |  |
-| `company_id` | varchar | 64 | ja |  |  |  |
-| `company_name` | varchar | 255 |  |  |  |  |
-| `company_slug` | varchar | 255 |  |  |  |  |
+| `review_id` | varchar | 36 | ja |  |  |  |
+| `company_id` | varchar | 36 | ja |  |  |  |
+| `company_name` | varchar | 200 |  |  |  |  |
+| `company_slug` | varchar | 200 |  |  |  |  |
 | `beruf_code` | varchar | 32 |  |  |  |  |
 | `beruf_name` | varchar | 128 |  |  |  |  |
 | `start_year` | integer |  |  |  |  | 1950–2100 |
@@ -375,7 +427,7 @@ rowSecurity: false — Rechte: `read("any")`
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `company_id` | varchar | 64 | ja |  |  |  |
+| `company_id` | varchar | 36 | ja |  |  |  |
 | `overall` | double |  |  |  |  | 1–5 |
 | `sub_fachlich` | double |  |  |  |  | 1–5 |
 | `sub_betreuung` | double |  |  |  |  | 1–5 |
@@ -404,8 +456,8 @@ rowSecurity: false — Rechte: `read("team:moderators")`
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `review_id` | varchar | 64 | ja |  |  |  |
-| `moderator_id` | varchar | 64 | ja |  |  |  |
+| `review_id` | varchar | 36 | ja |  |  |  |
+| `moderator_id` | varchar | 36 | ja |  |  |  |
 | `action` | varchar | 16 | ja |  |  |  |
 | `reason` | text |  |  |  |  |  |
 | `flags` | varchar | 64 |  | ja |  |  |
@@ -422,8 +474,8 @@ rowSecurity: true — Rechte: `create("users")`, `read("team:moderators")`
 
 | Spalte | Typ | Größe | Pflicht | Array | Standard | Bereich |
 |---|---|---|---|---|---|---|
-| `review_id` | varchar | 64 | ja |  |  |  |
-| `reporter_id` | varchar | 64 | ja |  |  |  |
+| `review_id` | varchar | 36 | ja |  |  |  |
+| `reporter_id` | varchar | 36 | ja |  |  |  |
 | `reason` | text |  | ja |  |  |  |
 
 | Index | Typ | Spalten | Reihenfolge |
@@ -443,10 +495,15 @@ eine Bewertung nach einer Parameteränderung nicht neu rechnen — und genau das
 macht `recompute_all`. Typisierte Spalten bekommt, wonach gefiltert und
 aggregiert wird; alles andere steht als JSON daneben.
 
-**`reviews` hat keine Pflichtspalte.** Eine Pflichtspalte nachzurüsten scheitert
-dort, wo Zeilen ohne Wert stehen — und die alten Zeilen haben keine
-`schema_version`. Sie ergänzt auch nichts: Geschrieben wird hier nur von
-`submit_review`, und die setzt jede dieser Spalten.
+**`status` ist ein `varchar` und kein Enum.** Die Zustände stehen in
+`ReviewStatus` im Code. Ein Enum in der Datenbank wäre eine zweite Liste davon,
+und zwei Listen laufen auseinander — die alte Strecke hatte hier ein Enum mit
+drei Werten, und genau daran wäre jede Einreichung gescheitert. Ein Enum lässt
+sich außerdem nicht erweitern, nur löschen und neu anlegen.
+
+**Kennungen sind durchgehend `varchar(36)`.** Eine Appwrite-Kennung ist höchstens
+36 Zeichen lang, und der Bestand hält es schon so. `device_hash` ist die
+Ausnahme: 64 Hexzeichen aus SHA-256.
 
 **`device_hash` ist ein gesalzener Hash und nichts anderes.** Die Rohkennung
 verlässt den Client, wird gehasht und fällt weg. Ohne Salz in der Umgebung wird
@@ -524,6 +581,69 @@ Reparatur — Verschlüsselung nachträglich einzuschalten gilt zum Beispiel nic
 rückwirkend für die Dateien, die schon drin sind.
 
 ---
+
+## 4a. `companies`: Rechte und die gespiegelte Bewertung
+
+Zwei Änderungen an einer bestehenden Tabelle. Beide macht
+`tools/appwrite-setup.mjs`, die zweite nur mit `--fix-permissions`.
+
+### Der Score wird gespiegelt
+
+`aggregate_company` schreibt den Gesamtscore an **zwei** Stellen:
+`company_scores` ist der verbindliche Ort, und `companies.average_rating` plus
+`companies.review_count` sind eine Kopie.
+
+Der Grund ist unspektakulär: Die Suche sortiert absteigend nach der Bewertung
+und filtert mit einer Untergrenze, und **Appwrite sortiert nicht über zwei
+Tabellen hinweg.** Ohne die Kopie bräuchte die Liste zwei Abfragen, und Betriebe
+ohne Score fielen aus der Sortierung — bei unter drei Bewertungen sind das die
+meisten.
+
+Angezeigt wird immer der Wert aus `company_scores`. Unter der
+Sichtbarkeitsschwelle steht in beiden `null`: Ein Betrieb mit zwei Bewertungen
+soll nicht nach einem Score sortiert werden, den niemand sehen darf.
+
+Das Skript legt die beiden Spalten an, falls sie fehlen. Im Bestand sind sie
+schon da — **ohne Wertgrenzen**, und das kann das Skript nicht nachtragen:
+Appwrite ändert eine bestehende Spalte nicht auf diesem Weg. Wer `min: 0` und
+`max: 5` haben will, löscht die Spalte in der Console und legt sie neu an. Auf
+zwei Testzeilen ist das billig, später nicht mehr.
+
+### Das Änderungsrecht muss enger werden
+
+Im Bestand hat `companies` auf Tabellenebene `update("users")`, und Row Security
+ist aus. Das heißt: **Jeder angemeldete Nutzer darf jede Firma ändern** — auch
+`is_verified`, `is_premium`, `owner_id` und, nach der Spiegelung, den Score, nach
+dem die Suche sortiert.
+
+Der Client setzt beim Anlegen einer Firma schon ein Änderungsrecht für den
+Eigentümer **pro Zeile**. Das wirkt nur mit Row Security. Also beides:
+
+```bash
+node tools/appwrite-setup.mjs --fix-permissions
+```
+
+Danach sind die Tabellenrechte `read("any")` und `create("users")`, Row Security
+ist an, und ein Betrieb bearbeitet weiter sein eigenes Profil.
+
+**Was dabei kaputtgeht:** Die Testzeile „Test GmbH" hat keine Zeilenrechte — ihr
+`owner_id` zeigt auf ihre eigene Zeilen-ID und zu keinem Nutzer. Sie wird nach
+der Umstellung unbearbeitbar. Da sie verwaiste Testdaten ist, ist das kein
+Verlust; lösche sie.
+
+**Was damit nicht behoben ist:** Der Eigentümer kann auf seiner eigenen Zeile
+`is_verified` und `average_rating` setzen. **Appwrite kennt keine Rechte je
+Spalte.** Ein Betrieb kann sich also sein Verifizierungs-Abzeichen selbst geben
+und sich in der Sortierung nach vorn schreiben.
+
+Zwei Dinge mildern das und keines behebt es: `aggregate_company` überschreibt
+`average_rating` bei der nächsten Änderung wieder, und der **angezeigte** Score
+kommt aus `company_scores`, das kein Client schreiben kann. Eine Manipulation
+wirkt also nur auf die Sortierung und nur bis zur nächsten Aggregation.
+
+Die eigentliche Lösung wäre, Profiländerungen über eine Function zu führen, die
+nur die Stammdaten durchlässt. Das ist nicht gebaut und steht in
+[`UMSETZUNG_BERICHT.md`](UMSETZUNG_BERICHT.md) als offener Punkt.
 
 ## 5. Teams
 
@@ -646,9 +766,14 @@ tablesdb.<DATENBANK>.tables.public_reviews.rows.*.update
 tablesdb.<DATENBANK>.tables.public_reviews.rows.*.delete
 ```
 
-Rechnet `company_scores` neu. Idempotent: Zweimal für dieselbe Änderung zu laufen
-ändert nichts, denn gerechnet wird immer von den Zeilen aus, nie von einem
-vorherigen Ergebnis.
+Rechnet `company_scores` neu und spiegelt den Score nach
+`companies.average_rating`/`review_count`, damit die Suche danach sortieren kann
+— siehe Abschnitt 4a. Scheitert das Spiegeln, bricht sie nicht ab: Der
+verbindliche Wert steht dann schon, veraltet ist nur die Sortierung. Die Antwort
+sagt es mit `"mirrored": false`.
+
+Idempotent: Zweimal für dieselbe Änderung zu laufen ändert nichts, denn gerechnet
+wird immer von den Zeilen aus, nie von einem vorherigen Ergebnis.
 
 **Sie wird von `public_reviews` ausgelöst, liest aber auch `reviews`.** Das sieht
 nach einem Widerspruch aus und ist keiner: Die Gewichte des Gesamtscores entstehen
@@ -1044,24 +1169,39 @@ und der Gesamtscore eines Betriebs mischt beide.
 
 ## 11. Die Altdaten
 
-Die alte Bewertungsstrecke hat Zeilen in einem Schema hinterlassen, das die neue
-nicht lesen kann: eine Sternebewertung und ein Freitext, ohne Antworten, ohne
-Zeiten, ohne Version. Sie in die neue Auswertung zu nehmen hieße, Werte zu
-erfinden, die niemand angegeben hat.
+**Es gibt keine.** `reviews` hat null Zeilen (Stand 1. Oktober 2026), ebenso
+`review_reports`, `bookmarks` und `profiles`. Die alte Bewertungsstrecke hat ein
+Schema hinterlassen, aber keine Daten.
 
-### Der Ablauf
+Dieser Abschnitt bleibt trotzdem stehen, aus zwei Gründen: Die Lage kann sich
+ändern, bevor die neue Strecke live geht, und wer das hier liest, soll nicht
+rätseln, wo die Löschanleitung geblieben ist.
 
-Erst der Probelauf. Er zählt und löscht nichts:
+**Prüfe zuerst, ob es überhaupt etwas zu tun gibt.** Der Probelauf ist genau
+dafür da und ändert nichts:
 
 ```bash
 node tools/appwrite-purge-reviews.mjs --nur-alte
 ```
 
-`--nur-alte` nimmt nur Zeilen ohne `schema_version`, also nur die der alten
-Strecke. Ohne den Schalter wären auch neue dabei — das Skript weist dann darauf
-hin.
+Meldet er `Nichts zu tun`, überspringe den Rest und lösche die Tabelle
+stattdessen in der Console — so, wie Abschnitt 1 es beschreibt. Ein Löschen der
+Tabelle ist dem Löschen einzelner Zeilen vorzuziehen, solange sie leer ist: Es
+nimmt auch das Enum und die Pflichtspalten mit, die sonst jede Einreichung
+scheitern lassen.
 
-Der Probelauf endet mit dem Befehl zum Löschen, samt der gefundenen Zahl:
+Die zwei Testzeilen in `companies` gehören ebenfalls weg. „Test GmbH" ist
+verwaist — `owner_id` zeigt auf die eigene Zeilen-ID und zu keinem Nutzer.
+
+### Der Ablauf, falls doch Zeilen da sind
+
+Eine Zeile der alten Strecke erkennt man daran, dass ihr die `schema_version`
+fehlt: Jede Zeile, die `submit_review` anlegt, trägt sie als Pflichtfeld.
+`--nur-alte` filtert genau darauf; ohne den Schalter wären auch neue Zeilen
+dabei, und das Skript weist dann darauf hin.
+
+Der Probelauf von oben endet mit dem Befehl zum Löschen, samt der gefundenen
+Zahl:
 
 ```bash
 node tools/appwrite-purge-reviews.mjs --nur-alte --wirklich-loeschen --anzahl=137
@@ -1092,6 +1232,12 @@ steht in Abschnitt 12.
 * Der eindeutige Index auf `user_id` + `company_id`, den Appwrite wegen doppelter
   Altzeilen vielleicht abgelehnt hat, lässt sich jetzt anlegen:
   `node tools/appwrite-setup.mjs`.
+* Die alten Spalten in `reviews` — `author_id`, `is_anonymous`,
+  `overall_rating`, `title`, `text`, `pros`, `cons`, `author_name`,
+  `betrieb_reply`, `betrieb_replied_at` — bleiben stehen, wenn du die Tabelle
+  nicht gelöscht hast. Die Pflichtspalten darunter lassen weiterhin jede
+  Einreichung scheitern. Nach dem Leeren ist das Löschen und Neuanlegen der
+  Tabelle der kürzere Weg als zehn Spalten einzeln wegzuklicken.
 
 ---
 
@@ -1159,6 +1305,10 @@ Version.
 
 ### Offene Punkte ohne Rechtsfrage
 
+* **Ein Betrieb kann sein eigenes `is_verified` und `average_rating` setzen.**
+  Appwrite kennt keine Rechte je Spalte, und die Profilbearbeitung läuft direkt
+  gegen die Tabelle. Siehe Abschnitt 4a. Das Verifizierungs-Abzeichen soll ein
+  Mensch vergeben; heute kann es sich jeder Betrieb selbst geben.
 * **Die Moderation sieht den Nachweis nur über die Console.** Es gibt keine
   Function, die ihn ausliefert.
 * **Es gibt keinen Moderationsbildschirm.** `moderate_review` wird heute über die
@@ -1282,6 +1432,9 @@ Danach:
 * `company_scores` wurde neu gerechnet — `aggregate_company` lief durch das
   Ereignis. Bei weniger als drei Bewertungen steht `overall` auf `null` und
   `score_visible` auf `false`.
+* `companies.average_rating` und `review_count` tragen dieselben Werte.
+  Unter drei Bewertungen also `null` und die Zahl der Bewertungen. Unter
+  Executions muss die Antwort `"mirrored": true` enthalten.
 * Der Entwurf in `review_drafts` ist weg.
 
 Dann eine zweite Bewertung ablehnen, ohne `reason` — der Aufruf muss
@@ -1303,6 +1456,30 @@ nicht ein Indexfehler.
 Die Function lief ohne Variablen. `node tools/appwrite-function-env.mjs`, dann
 `appwrite push function --with-variables` — **ohne** `--with-variables` werden sie
 nicht mitgeschickt.
+
+### Jede Einreichung wird abgelehnt, das Log nennt eine Spalte
+
+Dann steht die alte `reviews` noch da. Sie hat fünf Pflichtspalten, die
+`submit_review` nie schreibt, und ihr `status` ist ein Enum mit drei Werten, von
+denen der Code nur einen benutzt. Abschnitt 1 beschreibt, warum die Tabelle
+gelöscht und neu angelegt wird.
+
+Nachsehen: Console → Databases → `reviews` → Columns. Steht dort `author_id`
+oder ist `status` ein Enum, ist es die alte.
+
+### Die Suche sortiert nicht nach Bewertung
+
+`companies.average_rating` wird von `aggregate_company` gespiegelt. Prüfe in der
+Antwort der Function `"mirrored": true`; steht dort `false`, fehlt dem Schlüssel
+der Function das Schreibrecht auf `companies` oder die Spalte selbst. Der
+angezeigte Score ist davon nicht betroffen — der kommt aus `company_scores`.
+
+### Ein Betrieb kann sein Profil nicht mehr bearbeiten
+
+Nach `--fix-permissions` gilt für `companies` Row Security, und das Änderungsrecht
+steht pro Zeile. Zeilen, die vor dieser Umstellung ohne Zeilenrechte angelegt
+wurden, sind damit gesperrt. Console → die Zeile → Permissions → `update` für
+`user:<owner_id>` setzen. Bei verwaisten Testzeilen ist Löschen der richtige Weg.
 
 ### Der Build einer Function schlägt fehl, `dart pub get` findet ein Paket nicht
 

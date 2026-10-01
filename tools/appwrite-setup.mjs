@@ -201,17 +201,41 @@ const SCHEMA = [
     // Unternehmensprofile sind der oeffentliche Teil der Plattform; ohne
     // Leserecht fuer alle faende die Suche sie fuer Besucher nicht. Anlegen
     // duerfen angemeldete Nutzer – sonst scheitert die Betriebsregistrierung.
+    //
+    // **Kein `update("users")` auf Tabellenebene.** Das stand dort und hiess:
+    // Jeder Angemeldete darf jede Firma aendern, auch `is_verified`,
+    // `is_premium`, `average_rating` und `owner_id`. Der Client setzt beim
+    // Anlegen schon ein Aenderungsrecht fuer den Eigentuemer **pro Zeile** —
+    // das wirkt aber erst mit `rowSecurity`. Also beides: Recht weg, Schalter
+    // an. Ein Betrieb bearbeitet danach weiter sein eigenes Profil.
+    //
+    // Was damit **nicht** behoben ist: Der Eigentuemer kann auf seiner eigenen
+    // Zeile `is_verified` und `average_rating` setzen. Appwrite kennt keine
+    // Rechte je Spalte. Dagegen hilft nur, Profilaenderungen ueber eine
+    // Function zu fuehren — siehe notes/UMSETZUNG_BERICHT.md.
     permissions: ['read("any")', 'create("users")'],
+    exactPermissions: true,
+    rowSecurity: true,
     createIfMissing: false,
     columns: [
       // Der eigentliche Ausloeser des Fehlers.
       str('owner_id'),
+      // Von `aggregate_company` gespiegelt, damit die Suche nach Bewertung
+      // sortieren und filtern kann. Der angezeigte Score kommt aus
+      // `company_scores`; dies hier ist eine Kopie fuer die Abfrage.
+      num('average_rating', { min: 0, max: 5 }),
+      int('review_count', { default: 0, min: 0 }),
     ],
     indexes: [
       { key: 'owner_id', type: 'key', columns: ['owner_id'] },
       // Der Client prueft die Slug-Kollision selbst, das ist aber ein Rennen.
       // Verbindlich ist nur der Index.
       { key: 'slug_unique', type: 'unique', columns: ['slug'], optional: true },
+      // Die Suche sortiert absteigend danach und filtert mit einer Untergrenze.
+      // Ohne Index liest Appwrite dafuer die Tabelle durch.
+      { key: 'average_rating', type: 'key', columns: ['average_rating'], orders: ['DESC'] },
+      // `Query.equal('industry', …)` im Filter der Suche.
+      { key: 'industry', type: 'key', columns: ['industry'] },
     ],
   },
   {
@@ -273,9 +297,9 @@ const SCHEMA = [
     columns: [
       str('locale', 10, { required: true }),
       int('version', { required: true, min: 1 }),
-      str('bucket_id', 64, { required: true }),
-      str('file_id', 64, { required: true }),
-      str('checksum', 128),
+      str('bucket_id', 36, { required: true }),
+      str('file_id', 36, { required: true }),
+      str('checksum', 64),
       bool('active', { default: false }),
       when('published_at', { required: true }),
     ],
@@ -296,8 +320,8 @@ const SCHEMA = [
     createIfMissing: true,
     rowSecurity: true,
     columns: [
-      str('user_id', 64, { required: true }),
-      str('company_id', 64, { required: true }),
+      str('user_id', 36, { required: true }),
+      str('company_id', 36, { required: true }),
       int('schema_version', { required: true, min: 1 }),
       txt('answers_json'),
       txt('timings_json'),
@@ -324,15 +348,16 @@ const SCHEMA = [
     exactPermissions: true,
     createIfMissing: true,
     rowSecurity: false,
-    // **Keine Pflichtspalte.** `reviews` besteht schon und enthaelt Zeilen der
-    // alten Strecke. Eine Pflichtspalte nachzuruesten scheitert dort, wo Zeilen
-    // ohne Wert stehen — und sie ergaenzt auch nichts: Geschrieben wird hier nur
-    // von `submit_review`, und die setzt jede dieser Spalten.
+    // `status` ist bewusst ein `varchar` und kein Enum. Die Zustaende stehen in
+    // `ReviewStatus` im Code; ein Enum waere eine zweite Liste davon, und ein
+    // neuer Zustand liesse sich nicht ergaenzen, sondern nur durch Loeschen und
+    // Neuanlegen der Spalte. Die alte Strecke hatte hier ein Enum mit drei
+    // Werten, und genau daran waere jede Einreichung gescheitert.
     columns: [
-      str('company_id', 64),
-      str('user_id', 64),
-      int('schema_version', { min: 1 }),
-      str('status', 32),
+      str('company_id', 36, { required: true }),
+      str('user_id', 36, { required: true }),
+      int('schema_version', { required: true, min: 1 }),
+      str('status', 32, { required: true }),
 
       str('respondent_status', 32),
       str('beruf_code', 32),
@@ -358,7 +383,7 @@ const SCHEMA = [
       txt('answers_json'),
       txt('timings_json'),
 
-      str('verification_file_id', 64),
+      str('verification_file_id', 36),
       bool('verified', { default: false }),
       when('verification_cleared_at'),
       str('device_hash', 64),
@@ -382,10 +407,10 @@ const SCHEMA = [
     createIfMissing: true,
     rowSecurity: false,
     columns: [
-      str('review_id', 64, { required: true }),
-      str('company_id', 64, { required: true }),
-      str('company_name', 255),
-      str('company_slug', 255),
+      str('review_id', 36, { required: true }),
+      str('company_id', 36, { required: true }),
+      str('company_name', 200),
+      str('company_slug', 200),
       str('beruf_code', 32),
       str('beruf_name', 128),
       int('start_year', { min: 1950, max: 2100 }),
@@ -415,7 +440,7 @@ const SCHEMA = [
     createIfMissing: true,
     rowSecurity: false,
     columns: [
-      str('company_id', 64, { required: true }),
+      str('company_id', 36, { required: true }),
       num('overall', { min: 1, max: 5 }),
       ...SUBSCORES,
       num('recommend_mean', { min: 0, max: 10 }),
@@ -443,8 +468,8 @@ const SCHEMA = [
     createIfMissing: true,
     rowSecurity: false,
     columns: [
-      str('review_id', 64, { required: true }),
-      str('moderator_id', 64, { required: true }),
+      str('review_id', 36, { required: true }),
+      str('moderator_id', 36, { required: true }),
       str('action', 16, { required: true }),
       txt('reason'),
       str('flags', 64, { array: true }),
@@ -465,8 +490,8 @@ const SCHEMA = [
     createIfMissing: true,
     rowSecurity: true,
     columns: [
-      str('review_id', 64, { required: true }),
-      str('reporter_id', 64, { required: true }),
+      str('review_id', 36, { required: true }),
+      str('reporter_id', 36, { required: true }),
       txt('reason', { required: true }),
     ],
     indexes: [

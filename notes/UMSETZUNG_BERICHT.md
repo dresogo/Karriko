@@ -1,7 +1,8 @@
 # Der Bewertungsfragebogen: was gebaut wurde und warum
 
-Stand: 29. September 2026. Sechs Etappen, sechs Commits, nichts gepusht und nichts
-gegen das Produktivprojekt ausgeführt.
+Stand: 1. Oktober 2026. Sechs Etappen, nichts gegen das Produktivprojekt
+ausgeführt. Abschnitt 6 nennt zwei Befunde, die erst mit dem tatsächlichen
+Stand der Datenbank sichtbar wurden.
 
 Dieser Bericht ist für den Zeitpunkt geschrieben, an dem jemand — du in einem
 halben Jahr, oder jemand anders — wissen will, warum etwas so ist. Er nennt auch,
@@ -266,6 +267,59 @@ Gemeldet, deine Entscheidung: **K10 umdrehen.** Die Texte stehen unverändert, d
 Reihenfolge ist gedreht. Ein Test hält es fest: `k10.options.first.score == 0.0`,
 während `k7.options.first.score == 1.0`.
 
+### Die alte `reviews` hätte jede Einreichung abgelehnt
+
+Aufgefallen am 1. Oktober 2026, als der tatsächliche Stand der Datenbank vorlag
+— nicht beim Bauen, und das ist der eigentliche Befund.
+
+Die bestehende Tabelle hat fünf Pflichtspalten, die `submit_review` nie
+schreibt (`author_id`, `is_anonymous`, `overall_rating`, `title`, `text`), und
+ihr `status` ist ein **Enum** mit `pending | published | rejected`. Der Code
+schreibt `pending_moderation`, `scheduled`, `approved`, `rejected`. Appwrite
+lehnt einen Insert ohne Pflichtspalte ab, und drei der vier Statuswerte sind
+ungültig. Es wäre also nicht eine Bewertung durchgekommen.
+
+**`tools/appwrite-setup.mjs` hätte das nicht gemeldet.** Es legt nur fehlende
+Spalten an und rührt vorhandene nicht an. Das war als Vorsicht gedacht — nichts
+wegnehmen, was da ist — und wurde hier zum Fehler: Danach hätte alles grün
+ausgesehen und nichts funktioniert. Eine Prüfung, die nur ergänzt, prüft nicht.
+
+Die Tabelle hat null Zeilen. Entscheidung vom 1. Oktober 2026: **löschen und neu
+anlegen.** Damit fallen auch die Namensdopplungen weg (`author_id`/`user_id`,
+`pros`/`cons` gegen `freitext_gut`/`freitext_schlecht`, `profession` gegen
+`beruf_name`) und `author_name`, das trotz `is_anonymous` gespeichert wurde.
+
+Nebenwirkung: `tools/appwrite-purge-reviews.mjs` hat nichts zu löschen. Das
+Werkzeug bleibt als Vorsorge, die Aufgabe ist erledigt, ohne dass etwas gelöscht
+werden muss.
+
+### Die Betriebsliste sortierte nach einem toten Feld
+
+Auch am 1. Oktober aufgefallen, und diesmal war es meine Änderung: Etappe C hat
+die Anzeige auf `company_scores` umgestellt, aber `company_repository` sortiert
+und filtert weiter über `companies.average_rating`. Das schreibt seit der
+Umstellung niemand mehr. „Beste zuerst" sortierte also nach dem Anfangswert, und
+der Bewertungsfilter filterte auf nichts.
+
+Entscheidung: **`aggregate_company` spiegelt den Score nach `companies`.**
+Begründung in `APPWRITE_SETUP.md` Abschnitt 4a, kurz: Appwrite sortiert nicht
+über zwei Tabellen hinweg, und der Weg über `company_scores` mit anschließendem
+Nachladen würde alle Betriebe unter drei Bewertungen aus der Sortierung werfen —
+also die meisten.
+
+Der Preis ist eine Kopie, die gepflegt werden muss, und er wird dadurch höher,
+dass `companies` im Bestand `update("users")` ohne Row Security hatte: Jeder
+Angemeldete durfte jede Firma ändern. Das Skript zieht das jetzt enger (Recht
+weg, Row Security an, Änderungsrecht pro Zeile beim Eigentümer).
+
+**Nicht behoben:** Der Eigentümer kann auf seiner eigenen Zeile `is_verified` und
+`average_rating` setzen. Appwrite kennt keine Rechte je Spalte. Gemildert durch
+zweierlei und behoben durch keines: `aggregate_company` überschreibt den Wert bei
+der nächsten Änderung, und der angezeigte Score kommt aus `company_scores`, das
+kein Client schreiben kann. Eine Manipulation wirkt auf die Sortierung und nur
+bis zur nächsten Aggregation. Die Lösung wäre, Profiländerungen über eine
+Function zu führen — siehe Abschnitt 9.
+
 ### Die vier Fragen aus dem Plan
 
 Beantwortet am 21. September 2026, in `PLAN_FRAGEBOGEN.md` Abschnitt 8
@@ -276,6 +330,9 @@ Bei „alte Zeilen löschen" habe ich widersprochen und es dann so gebaut, wie d
 entschieden hast — aber **nicht ausgeführt.** `appwrite-purge-reviews.mjs` ist ein
 dokumentierter Schritt von Hand, mit Probelauf als Standard, Pflicht-Export vor dem
 Löschen und einer erwarteten Zeilenzahl, die stimmen muss.
+
+Wie sich am 1. Oktober zeigte, gibt es keine alten Zeilen: `reviews` ist leer.
+Der Widerspruch war damit gegenstandslos, und das Werkzeug bleibt Vorsorge.
 
 ## 7. Was geprüft ist
 
@@ -330,9 +387,16 @@ Ehrliche Liste.
   Bewertung zu entfernen. `reviews` findet sie über `user_id`, aber das Löschen
   dort lässt die öffentliche Zeile stehen. **Das ist die größte offene Lücke.**
 * **Kein Auskunftsverlangen.** Dasselbe Problem, dieselbe Ursache.
-* **`reviews` trägt noch die Spalten der alten Strecke.** Sie werden nicht
-  gelesen und nicht geschrieben. Entfernt werden sie erst, wenn die Altdaten weg
-  sind — ein Push darf sie vorher nicht anfassen.
+* **Ein Betrieb kann sein eigenes `is_verified` und `average_rating` setzen.**
+  Appwrite kennt keine Rechte je Spalte, und die Profilbearbeitung läuft direkt
+  gegen die Tabelle. Das Abzeichen soll ein Mensch vergeben; heute kann es sich
+  jeder Betrieb selbst geben.
+* **`companies` steht nicht in der CLI-Konfiguration**, weil ich die Tabelle
+  nicht vollständig kenne. Ein Push würde sie nach einer Teilbeschreibung
+  umschreiben. Sie läuft über `tools/appwrite-setup.mjs`, das nur ergänzt.
+* **Wertgrenzen auf bestehenden Spalten lassen sich nicht nachtragen.**
+  `companies.average_rating` hat keine; das Skript kann eine vorhandene Spalte
+  nicht ändern. Dafür müsste man sie löschen und neu anlegen.
 * **Ein Betrieb kann nicht antworten.** Siehe Abschnitt 4.
 * **`recompute_all` stößt `aggregate_company` nicht selbst an.** Es nennt die
   betroffenen Betriebe in der Antwort; anstoßen muss man sie.
@@ -386,9 +450,18 @@ Logik, und zwar still. Dagegen gibt es `--pruefen`, und es gehört in die CI.
 die `.env` je Function werden überschrieben. Änderungen gehören in
 `appwrite.config.template.json` bzw. in die Umgebung.
 
-**`reviews` nicht mit der CLI pushen, solange die Altdaten drin sind.** Ein Push
-beschreibt die Tabelle vollständig und könnte anbieten, die Spalten der alten
-Strecke zu entfernen — deren Inhalt du vor dem Löschen exportieren willst.
+**`reviews` vor dem ersten Push löschen.** Steht die alte Tabelle noch da,
+schreibt der Push die neuen Spalten daneben, und die Pflichtspalten der alten
+Strecke lassen jede Einreichung scheitern. Das Setup-Skript meldet es nicht — es
+ergänzt nur.
+
+**`companies` nicht mit der CLI pushen.** Die Tabelle steht nicht in der
+Konfiguration, weil ich sie nicht vollständig kenne. Ein Push würde sie nach
+einer Teilbeschreibung umschreiben.
+
+**`companies.average_rating` nicht von Hand setzen.** `aggregate_company`
+überschreibt es bei der nächsten Änderung. Der verbindliche Wert steht in
+`company_scores`.
 
 **Das Salz nicht ohne Grund ändern.** Alte Hashes passen danach nicht mehr zu
 neuen. Sie werden nicht falsch, nur unvergleichbar.

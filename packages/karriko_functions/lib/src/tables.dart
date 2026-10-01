@@ -142,6 +142,30 @@ class Tables {
     }
   }
 
+  /// Spiegelt den Gesamtscore nach `companies`.
+  ///
+  /// Doppelt gehalten, und das aus einem einzigen Grund: Die Suche sortiert und
+  /// filtert nach der Bewertung, und Appwrite kann nicht über zwei Tabellen
+  /// hinweg sortieren. Der **angezeigte** Score kommt immer aus
+  /// `company_scores`; dies hier ist eine Kopie für die Abfrage.
+  ///
+  /// Scheitert sie, ist das kein Grund, die Aggregation abzubrechen: Der
+  /// verbindliche Wert steht dann schon. Nur die Sortierung ist veraltet.
+  Future<void> mirrorRatingToCompany(
+    String companyId, {
+    required double? averageRating,
+    required int reviewCount,
+  }) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: companyId,
+        data: {
+          'average_rating': averageRating,
+          'review_count': reviewCount,
+        },
+      );
+
   // ── company_scores ────────────────────────────────────────────────────────
 
   Future<aw.Row?> findCompanyScores(String companyId) async {

@@ -15,6 +15,11 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 /// diese Function sie lesen kann, hieße drei von acht Prioritätskarten je Azubi
 /// zu veröffentlichen — eine Angabe mehr, die niemand gebraucht hätte.
 ///
+/// Sie schreibt an zwei Stellen: `company_scores` ist der verbindliche Ort, und
+/// `companies.average_rating`/`review_count` sind eine Kopie für die Suche —
+/// Appwrite sortiert nicht über zwei Tabellen hinweg. Angezeigt wird immer der
+/// Wert aus `company_scores`.
+///
 /// Idempotent: Wiederholt Appwrite ein Ereignis, kommt dasselbe Ergebnis heraus.
 Future<dynamic> main(final context) async {
   final RunContext ctx;
@@ -112,6 +117,25 @@ Future<dynamic> main(final context) async {
     ),
   );
 
+  // Die Kopie in `companies`, damit die Suche nach Bewertung sortieren und
+  // filtern kann — Appwrite sortiert nicht über zwei Tabellen hinweg. Unter der
+  // Sichtbarkeitsschwelle steht hier `null`, genau wie in `company_scores`: Ein
+  // Betrieb mit zwei Bewertungen soll nicht nach einem Score sortiert werden,
+  // den niemand sehen darf.
+  var gespiegelt = true;
+  try {
+    await tables.mirrorRatingToCompany(
+      companyId,
+      averageRating: aggregat.scoreVisible ? aggregat.overall : null,
+      reviewCount: aggregat.reviewCount,
+    );
+  } catch (e) {
+    // Kein Abbruch: Der verbindliche Wert steht schon in `company_scores`.
+    // Veraltet ist nur die Sortierung der Suche.
+    gespiegelt = false;
+    ctx.logError('Spiegeln nach companies/$companyId gescheitert: $e');
+  }
+
   ctx.log(
     'Betrieb $companyId: ${aggregat.reviewCount} Bewertungen, '
     '${aggregat.agedCount} davon alt, Score '
@@ -123,6 +147,7 @@ Future<dynamic> main(final context) async {
       'company_id': companyId,
       'review_count': aggregat.reviewCount,
       'score_visible': aggregat.scoreVisible,
+      'mirrored': gespiegelt,
     }).payload,
   );
 }
