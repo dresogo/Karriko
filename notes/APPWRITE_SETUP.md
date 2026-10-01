@@ -8,6 +8,10 @@ er gewirkt hat.
 Datenbank-ID. Das Repository ist öffentlich. Überall, wo eine Kennung gebraucht
 wird, steht, wo sie in der Console zu finden ist.
 
+**Wenn du nur die Befehle brauchst:** [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md)
+ist dieselbe Einrichtung als Befehlsfolge zum Abarbeiten, ohne die Begründungen.
+Diese Datei hier erklärt, warum etwas so eingestellt wird.
+
 **Was ich nicht ausprobiert habe:** nichts davon lief gegen dein Projekt. Die
 CLI-Konfiguration entstand aus der Dokumentation und aus der installierten CLI
 27.3.0, nicht aus einem `appwrite pull`. An zwei Stellen steht deshalb

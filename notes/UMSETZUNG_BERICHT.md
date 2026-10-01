@@ -10,8 +10,9 @@ was nicht funktioniert und was offen ist.
 
 Die fachliche Quelle ist und bleibt [`karriko-fragebogen.md`](karriko-fragebogen.md).
 Der freigegebene Plan mit den Abweichungen A1–A15 und den Annahmen steht in
-[`PLAN_FRAGEBOGEN.md`](PLAN_FRAGEBOGEN.md). Die Einrichtung in Appwrite steht in
-[`APPWRITE_SETUP.md`](APPWRITE_SETUP.md).
+[`PLAN_FRAGEBOGEN.md`](PLAN_FRAGEBOGEN.md). Das *Warum* der Appwrite-Einrichtung
+steht in [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md), die Befehlsfolge zum
+Abarbeiten in [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md).
 
 ## Inhalt
 
