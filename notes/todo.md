@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Erstellt:** 30. August 2026 · **Fortgeschrieben:** 31. August 2026
-**Grundlage:** `notes/projekt-referenz.md`, `notes/reports/status-report-2026-08-02.md` (Stand 31. August), `notes/reports/sicherheitsbericht-2026-08-04.md`
-**Branch:** `main` · letzter Commit `fe8d780`
+**Erstellt:** 30. August 2026 · **Fortgeschrieben:** 2. Oktober 2026
+**Grundlage:** `notes/projekt-referenz.md`, `notes/reports/status-report-2026-08-02.md` (Stand 2. Oktober), `notes/reports/sicherheitsbericht-2026-08-04.md`, `notes/UMSETZUNG_BERICHT.md`, `notes/APPWRITE_EINSPIELEN.md`
+**Branch:** `fragebogen` mit offenem Pull Request #9 · letzter Commit `7cf5b7e` · `main` steht auf `7dcb7b3`
 
 Diese Liste führt zusammen, was in beiden Berichten als offen steht — sortiert nach Art der Arbeit, nicht nach Herkunftsdokument. Die Kürzel in Klammern verweisen auf die Abschnitte dort.
 
@@ -11,6 +11,16 @@ Diese Liste führt zusammen, was in beiden Berichten als offen steht — sortier
 ---
 
 ## A. Sofort — steht über allem anderen
+
+- [ ] **Das Appwrite-Schema einspielen** (Status 14.4, Reihenfolge 0c)
+
+  Sieben Tabellen, zwei Ablagen, zwei Teams, sieben Functions, die Fragendefinition. Befehlsfolge zum Abarbeiten in `notes/APPWRITE_EINSPIELEN.md`, Begründung je Einstellung in `notes/APPWRITE_SETUP.md`.
+
+  **Warum das über allem anderen steht:** Die Bewertungsstrecke ist gebaut und mit 541 Tests geprüft, aber gegen Appwrite ist nichts davon gelaufen. Bis das Schema steht, ist der Gegenstand der Plattform nicht erprobt — dasselbe Muster wie bei Status 12.2 und 13.4, nur größer, und es hält inzwischen drei Nachträge auf.
+
+  Zwei Schritte darin sind nicht umkehrbar und einzeln herausgestellt: `reviews` löschen (die Tabelle ist leer und mit der neuen Strecke unverträglich, Status 14.3) und `update("users")` von `companies` entfernen (Status 7.11).
+
+  Danach der **Abnahmetest mit den vier Personas** — `APPWRITE_SETUP.md` Abschnitt 13. Das ist das Erste, was das Zusammenspiel zeigt.
 
 - [x] **Zugangsdaten-Zeile aus der Git-Historie klären** (Status 7.10, Sicherheit S10) — **erledigt am 30. August 2026**
 
@@ -69,15 +79,21 @@ Reihenfolge ist hier nicht beliebig: Punkt 1 ist das Schlüsselstück, an dem me
   - `description` (String, groß), `tasks` / `requirements` / `benefits` (String-Array), `start_date` (Datetime), `is_active` (Boolean)
   - „Create" für angemeldete Nutzer, „Read" für alle
   - Index auf `company_id` und `is_active` — jede Abfrage filtert darüber
-- [ ] **2. Echte Firmen-ID im Bewertungs-Assistenten** statt `'placeholder-id'` (Status 2.1)
-  `new_review_screen.dart:273`, dazu `company_repository.dart:76` und `company_provider.dart:134` auf Name+ID umstellen. **Bestehende Datensätze mit `company_id: 'placeholder-id'` müssen bereinigt werden.**
+- [x] **2. Echte Firmen-ID im Bewertungs-Assistenten** statt `'placeholder-id'` (Status 2.1) — **erledigt am 29. September 2026**
+
+  **Auf anderem Weg als hier vorgesehen.** Nicht die ID durchgereicht, sondern die Strecke ersetzt: `review_repository.dart` existiert nicht mehr, eine Bewertung entsteht nur in der Function `submit_review`, und die setzt `company_id` und `user_id` serverseitig. Eine Platzhalter-ID kann dort nicht mehr entstehen.
+
+  Die Bereinigung der Altdaten entfiel: `reviews` hatte beim Abgleich am 1. Oktober **null Zeilen** (Status 14.3). Es gab nichts zu bereinigen.
 - [ ] **3. Kontolöschung umsetzen** — serverseitige Appwrite-Function mit API-Schlüssel (Status 2.2)
   `AuthRepository.deleteAccount()` ist ein Stub. Art. 17 DSGVO ist damit nicht erfüllt. Die Löschreihenfolge steht in `projekt-referenz.md` §3.3; blockiert zusätzlich das Löschen der Passkey-Daten.
 - [ ] **4. Kontaktformular anbinden** — Collection `contact_messages` oder als Zwischenlösung ein ehrlicher `mailto:`-Link (Status 2.4)
-- [ ] **5. Betrieb-Dashboard und Analytics an echte Bewertungsdaten hängen** (Status 3.2) — braucht Punkt 1
+- [ ] **5. Betrieb-Dashboard und Analytics an echte Bewertungsdaten hängen** (Status 3.2)
+  **Seit dem 2. Oktober anders als gedacht:** Die Quelle ist `company_scores`, nicht `reviews`, und sie trägt erst ab drei Bewertungen einen Wert — darunter steht dort `null`. Ein Dashboard, das dann nichts zeigt, ist richtig und muss das erklären. Zahlenangaben erscheinen überhaupt erst ab fünf Bewertungen und nur in Spannen.
 - [ ] **6. Benachrichtigungen über Repository und Provider** statt Direktzugriff auf `TablesDB` (Status 3.1, 9.1)
   Dazu fehlt weiterhin **jede Stelle, die Benachrichtigungen erzeugt**, und ein Fehlerzustand im Screen (aktuell `LateInitializationError` bei nicht initialisiertem Client).
-- [ ] **7. Antworten des Fragebogens speichern** — weder Collection noch Schreibfunktion (Status 3.3)
+- [x] **7. Antworten des Fragebogens speichern** (Status 3.3) — **erledigt am 2. Oktober 2026**
+
+  Deutlich mehr als der Punkt verlangte: eigene Tabelle `reviews` mit Rohantworten und Bearbeitungszeiten, eine getrennte `public_reviews` fuer das, was oeffentlich sein darf, serverseitige Auswertung, Moderation und Aggregation nach `company_scores`. Siehe Status 14.1.
 - [ ] **8. Einstellungs-Schalter persistieren** und die Hinweistexte entfernen (Status 3.4)
 - [ ] **9. Stelle bearbeiten** (Status 13.4) — anlegen, zurückziehen und löschen gehen; ändern nicht. Ein Tippfehler im Titel heißt derzeit: zurückziehen, neu anlegen. `JobRepository.updateJob` fehlt, das Formular kennt keinen Bearbeitungsmodus.
 - [ ] Repository-Methoden ohne Aufrufer klären: `isBookmarked`, `getCompanyById` (Status 3.6) — anbinden oder entfernen
@@ -120,7 +136,19 @@ Nichts davon ist je gegen Appwrite gelaufen — alle 185 Tests arbeiten gegen Fa
 
 - [ ] **Rollen serverseitig absichern** (Status 9.10, 7.3) — Appwrite Teams (`azubis`, `betriebe`) oder Labels, gesetzt durch eine Function; Collection-Berechtigungen gegen `Role.team(...)`.
   Die Rolle ist derzeit **client-behauptet**: Prefs und Profildokument sind beide vom Nutzer schreibbar. Bei einem Anmeldeweg war das eine bekannte Schwäche, bei vieren vervielfacht sich die Fläche.
-- [ ] **Appwrite-Collection-Permissions in der Console prüfen** (Status 7.3) — der einzige serverseitige Zugriffsschutz, aus dem Code nicht verifizierbar. Konkret: `review_repository.dart:94` setzt die Rechte aus dem vom Client übergebenen `authorId`.
+- [ ] **Appwrite-Collection-Permissions in der Console prüfen** (Status 7.3) — der einzige serverseitige Zugriffsschutz, aus dem Code nicht verifizierbar. ~~Konkret: `review_repository.dart:94` setzt die Rechte aus dem vom Client übergebenen `authorId`.~~ **Dieser Teil ist am 29. September geschlossen** — die Datei existiert nicht mehr, `submit_review` nimmt die Kennung aus dem geprüften JWT.
+  **Der Rest ist seit dem 1. Oktober nicht mehr abstrakt:** Der erste Abgleich mit der echten Datenbank hat einen Befund gefunden, der fünf Wochen unsichtbar dort lag — siehe den nächsten Punkt.
+- [ ] **`companies`: `update("users")` entfernen, Row Security einschalten** (Status 7.11) — **hoch**
+  Jeder angemeldete Nutzer darf jede Firma ändern, auch `is_verified`, `is_premium`, `owner_id` und `average_rating`. Das Abzeichen soll laut `projekt-referenz.md` §3.2 ein Mensch vergeben.
+  `node tools/appwrite-setup.mjs --fix-permissions` erledigt es; das Änderungsrecht für den Eigentümer setzt der Client beim Anlegen schon pro Zeile, es wirkte nur ohne Row Security nicht. **Nicht behoben bleibt**, dass der Eigentümer auf seiner eigenen Zeile `is_verified` setzen kann — Appwrite kennt keine Rechte je Spalte. Dafür müsste die Profilbearbeitung über eine Function laufen.
+- [ ] **`last_name` ist auf 10 Zeichen begrenzt** — in `profiles`
+  Für viele Nachnamen zu kurz. Von den Befunden des Datenbank-Abgleichs der einzige, der jemanden **beim Registrieren** kostet, und damit der dringendste der kleinen. Auf 100 erhöhen.
+- [ ] **`profiles` wird nicht benutzt** — zwei Nutzer, null Profile
+  Die Daten liegen doppelt in den Account-Prefs. Für eine Quelle entscheiden: Wenn `profiles` bleibt, beim Signup anlegen und `role` als Enum führen. Hängt mit dem Punkt zur client-behaupteten Rolle oben zusammen — Prefs sind vom Nutzer schreibbar.
+- [ ] **Duplikatsperren fehlen** — eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)`
+  Ohne sie kann derselbe Betrieb mehrfach gemerkt und dieselbe Bewertung mehrfach von derselben Person gemeldet werden. Für `reviews` ist der eindeutige Index auf `user_id` + `company_id` seit dem 2. Oktober beschrieben.
+- [ ] **`jobs` ohne Formatprüfungen** — `contact_email` ohne E-Mail-Format, `apply_url` und `company_logo_url` ohne URL-Format, `employment_type` Freitext, `salary` als Zeichenkette
+  Dazu: In `jobs` ist **keine** Spalte Pflichtfeld, es können also leere Anzeigen entstehen. Mindestens `company_id`, `title` und `is_active` sollten Pflicht sein.
 - [ ] **Nicht genutzte Anmeldeverfahren abschalten** (Status 9.9) — derzeit alle sieben aktiv. Gebraucht werden vier: Email/Password, Magic URL, JWT, Team Invites.
   **„Anonymous" hat Vorrang:** Jeder kann ohne Zugangsdaten eine echte Sitzung erzeugen, die in Appwrite als `users` zählt — zusammen mit ungeprüften Berechtigungen die Kehrseite von 7.3. „Phone" ist ohne SMS-Anbieter wirkungslos, kann aber als zweiter Faktor auftauchen.
 - [ ] **Betriebssperre serverseitig verankern** (Status 9.11) — wirkt derzeit im Client und ersetzt keine echte Regel
@@ -151,7 +179,7 @@ Reihenfolge bewusst: erst was jede Seite betrifft, dann Einzelseiten, dann wiede
 - [ ] **`presentation/common/job_card.dart` entfernen** — seit dem 31. August toter Code: Die Suche bringt ihre eigene Karte mit, das Betriebsprofil ebenfalls. Die Datei verweist zudem noch aufs Betriebsprofil statt auf die Stellenseite und wäre beim nächsten Einsatz eine Falle.
 - [ ] **Auth-Seiten umstellen** — `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`; diese fünf haben zudem **gar keine Kopfzeile**, man landet dort ohne Navigation
 - [ ] **Restliche Betriebsseiten:** `analytics`, `subscription`, `team`, `reviews`, `reports`
-- [ ] **Restliche Azubi-Seiten:** `new_review`, `bookmarks`, `my_reviews`, `notifications`
+- [ ] **Restliche Azubi-Seiten:** ~~`new_review`~~, `bookmarks`, ~~`my_reviews`~~, `notifications` — die beiden durchgestrichenen sind am 2. Oktober umgebaut (Status 14.1). Mit `review_card` ist eine der gemeinsamen Dateien weggefallen, weil `ReviewCard` und `StarRating` entfernt sind.
 - [ ] **Restliche öffentliche Seiten:** `review_detail`, `blog_detail`, `kontakt`, `ueber_uns` — `company_detail` ist am 31. August umgestellt (Status 13.2)
 - [ ] **Akzentfarbe auf `accentDark` umstellen** (Status 5) — `#E3342F` kommt auf 4,47:1, WCAG AA verlangt 4,5:1. Betrifft alle Kicker und jede rote Schaltfläche. Gehört ins Theme (`app_theme.dart`), **nicht** in einzelne Seiten. Vorher am laufenden Build beurteilen, wie der dunklere Ton auf großen Flächen wirkt. Bewusst **nach** den Einzelseiten.
 - [ ] **Fehlerseite gestalten** — `errorBuilder` zeigt rohen Text auf leerem Scaffold
@@ -164,7 +192,8 @@ Reihenfolge bewusst: erst was jede Seite betrifft, dann Einzelseiten, dann wiede
 
 - [ ] **Schriftskalierung (`textScaleFactorTestValue = 1.3`) in allen Layout-Testdateien ergänzen** — zwei Zeilen pro Datei, deckt eine ganze Fehlerklasse ab, die bisher nirgends geprüft wurde. Hat auf Anhieb drei Überläufe gefunden.
 - [ ] **Layout-Durchlauf als dauerhaften Test etablieren** — existiert als Technik, nicht als Test. Scharfstellen, sobald Abschnitt E abgearbeitet ist.
-- [ ] **Nicht abgedeckte Bereiche testen:** Repositories, Bewertungs-Assistent, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten
+- [ ] **Nicht abgedeckte Bereiche testen:** Repositories, ~~Bewertungs-Assistent~~, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten
+  Der Bewertungs-Assistent ist seit dem 2. Oktober abgedeckt: 541 Tests insgesamt (vorher 194), darunter vier Personas gegen die **echte** Fragendefinition und Widget-Tests für die drei Fragetypen, die ohne Gesten bedienbar sein müssen. Der Rest der Liste bleibt.
 - [ ] **Die Stellen haben keinen einzigen Test** (Status 13.7) — `JobRepository`, das Formular im Betriebsprofil, Stellenseite und Stellenband entstanden am 31. August ohne Testabdeckung; die Testzahl steht seit dem 30. August unverändert bei 194. Mindestens: Formular ohne Titel speichert nicht, Entwurf erscheint nicht im öffentlichen Band, die Zeilenaufteilung bei Aufgaben und Anforderungen (Leerzeilen und Aufzählungszeichen fallen weg).
 - [ ] **Kritische Testfälle aus `projekt-referenz.md` §5 absichern** — insbesondere: anonyme Bewertung gibt **keinerlei** Nutzerdaten preis, auch nicht in der API-Antwort; Gewichtung 0,5 / 1,0 wirkt korrekt; zweite Antwort auf dieselbe Bewertung wird blockiert. Das Muster aus `auth_error_mapper_test.dart` — eine Anforderung prüfen statt eines Layouts — gehört hierher ausgeweitet.
 
@@ -178,6 +207,17 @@ Reihenfolge bewusst: erst was jede Seite betrifft, dann Einzelseiten, dann wiede
 
 - [ ] **Umfang der Börse festlegen** — was jetzt entschieden werden muss, weil die Grundlage steht
   Noch nicht vorhanden: **Bewerbungen** (die Stellenseite verweist auf E-Mail oder Formular des Betriebs), **Datei-Upload** für Lebenslauf und Zeugnisse, **Suche nach Stellen** (die Suche findet weiterhin Betriebe, Stellen erscheinen nur als Vorschlagsband). Jeder dieser drei Punkte ist eine eigene Entscheidung mit eigenen Datenschutzfolgen — Bewerbungsunterlagen sind besondere Daten, der AVV und die Löschfristen aus §3.3 gälten dann auch für sie.
+- [ ] **Acht Punkte der Bewertungsstrecke juristisch prüfen lassen** (Status 14.4) — **blockierend vor den ersten echten Bewertungen**
+  In `notes/APPWRITE_SETUP.md` Abschnitt 12 mit ⚖️ markiert: die Aufbewahrungsfristen für Verifikationsnachweise, Entwürfe, Rohantworten, Gerätehash und den Datenexport; Lösch- und Auskunftsverlangen; die Texte im Fragebogen.
+  **Zu keinem dieser Punkte steht im Code oder in der Dokumentation eine rechtliche Aussage.** Die Fristen haben Standardwerte, weil eine Function ohne Frist nicht läuft — nicht, weil diese Werte richtig wären.
+- [ ] **Fünf Platzhaltertexte im Fragebogen ersetzen** (Status 14.4)
+  `anonymity.intro`, `anonymity.sensitive`, `legal.verifikation`, `help.anlaufstellen[0]` und `[2]`. Zu finden mit `grep -n PLATZHALTER karriko_flutter/assets/questionnaire/questionnaire_v1.json`.
+  **Zwei davon sind die Kontaktwege im Konfliktmodul.** Ein Platzhalter dort ist schwerer als in einem Rechtstext: Wer diesen Bildschirm sieht, sucht vielleicht wirklich eine Anlaufstelle.
+  Zu ändern ist die Fassung in der App, danach `dart run tools/sync_questionnaire.dart` — und dann ist es eine neue Version, siehe `APPWRITE_SETUP.md` Abschnitt 10.
+- [ ] **Über die Antwort des Betriebs entscheiden** (Spezifikation Abschnitt 11, Status 14.4)
+  Dürfen Betriebe auf eine Bewertung antworten? Die Spalten `betrieb_reply` und `betrieb_replied_at` standen in der alten `reviews` schon — das Schema hatte die Frage halb beantwortet, der Code nicht. Nicht gebaut, weil es die Frage entschieden hätte.
+- [ ] **Löschverlangen für eine Bewertung** (Status 14.4) — die größte offene Lücke der Bewertungsstrecke
+  `public_reviews` trägt keine `user_id`, und das ist Absicht. Seit `my_reviews` ist die Zuordnung herstellbar, aber nur lesend; zu löschen hieße, die öffentliche Zeile mit zu entfernen, und dafür gibt es keine Function. Hängt mit B.3 zusammen: Beides braucht eine Function, die mit Schlüssel löscht.
 - [ ] **Blog-Detail:** zeigt für jeden Slug denselben Artikel — echte Inhalte oder Seite zurückbauen
 
 ---
