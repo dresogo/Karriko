@@ -1,0 +1,214 @@
+name: Dart CI
+
+# Prueft die Teile, die `flutter.yml` nicht abdeckt: die beiden gemeinsamen
+# Pakete, die sechs Appwrite Functions und die Werkzeuge unter tools/.
+#
+# Warum getrennt von flutter.yml: Das ist die App, das hier ist alles andere.
+# Die Pfadfilter sorgen dafuer, dass eine Aenderung an der App nicht diese
+# Laeufe anstoesst und umgekehrt.
+#
+# Die Fragendefinition steht in `karriko_flutter/assets/` **und** in
+# `appwrite/questionnaires/`, und beide muessen Zeichen fuer Zeichen
+# uebereinstimmen. Deshalb steht der Asset-Pfad hier mit in den Filtern: Wer nur
+# das Original aendert, soll den Vergleich trotzdem ausloesen.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'appwrite/**'
+      - 'tools/**'
+      - 'karriko_flutter/assets/questionnaire/**'
+      - '.github/workflows/dart.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/**'
+      - 'appwrite/**'
+      - 'tools/**'
+      - 'karriko_flutter/assets/questionnaire/**'
+      - '.github/workflows/dart.yml'
+
+jobs:
+  # ── Die gemeinsamen Pakete ──────────────────────────────────────────────────
+  #
+  # `questionnaire_core` ist reines Dart ohne Laufzeitabhaengigkeit und enthaelt
+  # die Fragebogenlogik. `karriko_functions` ist der Appwrite-Kleber. Beide
+  # werden einzeln geprueft und nicht in einer Schleife, damit im Protokoll
+  # steht, welches gescheitert ist.
+  #
+  # Eingerichtet wird Flutter und nicht nur das Dart-SDK, obwohl beide Pakete
+  # ohne Flutter laufen: So steht die Dart-Version an genau einer Stelle im
+  # Repository — derselben, die `flutter.yml` benutzt. Zwei gepinnte Versionen
+  # waeren zwei Stellen, die auseinanderlaufen.
+  packages:
+    name: Pakete
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.x
+          channel: stable
+          cache: true
+
+      - name: questionnaire_core · pub get
+        working-directory: packages/questionnaire_core
+        run: dart pub get
+
+      - name: questionnaire_core · Formatierung
+        working-directory: packages/questionnaire_core
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: questionnaire_core · Analyse
+        working-directory: packages/questionnaire_core
+        run: dart analyze --fatal-infos
+
+      - name: questionnaire_core · Tests
+        working-directory: packages/questionnaire_core
+        run: dart test
+
+      - name: karriko_functions · pub get
+        working-directory: packages/karriko_functions
+        run: dart pub get
+
+      - name: karriko_functions · Formatierung
+        working-directory: packages/karriko_functions
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: karriko_functions · Analyse
+        working-directory: packages/karriko_functions
+        run: dart analyze --fatal-infos
+
+      - name: karriko_functions · Tests
+        working-directory: packages/karriko_functions
+        run: dart test
+
+  # ── Die sechs Functions ─────────────────────────────────────────────────────
+  #
+  # Jede Function ist ein eigenes Dart-Paket mit einer Pfadabhaengigkeit nach
+  # `vendor/`, und `vendor/` steht in der .gitignore. Ohne den Kopierschritt
+  # findet `dart pub get` die beiden Pakete nicht — genau wie im Appwrite-Build,
+  # wenn man ihn vergisst.
+  functions:
+    name: Functions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.x
+          channel: stable
+          cache: true
+
+      - name: Gemeinsame Pakete kopieren
+        run: dart run tools/vendor_core.dart
+
+      # Die Schleife bricht nicht beim ersten Fehler ab: Bei sechs Functions
+      # will man alle Befunde aus einem Lauf sehen und nicht sechsmal pushen.
+      - name: Analysieren
+        run: |
+          set -u
+          gescheitert=""
+          for f in appwrite/functions/*/; do
+            [ -f "$f/pubspec.yaml" ] || continue
+            name=$(basename "$f")
+            echo "::group::$name"
+            if (cd "$f" && dart pub get && dart format --output=none --set-exit-if-changed lib && dart analyze --fatal-infos); then
+              echo "$name ok"
+            else
+              gescheitert="$gescheitert $name"
+            fi
+            echo "::endgroup::"
+          done
+          if [ -n "$gescheitert" ]; then
+            echo "::error::Gescheitert:$gescheitert"
+            exit 1
+          fi
+
+  # ── Die Werkzeuge ───────────────────────────────────────────────────────────
+  #
+  # Nicht jeder Pruefmodus taugt fuer die CI, und das ist kein Versehen:
+  #
+  #   * `sync_questionnaire --pruefen` und `appwrite-setup --pruefen` vergleichen
+  #     zwei Dateien, die beide im Repository stehen. Die laufen hier.
+  #   * `vendor_core --pruefen`, `appwrite-config --pruefen` und
+  #     `appwrite-function-env --pruefen` vergleichen gegen Dateien, die in der
+  #     .gitignore stehen. In einem frischen Checkout gibt es die nicht, also
+  #     wuerde der Pruefmodus immer meckern. Hier laufen sie im **Erzeugen**-
+  #     Modus: Das prueft, was zu pruefen ist — dass die Vorlage gueltiges JSON
+  #     ergibt, keinen unbekannten Platzhalter enthaelt und zu den vorhandenen
+  #     Function-Ordnern passt.
+  #
+  # Die Kennungen sind Platzhalter. Es wird nichts eingespielt und kein Netz
+  # angefasst.
+  tools:
+    name: Werkzeuge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.x
+          channel: stable
+          cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Die eingespielte Konfiguration traegt die echte Projekt- und
+      # Datenbankkennung, die .env von submit_review das Salz fuer den
+      # Geraetehash. Beide stehen in der .gitignore — wenn eine davon doch
+      # eingecheckt wird, soll es hier auffallen und nicht in einem oeffentlichen
+      # Repository stehen bleiben.
+      - name: Keine erzeugten Dateien im Repository
+        run: |
+          verboten=$(git ls-files -- \
+            'appwrite/appwrite.config.json' \
+            'appwrite/functions/*/.env' \
+            'appwrite/functions/*/vendor/*')
+          if [ -n "$verboten" ]; then
+            echo "::error::Diese Dateien gehoeren nicht ins Repository:"
+            echo "$verboten"
+            exit 1
+          fi
+          echo "Keine erzeugten Dateien eingecheckt."
+
+      - name: Fragendefinition · beide Kopien gleich
+        run: dart run tools/sync_questionnaire.dart --pruefen
+
+      - name: Schema · Skript gegen CLI-Vorlage
+        run: node tools/appwrite-setup.mjs --pruefen
+
+      - name: CLI-Vorlage ergibt gueltige Konfiguration
+        env:
+          APPWRITE_PROJECT_ID: ci-platzhalter
+          APPWRITE_DATABASE_ID: ci-platzhalter
+        run: node tools/appwrite-config.mjs
+
+      - name: Variablen je Function
+        env:
+          KARRIKO_DATABASE_ID: ci-platzhalter
+        run: node tools/appwrite-function-env.mjs
+
+      # Erst erzeugen, dann pruefen: Der Pruefmodus muss auf einer frisch
+      # erzeugten Kopie zufrieden sein, sonst waere er fuer niemanden benutzbar.
+      - name: Vendoring ist reproduzierbar
+        run: |
+          dart run tools/vendor_core.dart
+          dart run tools/vendor_core.dart --pruefen

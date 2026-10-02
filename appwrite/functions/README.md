@@ -51,8 +51,12 @@ Function nicht still mit veralteter Logik läuft, trägt jede Kopie eine Marke, 
 dart run tools/vendor_core.dart --pruefen
 ```
 
-endet mit Code 1, wenn eine davon abweicht. Das gehört vor jeden Push und in
-die CI.
+endet mit Code 1, wenn eine davon abweicht. Das gehört vor jeden Push.
+
+In der CI prüft `.github/workflows/dart.yml` es anders herum: Dort gibt es
+`vendor/` in einem frischen Checkout nicht, also wird kopiert und danach
+geprüft — der Prüfmodus muss auf einer frisch erzeugten Kopie zufrieden sein,
+sonst wäre er für niemanden benutzbar.
 
 ## Was hier absichtlich nicht steht
 

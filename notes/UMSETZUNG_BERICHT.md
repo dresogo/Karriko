@@ -81,7 +81,7 @@ notes/                           Plan, diese Berichte, die Anleitung.
 
 Sieben davon haben ein `--pruefen`, das nichts ändert und mit Code 1 endet, wenn
 etwas veraltet ist. Das achte, `appwrite-purge-reviews.mjs`, ist ohne Schalter
-ohnehin ein Probelauf. Das ist der Teil, der in die CI gehört:
+ohnehin ein Probelauf. Vor einem Push von Hand:
 
 ```bash
 dart run tools/sync_questionnaire.dart --pruefen
@@ -90,6 +90,11 @@ node tools/appwrite-config.mjs --pruefen
 node tools/appwrite-function-env.mjs --pruefen
 node tools/appwrite-setup.mjs --pruefen
 ```
+
+In der CI laufen davon nur die ersten und der letzte im Prüfmodus. Die drei
+dazwischen vergleichen gegen Dateien, die in der `.gitignore` stehen und in
+einem frischen Checkout nicht existieren; dort laufen sie im Erzeugen-Modus.
+Beschrieben in `.github/workflows/dart.yml`.
 
 ## 3. Die drei Schichten
 
@@ -445,7 +450,8 @@ Zeile in `questionnaire_releases`. Eine Bewertung mit `schema_version: 1` lässt
 sich ohne v1 nicht neu rechnen, und `recompute_all` überspringt sie dann.
 
 **`vendor/` vor jedem Push erneuern.** Sonst läuft eine Function mit veralteter
-Logik, und zwar still. Dagegen gibt es `--pruefen`, und es gehört in die CI.
+Logik, und zwar still. Dagegen gibt es `--pruefen` vor dem Push; in der CI wird
+kopiert und danach geprüft, weil `vendor/` dort nicht im Checkout liegt.
 
 **Die erzeugten Dateien nicht bearbeiten.** `appwrite/appwrite.config.json` und
 die `.env` je Function werden überschrieben. Änderungen gehören in

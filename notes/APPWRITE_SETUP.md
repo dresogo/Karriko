@@ -211,7 +211,7 @@ zeigt im Build ins Leere. Der zweite erzeugt `appwrite/appwrite.config.json` aus
 der Vorlage. Der dritte schreibt die `.env` je Function.
 
 Alle drei haben `--pruefen`, gehen dabei nie ins Netz und enden mit Code 1, wenn
-etwas veraltet ist. Das gehört in die CI:
+etwas veraltet ist. **Vor einem Push von Hand** also:
 
 ```bash
 dart run tools/vendor_core.dart --pruefen
@@ -221,7 +221,16 @@ node tools/appwrite-setup.mjs --pruefen
 dart run tools/sync_questionnaire.dart --pruefen
 ```
 
-Der vierte vergleicht das Schema im Skript mit dem in der Vorlage. Zwei
+**In der CI laufen davon nur zwei**, und das ist kein Versehen: `vendor_core`,
+`appwrite-config` und `appwrite-function-env` vergleichen gegen Dateien, die in
+der `.gitignore` stehen. In einem frischen Checkout gibt es die nicht, also
+würde der Prüfmodus dort immer meckern. `.github/workflows/dart.yml` lässt die
+drei stattdessen im **Erzeugen**-Modus laufen — das prüft, was dort zu prüfen
+ist: dass die Vorlage gültiges JSON ergibt, keinen unbekannten Platzhalter
+enthält und zu den vorhandenen Function-Ordnern passt.
+
+`appwrite-setup.mjs --pruefen` vergleicht das Schema im Skript mit dem in der
+Vorlage. Zwei
 Beschreibungen desselben Gegenstands laufen auseinander, sobald eine gepflegt
 wird und die andere nicht — und dann hängt es am Weg, welches Schema entsteht.
 

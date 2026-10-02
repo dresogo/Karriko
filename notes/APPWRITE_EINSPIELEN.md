@@ -92,6 +92,11 @@ node tools/appwrite-setup.mjs --pruefen
 Der letzte vergleicht das Schema im Setup-Skript mit dem in der Vorlage und muss
 melden: `beschreiben dasselbe Schema. 7 Tabelle(n), 2 Bucket(s) verglichen.`
 
+Die fünf setzen voraus, dass Schritt 1.3 gelaufen ist: Drei von ihnen prüfen
+gegen Dateien, die dort erst entstehen. Deshalb laufen sie hier und nicht in der
+CI — dort gibt es diese Dateien nicht, und `.github/workflows/dart.yml` prüft
+stattdessen, dass sie sich erzeugen lassen.
+
 ### 1.5 Ein Blick auf den Bestand, bevor etwas passiert
 
 ```powershell
