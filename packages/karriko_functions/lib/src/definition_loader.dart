@@ -72,7 +72,8 @@ class DefinitionLoader {
     if (hinterlegt != null && hinterlegt.isNotEmpty) {
       final gerechnet = sha256.convert(bytes).toString();
       if (gerechnet != hinterlegt) {
-        throw DefinitionChecksumException(locale, version, hinterlegt, gerechnet);
+        throw DefinitionChecksumException(
+            locale, version, hinterlegt, gerechnet);
       }
     }
 

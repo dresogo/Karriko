@@ -98,7 +98,8 @@ class _TextPairState extends State<TextPair> {
               flex: nebeneinander ? 1 : 0,
               child: Padding(
                 padding: EdgeInsets.only(
-                  right: nebeneinander && feld != felder.last ? AppLayout.s16 : 0,
+                  right:
+                      nebeneinander && feld != felder.last ? AppLayout.s16 : 0,
                   bottom: nebeneinander ? 0 : AppLayout.s16,
                 ),
                 child: TextField(
@@ -180,7 +181,8 @@ class YearDropdown extends StatelessWidget {
     final max = (context.configNum('max') ?? DateTime.now().year).round();
 
     return DropdownButtonFormField<int>(
-      initialValue: context.answer is num ? (context.answer! as num).round() : null,
+      initialValue:
+          context.answer is num ? (context.answer! as num).round() : null,
       items: [
         // Absteigend: Das jüngste Jahr steht oben, und das ist in fast allen
         // Fällen das gesuchte.

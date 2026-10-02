@@ -78,5 +78,4 @@ class QuestionnaireConstants {
   /// Wer ueber eine Einladung kommt, wird deshalb markiert — diese Stichprobe
   /// ist repraesentativer.
   static const inviteSourceParam = 'src';
-
 }

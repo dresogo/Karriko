@@ -46,7 +46,8 @@ class QuestionnaireScreen extends ConsumerWidget {
           inviteSource: inviteSource,
         ),
       ),
-      loading: () => const _Geruest(child: Center(child: CircularProgressIndicator())),
+      loading: () =>
+          const _Geruest(child: Center(child: CircularProgressIndicator())),
       error: (_, __) => const _Geruest(
         child: _Meldung(
           text: 'Dieser Betrieb wurde nicht gefunden. Such ihn noch einmal '
@@ -204,9 +205,8 @@ class _Frage extends ConsumerWidget {
       return const _Geruest(child: Center(child: CircularProgressIndicator()));
     }
 
-    final anonymitaet = frage.sensitive
-        ? ctx.sharedText('anonymity.sensitive')
-        : null;
+    final anonymitaet =
+        frage.sensitive ? ctx.sharedText('anonymity.sensitive') : null;
 
     return _Geruest(
       fortschritt: PhaseProgressBar(
@@ -263,9 +263,8 @@ class _Frage extends ConsumerWidget {
 
       case 'module_teaser':
         final modulId = frage.config['moduleId'];
-        final modul = modulId is String
-            ? stand.questionnaire!.module(modulId)
-            : null;
+        final modul =
+            modulId is String ? stand.questionnaire!.module(modulId) : null;
         if (modul == null) return null;
         return ModuleTeaserScreen(
           context: ctx,
@@ -348,7 +347,9 @@ class _Navigation extends ConsumerWidget {
             },
             child: Text(ctx.sharedText('ui.skip_question') ?? ''),
           ),
-        if (beantwortet || frage.type == 'intro' || frage.type == 'anonymity_notice')
+        if (beantwortet ||
+            frage.type == 'intro' ||
+            frage.type == 'anonymity_notice')
           Padding(
             padding: const EdgeInsets.only(left: AppLayout.s16),
             child: ElevatedButton.icon(
@@ -438,7 +439,8 @@ class _Fertig extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.check_circle_outline, size: 48, color: AppColors.green),
+          const Icon(Icons.check_circle_outline,
+              size: 48, color: AppColors.green),
           const SizedBox(height: AppLayout.s24),
           Text(
             verschoben ? 'Gespeichert' : 'Danke',

@@ -165,7 +165,8 @@ class _SearchOverlayState extends State<_SearchOverlay>
     final screen = MediaQuery.of(context).size;
     final origin = widget.originRect;
     // Zielposition: Leiste steht mittig in der Bildschirmhöhe.
-    final targetTop = ((screen.height - _kBarHeight) / 2).clamp(24.0, screen.height);
+    final targetTop =
+        ((screen.height - _kBarHeight) / 2).clamp(24.0, screen.height);
     final query = widget.controller.text;
 
     return Material(

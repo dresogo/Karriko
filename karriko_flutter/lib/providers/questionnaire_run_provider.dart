@@ -340,8 +340,7 @@ class QuestionnaireRunNotifier extends StateNotifier<QuestionnaireRunState> {
     _zeitBuchen();
 
     final bereinigt = flow.pruned(state.answers);
-    final pruefung =
-        validateSubmission(questionnaire: _q, answers: bereinigt);
+    final pruefung = validateSubmission(questionnaire: _q, answers: bereinigt);
 
     if (!pruefung.isValid) {
       final fehlend = pruefung.withCode('missing_required');
@@ -357,17 +356,16 @@ class QuestionnaireRunNotifier extends StateNotifier<QuestionnaireRunState> {
     state = state.copyWith(submitting: true, clearSubmitError: true);
 
     try {
-      final ergebnis =
-          await _ref.read(reviewSubmitRepositoryProvider).submit(
-                companyId: key.companyId,
-                schemaVersion: _q.version,
-                answers: bereinigt.toJson(),
-                timings: state.timings,
-                inviteSource: key.inviteSource,
-                verificationFileId: state.verificationFileId,
-                draftId: state.draftId,
-                deviceKey: await DeviceKey().readOrCreate(),
-              );
+      final ergebnis = await _ref.read(reviewSubmitRepositoryProvider).submit(
+            companyId: key.companyId,
+            schemaVersion: _q.version,
+            answers: bereinigt.toJson(),
+            timings: state.timings,
+            inviteSource: key.inviteSource,
+            verificationFileId: state.verificationFileId,
+            draftId: state.draftId,
+            deviceKey: await DeviceKey().readOrCreate(),
+          );
       if (!mounted) return;
 
       // Lokal merken, damit der Azubi seine Bewertung wiederfindet. Server-
@@ -406,8 +404,8 @@ class QuestionnaireRunNotifier extends StateNotifier<QuestionnaireRunState> {
 /// `autoDispose`, damit ein abgeschlossener oder verlassener Bogen nicht im
 /// Speicher liegenbleibt — und damit ein erneutes Öffnen den Entwurf frisch
 /// lädt, statt einen alten Stand im Arbeitsspeicher weiterzuführen.
-final questionnaireRunProvider = StateNotifierProvider.autoDispose
-    .family<QuestionnaireRunNotifier, QuestionnaireRunState, QuestionnaireRunKey>(
+final questionnaireRunProvider = StateNotifierProvider.autoDispose.family<
+    QuestionnaireRunNotifier, QuestionnaireRunState, QuestionnaireRunKey>(
   (ref, key) {
     // Am Leben halten, solange der Bildschirm offen ist: Ein Wegräumen
     // mitten im Ausfüllen verlöre den nicht gesicherten Stand.

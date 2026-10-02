@@ -71,7 +71,8 @@ class ReviewSubmitRepository {
       'answers': answers,
       'timings': timings,
       if (inviteSource != null) 'invite_source': inviteSource,
-      if (verificationFileId != null) 'verification_file_id': verificationFileId,
+      if (verificationFileId != null)
+        'verification_file_id': verificationFileId,
       if (draftId != null) 'draft_id': draftId,
       if (deviceKey != null) 'device_key': deviceKey,
     });

@@ -40,7 +40,8 @@ class QuestionWidgetRegistry {
 
     // Ausformulierte Antworten in der Reihenfolge der Definition.
     'verbal_choice': (ctx) => VerbalChoice(context: ctx),
-    'single_choice_tiles': (ctx) => VerbalChoice(context: ctx, alsKacheln: true),
+    'single_choice_tiles': (ctx) =>
+        VerbalChoice(context: ctx, alsKacheln: true),
     'segmented': (ctx) => SegmentedChoice(context: ctx),
     'multi_select': (ctx) => MultiSelect(context: ctx),
     'mood': (ctx) => MoodChoice(context: ctx),
@@ -79,7 +80,12 @@ class QuestionWidgetRegistry {
     final builder = _builders[context.question.type];
     if (builder != null) return builder(context);
 
-    if (kDebugMode) return _UnbekannterTyp(typ: context.question.type, id: context.question.id);
+    if (kDebugMode) {
+      return _UnbekannterTyp(
+        typ: context.question.type,
+        id: context.question.id,
+      );
+    }
 
     debugPrint(
       'Fragebogen: unbekannte Typkennung "${context.question.type}" '

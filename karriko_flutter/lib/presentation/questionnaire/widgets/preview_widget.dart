@@ -126,8 +126,7 @@ class _Block extends StatelessWidget {
               label,
               style: TextStyle(
                 color: zurueckgenommen ? AppColors.muted : AppColors.ink,
-                decoration:
-                    zurueckgenommen ? TextDecoration.lineThrough : null,
+                decoration: zurueckgenommen ? TextDecoration.lineThrough : null,
               ),
             ),
           ),

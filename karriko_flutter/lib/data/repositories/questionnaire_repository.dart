@@ -62,7 +62,8 @@ class QuestionnaireRepository {
         await _cache.read(locale, release.version),
       );
       if (zwischengespeichert != null) {
-        return LoadedQuestionnaire(zwischengespeichert, QuestionnaireQuelle.cache);
+        return LoadedQuestionnaire(
+            zwischengespeichert, QuestionnaireQuelle.cache);
       }
 
       final geladen = await _download(release);
@@ -79,7 +80,8 @@ class QuestionnaireRepository {
       final zwischengespeichert =
           await _parseOrNull(await _cache.read(locale, bekannt));
       if (zwischengespeichert != null) {
-        return LoadedQuestionnaire(zwischengespeichert, QuestionnaireQuelle.cache);
+        return LoadedQuestionnaire(
+            zwischengespeichert, QuestionnaireQuelle.cache);
       }
     }
 
@@ -98,7 +100,8 @@ class QuestionnaireRepository {
     final zwischengespeichert =
         await _parseOrNull(await _cache.read(locale, version));
     if (zwischengespeichert != null) {
-      return LoadedQuestionnaire(zwischengespeichert, QuestionnaireQuelle.cache);
+      return LoadedQuestionnaire(
+          zwischengespeichert, QuestionnaireQuelle.cache);
     }
 
     try {
@@ -131,7 +134,8 @@ class QuestionnaireRepository {
 
   /// Das mitgelieferte Asset.
   Future<Questionnaire> loadBundled() async {
-    final json = await rootBundle.loadString(QuestionnaireConstants.bundledAsset);
+    final json =
+        await rootBundle.loadString(QuestionnaireConstants.bundledAsset);
     return Questionnaire.parseJsonString(json);
   }
 
@@ -174,7 +178,8 @@ class QuestionnaireRepository {
   /// Der Rohtext wird gebraucht, weil der Cache ihn speichert — und zwar
   /// genau so, wie er kam. Ein Umweg ueber ein erneutes Serialisieren waere
   /// eine zweite Fassung derselben Datei.
-  Future<(Questionnaire, String)?> _download(QuestionnaireRelease release) async {
+  Future<(Questionnaire, String)?> _download(
+      QuestionnaireRelease release) async {
     try {
       final bytes = await _storage.getFileDownload(
         bucketId: release.bucketId,

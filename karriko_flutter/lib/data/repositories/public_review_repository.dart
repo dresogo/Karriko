@@ -31,7 +31,9 @@ class PublicReviewRepository {
         Query.offset(offset),
       ],
     );
-    return result.rows.map((row) => PublicReview.fromJson(_toMap(row))).toList();
+    return result.rows
+        .map((row) => PublicReview.fromJson(_toMap(row)))
+        .toList();
   }
 
   Future<PublicReview> byId(String id) async {
@@ -52,7 +54,9 @@ class PublicReviewRepository {
         Query.limit(limit),
       ],
     );
-    return result.rows.map((row) => PublicReview.fromJson(_toMap(row))).toList();
+    return result.rows
+        .map((row) => PublicReview.fromJson(_toMap(row)))
+        .toList();
   }
 
   /// Die Aggregate eines Betriebs. `null`, solange es noch keine gibt.

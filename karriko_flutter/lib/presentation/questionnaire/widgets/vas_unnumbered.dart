@@ -67,11 +67,13 @@ class _VasUnnumberedState extends State<VasUnnumbered> {
     switch (event.logicalKey) {
       case LogicalKeyboardKey.arrowLeft:
       case LogicalKeyboardKey.arrowDown:
-        _setzen((aktuell ?? (_min + _max) ~/ 2) - (aktuell == null ? 0 : schritt));
+        _setzen(
+            (aktuell ?? (_min + _max) ~/ 2) - (aktuell == null ? 0 : schritt));
         return KeyEventResult.handled;
       case LogicalKeyboardKey.arrowRight:
       case LogicalKeyboardKey.arrowUp:
-        _setzen((aktuell ?? (_min + _max) ~/ 2) + (aktuell == null ? 0 : schritt));
+        _setzen(
+            (aktuell ?? (_min + _max) ~/ 2) + (aktuell == null ? 0 : schritt));
         return KeyEventResult.handled;
       case LogicalKeyboardKey.home:
         _setzen(_min);
@@ -118,9 +120,8 @@ class _VasUnnumberedState extends State<VasUnnumbered> {
                   onHorizontalDragStart: (d) => ausLokal(d.localPosition),
                   onHorizontalDragUpdate: (d) => ausLokal(d.localPosition),
                   child: _Bahn(
-                    anteil: _wert == null
-                        ? null
-                        : (_wert! - _min) / (_max - _min),
+                    anteil:
+                        _wert == null ? null : (_wert! - _min) / (_max - _min),
                     fokussiert: _focus.hasFocus,
                   ),
                 );
@@ -142,7 +143,9 @@ class _VasUnnumberedState extends State<VasUnnumbered> {
 
   String _labelVon(Object? roh) {
     if (roh is String) return roh;
-    if (roh is Map && roh['current'] is String) return roh['current']! as String;
+    if (roh is Map && roh['current'] is String) {
+      return roh['current']! as String;
+    }
     return '';
   }
 }

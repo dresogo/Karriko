@@ -1094,8 +1094,9 @@ class _ReviewRowState extends State<_ReviewRow> {
                 AnimatedSlide(
                   duration: const Duration(milliseconds: 150),
                   curve: Curves.easeOut,
-                  offset:
-                      _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
+                  offset: _hovered || _focused
+                      ? const Offset(0.25, 0)
+                      : Offset.zero,
                   child: const Padding(
                     padding: EdgeInsets.only(left: AppLayout.s16),
                     child: Icon(Icons.arrow_forward,
@@ -1110,8 +1111,6 @@ class _ReviewRowState extends State<_ReviewRow> {
     );
   }
 }
-
-
 
 // ─── Zustände ────────────────────────────────────────────────────────────────
 

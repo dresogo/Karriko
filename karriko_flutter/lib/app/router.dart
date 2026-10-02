@@ -239,9 +239,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Der alte Fragenkatalog ist im Fragebogen aufgegangen. Die Route
       // bleibt als Weiterleitung stehen, damit Lesezeichen und der Verweis
       // aus dem Azubi-Dashboard nicht ins Leere laufen.
-      GoRoute(
-          path: '/fragen-bewerten',
-          redirect: (_, __) => '/reviews/new'),
+      GoRoute(path: '/fragen-bewerten', redirect: (_, __) => '/reviews/new'),
       GoRoute(path: '/my-reviews', builder: (_, __) => const MyReviewsScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
       GoRoute(

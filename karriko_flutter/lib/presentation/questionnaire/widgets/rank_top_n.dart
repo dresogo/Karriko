@@ -92,7 +92,8 @@ class RankTopN extends StatelessWidget {
                 key: ValueKey(rang[index]),
                 platz: index + 1,
                 index: index,
-                label: option == null ? rang[index] : this.context.label(option),
+                label:
+                    option == null ? rang[index] : this.context.label(option),
                 onEntfernen: () => _antippen(rang[index]),
               );
             },

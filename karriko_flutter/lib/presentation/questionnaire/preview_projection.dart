@@ -36,7 +36,8 @@ class PreviewProjection {
   /// einzeln zurücknehmbar" heißt: nicht alles oder nichts.
   List<({String id, String label})> get bloecke => [
         for (final question in questionnaire.questions)
-          if (question.public && AnsweredCondition.isAnswered(answers[question.id]))
+          if (question.public &&
+              AnsweredCondition.isAnswered(answers[question.id]))
             (id: question.id, label: question.text.forTense(_tense)),
       ];
 

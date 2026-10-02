@@ -49,8 +49,7 @@ class QuestionContext {
   String label(Option option) => option.label.forTense(tense);
 
   /// Ein Text aus `texts`, in der richtigen Zeitform.
-  String? sharedText(String key) =>
-      questionnaire.text(key)?.forTense(tense);
+  String? sharedText(String key) => questionnaire.text(key)?.forTense(tense);
 
   List<String> sharedTextList(String key) => [
         for (final text in questionnaire.textList(key)) text.forTense(tense),

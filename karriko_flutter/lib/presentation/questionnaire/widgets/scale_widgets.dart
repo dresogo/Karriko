@@ -20,8 +20,10 @@ class Scale0To10 extends StatelessWidget {
   Widget build(BuildContext buildContext) {
     final min = (context.configNum('min') ?? 0).round();
     final max = (context.configNum('max') ?? 10).round();
-    final endLabels = context.config<Map<String, Object?>>('endLabels') ?? const {};
-    final gewaehlt = context.answer is num ? (context.answer! as num).round() : null;
+    final endLabels =
+        context.config<Map<String, Object?>>('endLabels') ?? const {};
+    final gewaehlt =
+        context.answer is num ? (context.answer! as num).round() : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -55,7 +57,9 @@ class Scale0To10 extends StatelessWidget {
 
   String _text(Object? roh) {
     if (roh is String) return roh;
-    if (roh is Map && roh['current'] is String) return roh['current']! as String;
+    if (roh is Map && roh['current'] is String) {
+      return roh['current']! as String;
+    }
     return '';
   }
 }
@@ -137,7 +141,8 @@ class StepperInput extends StatelessWidget {
       for (final eintrag in roh)
         if (eintrag is Map)
           (
-            wert: eintrag.containsKey('value') ? eintrag['value'] : eintrag['id'],
+            wert:
+                eintrag.containsKey('value') ? eintrag['value'] : eintrag['id'],
             label: _label(eintrag['label']),
           ),
     ];
@@ -168,7 +173,8 @@ class StepperInput extends StatelessWidget {
         Row(
           children: [
             IconButton.outlined(
-              onPressed: zahl == null || zahl <= _min ? null : () => _aendern(-_step),
+              onPressed:
+                  zahl == null || zahl <= _min ? null : () => _aendern(-_step),
               icon: const Icon(Icons.remove),
               tooltip: '−$_step',
             ),
@@ -180,7 +186,8 @@ class StepperInput extends StatelessWidget {
                 vertical: 12,
               ),
               alignment: Alignment.center,
-              decoration: BoxDecoration(border: Border.all(color: AppColors.line)),
+              decoration:
+                  BoxDecoration(border: Border.all(color: AppColors.line)),
               child: Text(
                 zahl == null
                     ? '–'
@@ -193,7 +200,8 @@ class StepperInput extends StatelessWidget {
             ),
             const SizedBox(width: AppLayout.s16),
             IconButton.outlined(
-              onPressed: zahl != null && zahl >= _max ? null : () => _aendern(_step),
+              onPressed:
+                  zahl != null && zahl >= _max ? null : () => _aendern(_step),
               icon: const Icon(Icons.add),
               tooltip: '+$_step',
             ),

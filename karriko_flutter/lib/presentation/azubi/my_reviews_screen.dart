@@ -157,8 +157,7 @@ class _EntwurfsZeile extends ConsumerWidget {
           '${DateFormat('dd.MM.yyyy').format(entwurf.updatedAt)}',
         ),
         trailing: const Icon(Icons.arrow_forward),
-        onTap: () =>
-            context.go('/reviews/new?company=${entwurf.companyId}'),
+        onTap: () => context.go('/reviews/new?company=${entwurf.companyId}'),
       ),
     );
   }
