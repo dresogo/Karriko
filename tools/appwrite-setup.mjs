@@ -937,7 +937,7 @@ async function main() {
     '\nFertig.\n\n' +
       'Was dieses Skript nicht tut, und was deshalb noch fehlt:\n' +
       '  · Teams `moderators` und `admins`\n' +
-      '  · die sechs Functions samt Variablen, Cron und Ereignissen\n' +
+      '  · die sieben Functions samt Variablen, Cron und Ereignissen\n' +
       '  · die Fragendefinition im Bucket und die Zeile in questionnaire_releases\n\n' +
       'Der Weg dahin steht Schritt fuer Schritt in notes/APPWRITE_SETUP.md.\n' +
       'Wer die CLI benutzt, nimmt statt dieses Skripts appwrite.config.json —\n' +

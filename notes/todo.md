@@ -1,6 +1,6 @@
 # Karriko – Offene Aufgaben
 
-**Erstellt:** 30. August 2026 · **Fortgeschrieben:** 2. Oktober 2026
+**Erstellt:** 30. August 2026 · **Fortgeschrieben:** 2. Oktober 2026, nach dem Einspielen des Schemas
 **Grundlage:** `notes/projekt-referenz.md`, `notes/reports/status-report-2026-08-02.md` (Stand 2. Oktober), `notes/reports/sicherheitsbericht-2026-08-04.md`, `notes/UMSETZUNG_BERICHT.md`, `notes/APPWRITE_EINSPIELEN.md`
 **Branch:** `fragebogen` mit offenem Pull Request #9 · letzter Commit `7cf5b7e` · `main` steht auf `7dcb7b3`
 
@@ -12,15 +12,36 @@ Diese Liste führt zusammen, was in beiden Berichten als offen steht — sortier
 
 ## A. Sofort — steht über allem anderen
 
-- [ ] **Das Appwrite-Schema einspielen** (Status 14.4, Reihenfolge 0c)
+- [x] **Das Appwrite-Schema einspielen** (Status 14.4, Reihenfolge 0c) — **erledigt am 2. Oktober 2026**
 
-  Sieben Tabellen, zwei Ablagen, zwei Teams, sieben Functions, die Fragendefinition. Befehlsfolge zum Abarbeiten in `notes/APPWRITE_EINSPIELEN.md`, Begründung je Einstellung in `notes/APPWRITE_SETUP.md`.
+  Eingespielt: sechs neue Tabellen (`reviews` neu, `questionnaire_releases`, `review_drafts`, `public_reviews`, `company_scores`, `moderation_log`), zwei Ablagen, zwei Teams, sieben Functions, die Fragendefinition samt Release-Zeile. Beide nicht umkehrbaren Schritte sind gelaufen: `reviews` gelöscht (vorher `total: 0` bestätigt) und `update("users")` von `companies` entfernt.
 
-  **Warum das über allem anderen steht:** Die Bewertungsstrecke ist gebaut und mit 541 Tests geprüft, aber gegen Appwrite ist nichts davon gelaufen. Bis das Schema steht, ist der Gegenstand der Plattform nicht erprobt — dasselbe Muster wie bei Status 12.2 und 13.4, nur größer, und es hält inzwischen drei Nachträge auf.
+  **Anders als in `APPWRITE_EINSPIELEN.md` beschrieben:** Tabellen und Ablagen kamen nicht per `appwrite push table/bucket`, sondern in einem Lauf über `node tools/appwrite-setup.mjs --fix-permissions`. Das Skript deckt dasselbe Schema ab (`--pruefen` belegt es) und vermeidet die zwei Risiken des Push: Umbenennen der Datenbank bei abweichendem Namen und das Angebot, bestehende Spalten zu entfernen. Die CLI blieb für Teams, Functions und den Datei-Upload.
 
-  Zwei Schritte darin sind nicht umkehrbar und einzeln herausgestellt: `reviews` löschen (die Tabelle ist leer und mit der neuen Strecke unverträglich, Status 14.3) und `update("users")` von `companies` entfernen (Status 7.11).
+  **Geprüft:**
+  - `--dry-run` nach dem Lauf meldet keine Abweichung mehr
+  - Row Security je Tabelle wie vorgesehen, `companies` und `review_reports` jetzt `true`
+  - Alle sieben Functions `ready` auf `dart-3.11` — die Runtime war vorher ungeprüft
+  - `aggregate_company` trägt die drei Ereignisse mit der echten Datenbankkennung; die Scopes `rows.*` und `files.read` wurden angenommen
+  - Prüfsumme der Fragendefinition stimmt
+  - Durchstich `cleanup` mit `dry_run`: Status 200, `ok: true`
 
-  Danach der **Abnahmetest mit den vier Personas** — `APPWRITE_SETUP.md` Abschnitt 13. Das ist das Erste, was das Zusammenspiel zeigt.
+  **Unterwegs festgestellt:**
+  - `appwrite push function` legt für jede Function eine **öffentliche Domain** unter `*.appwrite.network` an. Geprüft: Sie hält sich an `execute` und antwortet ohne Anmeldung mit `router_unauthorized_execution`. Kann bleiben.
+  - Das Salz für den Gerätehash ist per CLI als Secret markiert, der Wert blieb unverändert. Es liegt außerdem lokal in `appwrite/functions/submit_review/.env` (gitignored) und gehört zusätzlich in den Passwortmanager.
+  - Die Release-Zeile trägt die ID `unique` statt einer erzeugten. Schadet nicht, gefunden wird sie über `locale` und `active`.
+
+- [ ] **Eigenes Konto für Moderation und Administration anlegen** — blockiert den Rest der Abnahme
+  In der App registrieren, E-Mail bestätigen, dann in die Teams `moderators` und `admins` eintragen (`appwrite teams create-membership`). Bewusst **nicht** eines der beiden Testkonten: Das Azubi-Konto ist Verfasser, und wer die eigene Bewertung freigibt, verwischt genau die Trennung, die die Abnahme zeigen soll.
+
+- [ ] **Abnahmetest mit den vier Personas** — `APPWRITE_SETUP.md` Abschnitt 13, `APPWRITE_EINSPIELEN.md` Abschnitt 8
+  Das ist das Erste, was das Zusammenspiel zeigt. Offen: Durchstich `recompute_all`, die vier Personas, Moderation, `my_reviews` mit zwei Konten.
+  **Lücke in der Befehlsfolge:** §8.1 und §8.3 rufen `recompute_all` und `moderate_review` per `appwrite functions create-execution` auf. Die CLI läuft aber als Console-Konto, und beide Functions verlangen die Kennung eines **Projektkontos** (`ctx.userId`). So aufgerufen brechen sie mit 401 ab, unabhängig von den Teams. Gangbar: per API-Schlüssel ein JWT für das Moderationskonto ausstellen und damit aufrufen. Eine Moderationsoberfläche in der App gibt es nicht.
+
+- [ ] **`APPWRITE_EINSPIELEN.md` nachziehen** — nach der Abnahme
+  Skriptweg statt `push table/bucket` (§3), die öffentlichen Function-Domains (§5), der JWT-Weg für Moderation und `recompute_all` (§8), `ID.unique()` in PowerShell (§6.4), der doppelte Spiegelstrich in §10. Außerdem: Die CLI kennt das Projekt nur aus dem Ordner `appwrite/` heraus, im Wurzelverzeichnis meldet sie „project is not set".
+
+- [ ] **API-Schlüssel nach der Abnahme entfernen** — die Datei unter `karriko_local/` löschen und den Schlüssel in der Console widerrufen, nicht nur ablaufen lassen.
 
 - [x] **Zugangsdaten-Zeile aus der Git-Historie klären** (Status 7.10, Sicherheit S10) — **erledigt am 30. August 2026**
 
@@ -106,7 +127,7 @@ Alle vier Verfahren stehen im Code. Was fehlt, ist überwiegend **Konfiguration 
 
 - [ ] **Anmeldung des Betriebs-Testkontos klären** (Status 13.5) — meldet `user_invalid_credentials`. Am Code liegt es nicht: Die App reicht das Passwort unverändert weiter, und derselbe Fehler kommt auch für ein Konto, das es gar nicht gibt — Appwrite unterscheidet beides absichtlich nicht. Zu prüfen, in dieser Reihenfolge: Stimmt die Projekt-ID (`6a3c45ef003356d7f16d`, Region Frankfurt)? Hat das Konto überhaupt einen Passwort-Faktor, oder ist es über OAuth, Magic Link oder Passkey entstanden? Neues Passwort in der Console setzen ist der schnellste Test.
 - [ ] **MFA in der Console einschalten** — Reiter **Auth → Security**, *nicht* Settings. Ein Handgriff; ohne ihn antworten sämtliche `mfa*`-Endpunkte nicht.
-- [ ] **`http://localhost:8080` als Web-Plattform eintragen** — sonst weist Appwrite die Ziel-URLs von Bestätigungsmail, Reset und Magic Link zurück.
+- [x] **`http://localhost:8080` als Web-Plattform eintragen** — **am 2. Oktober festgestellt: war schon da.** Plattform „Karriko Web" mit Hostname `localhost`, angelegt im Juni. Appwrite vergleicht nur den Hostnamen, der Port spielt keine Rolle. Für den Livegang fehlt noch `karriko.de` (`APPWRITE_EINSPIELEN.md` §7).
 - [ ] **SMTP einrichten** (EU-Standort, SPF, DKIM, DMARC) plus deutsches Template — daran hängt der Magic Link mehr als am Schalter. Fallback steht bereit: **Email OTP ist bereits aktiv.**
 - [ ] **Google freischalten** — OAuth-Client-ID, Redirect-URI aus der Console kopieren (nicht abtippen), Zugangsdaten hinterlegen.
 - [ ] **Apple freischalten** — Developer-Programm (kostenpflichtig), Services ID / Team ID / Key ID / P8-Schlüssel, Domain-Verifikation für den E-Mail-Relay.
@@ -138,15 +159,20 @@ Nichts davon ist je gegen Appwrite gelaufen — alle 185 Tests arbeiten gegen Fa
   Die Rolle ist derzeit **client-behauptet**: Prefs und Profildokument sind beide vom Nutzer schreibbar. Bei einem Anmeldeweg war das eine bekannte Schwäche, bei vieren vervielfacht sich die Fläche.
 - [ ] **Appwrite-Collection-Permissions in der Console prüfen** (Status 7.3) — der einzige serverseitige Zugriffsschutz, aus dem Code nicht verifizierbar. ~~Konkret: `review_repository.dart:94` setzt die Rechte aus dem vom Client übergebenen `authorId`.~~ **Dieser Teil ist am 29. September geschlossen** — die Datei existiert nicht mehr, `submit_review` nimmt die Kennung aus dem geprüften JWT.
   **Der Rest ist seit dem 1. Oktober nicht mehr abstrakt:** Der erste Abgleich mit der echten Datenbank hat einen Befund gefunden, der fünf Wochen unsichtbar dort lag — siehe den nächsten Punkt.
-- [ ] **`companies`: `update("users")` entfernen, Row Security einschalten** (Status 7.11) — **hoch**
-  Jeder angemeldete Nutzer darf jede Firma ändern, auch `is_verified`, `is_premium`, `owner_id` und `average_rating`. Das Abzeichen soll laut `projekt-referenz.md` §3.2 ein Mensch vergeben.
-  `node tools/appwrite-setup.mjs --fix-permissions` erledigt es; das Änderungsrecht für den Eigentümer setzt der Client beim Anlegen schon pro Zeile, es wirkte nur ohne Row Security nicht. **Nicht behoben bleibt**, dass der Eigentümer auf seiner eigenen Zeile `is_verified` setzen kann — Appwrite kennt keine Rechte je Spalte. Dafür müsste die Profilbearbeitung über eine Function laufen.
+- [x] **`companies`: `update("users")` entfernen, Row Security einschalten** (Status 7.11) — **erledigt am 2. Oktober 2026**
+  Mit `node tools/appwrite-setup.mjs --fix-permissions` gesetzt, danach `rowSecurity: true` bestätigt. Die Tabellenrechte sind jetzt nur noch `read("any")` und `create("users")`. Das Änderungsrecht für den Eigentümer setzt der Client beim Anlegen pro Zeile, und das wirkt erst jetzt. Die Testzeile „Test GmbH“ trägt kein solches Zeilenrecht und ist seitdem nicht mehr bearbeitbar (`APPWRITE_EINSPIELEN.md` §9).
+
+- [ ] **Der Eigentümer kann auf seiner eigenen Firmenzeile `is_verified`, `is_premium` und `average_rating` setzen** (Rest von 7.11)
+  Appwrite kennt keine Rechte je Spalte. Lösen ließe sich das nur, indem die Profilbearbeitung über eine Function läuft. Das Abzeichen soll laut `projekt-referenz.md` §3.2 ein Mensch vergeben.
+
+- [ ] **`bookmarks` und `profiles` ohne Row Security** — beim Einspielen am 2. Oktober aufgefallen
+  Beide Tabellen stehen auf `rowSecurity: false`, also gelten nur die Tabellenrechte. Je nachdem, wie die gesetzt sind, kann jeder angemeldete Nutzer die Merklisten und Profile aller anderen lesen. Das Setup-Skript fasst die beiden nicht an. Rechte in der Console ansehen und dann entscheiden. Hängt mit „`profiles` wird nicht benutzt“ weiter unten zusammen.
 - [ ] **`last_name` ist auf 10 Zeichen begrenzt** — in `profiles`
   Für viele Nachnamen zu kurz. Von den Befunden des Datenbank-Abgleichs der einzige, der jemanden **beim Registrieren** kostet, und damit der dringendste der kleinen. Auf 100 erhöhen.
 - [ ] **`profiles` wird nicht benutzt** — zwei Nutzer, null Profile
   Die Daten liegen doppelt in den Account-Prefs. Für eine Quelle entscheiden: Wenn `profiles` bleibt, beim Signup anlegen und `role` als Enum führen. Hängt mit dem Punkt zur client-behaupteten Rolle oben zusammen — Prefs sind vom Nutzer schreibbar.
 - [ ] **Duplikatsperren fehlen** — eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)`
-  Ohne sie kann derselbe Betrieb mehrfach gemerkt und dieselbe Bewertung mehrfach von derselben Person gemeldet werden. Für `reviews` ist der eindeutige Index auf `user_id` + `company_id` seit dem 2. Oktober beschrieben.
+  Ohne sie kann derselbe Betrieb mehrfach gemerkt und dieselbe Bewertung mehrfach von derselben Person gemeldet werden. Für `reviews` ist der eindeutige Index `user_company_unique` seit dem 2. Oktober **eingespielt**. `review_reports` hat seitdem Indizes auf `review_id` und `reporter_id`, aber nur einfache, keinen eindeutigen über beide Spalten.
 - [ ] **`jobs` ohne Formatprüfungen** — `contact_email` ohne E-Mail-Format, `apply_url` und `company_logo_url` ohne URL-Format, `employment_type` Freitext, `salary` als Zeichenkette
   Dazu: In `jobs` ist **keine** Spalte Pflichtfeld, es können also leere Anzeigen entstehen. Mindestens `company_id`, `title` und `is_active` sollten Pflicht sein.
 - [ ] **Nicht genutzte Anmeldeverfahren abschalten** (Status 9.9) — derzeit alle sieben aktiv. Gebraucht werden vier: Email/Password, Magic URL, JWT, Team Invites.
