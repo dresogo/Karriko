@@ -103,6 +103,20 @@ coverage/
 *.lcov
 old_tsx/
 
+# Appwrite: die eingespielte CLI-Konfiguration traegt die echte Projekt- und
+# Datenbankkennung und entsteht aus appwrite.config.template.json mit
+# `node tools/appwrite-config.mjs`. Die Vorlage ist im Repository, diese nicht.
+appwrite/appwrite.config.json
+
+# Appwrite: Umgebungsvariablen einer Function. Hier steht unter anderem das
+# Salz fuer den Geraetehash — ein bekanntes Salz ist kein Salz.
+appwrite/functions/*/.env
+
+# Exporte aus tools/appwrite-purge-reviews.mjs. Enthalten Rohantworten und
+# Nutzerkennungen und duerfen das Repository nie erreichen. Bewusst nur dieser
+# Unterordner: notes/reports/ selbst enthaelt geschriebene Berichte.
+notes/reports/exporte/
+
 # Legacy / local
 _legacy/
 

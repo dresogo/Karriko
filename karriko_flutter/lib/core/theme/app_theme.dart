@@ -279,6 +279,23 @@ class AppTheme {
           color: AppColors.muted,
         ),
       ),
+      // Der Datumswaehler kommt sonst in Material-Standardoptik: runde Ecken,
+      // eingefaerbte Flaeche. Hier traegt er dieselbe Sprache wie der Rest.
+      datePickerTheme: const DatePickerThemeData(
+        backgroundColor: AppColors.surface,
+        surfaceTintColor: Colors.transparent,
+        headerBackgroundColor: AppColors.ink,
+        headerForegroundColor: AppColors.paper,
+        dividerColor: AppColors.line,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+          side: BorderSide(color: AppColors.ink, width: 2),
+        ),
+        todayBorder: BorderSide(color: AppColors.ink),
+        dayShape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+      ),
       dividerTheme: const DividerThemeData(
         color: AppColors.line,
         thickness: 1,

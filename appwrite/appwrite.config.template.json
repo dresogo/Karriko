@@ -1,0 +1,488 @@
+{
+  "_hinweis": [
+    "Vorlage. Die eingespielte Datei heisst appwrite/appwrite.config.json und",
+    "entsteht daraus mit `node tools/appwrite-config.mjs`. Sie steht in",
+    "der .gitignore, weil sie die echte Projekt- und Datenbankkennung traegt.",
+    "Diese Vorlage traegt nur Platzhalter — siehe notes/APPWRITE_SETUP.md.",
+    "Alles unter `_hinweis` wird beim Erzeugen entfernt."
+  ],
+
+  "projectId": "${PROJECT_ID}",
+  "projectName": "${PROJECT_NAME}",
+  "endpoint": "${ENDPOINT}",
+
+  "tablesDB": [
+    {
+      "$id": "${DATABASE_ID}",
+      "name": "${DATABASE_NAME}",
+      "enabled": true
+    }
+  ],
+
+  "tables": [
+    {
+      "$id": "questionnaire_releases",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Questionnaire Releases",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": ["read(\"any\")"],
+      "columns": [
+        { "key": "locale", "type": "varchar", "size": 10, "required": true },
+        { "key": "version", "type": "integer", "required": true, "min": 1 },
+        { "key": "bucket_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "file_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "checksum", "type": "varchar", "size": 64, "required": false },
+        { "key": "active", "type": "boolean", "required": false, "default": false },
+        { "key": "published_at", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "locale_version_unique",
+          "type": "unique",
+          "columns": ["locale", "version"],
+          "orders": ["ASC", "ASC"]
+        },
+        {
+          "key": "locale_active_version",
+          "type": "key",
+          "columns": ["locale", "active", "version"],
+          "orders": ["ASC", "ASC", "DESC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "review_drafts",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Review Drafts",
+      "enabled": true,
+      "rowSecurity": true,
+      "$permissions": ["create(\"users\")"],
+      "columns": [
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "schema_version", "type": "integer", "required": true, "min": 1 },
+        { "key": "answers_json", "type": "text", "required": false },
+        { "key": "timings_json", "type": "text", "required": false },
+        { "key": "current_question_id", "type": "varchar", "size": 64, "required": false },
+        { "key": "invite_source", "type": "varchar", "size": 64, "required": false },
+        { "key": "updated_at", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "user_company_unique",
+          "type": "unique",
+          "columns": ["user_id", "company_id"],
+          "orders": ["ASC", "ASC"]
+        },
+        {
+          "key": "user_updated",
+          "type": "key",
+          "columns": ["user_id", "updated_at"],
+          "orders": ["ASC", "DESC"]
+        },
+        {
+          "key": "updated_at",
+          "type": "key",
+          "columns": ["updated_at"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "reviews",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Reviews",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": [],
+      "_hinweis": [
+        "Rechte absichtlich leer: kein Client liest oder schreibt hier. Was",
+        "oeffentlich sein darf, steht in public_reviews.",
+        "status ist bewusst varchar und kein Enum. Die Zustaende stehen in",
+        "ReviewStatus im Code; ein Enum in der Datenbank waere eine zweite",
+        "Liste davon, und ein neuer Zustand liesse sich nicht hinzufuegen,",
+        "sondern nur durch Loeschen und Neuanlegen der Spalte."
+      ],
+      "columns": [
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "schema_version", "type": "integer", "required": true, "min": 1 },
+        { "key": "status", "type": "varchar", "size": 32, "required": true },
+
+        { "key": "respondent_status", "type": "varchar", "size": 32, "required": false },
+        { "key": "beruf_code", "type": "varchar", "size": 32, "required": false },
+        { "key": "beruf_name", "type": "varchar", "size": 128, "required": false },
+        { "key": "start_year", "type": "integer", "required": false, "min": 1950, "max": 2100 },
+        { "key": "end_year", "type": "integer", "required": false, "min": 1950, "max": 2100 },
+        { "key": "invited", "type": "boolean", "required": false, "default": false },
+        { "key": "invite_source", "type": "varchar", "size": 64, "required": false },
+
+        { "key": "k5_recommend", "type": "integer", "required": false, "min": 0, "max": 10 },
+        { "key": "k6_overall", "type": "integer", "required": false, "min": 0, "max": 100 },
+        { "key": "detail_overall", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_fachlich", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_betreuung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_umgang", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_belastung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_verguetung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_perspektive", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_berufsschule", "type": "double", "required": false, "min": 1, "max": 5 },
+
+        { "key": "quality_flags", "type": "varchar", "size": 64, "required": false, "array": true },
+        { "key": "quality_notes", "type": "varchar", "size": 512, "required": false, "array": true },
+
+        { "key": "publish_after", "type": "datetime", "required": false },
+        { "key": "publish_after_training_end", "type": "boolean", "required": false, "default": false },
+
+        { "key": "freitext_gut", "type": "text", "required": false },
+        { "key": "freitext_schlecht", "type": "text", "required": false },
+
+        { "key": "answers_json", "type": "text", "required": false },
+        { "key": "timings_json", "type": "text", "required": false },
+
+        { "key": "verification_file_id", "type": "varchar", "size": 36, "required": false },
+        { "key": "verified", "type": "boolean", "required": false, "default": false },
+        { "key": "verification_cleared_at", "type": "datetime", "required": false },
+        { "key": "device_hash", "type": "varchar", "size": 64, "required": false }
+      ],
+      "indexes": [
+        {
+          "key": "user_company_unique",
+          "type": "unique",
+          "columns": ["user_id", "company_id"],
+          "orders": ["ASC", "ASC"]
+        },
+        {
+          "key": "status",
+          "type": "key",
+          "columns": ["status"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "status_publish_after",
+          "type": "key",
+          "columns": ["status", "publish_after"],
+          "orders": ["ASC", "ASC"]
+        },
+        {
+          "key": "company_id",
+          "type": "key",
+          "columns": ["company_id"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "public_reviews",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Public Reviews",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": ["read(\"any\")"],
+      "columns": [
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "company_name", "type": "varchar", "size": 200, "required": false },
+        { "key": "company_slug", "type": "varchar", "size": 200, "required": false },
+        { "key": "beruf_code", "type": "varchar", "size": 32, "required": false },
+        { "key": "beruf_name", "type": "varchar", "size": 128, "required": false },
+        { "key": "start_year", "type": "integer", "required": false, "min": 1950, "max": 2100 },
+        { "key": "end_year", "type": "integer", "required": false, "min": 1950, "max": 2100 },
+        { "key": "respondent_status", "type": "varchar", "size": 32, "required": false },
+        { "key": "k5_recommend", "type": "integer", "required": false, "min": 0, "max": 10 },
+        { "key": "k6_overall", "type": "integer", "required": false, "min": 0, "max": 100 },
+        { "key": "sub_fachlich", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_betreuung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_umgang", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_belastung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_verguetung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_perspektive", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_berufsschule", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "freitext_gut", "type": "text", "required": false },
+        { "key": "freitext_schlecht", "type": "text", "required": false },
+        { "key": "is_aged", "type": "boolean", "required": false, "default": false },
+        { "key": "verified", "type": "boolean", "required": false, "default": false },
+        { "key": "published_at", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "review_id_unique",
+          "type": "unique",
+          "columns": ["review_id"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "company_published",
+          "type": "key",
+          "columns": ["company_id", "published_at"],
+          "orders": ["ASC", "DESC"]
+        },
+        {
+          "key": "published_at",
+          "type": "key",
+          "columns": ["published_at"],
+          "orders": ["DESC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "company_scores",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Company Scores",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": ["read(\"any\")"],
+      "columns": [
+        { "key": "company_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "overall", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_fachlich", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_betreuung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_umgang", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_belastung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_verguetung", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_perspektive", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "sub_berufsschule", "type": "double", "required": false, "min": 1, "max": 5 },
+        { "key": "recommend_mean", "type": "double", "required": false, "min": 0, "max": 10 },
+        { "key": "weights_json", "type": "text", "required": false },
+        { "key": "review_count", "type": "integer", "required": false, "default": 0, "min": 0 },
+        { "key": "aged_count", "type": "integer", "required": false, "default": 0, "min": 0 },
+        { "key": "score_visible", "type": "boolean", "required": false, "default": false },
+        { "key": "numbers_visible", "type": "boolean", "required": false, "default": false },
+        { "key": "bands_json", "type": "text", "required": false },
+        { "key": "updated_at", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "company_id_unique",
+          "type": "unique",
+          "columns": ["company_id"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "overall",
+          "type": "key",
+          "columns": ["overall"],
+          "orders": ["DESC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "moderation_log",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Moderation Log",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": ["read(\"team:${TEAM_MODERATORS}\")"],
+      "columns": [
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "moderator_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "action", "type": "varchar", "size": 16, "required": true },
+        { "key": "reason", "type": "text", "required": false },
+        { "key": "flags", "type": "varchar", "size": 64, "required": false, "array": true },
+        { "key": "created_at", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "review_created",
+          "type": "key",
+          "columns": ["review_id", "created_at"],
+          "orders": ["ASC", "DESC"]
+        },
+        {
+          "key": "moderator_id",
+          "type": "key",
+          "columns": ["moderator_id"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
+
+    {
+      "$id": "review_reports",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Review Reports",
+      "enabled": true,
+      "rowSecurity": true,
+      "$permissions": ["create(\"users\")", "read(\"team:${TEAM_MODERATORS}\")"],
+      "columns": [
+        { "key": "review_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "reporter_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "reason", "type": "text", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "review_id",
+          "type": "key",
+          "columns": ["review_id"],
+          "orders": ["ASC"]
+        },
+        {
+          "key": "reporter_id",
+          "type": "key",
+          "columns": ["reporter_id"],
+          "orders": ["ASC"]
+        }
+      ]
+    }
+  ],
+
+  "buckets": [
+    {
+      "$id": "questionnaires",
+      "name": "Questionnaires",
+      "enabled": true,
+      "fileSecurity": false,
+      "$permissions": ["read(\"any\")"],
+      "maximumFileSize": 5242880,
+      "allowedFileExtensions": ["json"],
+      "compression": "gzip",
+      "encryption": false,
+      "antivirus": true
+    },
+    {
+      "$id": "verification_documents",
+      "name": "Verification Documents",
+      "enabled": true,
+      "fileSecurity": true,
+      "$permissions": ["create(\"users\")"],
+      "maximumFileSize": 10485760,
+      "allowedFileExtensions": ["pdf", "jpg", "jpeg", "png", "webp"],
+      "compression": "none",
+      "encryption": true,
+      "antivirus": true
+    }
+  ],
+
+  "teams": [
+    { "$id": "${TEAM_MODERATORS}", "name": "Moderation" },
+    { "$id": "${TEAM_ADMINS}", "name": "Administration" }
+  ],
+
+  "functions": [
+    {
+      "$id": "submit_review",
+      "name": "submit_review",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/submit_review",
+      "timeout": 30,
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "scopes": ["rows.read", "rows.write", "files.read"]
+    },
+    {
+      "$id": "my_reviews",
+      "name": "my_reviews",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/my_reviews",
+      "timeout": 30,
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Nur rows.read. Diese Function schreibt nichts, und das ist keine",
+        "Sparsamkeit, sondern die Eigenschaft, die sie harmlos macht: Sie",
+        "stellt die Zuordnung zwischen Konto und Bewertung her, die es in der",
+        "Datenbank absichtlich nicht gibt — aber nur lesend und nur fuer die",
+        "Dauer eines Aufrufs.",
+        "Kein files.read: Sie laedt keine Fragendefinition.",
+        "Kein teams.read: Sie prueft keine Mitgliedschaft, sondern liefert dem",
+        "Aufrufer seine eigenen Zeilen."
+      ],
+      "scopes": ["rows.read"]
+    },
+    {
+      "$id": "moderate_review",
+      "name": "moderate_review",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/moderate_review",
+      "timeout": 30,
+      "execute": ["team:${TEAM_MODERATORS}", "team:${TEAM_ADMINS}"],
+      "events": [],
+      "schedule": "",
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+    },
+    {
+      "$id": "aggregate_company",
+      "name": "aggregate_company",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/aggregate_company",
+      "timeout": 120,
+      "execute": [],
+      "events": [
+        "tablesdb.${DATABASE_ID}.tables.public_reviews.rows.*.create",
+        "tablesdb.${DATABASE_ID}.tables.public_reviews.rows.*.update",
+        "tablesdb.${DATABASE_ID}.tables.public_reviews.rows.*.delete"
+      ],
+      "schedule": "",
+      "scopes": ["rows.read", "rows.write", "files.read"]
+    },
+    {
+      "$id": "publish_scheduled",
+      "name": "publish_scheduled",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/publish_scheduled",
+      "timeout": 300,
+      "execute": [],
+      "events": [],
+      "schedule": "0 * * * *",
+      "scopes": ["rows.read", "rows.write", "files.read"]
+    },
+    {
+      "$id": "recompute_all",
+      "name": "recompute_all",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/recompute_all",
+      "timeout": 600,
+      "execute": ["team:${TEAM_ADMINS}"],
+      "events": [],
+      "schedule": "",
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+    },
+    {
+      "$id": "cleanup",
+      "name": "cleanup",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/cleanup",
+      "timeout": 600,
+      "execute": [],
+      "events": [],
+      "schedule": "30 3 * * *",
+      "scopes": ["rows.read", "rows.write", "files.write"]
+    }
+  ]
+}

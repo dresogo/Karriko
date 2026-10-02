@@ -1,0 +1,3880 @@
+{
+  "id": "karriko_ausbildung",
+  "version": 1,
+  "locale": "de-DE",
+  "phases": [
+    {
+      "id": "steuerung",
+      "label": {
+        "current": "Vorab",
+        "past": "Vorab"
+      },
+      "estimatedSeconds": 45
+    },
+    {
+      "id": "kern",
+      "label": {
+        "current": "Deine Ausbildung",
+        "past": "Deine Ausbildung"
+      },
+      "estimatedSeconds": 150
+    },
+    {
+      "id": "vertiefung",
+      "label": {
+        "current": "Vertiefung",
+        "past": "Vertiefung"
+      },
+      "holdsModules": true
+    },
+    {
+      "id": "abschluss",
+      "label": {
+        "current": "Abschluss",
+        "past": "Abschluss"
+      },
+      "estimatedSeconds": 90
+    }
+  ],
+  "flow": {
+    "tenseQuestion": "s1_status",
+    "pastValues": [
+      "ausgelernt_geblieben",
+      "ausgelernt_gegangen",
+      "abgebrochen"
+    ],
+    "priorityQuestion": "k12_prioritaeten",
+    "priorityTopN": 3,
+    "secondsPerQuestion": 10,
+    "inviteSources": [
+      "probezeit",
+      "jahresbeginn",
+      "nach_ende",
+      "kammer",
+      "schule"
+    ]
+  },
+  "questions": [
+    {
+      "id": "intro_anonymitaet",
+      "specRef": "Abschnitt 1",
+      "type": "anonymity_notice",
+      "phase": "steuerung",
+      "text": {
+        "current": "Bevor es losgeht",
+        "past": "Bevor es losgeht"
+      },
+      "config": {
+        "textKey": "anonymity.intro"
+      },
+      "review": true
+    },
+    {
+      "id": "s1_status",
+      "specRef": "S1",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "required": true,
+      "text": {
+        "current": "Wo stehst du gerade?",
+        "past": "Wo stehst du gerade?"
+      },
+      "options": [
+        {
+          "id": "in_ausbildung",
+          "label": {
+            "current": "Ich bin noch in der Ausbildung",
+            "past": "Ich bin noch in der Ausbildung"
+          }
+        },
+        {
+          "id": "ausgelernt_geblieben",
+          "label": {
+            "current": "Ich habe dort ausgelernt und bin geblieben",
+            "past": "Ich habe dort ausgelernt und bin geblieben"
+          }
+        },
+        {
+          "id": "ausgelernt_gegangen",
+          "label": {
+            "current": "Ich habe dort ausgelernt und bin gegangen",
+            "past": "Ich habe dort ausgelernt und bin gegangen"
+          }
+        },
+        {
+          "id": "abgebrochen",
+          "label": {
+            "current": "Ich habe die Ausbildung dort vorzeitig beendet",
+            "past": "Ich habe die Ausbildung dort vorzeitig beendet"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s2_startjahr",
+      "specRef": "S2",
+      "type": "dropdown",
+      "phase": "steuerung",
+      "required": true,
+      "public": true,
+      "text": {
+        "current": "Wann hast du dort angefangen?",
+        "past": "Wann hast du dort angefangen?"
+      },
+      "config": {
+        "min": 2005,
+        "max": 2026,
+        "step": 1,
+        "kind": "year",
+        "publicField": "start_year"
+      },
+      "review": true
+    },
+    {
+      "id": "s2_1_endjahr",
+      "specRef": "S2",
+      "type": "dropdown",
+      "phase": "steuerung",
+      "public": true,
+      "text": {
+        "current": "Wann hast du aufgehört?",
+        "past": "Wann hast du aufgehört?"
+      },
+      "condition": {
+        "all": [
+          {
+            "answered": {
+              "answer": "s1_status"
+            }
+          },
+          {
+            "neq": [
+              {
+                "answer": "s1_status"
+              },
+              "in_ausbildung"
+            ]
+          }
+        ]
+      },
+      "config": {
+        "min": 2005,
+        "max": 2026,
+        "step": 1,
+        "kind": "year",
+        "publicField": "end_year"
+      },
+      "review": true
+    },
+    {
+      "id": "s3_beruf",
+      "specRef": "S3",
+      "type": "search_select",
+      "phase": "steuerung",
+      "required": true,
+      "public": true,
+      "text": {
+        "current": "Welchen Beruf lernst du dort?",
+        "past": "Welchen Beruf hast du dort gelernt?"
+      },
+      "config": {
+        "source": "berufe",
+        "asset": "assets/data/berufe_beispiel.json",
+        "maxLength": 200,
+        "publicField": "beruf_name"
+      },
+      "review": true
+    },
+    {
+      "id": "s4_lehrjahr",
+      "specRef": "S4",
+      "type": "segmented",
+      "phase": "steuerung",
+      "text": {
+        "current": "In welchem Ausbildungsjahr bist du?",
+        "past": "In welchem Ausbildungsjahr hast du aufgehört?"
+      },
+      "condition": {
+        "in": [
+          {
+            "answer": "s1_status"
+          },
+          [
+            "in_ausbildung",
+            "abgebrochen"
+          ]
+        ]
+      },
+      "options": [
+        {
+          "id": "probezeit",
+          "label": {
+            "current": "Probezeit",
+            "past": "Probezeit"
+          }
+        },
+        {
+          "id": "jahr_1",
+          "label": {
+            "current": "1.",
+            "past": "1."
+          }
+        },
+        {
+          "id": "jahr_2",
+          "label": {
+            "current": "2.",
+            "past": "2."
+          }
+        },
+        {
+          "id": "jahr_3",
+          "label": {
+            "current": "3.",
+            "past": "3."
+          }
+        },
+        {
+          "id": "jahr_4",
+          "label": {
+            "current": "4.",
+            "past": "4."
+          }
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "s5_betriebsgroesse",
+      "specRef": "S5",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "text": {
+        "current": "Wie groß ist der Betrieb ungefähr?",
+        "past": "Wie groß war der Betrieb ungefähr?"
+      },
+      "options": [
+        {
+          "id": "unter_10",
+          "label": {
+            "current": "unter 10",
+            "past": "unter 10"
+          }
+        },
+        {
+          "id": "10_49",
+          "label": {
+            "current": "10 bis 49",
+            "past": "10 bis 49"
+          }
+        },
+        {
+          "id": "50_249",
+          "label": {
+            "current": "50 bis 249",
+            "past": "50 bis 249"
+          }
+        },
+        {
+          "id": "ab_250",
+          "label": {
+            "current": "250 und mehr",
+            "past": "250 und mehr"
+          }
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s6_azubizahl",
+      "specRef": "S6",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "text": {
+        "current": "Wie viele Azubis gibt es dort insgesamt?",
+        "past": "Wie viele Azubis gab es dort insgesamt?"
+      },
+      "options": [
+        {
+          "id": "nur_ich",
+          "label": {
+            "current": "nur ich",
+            "past": "nur ich"
+          }
+        },
+        {
+          "id": "2_5",
+          "label": {
+            "current": "2 bis 5",
+            "past": "2 bis 5"
+          }
+        },
+        {
+          "id": "6_20",
+          "label": {
+            "current": "6 bis 20",
+            "past": "6 bis 20"
+          }
+        },
+        {
+          "id": "mehr",
+          "label": {
+            "current": "mehr",
+            "past": "mehr"
+          }
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s7_ausbildungsform",
+      "specRef": "S7",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "text": {
+        "current": "Wie läuft deine Ausbildung?",
+        "past": "Wie lief deine Ausbildung?"
+      },
+      "options": [
+        {
+          "id": "dual",
+          "label": {
+            "current": "klassisch dual",
+            "past": "klassisch dual"
+          }
+        },
+        {
+          "id": "duales_studium",
+          "label": {
+            "current": "duales Studium",
+            "past": "duales Studium"
+          }
+        },
+        {
+          "id": "teilzeit",
+          "label": {
+            "current": "Teilzeit",
+            "past": "Teilzeit"
+          }
+        },
+        {
+          "id": "verbund",
+          "label": {
+            "current": "Verbundausbildung",
+            "past": "Verbundausbildung"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s8_arbeitsalltag",
+      "specRef": "S8",
+      "type": "swipe_binary",
+      "phase": "steuerung",
+      "text": {
+        "current": "Was trifft auf deinen Arbeitsalltag zu?",
+        "past": "Was traf auf deinen Arbeitsalltag zu?"
+      },
+      "config": {
+        "yesValue": "ja",
+        "noValue": "nein",
+        "otherValues": [
+          "weiss_nicht"
+        ],
+        "cards": [
+          {
+            "id": "schichtarbeit",
+            "label": {
+              "current": "Schichtarbeit",
+              "past": "Schichtarbeit"
+            }
+          },
+          {
+            "id": "wochenenddienste",
+            "label": {
+              "current": "Wochenenddienste",
+              "past": "Wochenenddienste"
+            }
+          },
+          {
+            "id": "montage",
+            "label": {
+              "current": "Montage oder Auswärtstätigkeit",
+              "past": "Montage oder Auswärtstätigkeit"
+            }
+          },
+          {
+            "id": "kundenkontakt",
+            "label": {
+              "current": "direkter Kundenkontakt",
+              "past": "direkter Kundenkontakt"
+            }
+          },
+          {
+            "id": "fahrerei",
+            "label": {
+              "current": "viel Fahrerei",
+              "past": "viel Fahrerei"
+            }
+          },
+          {
+            "id": "koerperlich_schwer",
+            "label": {
+              "current": "körperlich schwere Arbeit",
+              "past": "körperlich schwere Arbeit"
+            }
+          },
+          {
+            "id": "bildschirm",
+            "label": {
+              "current": "Arbeit am Bildschirm",
+              "past": "Arbeit am Bildschirm"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "s9_minderjaehrig",
+      "specRef": "S9",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "text": {
+        "current": "Warst du während der Ausbildung zeitweise noch keine 18?",
+        "past": "Warst du während der Ausbildung zeitweise noch keine 18?"
+      },
+      "options": [
+        {
+          "id": "ja",
+          "label": {
+            "current": "Ja",
+            "past": "Ja"
+          }
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "Nein",
+            "past": "Nein"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s10_berufsschule_form",
+      "specRef": "S10",
+      "type": "single_choice_tiles",
+      "phase": "steuerung",
+      "text": {
+        "current": "Wie ist deine Berufsschule organisiert?",
+        "past": "Wie war deine Berufsschule organisiert?"
+      },
+      "options": [
+        {
+          "id": "block",
+          "label": {
+            "current": "Blockunterricht",
+            "past": "Blockunterricht"
+          }
+        },
+        {
+          "id": "einzelne_tage",
+          "label": {
+            "current": "einzelne Schultage",
+            "past": "einzelne Schultage"
+          }
+        },
+        {
+          "id": "online",
+          "label": {
+            "current": "überwiegend online",
+            "past": "überwiegend online"
+          }
+        }
+      ]
+    },
+    {
+      "id": "k1_fakten",
+      "specRef": "K1",
+      "type": "swipe_binary",
+      "phase": "kern",
+      "intro": {
+        "current": "Erst ein paar Fakten. Dauert 30 Sekunden.",
+        "past": "Erst ein paar Fakten. Dauert 30 Sekunden."
+      },
+      "text": {
+        "current": "Trifft das auf deine Ausbildung zu?",
+        "past": "Traf das auf deine Ausbildung zu?"
+      },
+      "scoringRef": "betreuung",
+      "config": {
+        "yesValue": "ja",
+        "noValue": "nein",
+        "otherValues": [
+          "weiss_nicht"
+        ],
+        "cards": [
+          {
+            "id": "k1_1_ausbildungsplan",
+            "label": {
+              "current": "Es gibt einen schriftlichen Ausbildungsplan, den ich kenne.",
+              "past": "Es gab einen schriftlichen Ausbildungsplan, den ich kannte."
+            }
+          },
+          {
+            "id": "k1_2_ansprechpartner",
+            "label": {
+              "current": "Es gibt eine feste Person, an die ich mich bei Fragen wenden kann.",
+              "past": "Es gab eine feste Person, an die ich mich bei Fragen wenden konnte."
+            }
+          },
+          {
+            "id": "k1_3_berichtsheft",
+            "label": {
+              "current": "Ich darf mein Berichtsheft während der Arbeitszeit schreiben.",
+              "past": "Ich durfte mein Berichtsheft während der Arbeitszeit schreiben."
+            }
+          },
+          {
+            "id": "k1_4_berufsschule",
+            "label": {
+              "current": "Ich werde für alle Berufsschultage vollständig freigestellt.",
+              "past": "Ich wurde für alle Berufsschultage vollständig freigestellt."
+            }
+          },
+          {
+            "id": "k1_5_ausruestung",
+            "label": {
+              "current": "Arbeitskleidung und Werkzeug stellt der Betrieb.",
+              "past": "Arbeitskleidung und Werkzeug stellte der Betrieb."
+            }
+          },
+          {
+            "id": "k1_6_gespraeche",
+            "label": {
+              "current": "Es gibt regelmäßige Gespräche darüber, wie es bei mir läuft.",
+              "past": "Es gab regelmäßige Gespräche darüber, wie es bei mir lief."
+            }
+          }
+        ]
+      },
+      "review": true
+    },
+    {
+      "id": "k2_ausbildungsfremd",
+      "specRef": "K2",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "intro": {
+        "current": "Fast jeder Azubi macht ab und zu Sachen, die mit der Ausbildung nichts zu tun haben. Kaffee holen, Auto waschen, privates Zeug für den Chef.",
+        "past": "Fast jeder Azubi macht ab und zu Sachen, die mit der Ausbildung nichts zu tun haben. Kaffee holen, Auto waschen, privates Zeug für den Chef."
+      },
+      "text": {
+        "current": "Wie viel Zeit ging dafür in den letzten vier Wochen ungefähr drauf?",
+        "past": "Wie viel Zeit ging dafür in einem typischen Monat ungefähr drauf?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "gar_nichts",
+          "label": {
+            "current": "gar nichts",
+            "past": "gar nichts"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "unter_1h",
+          "label": {
+            "current": "unter einer Stunde pro Woche",
+            "past": "unter einer Stunde pro Woche"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "1_3h",
+          "label": {
+            "current": "ein bis drei Stunden pro Woche",
+            "past": "ein bis drei Stunden pro Woche"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "ueber_3h",
+          "label": {
+            "current": "mehr als drei Stunden pro Woche",
+            "past": "mehr als drei Stunden pro Woche"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "ueber_haelfte",
+          "label": {
+            "current": "mehr als die Hälfte meiner Arbeitszeit",
+            "past": "mehr als die Hälfte meiner Arbeitszeit"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k3_ueberstunden",
+      "specRef": "K3",
+      "type": "stepper",
+      "phase": "kern",
+      "text": {
+        "current": "Wie viele Überstunden hattest du in den letzten vier Wochen ungefähr?",
+        "past": "Wie viele Überstunden hattest du in einem typischen Monat ungefähr?"
+      },
+      "scoringRef": "belastung",
+      "config": {
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "special": [
+          {
+            "id": "weiss_nicht",
+            "label": {
+              "current": "weiß ich nicht genau",
+              "past": "weiß ich nicht genau"
+            }
+          },
+          {
+            "id": "keine",
+            "value": 0,
+            "label": {
+              "current": "ich mache keine Überstunden",
+              "past": "ich habe keine Überstunden gemacht"
+            }
+          }
+        ],
+        "scoreBands": [
+          {
+            "max": 0,
+            "score": 1.0
+          },
+          {
+            "max": 10,
+            "score": 0.75
+          },
+          {
+            "max": 20,
+            "score": 0.5
+          },
+          {
+            "max": 40,
+            "score": 0.25
+          },
+          {
+            "max": null,
+            "score": 0.0
+          }
+        ]
+      },
+      "review": true
+    },
+    {
+      "id": "k3_1_ausgleich",
+      "specRef": "K3.1",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "text": {
+        "current": "Was passiert damit?",
+        "past": "Was passierte damit?"
+      },
+      "condition": {
+        "gt": [
+          {
+            "answer": "k3_ueberstunden"
+          },
+          0
+        ]
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "ausgezahlt",
+          "label": {
+            "current": "werden ausgezahlt",
+            "past": "wurden ausgezahlt"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "abgefeiert",
+          "label": {
+            "current": "abgefeiert",
+            "past": "abgefeiert"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "teils_teils",
+          "label": {
+            "current": "teils teils",
+            "past": "teils teils"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "gar_nichts",
+          "label": {
+            "current": "gar nichts",
+            "past": "gar nichts"
+          },
+          "score": 0.0
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          }
+        }
+      ]
+    },
+    {
+      "id": "k4_erreichbarkeit",
+      "specRef": "K4",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "required": true,
+      "text": {
+        "current": "Wenn du bei einer Aufgabe nicht weiterkommst, ist dann jemand da, den du fragen kannst?",
+        "past": "Wenn du bei einer Aufgabe nicht weiterkamst, war dann jemand da, den du fragen konntest?"
+      },
+      "scoringRef": "betreuung",
+      "options": [
+        {
+          "id": "immer",
+          "label": {
+            "current": "eigentlich immer",
+            "past": "eigentlich immer"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "meistens",
+          "label": {
+            "current": "meistens",
+            "past": "meistens"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "haelfte",
+          "label": {
+            "current": "ungefähr die Hälfte der Zeit",
+            "past": "ungefähr die Hälfte der Zeit"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "nie",
+          "label": {
+            "current": "praktisch nie",
+            "past": "praktisch nie"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k5_empfehlung",
+      "specRef": "K5",
+      "type": "scale_0_10",
+      "phase": "kern",
+      "required": true,
+      "public": true,
+      "text": {
+        "current": "Ein Freund von dir will denselben Beruf lernen. Wie wahrscheinlich würdest du ihm diesen Betrieb empfehlen?",
+        "past": "Ein Freund von dir will denselben Beruf lernen. Wie wahrscheinlich würdest du ihm diesen Betrieb empfehlen?"
+      },
+      "config": {
+        "min": 0,
+        "max": 10,
+        "endLabels": {
+          "min": {
+            "current": "auf keinen Fall",
+            "past": "auf keinen Fall"
+          },
+          "max": {
+            "current": "auf jeden Fall",
+            "past": "auf jeden Fall"
+          }
+        },
+        "publicField": "k5_recommend"
+      },
+      "review": true
+    },
+    {
+      "id": "k6_gesamt",
+      "specRef": "K6",
+      "type": "vas_unnumbered",
+      "phase": "kern",
+      "required": true,
+      "public": true,
+      "text": {
+        "current": "Und wie gut ist die Ausbildung dort insgesamt?",
+        "past": "Und wie gut war die Ausbildung dort insgesamt?"
+      },
+      "config": {
+        "min": 0,
+        "max": 100,
+        "endLabels": {
+          "min": {
+            "current": "schlecht",
+            "past": "schlecht"
+          },
+          "max": {
+            "current": "sehr gut",
+            "past": "sehr gut"
+          }
+        },
+        "publicField": "k6_overall"
+      }
+    },
+    {
+      "id": "k7_anleitung",
+      "specRef": "K7",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "text": {
+        "current": "Wenn dir jemand etwas Neues zeigt, wie läuft das ab?",
+        "past": "Wenn dir jemand etwas Neues zeigte, wie lief das ab?"
+      },
+      "scoringRef": "betreuung",
+      "options": [
+        {
+          "id": "in_ruhe",
+          "label": {
+            "current": "wird mir in Ruhe erklärt und ich darf üben",
+            "past": "wurde mir in Ruhe erklärt und ich durfte üben"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "in_eile",
+          "label": {
+            "current": "wird erklärt, aber oft in Eile",
+            "past": "wurde erklärt, aber oft in Eile"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "einmal_vorgemacht",
+          "label": {
+            "current": "wird einmal vorgemacht, dann muss es sitzen",
+            "past": "wurde einmal vorgemacht, dann musste es sitzen"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "selbst_suchen",
+          "label": {
+            "current": "ich muss mir das meiste selbst zusammensuchen",
+            "past": "ich musste mir das meiste selbst zusammensuchen"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "keine_einweisung",
+          "label": {
+            "current": "ich bekomme gar keine Einweisung",
+            "past": "ich bekam gar keine Einweisung"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k8_lernwert",
+      "specRef": "K8",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "text": {
+        "current": "Wie viel von dem, was du im Betrieb machst, bringt dich in deinem Beruf wirklich weiter?",
+        "past": "Wie viel von dem, was du im Betrieb gemacht hast, hat dich in deinem Beruf wirklich weitergebracht?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "fast_alles",
+          "label": {
+            "current": "fast alles",
+            "past": "fast alles"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "das_meiste",
+          "label": {
+            "current": "das meiste",
+            "past": "das meiste"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "etwa_haelfte",
+          "label": {
+            "current": "etwa die Hälfte",
+            "past": "etwa die Hälfte"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "eher_wenig",
+          "label": {
+            "current": "eher wenig",
+            "past": "eher wenig"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "fast_nichts",
+          "label": {
+            "current": "fast nichts",
+            "past": "fast nichts"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k9_umgang",
+      "specRef": "K9",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "text": {
+        "current": "Wie reden die Leute im Betrieb mit dir?",
+        "past": "Wie redeten die Leute im Betrieb mit dir?"
+      },
+      "scoringRef": "umgang",
+      "options": [
+        {
+          "id": "augenhoehe",
+          "label": {
+            "current": "auf Augenhöhe, wie mit einem Kollegen",
+            "past": "auf Augenhöhe, wie mit einem Kollegen"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "freundlich",
+          "label": {
+            "current": "überwiegend freundlich",
+            "past": "überwiegend freundlich"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "sachlich",
+          "label": {
+            "current": "sachlich, mehr nicht",
+            "past": "sachlich, mehr nicht"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "von_oben_herab",
+          "label": {
+            "current": "oft von oben herab",
+            "past": "oft von oben herab"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "respektlos",
+          "label": {
+            "current": "respektlos",
+            "past": "respektlos"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k10_belastung",
+      "specRef": "K10",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "reversePolarity": true,
+      "text": {
+        "current": "Wie oft kommst du nach der Arbeit völlig ausgelaugt nach Hause?",
+        "past": "Wie oft kamst du nach der Arbeit völlig ausgelaugt nach Hause?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "fast_taeglich",
+          "label": {
+            "current": "fast täglich",
+            "past": "fast täglich"
+          },
+          "score": 0.0
+        },
+        {
+          "id": "oft",
+          "label": {
+            "current": "oft",
+            "past": "oft"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "manchmal",
+          "label": {
+            "current": "manchmal",
+            "past": "manchmal"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "fast_nie",
+          "label": {
+            "current": "fast nie",
+            "past": "fast nie"
+          },
+          "score": 1.0
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "k11_planung",
+      "specRef": "K11",
+      "type": "verbal_choice",
+      "phase": "kern",
+      "text": {
+        "current": "Weißt du, was in den nächsten Monaten bei dir dran ist, welche Abteilungen oder Inhalte?",
+        "past": "Wusstest du, was in den nächsten Monaten bei dir dran war, welche Abteilungen oder Inhalte?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "klar_geregelt",
+          "label": {
+            "current": "ja, das ist klar geregelt",
+            "past": "ja, das war klar geregelt"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "ungefaehr",
+          "label": {
+            "current": "ungefähr",
+            "past": "ungefähr"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "kurzfristig",
+          "label": {
+            "current": "nur kurzfristig",
+            "past": "nur kurzfristig"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "spontan",
+          "label": {
+            "current": "nein, das ergibt sich spontan",
+            "past": "nein, das ergab sich spontan"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "immer_dasselbe",
+          "label": {
+            "current": "nein, ich mache seit Monaten dasselbe",
+            "past": "nein, ich machte über Monate dasselbe"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "k12_prioritaeten",
+      "specRef": "K12",
+      "type": "rank_top_n",
+      "phase": "kern",
+      "required": true,
+      "text": {
+        "current": "Was zählt für dich am meisten?",
+        "past": "Was zählte für dich am meisten?"
+      },
+      "config": {
+        "topN": 3
+      },
+      "options": [
+        {
+          "id": "fachlich",
+          "label": {
+            "current": "Was ich fachlich lerne",
+            "past": "Was ich fachlich gelernt habe"
+          }
+        },
+        {
+          "id": "umgang",
+          "label": {
+            "current": "Wie mit mir umgegangen wird",
+            "past": "Wie mit mir umgegangen wurde"
+          }
+        },
+        {
+          "id": "geld",
+          "label": {
+            "current": "Geld und Sachleistungen",
+            "past": "Geld und Sachleistungen"
+          }
+        },
+        {
+          "id": "arbeitszeit",
+          "label": {
+            "current": "Arbeitszeiten und freie Zeit",
+            "past": "Arbeitszeiten und freie Zeit"
+          }
+        },
+        {
+          "id": "ausbilder",
+          "label": {
+            "current": "Mein Ausbilder",
+            "past": "Mein Ausbilder"
+          }
+        },
+        {
+          "id": "pruefung",
+          "label": {
+            "current": "Vorbereitung auf die Prüfung",
+            "past": "Vorbereitung auf die Prüfung"
+          }
+        },
+        {
+          "id": "uebernahme",
+          "label": {
+            "current": "Übernahme und Zukunft",
+            "past": "Übernahme und Zukunft"
+          }
+        },
+        {
+          "id": "team",
+          "label": {
+            "current": "Stimmung im Team",
+            "past": "Stimmung im Team"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mod_ausbilder_gespraeche",
+      "specRef": "Modul Ausbilder",
+      "type": "stepper",
+      "phase": "vertiefung",
+      "module": "ausbilder",
+      "text": {
+        "current": "Wie oft hattest du in den letzten drei Monaten ein Gespräch über deinen Stand?",
+        "past": "Wie oft hattest du in einem typischen Vierteljahr ein Gespräch über deinen Stand?"
+      },
+      "scoringRef": "betreuung",
+      "config": {
+        "min": 0,
+        "max": 12,
+        "step": 1,
+        "special": [
+          {
+            "id": "weiss_nicht",
+            "label": {
+              "current": "weiß ich nicht genau",
+              "past": "weiß ich nicht genau"
+            }
+          }
+        ],
+        "scoreBands": [
+          {
+            "max": 0,
+            "score": 0.0
+          },
+          {
+            "max": 1,
+            "score": 0.4
+          },
+          {
+            "max": 3,
+            "score": 0.8
+          },
+          {
+            "max": null,
+            "score": 1.0
+          }
+        ]
+      },
+      "review": true
+    },
+    {
+      "id": "mod_ausbilder_kennt_stand",
+      "specRef": "Modul Ausbilder",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "ausbilder",
+      "text": {
+        "current": "Woran merkst du, dass dein Ausbilder deinen Ausbildungsstand kennt?",
+        "past": "Woran hast du gemerkt, dass dein Ausbilder deinen Ausbildungsstand kennt?"
+      },
+      "scoringRef": "betreuung",
+      "options": [
+        {
+          "id": "passende_aufgaben",
+          "label": {
+            "current": "Ich bekomme Aufgaben, die zu meinem Stand passen",
+            "past": "Ich bekam Aufgaben, die zu meinem Stand passten"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "spricht_es_an",
+          "label": {
+            "current": "Er spricht meinen Stand von sich aus an",
+            "past": "Er sprach meinen Stand von sich aus an"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "nur_auf_nachfrage",
+          "label": {
+            "current": "Nur wenn ich selbst nachfrage",
+            "past": "Nur wenn ich selbst nachfragte"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "merke_ich_nicht",
+          "label": {
+            "current": "Merke ich eigentlich nicht",
+            "past": "Habe ich eigentlich nicht gemerkt"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "kennt_ihn_nicht",
+          "label": {
+            "current": "Er kennt meinen Stand nicht",
+            "past": "Er kannte meinen Stand nicht"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_ausbilder_fehler",
+      "specRef": "Modul Ausbilder",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "ausbilder",
+      "text": {
+        "current": "Wie reagiert er auf Fehler?",
+        "past": "Wie reagierte er auf Fehler?"
+      },
+      "scoringRef": "betreuung",
+      "options": [
+        {
+          "id": "erklaert_nochmal",
+          "label": {
+            "current": "erklärt es nochmal",
+            "past": "erklärte es nochmal"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "sachlich",
+          "label": {
+            "current": "sagt sachlich, was falsch war",
+            "past": "sagte sachlich, was falsch war"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "genervt",
+          "label": {
+            "current": "reagiert genervt, erklärt aber",
+            "past": "reagierte genervt, erklärte aber"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "vorwuerfe",
+          "label": {
+            "current": "macht Vorwürfe",
+            "past": "machte Vorwürfe"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "wird_laut",
+          "label": {
+            "current": "wird laut",
+            "past": "wurde laut"
+          },
+          "score": 0.0
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_ausbilder_erreichbar",
+      "specRef": "Abschnitt 9",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "ausbilder",
+      "text": {
+        "current": "Wenn du deinen Ausbilder brauchst, erreichst du ihn?",
+        "past": "Wenn du deinen Ausbilder brauchtest, erreichtest du ihn?"
+      },
+      "scoringRef": "betreuung",
+      "options": [
+        {
+          "id": "immer",
+          "label": {
+            "current": "eigentlich immer",
+            "past": "eigentlich immer"
+          },
+          "score": 1.0
+        },
+        {
+          "id": "meistens",
+          "label": {
+            "current": "meistens",
+            "past": "meistens"
+          },
+          "score": 0.75
+        },
+        {
+          "id": "haelfte",
+          "label": {
+            "current": "ungefähr die Hälfte der Zeit",
+            "past": "ungefähr die Hälfte der Zeit"
+          },
+          "score": 0.5
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.25
+        },
+        {
+          "id": "nie",
+          "label": {
+            "current": "praktisch nie",
+            "past": "praktisch nie"
+          },
+          "score": 0.0
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_fachlich_fehlende_inhalte",
+      "specRef": "Modul Fachliche Qualität",
+      "type": "multi_select",
+      "phase": "vertiefung",
+      "module": "fachliche_qualitaet",
+      "text": {
+        "current": "Welche Inhalte aus deinem Ausbildungsrahmenplan hast du bisher gar nicht gemacht?",
+        "past": "Welche Inhalte aus deinem Ausbildungsrahmenplan hast du gar nicht gemacht?"
+      },
+      "options": [
+        {
+          "id": "keine",
+          "label": {
+            "current": "keine, ich habe alles gemacht",
+            "past": "keine, ich habe alles gemacht"
+          },
+          "review": true
+        },
+        {
+          "id": "einzelne",
+          "label": {
+            "current": "einzelne Bereiche",
+            "past": "einzelne Bereiche"
+          },
+          "review": true
+        },
+        {
+          "id": "groessere_teile",
+          "label": {
+            "current": "größere Teile",
+            "past": "größere Teile"
+          },
+          "review": true
+        },
+        {
+          "id": "kenne_plan_nicht",
+          "label": {
+            "current": "Ich kenne meinen Ausbildungsrahmenplan nicht",
+            "past": "Ich kannte meinen Ausbildungsrahmenplan nicht"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_fachlich_bekanntes",
+      "specRef": "Modul Fachliche Qualität",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "fachliche_qualitaet",
+      "text": {
+        "current": "Wie oft arbeitest du an Aufgaben, die du schon vollständig kannst?",
+        "past": "Wie oft hast du an Aufgaben gearbeitet, die du schon vollständig konntest?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "fast_nie",
+          "label": {
+            "current": "fast nie",
+            "past": "fast nie"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "manchmal",
+          "label": {
+            "current": "manchmal",
+            "past": "manchmal"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "oft",
+          "label": {
+            "current": "oft",
+            "past": "oft"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "fast_immer",
+          "label": {
+            "current": "fast immer",
+            "past": "fast immer"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_geld_verguetung",
+      "specRef": "Modul Geld",
+      "type": "stepper",
+      "phase": "vertiefung",
+      "module": "geld",
+      "text": {
+        "current": "Wie viel verdienst du im Monat brutto?",
+        "past": "Wie viel hast du im Monat brutto verdient?"
+      },
+      "scoringRef": "verguetung",
+      "config": {
+        "min": 0,
+        "max": 3000,
+        "step": 50,
+        "scoreMin": 0,
+        "scoreMax": 1400,
+        "special": [
+          {
+            "id": "keine_angabe",
+            "label": {
+              "current": "möchte ich nicht angeben",
+              "past": "möchte ich nicht angeben"
+            }
+          }
+        ]
+      },
+      "review": true
+    },
+    {
+      "id": "mod_geld_uebernimmt",
+      "specRef": "Modul Geld",
+      "type": "multi_select",
+      "phase": "vertiefung",
+      "module": "geld",
+      "text": {
+        "current": "Was übernimmt der Betrieb?",
+        "past": "Was hat der Betrieb übernommen?"
+      },
+      "scoringRef": "verguetung",
+      "config": {
+        "selectionScoring": "sum"
+      },
+      "options": [
+        {
+          "id": "fahrtkosten",
+          "label": {
+            "current": "Fahrtkosten",
+            "past": "Fahrtkosten"
+          },
+          "score": 0.2
+        },
+        {
+          "id": "schulmaterial",
+          "label": {
+            "current": "Schulmaterial",
+            "past": "Schulmaterial"
+          },
+          "score": 0.2
+        },
+        {
+          "id": "pruefungsgebuehren",
+          "label": {
+            "current": "Prüfungsgebühren",
+            "past": "Prüfungsgebühren"
+          },
+          "score": 0.2
+        },
+        {
+          "id": "unterkunft_blockschule",
+          "label": {
+            "current": "Unterkunft bei Blockschule",
+            "past": "Unterkunft bei Blockschule"
+          },
+          "score": 0.2
+        },
+        {
+          "id": "fuehrerschein",
+          "label": {
+            "current": "Führerschein",
+            "past": "Führerschein"
+          },
+          "score": 0.2
+        },
+        {
+          "id": "nichts_davon",
+          "label": {
+            "current": "nichts davon",
+            "past": "nichts davon"
+          },
+          "score": 0.0
+        }
+      ]
+    },
+    {
+      "id": "mod_arbeitszeit_planbarkeit",
+      "specRef": "Modul Arbeitszeit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "arbeitszeit",
+      "text": {
+        "current": "Wie oft weißt du weniger als eine Woche vorher, wann du arbeitest?",
+        "past": "Wie oft wusstest du weniger als eine Woche vorher, wann du arbeitest?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "fast_nie",
+          "label": {
+            "current": "fast nie",
+            "past": "fast nie"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "manchmal",
+          "label": {
+            "current": "manchmal",
+            "past": "manchmal"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "oft",
+          "label": {
+            "current": "oft",
+            "past": "oft"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "fast_immer",
+          "label": {
+            "current": "fast immer",
+            "past": "fast immer"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ]
+    },
+    {
+      "id": "mod_arbeitszeit_freizeit",
+      "specRef": "Modul Arbeitszeit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "arbeitszeit",
+      "text": {
+        "current": "Wie oft wirst du in deiner Freizeit dienstlich kontaktiert?",
+        "past": "Wie oft wurdest du in deiner Freizeit dienstlich kontaktiert?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "nie",
+          "label": {
+            "current": "nie",
+            "past": "nie"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "manchmal",
+          "label": {
+            "current": "manchmal",
+            "past": "manchmal"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "oft",
+          "label": {
+            "current": "oft",
+            "past": "oft"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "staendig",
+          "label": {
+            "current": "ständig",
+            "past": "ständig"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ]
+    },
+    {
+      "id": "mod_arbeitszeit_urlaub_vorlauf",
+      "specRef": "Modul Arbeitszeit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "arbeitszeit",
+      "text": {
+        "current": "Wie kurzfristig musst du Urlaub beantragen?",
+        "past": "Wie kurzfristig musstest du Urlaub beantragen?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "kurzfristig_moeglich",
+          "label": {
+            "current": "kurzfristig ist kein Problem",
+            "past": "kurzfristig war kein Problem"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "einige_wochen",
+          "label": {
+            "current": "einige Wochen vorher",
+            "past": "einige Wochen vorher"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "monate",
+          "label": {
+            "current": "Monate vorher",
+            "past": "Monate vorher"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "jahresplanung",
+          "label": {
+            "current": "nur in der Jahresplanung",
+            "past": "nur in der Jahresplanung"
+          },
+          "score": 0.25,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_arbeitszeit_urlaub_abgelehnt",
+      "specRef": "Modul Arbeitszeit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "arbeitszeit",
+      "text": {
+        "current": "Wie oft wurde dein Urlaub abgelehnt?",
+        "past": "Wie oft wurde dein Urlaub abgelehnt?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "nie",
+          "label": {
+            "current": "nie",
+            "past": "nie"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "einmal",
+          "label": {
+            "current": "einmal",
+            "past": "einmal"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "mehrfach",
+          "label": {
+            "current": "mehrfach",
+            "past": "mehrfach"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_pruefung_vorbereitung",
+      "specRef": "Modul Prüfung",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "pruefung",
+      "text": {
+        "current": "Wie bereitet dich der Betrieb auf die Prüfung vor?",
+        "past": "Wie hat dich der Betrieb auf die Prüfung vorbereitet?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "systematisch",
+          "label": {
+            "current": "systematisch und von sich aus",
+            "past": "systematisch und von sich aus"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "auf_nachfrage",
+          "label": {
+            "current": "wenn ich danach frage",
+            "past": "wenn ich danach fragte"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "gar_nicht",
+          "label": {
+            "current": "gar nicht",
+            "past": "gar nicht"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_pruefung_lernzeit",
+      "specRef": "Modul Prüfung",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "pruefung",
+      "text": {
+        "current": "Bekommst du Lernzeit?",
+        "past": "Hast du Lernzeit bekommen?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "ja_geregelt",
+          "label": {
+            "current": "ja, geregelt",
+            "past": "ja, geregelt"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "auf_nachfrage",
+          "label": {
+            "current": "auf Nachfrage",
+            "past": "auf Nachfrage"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein",
+            "past": "nein"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_pruefung_unterricht",
+      "specRef": "Modul Prüfung",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "pruefung",
+      "text": {
+        "current": "Gab es innerbetrieblichen Unterricht?",
+        "past": "Gab es innerbetrieblichen Unterricht?"
+      },
+      "scoringRef": "fachlich",
+      "options": [
+        {
+          "id": "ja",
+          "label": {
+            "current": "ja",
+            "past": "ja"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein",
+            "past": "nein"
+          },
+          "score": 0.0,
+          "review": true
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_uebernahme_zeitpunkt",
+      "specRef": "Modul Übernahme",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "uebernahme",
+      "text": {
+        "current": "Wann wurde über die Übernahme gesprochen?",
+        "past": "Wann wurde über die Übernahme gesprochen?"
+      },
+      "scoringRef": "perspektive",
+      "options": [
+        {
+          "id": "frueh",
+          "label": {
+            "current": "mehr als ein halbes Jahr vor Ende",
+            "past": "mehr als ein halbes Jahr vor Ende"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "letzte_monate",
+          "label": {
+            "current": "in den letzten Monaten",
+            "past": "in den letzten Monaten"
+          },
+          "score": 0.66,
+          "review": true
+        },
+        {
+          "id": "ganz_zum_schluss",
+          "label": {
+            "current": "ganz zum Schluss",
+            "past": "ganz zum Schluss"
+          },
+          "score": 0.33,
+          "review": true
+        },
+        {
+          "id": "gar_nicht",
+          "label": {
+            "current": "gar nicht",
+            "past": "gar nicht"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_uebernahme_weggang",
+      "specRef": "Modul Übernahme",
+      "type": "multi_select",
+      "phase": "vertiefung",
+      "module": "uebernahme",
+      "text": {
+        "current": "Warum bist du gegangen?",
+        "past": "Warum bist du gegangen?"
+      },
+      "condition": {
+        "eq": [
+          {
+            "answer": "s1_status"
+          },
+          "ausgelernt_gegangen"
+        ]
+      },
+      "options": [
+        {
+          "id": "keine_uebernahme",
+          "label": {
+            "current": "Ich wurde nicht übernommen",
+            "past": "Ich wurde nicht übernommen"
+          },
+          "review": true
+        },
+        {
+          "id": "geld",
+          "label": {
+            "current": "Bezahlung",
+            "past": "Bezahlung"
+          },
+          "review": true
+        },
+        {
+          "id": "perspektive",
+          "label": {
+            "current": "keine Perspektive im Betrieb",
+            "past": "keine Perspektive im Betrieb"
+          },
+          "review": true
+        },
+        {
+          "id": "umgang",
+          "label": {
+            "current": "Umgang im Betrieb",
+            "past": "Umgang im Betrieb"
+          },
+          "review": true
+        },
+        {
+          "id": "arbeitszeit",
+          "label": {
+            "current": "Arbeitszeiten",
+            "past": "Arbeitszeiten"
+          },
+          "review": true
+        },
+        {
+          "id": "weiterbildung",
+          "label": {
+            "current": "Ich wollte studieren oder mich weiterbilden",
+            "past": "Ich wollte studieren oder mich weiterbilden"
+          },
+          "review": true
+        },
+        {
+          "id": "ausserhalb",
+          "label": {
+            "current": "Gründe, die nichts mit dem Betrieb zu tun hatten",
+            "past": "Gründe, die nichts mit dem Betrieb zu tun hatten"
+          }
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_jas_fakten",
+      "specRef": "Modul Jugendarbeitsschutz",
+      "type": "swipe_binary",
+      "phase": "vertiefung",
+      "module": "jugendarbeitsschutz",
+      "sensitive": true,
+      "text": {
+        "current": "Als du noch keine 18 warst — traf das zu?",
+        "past": "Als du noch keine 18 warst — traf das zu?"
+      },
+      "config": {
+        "yesValue": "ja",
+        "noValue": "nein",
+        "otherValues": [
+          "weiss_nicht"
+        ],
+        "cards": [
+          {
+            "id": "berufsschultag_frei",
+            "label": {
+              "current": "Nach einem Berufsschultag mit mehr als fünf Stunden musste ich nicht mehr in den Betrieb.",
+              "past": "Nach einem Berufsschultag mit mehr als fünf Stunden musste ich nicht mehr in den Betrieb."
+            },
+            "review": true
+          },
+          {
+            "id": "keine_arbeit_nach_20",
+            "label": {
+              "current": "Ich musste nie nach 20 Uhr arbeiten.",
+              "past": "Ich musste nie nach 20 Uhr arbeiten."
+            },
+            "review": true
+          },
+          {
+            "id": "keine_samstagsarbeit",
+            "label": {
+              "current": "Ich musste nie samstags arbeiten.",
+              "past": "Ich musste nie samstags arbeiten."
+            },
+            "review": true
+          },
+          {
+            "id": "pausen",
+            "label": {
+              "current": "Ich hatte immer die vorgeschriebenen Pausen.",
+              "past": "Ich hatte immer die vorgeschriebenen Pausen."
+            },
+            "review": true
+          },
+          {
+            "id": "aerztliche_untersuchung",
+            "label": {
+              "current": "Die ärztliche Untersuchung vor Ausbildungsbeginn hat stattgefunden.",
+              "past": "Die ärztliche Untersuchung vor Ausbildungsbeginn hat stattgefunden."
+            },
+            "review": true
+          }
+        ]
+      },
+      "review": true
+    },
+    {
+      "id": "mod_gesundheit_unterweisung",
+      "specRef": "Modul Gesundheit und Sicherheit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "gesundheit",
+      "text": {
+        "current": "Gab es eine Sicherheitsunterweisung?",
+        "past": "Gab es eine Sicherheitsunterweisung?"
+      },
+      "options": [
+        {
+          "id": "ja_regelmaessig",
+          "label": {
+            "current": "ja, regelmäßig",
+            "past": "ja, regelmäßig"
+          },
+          "review": true
+        },
+        {
+          "id": "ja_einmal",
+          "label": {
+            "current": "ja, einmal am Anfang",
+            "past": "ja, einmal am Anfang"
+          },
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein",
+            "past": "nein"
+          },
+          "review": true
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_gesundheit_psa",
+      "specRef": "Modul Gesundheit und Sicherheit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "gesundheit",
+      "text": {
+        "current": "Bekommst du die vorgeschriebene Schutzausrüstung?",
+        "past": "Hast du die vorgeschriebene Schutzausrüstung bekommen?"
+      },
+      "options": [
+        {
+          "id": "ja_vollstaendig",
+          "label": {
+            "current": "ja, vollständig",
+            "past": "ja, vollständig"
+          },
+          "review": true
+        },
+        {
+          "id": "teilweise",
+          "label": {
+            "current": "teilweise",
+            "past": "teilweise"
+          },
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein",
+            "past": "nein"
+          },
+          "review": true
+        },
+        {
+          "id": "nicht_noetig",
+          "label": {
+            "current": "bei meiner Arbeit nicht nötig",
+            "past": "bei meiner Arbeit nicht nötig"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_gesundheit_grenze",
+      "specRef": "Modul Gesundheit und Sicherheit",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "gesundheit",
+      "text": {
+        "current": "Wie oft arbeitest du an der Belastungsgrenze?",
+        "past": "Wie oft hast du an der Belastungsgrenze gearbeitet?"
+      },
+      "scoringRef": "belastung",
+      "options": [
+        {
+          "id": "fast_nie",
+          "label": {
+            "current": "fast nie",
+            "past": "fast nie"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "selten",
+          "label": {
+            "current": "selten",
+            "past": "selten"
+          },
+          "score": 0.75,
+          "review": true
+        },
+        {
+          "id": "manchmal",
+          "label": {
+            "current": "manchmal",
+            "past": "manchmal"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "oft",
+          "label": {
+            "current": "oft",
+            "past": "oft"
+          },
+          "score": 0.25,
+          "review": true
+        },
+        {
+          "id": "fast_taeglich",
+          "label": {
+            "current": "fast täglich",
+            "past": "fast täglich"
+          },
+          "score": 0.0,
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_schule_interesse",
+      "specRef": "Modul Berufsschule und Betrieb",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "berufsschule",
+      "text": {
+        "current": "Interessiert es im Betrieb, was du in der Schule machst?",
+        "past": "Hat es im Betrieb interessiert, was du in der Schule machst?"
+      },
+      "scoringRef": "berufsschule",
+      "options": [
+        {
+          "id": "ja_aktiv",
+          "label": {
+            "current": "ja, es wird von sich aus danach gefragt",
+            "past": "ja, es wurde von sich aus danach gefragt"
+          },
+          "score": 1.0,
+          "review": true
+        },
+        {
+          "id": "wenn_ich_erzaehle",
+          "label": {
+            "current": "nur wenn ich selbst davon erzähle",
+            "past": "nur wenn ich selbst davon erzählte"
+          },
+          "score": 0.5,
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein, das ist dort kein Thema",
+            "past": "nein, das war dort kein Thema"
+          },
+          "score": 0.0,
+          "review": true
+        },
+        {
+          "id": "weiss_nicht",
+          "label": {
+            "current": "weiß ich nicht",
+            "past": "weiß ich nicht"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_konflikt_haeufigkeit",
+      "specRef": "Modul Konflikte",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "konflikte",
+      "sensitive": true,
+      "intro": {
+        "current": "Unangenehme Situationen gibt es in vielen Betrieben, und sie sagen nichts über dich aus.",
+        "past": "Unangenehme Situationen gibt es in vielen Betrieben, und sie sagen nichts über dich aus."
+      },
+      "text": {
+        "current": "Wie oft gab es Situationen, die dir unangenehm waren?",
+        "past": "Wie oft gab es Situationen, die dir unangenehm waren?"
+      },
+      "options": [
+        {
+          "id": "nie",
+          "label": {
+            "current": "nie",
+            "past": "nie"
+          },
+          "review": true
+        },
+        {
+          "id": "einmal",
+          "label": {
+            "current": "einmal",
+            "past": "einmal"
+          },
+          "review": true
+        },
+        {
+          "id": "mehrfach",
+          "label": {
+            "current": "mehrfach",
+            "past": "mehrfach"
+          },
+          "review": true
+        },
+        {
+          "id": "regelmaessig",
+          "label": {
+            "current": "regelmäßig",
+            "past": "regelmäßig"
+          },
+          "review": true
+        },
+        {
+          "id": "keine_angabe",
+          "label": {
+            "current": "möchte ich nicht sagen",
+            "past": "möchte ich nicht sagen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_konflikt_art",
+      "specRef": "Modul Konflikte",
+      "type": "multi_select",
+      "phase": "vertiefung",
+      "module": "konflikte",
+      "sensitive": true,
+      "intro": {
+        "current": "Grob eingeteilt reicht hier völlig. Je genauer die Angabe, desto eher wäre sie zurückzuverfolgen.",
+        "past": "Grob eingeteilt reicht hier völlig. Je genauer die Angabe, desto eher wäre sie zurückzuverfolgen."
+      },
+      "text": {
+        "current": "Worum ging es dabei?",
+        "past": "Worum ging es dabei?"
+      },
+      "options": [
+        {
+          "id": "anschreien",
+          "label": {
+            "current": "lautes Anschreien oder Beschimpfen",
+            "past": "lautes Anschreien oder Beschimpfen"
+          },
+          "review": true
+        },
+        {
+          "id": "herabwuerdigung",
+          "label": {
+            "current": "Herabwürdigung vor anderen",
+            "past": "Herabwürdigung vor anderen"
+          },
+          "review": true
+        },
+        {
+          "id": "ausgrenzung",
+          "label": {
+            "current": "Ausgrenzung",
+            "past": "Ausgrenzung"
+          },
+          "review": true
+        },
+        {
+          "id": "koerperlich",
+          "label": {
+            "current": "körperliche Übergriffe",
+            "past": "körperliche Übergriffe"
+          },
+          "review": true
+        },
+        {
+          "id": "sexuell",
+          "label": {
+            "current": "sexuelle Belästigung",
+            "past": "sexuelle Belästigung"
+          },
+          "review": true
+        },
+        {
+          "id": "diskriminierung",
+          "label": {
+            "current": "Diskriminierung",
+            "past": "Diskriminierung"
+          },
+          "review": true
+        },
+        {
+          "id": "keine_angabe",
+          "label": {
+            "current": "möchte ich nicht sagen",
+            "past": "möchte ich nicht sagen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_konflikt_angesprochen",
+      "specRef": "Modul Konflikte",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "konflikte",
+      "sensitive": true,
+      "text": {
+        "current": "Hast du es im Betrieb angesprochen?",
+        "past": "Hast du es im Betrieb angesprochen?"
+      },
+      "options": [
+        {
+          "id": "ja",
+          "label": {
+            "current": "ja",
+            "past": "ja"
+          },
+          "review": true
+        },
+        {
+          "id": "nein",
+          "label": {
+            "current": "nein",
+            "past": "nein"
+          },
+          "review": true
+        },
+        {
+          "id": "keine_angabe",
+          "label": {
+            "current": "möchte ich nicht sagen",
+            "past": "möchte ich nicht sagen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_konflikt_reaktion",
+      "specRef": "Modul Konflikte",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "konflikte",
+      "sensitive": true,
+      "text": {
+        "current": "Was ist daraufhin passiert?",
+        "past": "Was ist daraufhin passiert?"
+      },
+      "condition": {
+        "eq": [
+          {
+            "answer": "mod_konflikt_angesprochen"
+          },
+          "ja"
+        ]
+      },
+      "options": [
+        {
+          "id": "geaendert",
+          "label": {
+            "current": "Es hat sich etwas geändert",
+            "past": "Es hat sich etwas geändert"
+          },
+          "review": true
+        },
+        {
+          "id": "nichts",
+          "label": {
+            "current": "Es ist nichts passiert",
+            "past": "Es ist nichts passiert"
+          },
+          "review": true
+        },
+        {
+          "id": "schlechter",
+          "label": {
+            "current": "Danach wurde es für mich schlechter",
+            "past": "Danach wurde es für mich schlechter"
+          },
+          "review": true
+        },
+        {
+          "id": "keine_angabe",
+          "label": {
+            "current": "möchte ich nicht sagen",
+            "past": "möchte ich nicht sagen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_konflikt_anlaufstellen",
+      "specRef": "Modul Konflikte",
+      "type": "intro",
+      "phase": "vertiefung",
+      "module": "konflikte",
+      "text": {
+        "current": "Wo du Unterstützung bekommst",
+        "past": "Wo du Unterstützung bekommst"
+      },
+      "config": {
+        "textKey": "help.anlaufstellen"
+      },
+      "review": true
+    },
+    {
+      "id": "mod_abbruch_zeitpunkt",
+      "specRef": "Modul Abbruch",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "abbruch",
+      "intro": {
+        "current": "Ausbildungen werden aus ganz unterschiedlichen Gründen beendet, oft liegt es nicht nur an einer Seite.",
+        "past": "Ausbildungen werden aus ganz unterschiedlichen Gründen beendet, oft liegt es nicht nur an einer Seite."
+      },
+      "text": {
+        "current": "Wann hast du aufgehört?",
+        "past": "Wann hast du aufgehört?"
+      },
+      "options": [
+        {
+          "id": "probezeit",
+          "label": {
+            "current": "in der Probezeit",
+            "past": "in der Probezeit"
+          },
+          "review": true
+        },
+        {
+          "id": "jahr_1",
+          "label": {
+            "current": "im 1. Ausbildungsjahr",
+            "past": "im 1. Ausbildungsjahr"
+          },
+          "review": true
+        },
+        {
+          "id": "jahr_2",
+          "label": {
+            "current": "im 2. Ausbildungsjahr",
+            "past": "im 2. Ausbildungsjahr"
+          },
+          "review": true
+        },
+        {
+          "id": "jahr_3_4",
+          "label": {
+            "current": "im 3. oder 4. Ausbildungsjahr",
+            "past": "im 3. oder 4. Ausbildungsjahr"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_abbruch_wer",
+      "specRef": "Modul Abbruch",
+      "type": "verbal_choice",
+      "phase": "vertiefung",
+      "module": "abbruch",
+      "text": {
+        "current": "Wer hat die Sache beendet?",
+        "past": "Wer hat die Sache beendet?"
+      },
+      "options": [
+        {
+          "id": "ich",
+          "label": {
+            "current": "ich",
+            "past": "ich"
+          },
+          "review": true
+        },
+        {
+          "id": "betrieb",
+          "label": {
+            "current": "der Betrieb",
+            "past": "der Betrieb"
+          },
+          "review": true
+        },
+        {
+          "id": "gemeinsam",
+          "label": {
+            "current": "in gegenseitigem Einvernehmen",
+            "past": "in gegenseitigem Einvernehmen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_abbruch_ausschlag",
+      "specRef": "Modul Abbruch",
+      "type": "multi_select",
+      "phase": "vertiefung",
+      "module": "abbruch",
+      "text": {
+        "current": "Was hat den Ausschlag gegeben?",
+        "past": "Was hat den Ausschlag gegeben?"
+      },
+      "config": {
+        "minSelect": 1
+      },
+      "options": [
+        {
+          "id": "anleitung",
+          "label": {
+            "current": "zu wenig Anleitung",
+            "past": "zu wenig Anleitung"
+          },
+          "review": true
+        },
+        {
+          "id": "umgang",
+          "label": {
+            "current": "Umgang im Betrieb",
+            "past": "Umgang im Betrieb"
+          },
+          "review": true
+        },
+        {
+          "id": "belastung",
+          "label": {
+            "current": "Belastung oder Arbeitszeiten",
+            "past": "Belastung oder Arbeitszeiten"
+          },
+          "review": true
+        },
+        {
+          "id": "geld",
+          "label": {
+            "current": "Bezahlung",
+            "past": "Bezahlung"
+          },
+          "review": true
+        },
+        {
+          "id": "falscher_beruf",
+          "label": {
+            "current": "der Beruf war nichts für mich",
+            "past": "der Beruf war nichts für mich"
+          },
+          "review": true
+        },
+        {
+          "id": "schule",
+          "label": {
+            "current": "die Berufsschule",
+            "past": "die Berufsschule"
+          },
+          "review": true
+        },
+        {
+          "id": "ausserhalb",
+          "label": {
+            "current": "Gründe, die nichts mit dem Betrieb zu tun hatten",
+            "past": "Gründe, die nichts mit dem Betrieb zu tun hatten"
+          }
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "mod_abbruch_gut",
+      "specRef": "Modul Abbruch",
+      "type": "text_pair",
+      "phase": "vertiefung",
+      "module": "abbruch",
+      "text": {
+        "current": "Gab es etwas, das der Betrieb gut gemacht hat?",
+        "past": "Gab es etwas, das der Betrieb gut gemacht hat?"
+      },
+      "config": {
+        "maxLength": 2000,
+        "fields": [
+          {
+            "id": "gut",
+            "label": {
+              "current": "Gab es etwas, das der Betrieb gut gemacht hat?",
+              "past": "Gab es etwas, das der Betrieb gut gemacht hat?"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "a1_freitexte",
+      "specRef": "A1",
+      "type": "text_pair",
+      "phase": "abschluss",
+      "public": true,
+      "text": {
+        "current": "Was lief gut, was lief schlecht?",
+        "past": "Was lief gut, was lief schlecht?"
+      },
+      "placeholder": {
+        "current": "Schreib, wie du es erlebt hast. Keine Namen von Kollegen, keine Behauptungen, die du nicht belegen kannst.",
+        "past": "Schreib, wie du es erlebt hast. Keine Namen von Kollegen, keine Behauptungen, die du nicht belegen kannst."
+      },
+      "config": {
+        "maxLength": 4000,
+        "noticeKey": "legal.freitext",
+        "fields": [
+          {
+            "id": "a1_gut",
+            "label": {
+              "current": "Was lief gut?",
+              "past": "Was lief gut?"
+            }
+          },
+          {
+            "id": "a1_schlecht",
+            "label": {
+              "current": "Was lief schlecht?",
+              "past": "Was lief schlecht?"
+            }
+          }
+        ],
+        "publicField": "freitext"
+      },
+      "review": true
+    },
+    {
+      "id": "a2_abgleich",
+      "specRef": "A2",
+      "type": "consistency_check",
+      "phase": "abschluss",
+      "text": {
+        "current": "Am Anfang hast du die Ausbildung eher gut bewertet, deine Antworten danach klingen kritischer. Was trifft es besser?",
+        "past": "Am Anfang hast du die Ausbildung eher gut bewertet, deine Antworten danach klingen kritischer. Was trifft es besser?"
+      },
+      "condition": {
+        "gt": [
+          {
+            "computed": "overall_delta"
+          },
+          1.0
+        ]
+      },
+      "options": [
+        {
+          "id": "frueh",
+          "label": {
+            "current": "Das erste Urteil trifft es besser",
+            "past": "Das erste Urteil trifft es besser"
+          },
+          "review": true
+        },
+        {
+          "id": "detail",
+          "label": {
+            "current": "Die späteren Antworten treffen es besser",
+            "past": "Die späteren Antworten treffen es besser"
+          },
+          "review": true
+        },
+        {
+          "id": "neu",
+          "label": {
+            "current": "Ich möchte es neu einstellen",
+            "past": "Ich möchte es neu einstellen"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "a2_1_korrektur",
+      "specRef": "A2",
+      "type": "vas_unnumbered",
+      "phase": "abschluss",
+      "public": true,
+      "text": {
+        "current": "Wie gut war die Ausbildung dort insgesamt?",
+        "past": "Wie gut war die Ausbildung dort insgesamt?"
+      },
+      "condition": {
+        "eq": [
+          {
+            "answer": "a2_abgleich"
+          },
+          "neu"
+        ]
+      },
+      "config": {
+        "min": 0,
+        "max": 100,
+        "endLabels": {
+          "min": {
+            "current": "schlecht",
+            "past": "schlecht"
+          },
+          "max": {
+            "current": "sehr gut",
+            "past": "sehr gut"
+          }
+        },
+        "publicField": "k6_overall"
+      },
+      "review": true
+    },
+    {
+      "id": "a3_tagesform",
+      "specRef": "A3",
+      "type": "mood",
+      "phase": "abschluss",
+      "text": {
+        "current": "Ganz unabhängig vom Betrieb: Wie war dein Tag heute?",
+        "past": "Ganz unabhängig vom Betrieb: Wie war dein Tag heute?"
+      },
+      "options": [
+        {
+          "id": "sehr_gut",
+          "label": {
+            "current": "sehr gut",
+            "past": "sehr gut"
+          },
+          "review": true
+        },
+        {
+          "id": "gut",
+          "label": {
+            "current": "gut",
+            "past": "gut"
+          },
+          "review": true
+        },
+        {
+          "id": "mittel",
+          "label": {
+            "current": "geht so",
+            "past": "geht so"
+          },
+          "review": true
+        },
+        {
+          "id": "schlecht",
+          "label": {
+            "current": "schlecht",
+            "past": "schlecht"
+          },
+          "review": true
+        },
+        {
+          "id": "sehr_schlecht",
+          "label": {
+            "current": "sehr schlecht",
+            "past": "sehr schlecht"
+          },
+          "review": true
+        }
+      ],
+      "review": true
+    },
+    {
+      "id": "a3_1_verschieben",
+      "specRef": "A3",
+      "type": "publish_options",
+      "phase": "abschluss",
+      "text": {
+        "current": "Willst du das jetzt abschicken oder lieber in drei Tagen nochmal draufschauen? Wir speichern alles.",
+        "past": "Willst du das jetzt abschicken oder lieber in drei Tagen nochmal draufschauen? Wir speichern alles."
+      },
+      "condition": {
+        "all": [
+          {
+            "in": [
+              {
+                "answer": "a3_tagesform"
+              },
+              [
+                "schlecht",
+                "sehr_schlecht"
+              ]
+            ]
+          },
+          {
+            "any": [
+              {
+                "lt": [
+                  {
+                    "computed": "overall_effective"
+                  },
+                  1.5
+                ]
+              },
+              {
+                "gt": [
+                  {
+                    "computed": "overall_effective"
+                  },
+                  4.5
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": [
+        {
+          "id": "jetzt",
+          "label": {
+            "current": "Jetzt abschicken",
+            "past": "Jetzt abschicken"
+          },
+          "review": true
+        },
+        {
+          "id": "in_drei_tagen",
+          "label": {
+            "current": "In drei Tagen nochmal draufschauen",
+            "past": "In drei Tagen nochmal draufschauen"
+          },
+          "review": true
+        }
+      ],
+      "config": {
+        "delayDays": 3,
+        "publishActions": {
+          "in_drei_tagen": "delay"
+        }
+      },
+      "review": true
+    },
+    {
+      "id": "a3_2_kleinbetrieb",
+      "specRef": "Abschnitt 10",
+      "type": "publish_options",
+      "phase": "abschluss",
+      "featureFlag": "delayed_publish_small_business",
+      "text": {
+        "current": "In einem Betrieb mit einem Azubi kann dein Chef wahrscheinlich erkennen, dass du das geschrieben hast.",
+        "past": "In einem Betrieb mit einem Azubi kann dein Chef wahrscheinlich erkennen, dass du das geschrieben hast."
+      },
+      "condition": {
+        "in": [
+          {
+            "answer": "s6_azubizahl"
+          },
+          [
+            "nur_ich",
+            "2_5"
+          ]
+        ]
+      },
+      "options": [
+        {
+          "id": "sofort",
+          "label": {
+            "current": "Trotzdem sofort veröffentlichen",
+            "past": "Trotzdem sofort veröffentlichen"
+          },
+          "review": true
+        },
+        {
+          "id": "nach_ausbildungsende",
+          "label": {
+            "current": "Erst nach Ende meiner Ausbildung veröffentlichen",
+            "past": "Erst nach Ende meiner Ausbildung veröffentlichen"
+          },
+          "review": true
+        }
+      ],
+      "review": true,
+      "config": {
+        "publishActions": {
+          "nach_ausbildungsende": "until_training_end"
+        }
+      }
+    },
+    {
+      "id": "a4_vorschau",
+      "specRef": "A4",
+      "type": "preview",
+      "phase": "abschluss",
+      "required": true,
+      "text": {
+        "current": "So sieht deine Bewertung später öffentlich aus.",
+        "past": "So sieht deine Bewertung später öffentlich aus."
+      },
+      "config": {
+        "hiddenListKey": "preview.nicht_sichtbar"
+      },
+      "review": true
+    },
+    {
+      "id": "a5_verifikation",
+      "specRef": "A5",
+      "type": "verification",
+      "phase": "abschluss",
+      "text": {
+        "current": "Weise dein Ausbildungsverhältnis nach",
+        "past": "Weise dein Ausbildungsverhältnis nach"
+      },
+      "config": {
+        "bucket": "verification_documents",
+        "extensions": [
+          "pdf",
+          "jpg",
+          "jpeg",
+          "png"
+        ],
+        "maxBytes": 10485760,
+        "noticeKey": "legal.verifikation"
+      },
+      "review": true
+    }
+  ],
+  "modules": [
+    {
+      "id": "ausbilder",
+      "label": {
+        "current": "Dein Ausbilder",
+        "past": "Dein Ausbilder"
+      },
+      "teaser": {
+        "current": "Noch vier Fragen zu deinem Ausbilder?",
+        "past": "Noch vier Fragen zu deinem Ausbilder?"
+      },
+      "priorityKey": "ausbilder",
+      "trigger": {
+        "in": [
+          {
+            "answer": "k4_erreichbarkeit"
+          },
+          [
+            "haelfte",
+            "selten",
+            "nie"
+          ]
+        ]
+      },
+      "estimatedSeconds": 40,
+      "questions": [
+        "mod_ausbilder_gespraeche",
+        "mod_ausbilder_kennt_stand",
+        "mod_ausbilder_fehler",
+        "mod_ausbilder_erreichbar"
+      ]
+    },
+    {
+      "id": "fachliche_qualitaet",
+      "label": {
+        "current": "Fachliche Qualität",
+        "past": "Fachliche Qualität"
+      },
+      "teaser": {
+        "current": "Noch zwei Fragen dazu, was du fachlich lernst?",
+        "past": "Noch zwei Fragen dazu, was du fachlich gelernt hast?"
+      },
+      "priorityKey": "fachlich",
+      "trigger": {
+        "in": [
+          {
+            "answer": "k8_lernwert"
+          },
+          [
+            "eher_wenig",
+            "fast_nichts"
+          ]
+        ]
+      },
+      "questions": [
+        "mod_fachlich_fehlende_inhalte",
+        "mod_fachlich_bekanntes"
+      ],
+      "review": true
+    },
+    {
+      "id": "geld",
+      "label": {
+        "current": "Geld und Sachleistungen",
+        "past": "Geld und Sachleistungen"
+      },
+      "teaser": {
+        "current": "Noch zwei Fragen zu Geld und Sachleistungen?",
+        "past": "Noch zwei Fragen zu Geld und Sachleistungen?"
+      },
+      "priorityKey": "geld",
+      "featureFlag": "module_verguetung",
+      "questions": [
+        "mod_geld_verguetung",
+        "mod_geld_uebernimmt"
+      ],
+      "review": true
+    },
+    {
+      "id": "arbeitszeit",
+      "label": {
+        "current": "Arbeitszeit",
+        "past": "Arbeitszeit"
+      },
+      "teaser": {
+        "current": "Noch vier Fragen zu deinen Arbeitszeiten?",
+        "past": "Noch vier Fragen zu deinen Arbeitszeiten?"
+      },
+      "priorityKey": "arbeitszeit",
+      "trigger": {
+        "any": [
+          {
+            "eq": [
+              {
+                "answer": "s8_arbeitsalltag",
+                "field": "schichtarbeit"
+              },
+              "ja"
+            ]
+          },
+          {
+            "eq": [
+              {
+                "answer": "s8_arbeitsalltag",
+                "field": "wochenenddienste"
+              },
+              "ja"
+            ]
+          },
+          {
+            "gt": [
+              {
+                "answer": "k3_ueberstunden"
+              },
+              20
+            ]
+          }
+        ]
+      },
+      "questions": [
+        "mod_arbeitszeit_planbarkeit",
+        "mod_arbeitszeit_freizeit",
+        "mod_arbeitszeit_urlaub_vorlauf",
+        "mod_arbeitszeit_urlaub_abgelehnt"
+      ],
+      "review": true
+    },
+    {
+      "id": "pruefung",
+      "label": {
+        "current": "Prüfung",
+        "past": "Prüfung"
+      },
+      "teaser": {
+        "current": "Noch drei Fragen zur Prüfungsvorbereitung?",
+        "past": "Noch drei Fragen zur Prüfungsvorbereitung?"
+      },
+      "priorityKey": "pruefung",
+      "trigger": {
+        "any": [
+          {
+            "in": [
+              {
+                "answer": "s4_lehrjahr"
+              },
+              [
+                "jahr_2",
+                "jahr_3",
+                "jahr_4"
+              ]
+            ]
+          },
+          {
+            "in": [
+              {
+                "answer": "s1_status"
+              },
+              [
+                "ausgelernt_geblieben",
+                "ausgelernt_gegangen"
+              ]
+            ]
+          }
+        ]
+      },
+      "questions": [
+        "mod_pruefung_vorbereitung",
+        "mod_pruefung_lernzeit",
+        "mod_pruefung_unterricht"
+      ]
+    },
+    {
+      "id": "uebernahme",
+      "label": {
+        "current": "Übernahme und Zukunft",
+        "past": "Übernahme und Zukunft"
+      },
+      "teaser": {
+        "current": "Noch zwei Fragen zur Übernahme?",
+        "past": "Noch zwei Fragen zur Übernahme?"
+      },
+      "priorityKey": "uebernahme",
+      "trigger": {
+        "any": [
+          {
+            "in": [
+              {
+                "answer": "s4_lehrjahr"
+              },
+              [
+                "jahr_3",
+                "jahr_4"
+              ]
+            ]
+          },
+          {
+            "in": [
+              {
+                "answer": "s1_status"
+              },
+              [
+                "ausgelernt_geblieben",
+                "ausgelernt_gegangen"
+              ]
+            ]
+          }
+        ]
+      },
+      "questions": [
+        "mod_uebernahme_zeitpunkt",
+        "mod_uebernahme_weggang"
+      ]
+    },
+    {
+      "id": "jugendarbeitsschutz",
+      "label": {
+        "current": "Jugendarbeitsschutz",
+        "past": "Jugendarbeitsschutz"
+      },
+      "teaser": {
+        "current": "Fünf kurze Fakten zu der Zeit, als du noch keine 18 warst?",
+        "past": "Fünf kurze Fakten zu der Zeit, als du noch keine 18 warst?"
+      },
+      "trigger": {
+        "eq": [
+          {
+            "answer": "s9_minderjaehrig"
+          },
+          "ja"
+        ]
+      },
+      "estimatedSeconds": 30,
+      "questions": [
+        "mod_jas_fakten"
+      ],
+      "review": true
+    },
+    {
+      "id": "gesundheit",
+      "label": {
+        "current": "Gesundheit und Sicherheit",
+        "past": "Gesundheit und Sicherheit"
+      },
+      "teaser": {
+        "current": "Noch drei Fragen zu Sicherheit und Belastung?",
+        "past": "Noch drei Fragen zu Sicherheit und Belastung?"
+      },
+      "trigger": {
+        "any": [
+          {
+            "eq": [
+              {
+                "answer": "s8_arbeitsalltag",
+                "field": "koerperlich_schwer"
+              },
+              "ja"
+            ]
+          },
+          {
+            "in": [
+              {
+                "answer": "k10_belastung"
+              },
+              [
+                "oft",
+                "fast_taeglich"
+              ]
+            ]
+          }
+        ]
+      },
+      "questions": [
+        "mod_gesundheit_unterweisung",
+        "mod_gesundheit_psa",
+        "mod_gesundheit_grenze"
+      ],
+      "review": true
+    },
+    {
+      "id": "berufsschule",
+      "label": {
+        "current": "Berufsschule und Betrieb",
+        "past": "Berufsschule und Betrieb"
+      },
+      "teaser": {
+        "current": "Eine kurze Frage zur Berufsschule?",
+        "past": "Eine kurze Frage zur Berufsschule?"
+      },
+      "questions": [
+        "mod_schule_interesse"
+      ],
+      "review": true
+    },
+    {
+      "id": "konflikte",
+      "label": {
+        "current": "Konflikte und Grenzen",
+        "past": "Konflikte und Grenzen"
+      },
+      "gated": true,
+      "teaser": {
+        "current": "Es gibt noch einen Bereich, in dem es um unangenehme Erfahrungen geht. Vier Fragen, du kannst jede einzeln überspringen.",
+        "past": "Es gibt noch einen Bereich, in dem es um unangenehme Erfahrungen geht. Vier Fragen, du kannst jede einzeln überspringen."
+      },
+      "acceptLabel": {
+        "current": "Zeig mir das",
+        "past": "Zeig mir das"
+      },
+      "skipLabel": {
+        "current": "Nein danke",
+        "past": "Nein danke"
+      },
+      "trigger": {
+        "in": [
+          {
+            "answer": "k9_umgang"
+          },
+          [
+            "von_oben_herab",
+            "respektlos"
+          ]
+        ]
+      },
+      "questions": [
+        "mod_konflikt_haeufigkeit",
+        "mod_konflikt_art",
+        "mod_konflikt_angesprochen",
+        "mod_konflikt_reaktion",
+        "mod_konflikt_anlaufstellen"
+      ]
+    },
+    {
+      "id": "abbruch",
+      "label": {
+        "current": "Das Ende der Ausbildung",
+        "past": "Das Ende der Ausbildung"
+      },
+      "teaser": {
+        "current": "Noch vier Fragen dazu, wie es zu Ende ging?",
+        "past": "Noch vier Fragen dazu, wie es zu Ende ging?"
+      },
+      "trigger": {
+        "eq": [
+          {
+            "answer": "s1_status"
+          },
+          "abgebrochen"
+        ]
+      },
+      "questions": [
+        "mod_abbruch_zeitpunkt",
+        "mod_abbruch_wer",
+        "mod_abbruch_ausschlag",
+        "mod_abbruch_gut"
+      ],
+      "review": true
+    }
+  ],
+  "scoring": {
+    "dimensions": [
+      "fachlich",
+      "betreuung",
+      "umgang",
+      "belastung",
+      "verguetung",
+      "perspektive"
+    ],
+    "separate": [
+      "berufsschule"
+    ],
+    "overallQuestion": "k6_gesamt",
+    "recommendQuestion": "k5_empfehlung",
+    "correctionQuestion": "a2_1_korrektur",
+    "overallDecisionQuestion": "a2_abgleich",
+    "overallDecisionDetailValue": "detail",
+    "subscores": {
+      "fachlich": {
+        "items": [
+          {
+            "question": "k8_lernwert",
+            "weight": 1.0
+          },
+          {
+            "question": "k11_planung",
+            "weight": 0.5
+          },
+          {
+            "question": "k2_ausbildungsfremd",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_fachlich_bekanntes",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_pruefung_vorbereitung",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_pruefung_lernzeit",
+            "weight": 0.3
+          },
+          {
+            "question": "mod_pruefung_unterricht",
+            "weight": 0.2
+          }
+        ]
+      },
+      "betreuung": {
+        "items": [
+          {
+            "question": "k4_erreichbarkeit",
+            "weight": 1.0
+          },
+          {
+            "question": "k7_anleitung",
+            "weight": 1.0
+          },
+          {
+            "question": "k1_fakten",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_ausbilder_gespraeche",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_ausbilder_kennt_stand",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_ausbilder_fehler",
+            "weight": 0.5
+          },
+          {
+            "question": "mod_ausbilder_erreichbar",
+            "weight": 0.3
+          }
+        ]
+      },
+      "umgang": {
+        "items": [
+          {
+            "question": "k9_umgang",
+            "weight": 1.0
+          }
+        ]
+      },
+      "belastung": {
+        "items": [
+          {
+            "question": "k10_belastung",
+            "weight": 1.0
+          },
+          {
+            "question": "k3_ueberstunden",
+            "weight": 0.5
+          },
+          {
+            "question": "k3_1_ausgleich",
+            "weight": 0.3
+          },
+          {
+            "question": "mod_arbeitszeit_planbarkeit",
+            "weight": 0.3
+          },
+          {
+            "question": "mod_arbeitszeit_freizeit",
+            "weight": 0.3
+          },
+          {
+            "question": "mod_arbeitszeit_urlaub_vorlauf",
+            "weight": 0.2
+          },
+          {
+            "question": "mod_arbeitszeit_urlaub_abgelehnt",
+            "weight": 0.2
+          },
+          {
+            "question": "mod_gesundheit_grenze",
+            "weight": 0.5
+          }
+        ]
+      },
+      "verguetung": {
+        "items": [
+          {
+            "question": "mod_geld_verguetung",
+            "weight": 1.0
+          },
+          {
+            "question": "mod_geld_uebernimmt",
+            "weight": 0.5
+          }
+        ]
+      },
+      "perspektive": {
+        "items": [
+          {
+            "question": "mod_uebernahme_zeitpunkt",
+            "weight": 1.0
+          }
+        ]
+      },
+      "berufsschule": {
+        "items": [
+          {
+            "question": "mod_schule_interesse",
+            "weight": 1.0
+          }
+        ]
+      }
+    },
+    "defaultWeights": {
+      "fachlich": 0.22,
+      "betreuung": 0.22,
+      "umgang": 0.18,
+      "belastung": 0.15,
+      "verguetung": 0.08,
+      "perspektive": 0.15
+    },
+    "dimensionFlags": {
+      "verguetung": "module_verguetung"
+    },
+    "priorityToDimension": {
+      "fachlich": "fachlich",
+      "umgang": "umgang",
+      "geld": "verguetung",
+      "arbeitszeit": "belastung",
+      "ausbilder": "betreuung",
+      "pruefung": "fachlich",
+      "uebernahme": "perspektive",
+      "team": "umgang"
+    },
+    "weightFloor": 0.05,
+    "priorMean": 3.2,
+    "shrinkage": {
+      "strength": 5
+    },
+    "aging": {
+      "years": 3,
+      "weight": 0.5
+    }
+  },
+  "visibility": {
+    "scoreMinReviews": 3,
+    "numbersMinReviews": 5,
+    "numberBands": {
+      "verguetung": [
+        {
+          "max": 700,
+          "label": {
+            "current": "unter 700 €"
+          }
+        },
+        {
+          "max": 900,
+          "label": {
+            "current": "700 bis 900 €"
+          }
+        },
+        {
+          "max": 1100,
+          "label": {
+            "current": "900 bis 1100 €"
+          }
+        },
+        {
+          "label": {
+            "current": "über 1100 €"
+          }
+        }
+      ],
+      "ueberstunden": [
+        {
+          "max": 0,
+          "label": {
+            "current": "keine"
+          }
+        },
+        {
+          "max": 10,
+          "label": {
+            "current": "bis 10 im Monat"
+          }
+        },
+        {
+          "max": 20,
+          "label": {
+            "current": "10 bis 20 im Monat"
+          }
+        },
+        {
+          "label": {
+            "current": "mehr als 20 im Monat"
+          }
+        }
+      ]
+    },
+    "numberSources": {
+      "verguetung": "mod_geld_verguetung",
+      "ueberstunden": "k3_ueberstunden"
+    }
+  },
+  "quality": {
+    "minScreenMillis": 1200,
+    "straightlining": {
+      "questions": [
+        "k7_anleitung",
+        "k8_lernwert",
+        "k9_umgang",
+        "k10_belastung",
+        "k11_planung"
+      ],
+      "maxVariance": 0.01
+    },
+    "pairs": [
+      {
+        "id": "k4_vs_ausbilder_erreichbarkeit",
+        "a": "k4_erreichbarkeit",
+        "b": "mod_ausbilder_erreichbar",
+        "maxDelta": 0.5
+      }
+    ],
+    "overallMismatch": {
+      "maxDelta": 1.0
+    },
+    "impossible": [
+      {
+        "id": "ueberstunden_null_bei_taeglicher_erschoepfung",
+        "condition": {
+          "all": [
+            {
+              "eq": [
+                {
+                  "answer": "k3_ueberstunden"
+                },
+                0
+              ]
+            },
+            {
+              "eq": [
+                {
+                  "answer": "k10_belastung"
+                },
+                "fast_taeglich"
+              ]
+            }
+          ]
+        },
+        "reason": {
+          "current": "Null Überstunden bei täglicher Erschöpfung durch Mehrarbeit."
+        }
+      },
+      {
+        "id": "ende_vor_anfang",
+        "condition": {
+          "gt": [
+            {
+              "answer": "s2_startjahr"
+            },
+            {
+              "answer": "s2_1_endjahr"
+            }
+          ]
+        },
+        "reason": {
+          "current": "Die Ausbildung endet vor ihrem Beginn."
+        }
+      }
+    ],
+    "freeTextQuestions": [
+      "a1_freitexte",
+      "mod_abbruch_gut"
+    ]
+  },
+  "featureFlags": {
+    "module_verguetung": false,
+    "delayed_publish_small_business": true
+  },
+  "texts": {
+    "anonymity.intro": {
+      "current": "PLATZHALTER — juristisch zu prüfen. Hier steht, was der Betrieb sieht und was nicht: welche Angaben in der Einzelansicht erscheinen, welche nur aggregiert, und ab wie vielen Bewertungen überhaupt etwas sichtbar wird."
+    },
+    "anonymity.sensitive": {
+      "current": "PLATZHALTER — juristisch zu prüfen. Kurzfassung der Anonymitätszusage, die vor jedem sensiblen Block erneut erscheint."
+    },
+    "legal.freitext": {
+      "current": "Deine Meinung darfst du frei sagen. Falsche Tatsachenbehauptungen und Beleidigungen müssen wir löschen."
+    },
+    "legal.verifikation": {
+      "current": "PLATZHALTER — juristisch zu prüfen. Wofür der Nachweis gebraucht wird, wie lange er gespeichert bleibt, wer ihn sieht, und dass er pseudonym abgelegt wird."
+    },
+    "module.accept": {
+      "current": "Ja, zeig mir das"
+    },
+    "module.skip": {
+      "current": "Überspringen"
+    },
+    "ui.next": {
+      "current": "Weiter"
+    },
+    "ui.back": {
+      "current": "Zurück"
+    },
+    "ui.submit": {
+      "current": "Bewertung abschicken"
+    },
+    "ui.skip_question": {
+      "current": "Diese Frage überspringen"
+    },
+    "ui.undo": {
+      "current": "Zurücknehmen"
+    },
+    "ui.yes": {
+      "current": "Ja"
+    },
+    "ui.no": {
+      "current": "Nein"
+    },
+    "ui.unknown": {
+      "current": "Weiß ich nicht"
+    },
+    "ui.not_answered": {
+      "current": "noch nicht beantwortet"
+    },
+    "ui.rank_hint": {
+      "current": "Zieh die drei wichtigsten nach oben. Oder tippe sie nacheinander an — die Reihenfolge zählt."
+    },
+    "ui.rank_reset": {
+      "current": "Auswahl zurücksetzen"
+    },
+    "ui.search_hint": {
+      "current": "Tippen zum Suchen"
+    },
+    "ui.search_empty": {
+      "current": "Kein Treffer. Tipp anders oder wähle den letzten Eintrag der Liste."
+    },
+    "ui.upload": {
+      "current": "Nachweis auswählen"
+    },
+    "ui.upload_done": {
+      "current": "Nachweis hochgeladen"
+    },
+    "ui.remove": {
+      "current": "Entfernen"
+    },
+    "ui.preview_hidden": {
+      "current": "Das bleibt unsichtbar"
+    },
+    "ui.preview_withdraw": {
+      "current": "Diesen Teil zurücknehmen"
+    },
+    "ui.preview_restore": {
+      "current": "Doch wieder mitschicken"
+    },
+    "ui.draft_saved": {
+      "current": "Entwurf gespeichert"
+    },
+    "help.anlaufstellen": [
+      {
+        "current": "Ausbildungsberatung deiner Kammer — PLATZHALTER: Kontaktweg ergänzen"
+      },
+      {
+        "current": "Jugend- und Auszubildendenvertretung in deinem Betrieb, falls es eine gibt"
+      },
+      {
+        "current": "Gewerkschaftliche Beratung für Auszubildende — PLATZHALTER: Kontaktweg ergänzen"
+      }
+    ],
+    "preview.nicht_sichtbar": [
+      {
+        "current": "Dein Name und dein Konto"
+      },
+      {
+        "current": "Dein Ausbildungsjahr und der Monat, in dem du bewertet hast"
+      },
+      {
+        "current": "Deine Antworten aus dem Modul Konflikte und Grenzen"
+      },
+      {
+        "current": "Einzelne Zahlenangaben — sie erscheinen nur zusammengefasst und in Spannen"
+      },
+      {
+        "current": "Deine Angabe zur Tagesform"
+      }
+    ]
+  }
+}

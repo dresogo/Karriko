@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/company_provider.dart';
+import '../../providers/job_provider.dart';
 import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../common/app_bar_widget.dart';
@@ -882,7 +883,7 @@ class _JobCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.go('/company/${job.companySlug}'),
+      onTap: () => context.go('/stellen/${job.id}'),
       behavior: HitTestBehavior.opaque,
       child: Container(
         padding: const EdgeInsets.all(AppLayout.s24),
