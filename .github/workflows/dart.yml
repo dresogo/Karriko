@@ -89,7 +89,7 @@ jobs:
         working-directory: packages/karriko_functions
         run: dart test
 
-  # ── Die sechs Functions ─────────────────────────────────────────────────────
+  # ── Die Functions ───────────────────────────────────────────────────────────
   #
   # Jede Function ist ein eigenes Dart-Paket mit einer Pfadabhaengigkeit nach
   # `vendor/`, und `vendor/` steht in der .gitignore. Ohne den Kopierschritt
@@ -113,7 +113,7 @@ jobs:
       - name: Gemeinsame Pakete kopieren
         run: dart run tools/vendor_core.dart
 
-      # Die Schleife bricht nicht beim ersten Fehler ab: Bei sechs Functions
+      # Die Schleife bricht nicht beim ersten Fehler ab: Bei sieben Functions
       # will man alle Befunde aus einem Lauf sehen und nicht sechsmal pushen.
       - name: Analysieren
         run: |

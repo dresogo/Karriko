@@ -687,9 +687,9 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Sechs Functions, alle in Dart.
+Sieben Functions, alle in Dart.
 
-### Gemeinsam für alle sechs
+### Gemeinsam für alle sieben
 
 | | |
 |---|---|
@@ -705,11 +705,11 @@ Wenn eine Function ins Timeout läuft oder der Speicher nicht reicht, setzt du s
 in der Console unter Settings → Runtime und trägst sie danach in die Vorlage
 nach.
 
-Dass alle sechs dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
+Dass alle sieben dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
 `questionnaire_core` ein wie der Client. Dass Server und Client zum selben
 Ergebnis kommen, ist damit keine Absprache zwischen zwei Umsetzungen.
 
-### Die sechs im Einzelnen
+### Die sieben im Einzelnen
 
 #### `submit_review`
 
@@ -727,6 +727,48 @@ man sich selbst setzen kann, nichts sagt.
 Sie lädt genau die Version, mit der die Einreichung begonnen wurde, prüft dagegen,
 rechnet Werte und Qualitäts-Flags **neu**, legt die Zeile an und löscht den
 Entwurf. `files.read` braucht sie, um die Definition aus dem Bucket zu laden.
+
+#### `my_reviews`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | **nur** `rows.read` |
+
+**Der einzige Weg zu den eigenen abgeschickten Bewertungen.** `public_reviews`
+trägt keine `user_id`, und auf `reviews` hat kein Client Zugriff — auch der
+Verfasser nicht. Diese Function stellt die Zuordnung her, ohne die Trennung
+aufzugeben: Sie entsteht **nur hier und nur für die Dauer eines Aufrufs**, und
+sie entsteht aus dem angemeldeten Nutzer.
+
+**Die Nutzerkennung kommt aus dem geprüften JWT, nicht aus dem Rumpf.** Appwrite
+setzt `x-appwrite-user-id`; daran hängt alles. Ein Parameter dafür wäre eine
+Einladung, die Bewertungen anderer zu lesen, und deshalb gibt es keinen.
+
+**Sie schreibt nichts.** `rows.read` und sonst nichts — kein `files.read`, weil
+sie keine Definition lädt, kein `teams.read`, weil sie keine Mitgliedschaft
+prüft. Eine Function, die nur liest, kann keine Bewertung verändern. Das ist
+hier keine Sparsamkeit, sondern die Eigenschaft, die sie harmlos macht.
+
+Aufruf ohne Rumpf oder mit `{}`. Die Antwort trägt je Bewertung den Betrieb, den
+Status, das Abschickdatum, die eigenen Freitexte, bei einer zurückgestellten das
+Datum der Freigabe, bei einer freigegebenen den Verweis auf die öffentliche
+Zeile und bei einer abgelehnten die **Begründung**.
+
+**Was sie nicht ausliefert, und warum:** keine Qualitätsmarkierungen — wer
+erfährt, dass er als Durchklicker markiert wurde, weiß beim nächsten Mal, wie er
+es vermeidet. Keine Bearbeitungszeiten, aus denen `too_fast` entsteht. Keine
+gerechneten Werte: Vor der Freigabe sind sie nicht endgültig, nach der Freigabe
+stehen sie in der öffentlichen Ansicht, die der Verfasser wie jeder andere sieht.
+Keinen Gerätehash. Und **nicht den Namen des Moderators** — die Begründung einer
+Ablehnung gehört dem Verfasser, der Name nicht.
+
+Die vollständige Liste mit je einem Grund steht als `withheldFromAuthor` in
+`packages/karriko_functions/lib/src/my_reviews.dart`, und ein Test geht sie
+durch: Jede dort genannte Spalte muss in der Antwort fehlen, und jeder Grund
+muss einer sein.
 
 #### `moderate_review`
 
@@ -889,7 +931,7 @@ ist.
 
 | Variable | Wer | Bedeutung |
 |---|---|---|
-| `KARRIKO_DATABASE_ID` | alle sechs | Die Datenbankkennung. **Kein Standardwert.** Ein geratener Wert liefe gegen eine erfundene Datenbank und erzeugte eine Fehlermeldung, die auf alles andere hindeutet. Fehlt sie, bricht die Function beim Start ab und sagt, welche Variable fehlt. |
+| `KARRIKO_DATABASE_ID` | alle sieben | Die Datenbankkennung. **Kein Standardwert.** Ein geratener Wert liefe gegen eine erfundene Datenbank und erzeugte eine Fehlermeldung, die auf alles andere hindeutet. Fehlt sie, bricht die Function beim Start ab und sagt, welche Variable fehlt. |
 
 ### Das Geheimnis
 
@@ -1284,10 +1326,10 @@ namentlich aufgeführt.
 | ⚖️ | **Aufbewahrungsfrist für Entwürfe.** Standard 90 Tage ohne Änderung (`KARRIKO_DRAFT_RETENTION_DAYS`). Ein Entwurf enthält Antworten zu einem Betrieb, die nie abgeschickt wurden. |
 | ⚖️ | **Aufbewahrung der Rohantworten.** `answers_json` bleibt unbefristet stehen, weil `recompute_all` sie braucht. Ob das zulässig ist und ob es eine Obergrenze braucht, ist offen. Es gibt heute keine Frist dafür. |
 | ⚖️ | **Aufbewahrung des Exports aus Abschnitt 11.** Er enthält Rohantworten und Nutzerkennungen. Wie lange und wo. |
-| ⚖️ | **Löschverlangen eines Nutzers.** Es gibt heute keinen Weg dafür. Eine Bewertung in `public_reviews` ist nicht mit einem Konto verknüpft — was Absicht ist und diesen Fall schwierig macht: Über `reviews` wäre sie auffindbar, aber das Löschen dort lässt die öffentliche Zeile stehen. **Das ist die größte offene Lücke dieser Einrichtung.** |
+| ⚖️ | **Löschverlangen eines Nutzers.** Es gibt keinen Weg dafür. Seit `my_reviews` ist die Bewertung dem Konto zuordenbar — aber nur lesend. Zu löschen hieße, auch die öffentliche Zeile zu entfernen, und dafür gibt es keine Function. **Das ist die größte offene Lücke dieser Einrichtung**, jetzt mit der Zuordnung, an der es vorher fehlte. |
 | ⚖️ | **Die Texte im Fragebogen.** Fünf Stellen tragen einen Platzhalter, siehe unten. |
 | ⚖️ | **Aufbewahrung des Gerätehashes.** Er hat heute keine Frist. |
-| ⚖️ | **Auskunftsverlangen.** Dasselbe Problem wie beim Löschverlangen, mit derselben Ursache. |
+| ⚖️ | **Auskunftsverlangen.** `my_reviews` liefert dem Verfasser, was er über seine eigene Bewertung wissen soll — bewusst nicht alles, was gespeichert ist. Ein Auskunftsverlangen will genau das andere. |
 
 ### Die fünf Platzhalter im Fragebogen
 
@@ -1326,9 +1368,9 @@ Version.
   Function, die ihn ausliefert.
 * **Es gibt keinen Moderationsbildschirm.** `moderate_review` wird heute über die
   Console oder einen eigenen Aufruf ausgelöst.
-* **Ein Azubi kann seine abgeschickten Bewertungen nur lokal wiederfinden.** Die
-  Liste liegt im Browser, nicht auf dem Server. Der Preis dafür, dass
-  `public_reviews` keine `user_id` trägt.
+* **Die lokale Liste bleibt als Rückfall.** Antwortet `my_reviews` nicht, zeigt
+  der Bildschirm, was dieser Browser weiß — und sagt dazu, dass es
+  unvollständig sein kann und den Stand der Moderation nicht kennt.
 
 ---
 
@@ -1453,6 +1495,34 @@ Danach:
 Dann eine zweite Bewertung ablehnen, ohne `reason` — der Aufruf muss
 zurückgewiesen werden. Mit `reason` muss die öffentliche Zeile verschwinden und
 der Status auf `rejected` stehen.
+
+### Die eigene Liste
+
+Mit demselben Konto, das die Bewertung abgeschickt hat:
+
+```bash
+appwrite functions create-execution --function-id my_reviews --body '{}'
+```
+
+Erwartet: Die abgeschickte Bewertung mit Betrieb, Status, Abschickdatum und den
+eigenen Freitexten. Nach der Freigabe zusätzlich `public_review_id` und
+`published_at`; nach einer Ablehnung die `rejection_reason`.
+
+**Und jetzt der Teil, auf den es ankommt — sieh die Antwort wirklich an.** Dort
+darf nichts davon stehen:
+
+`quality_flags`, `quality_notes`, `timings_json`, `answers_json`, `device_hash`,
+`user_id`, `detail_overall`, `sub_*`, `k5_recommend`, `k6_overall`,
+`verification_file_id`, `moderator_id`.
+
+Steht eines davon drin, ist es ein Fehler und kein Mehrwert. Die vollständige
+Liste mit je einem Grund ist `withheldFromAuthor` in
+`packages/karriko_functions/lib/src/my_reviews.dart`.
+
+Dann mit einem **zweiten** Konto aufrufen, das nichts abgeschickt hat. Erwartet:
+eine leere Liste. Die Function nimmt die Nutzerkennung aus dem JWT; es gibt
+keinen Parameter, mit dem man eine fremde einsetzen könnte, und das ist der
+Punkt.
 
 ### Die Nichtdublette
 

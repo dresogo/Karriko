@@ -1,6 +1,6 @@
 # Der Bewertungsfragebogen: was gebaut wurde und warum
 
-Stand: 1. Oktober 2026. Sechs Etappen, nichts gegen das Produktivprojekt
+Stand: 2. Oktober 2026. Sechs Etappen, nichts gegen das Produktivprojekt
 ausgeführt. Abschnitt 6 nennt zwei Befunde, die erst mit dem tatsächlichen
 Stand der Datenbank sichtbar wurden.
 
@@ -58,7 +58,7 @@ keine Absprache zwischen zwei Umsetzungen.
 ```
 packages/questionnaire_core/     Fragebogenlogik. Reines Dart, keine Laufzeit-Abhaengigkeit.
 packages/karriko_functions/      Appwrite-Kleber fuer die Functions, ohne Flutter.
-appwrite/functions/<sechs>/      Je ein Dart-Paket, je eine lib/main.dart.
+appwrite/functions/<sieben>/     Je ein Dart-Paket, je eine lib/main.dart.
 appwrite/questionnaires/         Die Definition, wie sie in den Bucket geht.
 appwrite/appwrite.config.template.json   CLI-Konfiguration mit Platzhaltern.
 karriko_flutter/assets/questionnaire/    Dieselbe Definition als Asset (Rueckfall).
@@ -189,7 +189,7 @@ Leere.
 
 Verworfen: eine Git-Abhängigkeit (koppelt jedes Deployment an einen vorher
 gepushten Commit, und Pushen braucht deine Ansage), `providerRootDirectory` auf die
-Repository-Wurzel (lädt das ganze Repo sechsmal hoch), Veröffentlichen auf pub.dev
+Repository-Wurzel (lädt das ganze Repo je Function einmal hoch), Veröffentlichen auf pub.dev
 (kommt für internen Code nicht infrage).
 
 Gewählt: kopieren, mit einer Inhaltsmarke je Kopie und einem Prüflauf, der mit
@@ -236,6 +236,53 @@ Die Einladungsquelle prüft jetzt der Server. Der Client prüfte sie schon, aber
 ein Client ist kein Argument: Die Markierung „kam über eine Einladung" ließe sich
 sonst über eine selbstgebaute Adresse erschleichen, und angeforderte Bewertungen
 fallen systematisch anders aus als spontane.
+
+### `my_reviews` liest, und zwar nur
+
+Gebaut am 2. Oktober 2026, nach dreimaligem Nachfragen entschieden.
+
+Der Widerspruch, den sie auflöst: `public_reviews` darf keine `user_id` tragen,
+sonst wäre eine veröffentlichte Bewertung keine anonyme. Auf `reviews` hat kein
+Client Zugriff. Also konnte ein Azubi seine abgeschickten Bewertungen nur in dem
+Browser wiederfinden, aus dem er sie abgeschickt hatte.
+
+Die Function stellt die Zuordnung her, **ohne sie in die Datenbank zu
+schreiben**: Sie entsteht aus dem geprüften JWT, nur für die Dauer eines Aufrufs.
+Es gibt keinen Parameter für eine Nutzerkennung, und es darf keinen geben — das
+wäre eine Einladung, die Bewertungen anderer zu lesen.
+
+**Ihr Schlüssel hat nur `rows.read`.** Kein `files.read`, weil sie keine
+Definition lädt; kein `teams.read`, weil sie keine Mitgliedschaft prüft. Eine
+Function, die nur liest, kann keine Bewertung verändern. Das ist hier keine
+Sparsamkeit, sondern die Eigenschaft, die sie harmlos macht.
+
+**Die schwierigere Hälfte war, was sie nicht ausliefert.** Die Zeile enthält
+mehr, als dem Verfasser gehört:
+
+* **Keine Qualitätsmarkierungen.** Wer erfährt, dass er als Durchklicker
+  markiert wurde, weiß beim nächsten Mal, wie er es vermeidet. Flags leiten in
+  die Moderation; sie sind keine Rückmeldung.
+* **Keine Bearbeitungszeiten.** Aus ihnen entsteht `too_fast`. Sie
+  zurückzugeben hieße, die Schwelle verhandelbar zu machen.
+* **Keine gerechneten Werte.** Vor der Freigabe sind sie nicht endgültig, nach
+  der Freigabe stehen sie in der öffentlichen Ansicht, die der Verfasser wie
+  jeder andere sieht. Zwei Darstellungen desselben Werts wären eine zu viel.
+* **Nicht den Namen des Moderators.** Die Begründung einer Ablehnung gehört dem
+  Verfasser, der Name nicht.
+
+Die Begründung je Spalte steht als `withheldFromAuthor` im Code, nicht in diesem
+Bericht — und ein Test geht sie durch: Jede genannte Spalte muss fehlen, und
+jeder Grund muss einer sein. Der Test hat beim ersten Lauf meine eigene
+Abkürzung erwischt, drei Wörter, die nichts erklärten.
+
+**Die Begründung einer Ablehnung kommt damit erstmals beim Verfasser an.**
+`moderate_review` verlangt sie seit Teil D, weil eine Ablehnung ohne Begründung
+für ihn nicht nachvollziehbar wäre. Bis jetzt lag sie im `moderation_log` und
+niemand sah sie.
+
+Die lokale Liste bleibt als Rückfall, wenn der Server nicht antwortet — und der
+Bildschirm sagt dann, dass sie nur dieses Gerät kennt. Zwei ungleiche Quellen
+als dieselbe darzustellen wäre eine Behauptung, die nicht stimmt.
 
 ### Keine Antwort des Betriebs
 
@@ -345,16 +392,16 @@ Der Widerspruch war damit gegenstandslos, und das Werkzeug bleibt Vorsorge.
 | | |
 |---|---|
 | `questionnaire_core` | 287 Tests |
-| `karriko_functions` | 36 Tests |
+| `karriko_functions` | 43 Tests |
 | `karriko_flutter` | 211 Tests |
-| Analyse | Beide Pakete, alle sechs Functions, die App: keine Befunde |
+| Analyse | Beide Pakete, alle sieben Functions, die App: keine Befunde |
 
 Was diese Tests besonders macht: Sie laufen gegen die **echte** v1, nicht gegen
 einen Testfragebogen. Vier Personas gehen die Strecke durch und prüfen, welche
 Fragen erscheinen, in welcher Zeitform, welche Module angeboten werden, welche
 Werte herauskommen und welche Flags feuern.
 
-Die 36 Tests in `karriko_functions` prüfen, **was gespeichert würde, ohne es zu
+Die 43 Tests in `karriko_functions` prüfen, **was gespeichert würde, ohne es zu
 speichern**: `buildReviewRow`, `buildPublicReviewRow`, `buildCompanyScoresRow`,
 `decidePublishing`, `hashDeviceKey` sind reine Funktionen ohne Netzzugriff. Der
 wichtigste davon prüft, dass in `public_reviews` **keine** `user_id`, keine
@@ -380,19 +427,20 @@ Rohantworten, keine Zeiten, keine Flags und kein Gerätehash landen.
 
 Ehrliche Liste.
 
-* **Ein Azubi kann seine abgeschickten Bewertungen nur lokal wiederfinden.** Die
-  Liste liegt in `shared_preferences` im Browser. Das ist der Preis dafür, dass
-  `public_reviews` keine `user_id` trägt — und diese Verknüpfung darf es nicht
-  geben. Wer den Browser wechselt, sieht seine Bewertungen nicht mehr.
+* **Ein Löschverlangen bleibt offen.** `my_reviews` stellt die Zuordnung
+  zwischen Konto und Bewertung her, aber nur lesend. Zu löschen hieße, die
+  öffentliche Zeile mit zu entfernen, und dafür gibt es keinen Weg. Das ist
+  weiter die größte offene Lücke — aber sie ist jetzt kleiner: Die Zuordnung,
+  an der es fehlte, ist gebaut.
 * **Es gibt keinen Moderationsbildschirm.** `moderate_review` wird über die
   Console oder einen eigenen Aufruf ausgelöst.
 * **Die Moderation sieht den Verifikationsnachweis nur über die Console.** Es gibt
   keine Function, die ihn ausliefert, und das ist gewollt vorsichtig — aber es
   bedeutet, dass die Moderation zwei Werkzeuge braucht.
-* **Kein Löschverlangen.** Es gibt keinen Weg, auf Wunsch eines Nutzers seine
-  Bewertung zu entfernen. `reviews` findet sie über `user_id`, aber das Löschen
-  dort lässt die öffentliche Zeile stehen. **Das ist die größte offene Lücke.**
-* **Kein Auskunftsverlangen.** Dasselbe Problem, dieselbe Ursache.
+* **Kein Auskunftsverlangen.** `my_reviews` liefert dem Verfasser, was er über
+  seine eigene Bewertung wissen soll — aber bewusst nicht alles, was gespeichert
+  ist. Ein Auskunftsverlangen will genau das andere, und dafür gibt es keinen
+  Weg.
 * **Ein Betrieb kann sein eigenes `is_verified` und `average_rating` setzen.**
   Appwrite kennt keine Rechte je Spalte, und die Profilbearbeitung läuft direkt
   gegen die Tabelle. Das Abzeichen soll ein Mensch vergeben; heute kann es sich
@@ -411,16 +459,8 @@ Ehrliche Liste.
 
 ### Deine Entscheidung
 
-**`my_reviews` als siebte Function?** Zweimal gefragt, zweimal offen geblieben.
-Sie würde die serverseitige Liste der eigenen Bewertungen möglich machen, ohne
-`public_reviews` zu ändern: Sie liest `reviews` über die `user_id` aus dem JWT und
-gibt nur zurück, was der Verfasser über seine eigene Bewertung wissen darf.
-
-Das ist der saubere Weg. Er ist nicht gebaut, weil sechs Functions beauftragt
-waren und eine siebte eine Entscheidung ist.
-
-Sie wäre außerdem die Grundlage für ein Löschverlangen — dieselbe Zuordnung, die
-sie braucht.
+Zum Zeitpunkt dieses Stands keine offene. `my_reviews` ist am 2. Oktober 2026
+gebaut worden — siehe Abschnitt 4.
 
 ### Juristisch zu prüfen
 

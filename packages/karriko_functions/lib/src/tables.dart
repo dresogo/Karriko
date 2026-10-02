@@ -65,6 +65,22 @@ class Tables {
     return result.rows.isEmpty ? null : result.rows.first;
   }
 
+  /// Die Bewertungen eines Nutzers.
+  ///
+  /// Keine Sortierung in der Abfrage: Ein `orderDesc` auf `$createdAt` würde
+  /// einen eigenen Index verlangen, und die Menge ist klein genug, um sie beim
+  /// Aufrufer zu sortieren — je Nutzer und Betrieb gibt es höchstens eine
+  /// Bewertung. Der eindeutige Index auf `user_id` + `company_id` bedient die
+  /// Suche über seine erste Spalte.
+  Future<List<aw.Row>> reviewsByUser(String userId, {int limit = 100}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [Query.equal('user_id', userId), Query.limit(limit)],
+    );
+    return ergebnis.rows;
+  }
+
   /// Alle Bewertungen mit diesem Status, seitenweise.
   Stream<aw.Row> reviewsByStatus(String status, {int pageSize = 100}) => _pages(
         tableId: config.reviewsTable,
@@ -124,6 +140,27 @@ class Tables {
   Stream<aw.Row> allPublicReviews({int pageSize = 100}) =>
       _pages(tableId: config.publicReviewsTable, pageSize: pageSize);
 
+  /// Die öffentlichen Zeilen zu mehreren Bewertungen, in **einer** Abfrage.
+  ///
+  /// `Query.equal` mit einer Liste heißt „einer davon". Ohne das wäre es eine
+  /// Abfrage je Bewertung — bei einer Übersichtsseite also eine Abfrage je
+  /// Zeile, und das summiert sich.
+  Future<Map<String, aw.Row>> publicReviewsByIds(List<String> reviewIds) async {
+    if (reviewIds.isEmpty) return const {};
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.publicReviewsTable,
+      queries: [
+        Query.equal('review_id', reviewIds),
+        Query.limit(reviewIds.length),
+      ],
+    );
+    return {
+      for (final zeile in ergebnis.rows)
+        if (zeile.data['review_id'] case final String id) id: zeile,
+    };
+  }
+
   // ── companies ─────────────────────────────────────────────────────────────
 
   /// Name und Slug des Betriebs, für die öffentliche Zeile.
@@ -165,6 +202,17 @@ class Tables {
           'review_count': reviewCount,
         },
       );
+
+  /// Name und Slug mehrerer Betriebe, in einer Abfrage.
+  Future<Map<String, aw.Row>> companiesByIds(List<String> ids) async {
+    if (ids.isEmpty) return const {};
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [Query.equal(r'$id', ids), Query.limit(ids.length)],
+    );
+    return {for (final zeile in ergebnis.rows) zeile.$id: zeile};
+  }
 
   // ── company_scores ────────────────────────────────────────────────────────
 
@@ -244,6 +292,43 @@ class Tables {
         },
         permissions: const [],
       );
+
+  /// Die Begründung der jüngsten Ablehnung je Bewertung.
+  ///
+  /// Nur `reason`, und nur von Ablehnungen. **Nicht `moderator_id`**: Wer
+  /// abgelehnt hat, bleibt dem Verfasser gegenüber ungenannt — die Begründung
+  /// gehört ihm, der Name nicht. Auch nicht `flags`, aus demselben Grund, aus
+  /// dem die Qualitätsmarkierungen nicht an den Verfasser gehen.
+  Future<Map<String, String>> rejectionReasons(List<String> reviewIds) async {
+    if (reviewIds.isEmpty) return const {};
+
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.moderationLogTable,
+      queries: [
+        Query.equal('review_id', reviewIds),
+        Query.equal('action', 'reject'),
+        Query.limit(100),
+      ],
+    );
+
+    // Die jüngste gewinnt: Eine Bewertung kann abgelehnt, überarbeitet und
+    // wieder abgelehnt worden sein.
+    final neueste = <String, String>{};
+    final zeitpunkt = <String, String>{};
+    for (final zeile in ergebnis.rows) {
+      final id = zeile.data['review_id'];
+      final grund = zeile.data['reason'];
+      if (id is! String || grund is! String) continue;
+      final wann = zeile.data['created_at'] as String? ?? zeile.$createdAt;
+      final bisher = zeitpunkt[id];
+      if (bisher == null || wann.compareTo(bisher) > 0) {
+        neueste[id] = grund;
+        zeitpunkt[id] = wann;
+      }
+    }
+    return neueste;
+  }
 
   // ── Seitenweise lesen ─────────────────────────────────────────────────────
 

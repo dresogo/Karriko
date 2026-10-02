@@ -51,11 +51,16 @@ class SubmittedReview {
 /// keine anonyme Bewertung. Der Preis ist, dass sich abgeschickte Bewertungen
 /// nicht serverseitig einem Nutzer zuordnen lassen.
 ///
-/// **Was dieser Weg kostet:** Die Liste steht nur auf diesem Gerät. Wer den
-/// Browser wechselt oder die Seitendaten löscht, sieht seine früheren
-/// Bewertungen hier nicht mehr — sie sind trotzdem da, nur nicht als „meine"
-/// wiederzufinden. Das ist der ehrlichere Preis: Die Alternative wäre eine
-/// Verknüpfung in der Datenbank, und genau die soll es nicht geben.
+/// **Seit es `my_reviews` gibt, ist das der Rückfall und nicht der Weg.** Die
+/// Function stellt die Zuordnung zum angemeldeten Nutzer her — lesend und nur
+/// für die Dauer eines Aufrufs — und liefert die vollständige Liste samt Stand
+/// der Moderation. Diese hier bleibt für den Fall, dass der Server nicht
+/// antwortet.
+///
+/// **Was der Rückfall nicht kann:** Er kennt nur dieses Gerät, und er weiß
+/// nichts über den Stand der Moderation — nur, was beim Abschicken gemeldet
+/// wurde. Wer den Browser wechselt, sieht hier nichts. Der Bildschirm sagt es
+/// dann auch, statt eine unvollständige Liste als vollständig auszugeben.
 class SubmittedReviewsLog {
   static const _key = 'karriko.submitted_reviews';
 

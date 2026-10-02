@@ -528,6 +528,146 @@ void main() {
     });
   });
 
+  group('Die eigene Liste aus my_reviews', () {
+    Map<String, Object?> eintrag({
+      String status = ReviewStatus.pendingModeration,
+      String? grund,
+      String? oeffentlicheId,
+    }) {
+      final answers = _antworten();
+      final scores = ReviewScores.compute(_v1, answers);
+      final review = buildReviewRow(
+        questionnaire: _v1,
+        answers: answers,
+        scores: scores,
+        flags: evaluateQuality(
+          questionnaire: _v1,
+          answers: answers,
+          scores: scores,
+        ),
+        companyId: 'betrieb1',
+        userId: 'nutzer1',
+        status: status,
+        timings: const {'k6_gesamt': 4200},
+        deviceHash: hashDeviceKey('geraet', 'salz'),
+      );
+      return buildOwnReviewEntry(
+        reviewId: 'r1',
+        reviewRow: review,
+        submittedAt: '2026-09-01T10:00:00.000Z',
+        companyName: 'Muster GmbH',
+        companySlug: 'muster-gmbh',
+        publicReviewId: oeffentlicheId,
+        publishedAt: oeffentlicheId == null ? null : '2026-09-05T08:00:00.000Z',
+        rejectionReason: grund,
+      );
+    }
+
+    test('zeigt dem Verfasser seine eigenen Angaben', () {
+      final e = eintrag();
+      expect(e['review_id'], 'r1');
+      expect(e['company_name'], 'Muster GmbH');
+      expect(e['company_slug'], 'muster-gmbh');
+      expect(e['status'], ReviewStatus.pendingModeration);
+      expect(e['submitted_at'], '2026-09-01T10:00:00.000Z');
+      expect(e['beruf_name'], contains('Fachinformatiker'));
+      expect(e['start_year'], 2020);
+      expect(e['freitext_gut'], 'Die Kollegen.');
+    });
+
+    test('und nichts, was der Moderation gehört', () {
+      // Der eigentliche Punkt dieser Function. Jeder Eintrag in
+      // `withheldFromAuthor` traegt einen Grund — hier wird er durchgesetzt.
+      final e = eintrag();
+      for (final verboten in withheldFromAuthor.keys) {
+        expect(
+          e.containsKey(verboten),
+          isFalse,
+          reason: '$verboten: ${withheldFromAuthor[verboten]}',
+        );
+      }
+    });
+
+    test('die Qualitätsmarkierungen kommen nirgends durch', () {
+      // Gegen die naheliegende Luecke: Ein Flag koennte auch im Text eines
+      // anderen Feldes landen. Wer erfaehrt, dass er markiert wurde, weiss
+      // beim naechsten Mal, wie er es vermeidet.
+      final e = eintrag();
+      final alles = e.values.map((v) => '$v').join(' ');
+      for (final code in [
+        'too_fast',
+        'straightlining',
+        'inconsistent_pair',
+        'overall_detail_mismatch',
+        'impossible_combination',
+        'text_needs_review',
+      ]) {
+        expect(alles, isNot(contains(code)), reason: code);
+      }
+    });
+
+    test('verlinkt die öffentliche Zeile erst, wenn es eine gibt', () {
+      expect(eintrag().containsKey('public_review_id'), isFalse);
+      expect(eintrag().containsKey('published_at'), isFalse);
+
+      final frei = eintrag(status: ReviewStatus.approved, oeffentlicheId: 'p1');
+      expect(frei['public_review_id'], 'p1');
+      expect(frei['published_at'], '2026-09-05T08:00:00.000Z');
+    });
+
+    test('eine Ablehnung kommt mit Begründung an', () {
+      // `moderate_review` weist eine Ablehnung ohne Begruendung zurueck, und
+      // zwar genau deshalb: Sie waere fuer den Verfasser nicht nachvollziehbar.
+      // Hier kommt sie bei ihm an — ohne den Namen des Moderators.
+      final e = eintrag(
+        status: ReviewStatus.rejected,
+        grund: 'Der Freitext nennt einen Kollegen beim Namen.',
+      );
+      expect(e['status'], ReviewStatus.rejected);
+      expect(e['rejection_reason'], contains('Kollegen beim Namen'));
+      expect(e.containsKey('moderator_id'), isFalse);
+    });
+
+    test('eine leere Begründung ist keine', () {
+      expect(
+        eintrag(status: ReviewStatus.rejected, grund: '   ')
+            .containsKey('rejection_reason'),
+        isFalse,
+      );
+    });
+
+    test('jede zurückgehaltene Spalte hat einen Grund', () {
+      // Damit niemand eine Zeile ohne Begruendung ergaenzt und damit auch nicht
+      // begruenden muss, warum sie fehlt.
+      //
+      // Ein Querverweis gilt: „Wie detail_overall." ist eine Begruendung,
+      // solange der Eintrag, auf den er zeigt, eine traegt. Deshalb wird
+      // aufgeloest statt an der Laenge gemessen.
+      expect(withheldFromAuthor, isNotEmpty);
+
+      String aufgeloest(String key, [int tiefe = 0]) {
+        final wert = withheldFromAuthor[key]!.trim();
+        if (tiefe > 3) return wert;
+        for (final anderer in withheldFromAuthor.keys) {
+          if (anderer != key && wert.startsWith('Wie $anderer')) {
+            return aufgeloest(anderer, tiefe + 1);
+          }
+        }
+        return wert;
+      }
+
+      for (final key in withheldFromAuthor.keys) {
+        final grund = aufgeloest(key);
+        expect(grund, isNotEmpty, reason: key);
+        expect(
+          grund.length,
+          greaterThan(40),
+          reason: '$key: „$grund" erklärt nicht, warum die Spalte fehlt.',
+        );
+      }
+    });
+  });
+
   group('JSON-Spalten', () {
     test('ein kaputter Wert hält keinen Stapellauf an', () {
       expect(decodeJsonColumn('{'), isEmpty);

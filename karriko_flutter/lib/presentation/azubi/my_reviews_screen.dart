@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../data/models/own_review.dart';
 import '../../data/models/review_draft.dart';
-import '../../data/services/submitted_reviews_log.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/questionnaire_provider.dart';
 import '../../providers/review_provider.dart';
@@ -20,7 +20,10 @@ import '../common/app_bar_widget.dart';
 /// * **Abgeschickt.** Die stehen in `reviews`, und dorthin hat kein Client
 ///   Zugriff — auch er selbst nicht. `public_reviews` trägt keine `user_id`,
 ///   weil eine öffentlich lesbare Zeile, die auf ein Konto zeigt, keine anonyme
-///   Bewertung wäre. Was hier steht, merkt sich deshalb dieses Gerät.
+///   Bewertung wäre. Den Weg dorthin öffnet allein die Function `my_reviews`:
+///   Sie stellt die Zuordnung her, aber nur lesend und nur für die Dauer eines
+///   Aufrufs. Antwortet sie nicht, bleibt die lokale Liste als Rückfall — und
+///   dann steht auch dort, dass sie nur dieses Gerät kennt.
 class MyReviewsScreen extends ConsumerWidget {
   const MyReviewsScreen({super.key});
 
@@ -28,7 +31,7 @@ class MyReviewsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userId = ref.watch(authProvider).user?.id ?? '';
     final entwuerfe = ref.watch(myDraftsProvider(userId));
-    final abgeschickt = ref.watch(submittedReviewsProvider);
+    final abgeschickt = ref.watch(ownReviewsProvider);
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Meine Bewertungen'),
@@ -75,18 +78,22 @@ class MyReviewsScreen extends ConsumerWidget {
                 const SizedBox(height: AppLayout.s48),
                 _Abschnitt(
                   titel: 'Abgeschickt',
-                  beschreibung: 'Diese Liste steht nur auf diesem Gerät. Deine '
-                      'Bewertungen sind mit keinem Konto verknüpft — genau '
-                      'deshalb bleiben sie anonym.',
+                  beschreibung: 'Deine Bewertungen sind öffentlich mit keinem '
+                      'Konto verknüpft — genau deshalb bleiben sie anonym. '
+                      'Diese Liste siehst nur du.',
                   inhalt: abgeschickt.when(
-                    data: (liste) => liste.isEmpty
-                        ? const _Leer(
-                            text: 'Von diesem Gerät wurde noch nichts '
-                                'abgeschickt.',
+                    data: (ergebnis) => ergebnis.reviews.isEmpty
+                        ? _Leer(
+                            text: ergebnis.vomGeraet
+                                ? 'Von diesem Gerät wurde noch nichts '
+                                    'abgeschickt.'
+                                : 'Du hast noch keine Bewertung abgeschickt.',
                           )
                         : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              for (final eintrag in liste)
+                              if (ergebnis.vomGeraet) const _NurDiesesGeraet(),
+                              for (final eintrag in ergebnis.reviews)
                                 _AbgeschicktZeile(eintrag: eintrag),
                             ],
                           ),
@@ -163,32 +170,103 @@ class _EntwurfsZeile extends ConsumerWidget {
   }
 }
 
-class _AbgeschicktZeile extends StatelessWidget {
-  final SubmittedReview eintrag;
-
-  const _AbgeschicktZeile({required this.eintrag});
+/// Der Hinweis, wenn die Liste aus dem Browser kommt statt vom Server.
+///
+/// Er steht da, weil die beiden nicht gleichwertig sind: Die lokale Liste kennt
+/// nur dieses Gerät und weiß nichts über den Stand der Moderation. Sie als
+/// vollständig darzustellen wäre eine Behauptung, die nicht stimmt.
+class _NurDiesesGeraet extends StatelessWidget {
+  const _NurDiesesGeraet();
 
   @override
   Widget build(BuildContext context) {
-    final wartet = eintrag.status == 'scheduled';
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppLayout.s16),
+      padding: const EdgeInsets.all(AppLayout.s16),
+      color: AppColors.audienceBeige,
+      child: const Text(
+        'Der Server war gerade nicht erreichbar. Diese Liste kommt aus diesem '
+        'Browser — sie kann unvollständig sein und zeigt nicht, wie weit die '
+        'Prüfung ist.',
+        style: TextStyle(color: AppColors.ink, fontSize: 14),
+      ),
+    );
+  }
+}
+
+class _AbgeschicktZeile extends StatelessWidget {
+  final OwnReview eintrag;
+
+  const _AbgeschicktZeile({required this.eintrag});
+
+  /// Was unter dem Betriebsnamen steht.
+  ///
+  /// Die vier Zustände bekommen vier Texte. Eine zurückgestellte Bewertung sähe
+  /// sonst wie eine verschollene aus, und eine abgelehnte wie eine, die noch
+  /// geprüft wird.
+  String _lage() {
+    final datum = DateFormat('dd.MM.yyyy').format(eintrag.submittedAt);
+
+    if (eintrag.istZurueckgestellt) {
+      if (eintrag.publishAfterTrainingEnd) {
+        return 'Gespeichert · geht nach deinem Ausbildungsende in die Prüfung';
+      }
+      final ab = eintrag.publishAfter;
+      return ab == null
+          ? 'Gespeichert · geht später in die Prüfung'
+          : 'Gespeichert · geht am ${DateFormat('dd.MM.yyyy').format(ab)} '
+              'in die Prüfung';
+    }
+
+    if (eintrag.istFreigegeben) {
+      final seit = eintrag.publishedAt;
+      return seit == null
+          ? 'Veröffentlicht'
+          : 'Veröffentlicht am ${DateFormat('dd.MM.yyyy').format(seit)}';
+    }
+
+    if (eintrag.istAbgelehnt) return 'Nicht veröffentlicht';
+
+    return 'Abgeschickt am $datum · in Prüfung';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Verlinkt wird nur, was es öffentlich gibt. Ein Verweis auf eine Seite,
+    // die noch nichts zeigt, ist kein Verweis.
+    final ziel = eintrag.publicReviewId;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppLayout.s8),
       decoration: BoxDecoration(border: Border.all(color: AppColors.line)),
-      child: ListTile(
-        title: Text(eintrag.companyName),
-        subtitle: Text(
-          wartet
-              ? 'Gespeichert, geht später in die Prüfung'
-              : 'Abgeschickt am '
-                  '${DateFormat('dd.MM.yyyy').format(eintrag.submittedAt)} · '
-                  'in Prüfung',
-        ),
-        trailing: const Icon(Icons.arrow_forward),
-        // Der Verweis geht auf die öffentliche Ansicht. Solange die Bewertung
-        // in der Moderation liegt, gibt es dort noch nichts zu sehen — das ist
-        // ehrlicher als eine eigene Vorschau, die etwas anderes zeigt.
-        onTap: () => context.go('/reviews/${eintrag.reviewId}'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ListTile(
+            title: Text(eintrag.companyName ?? 'Betrieb'),
+            subtitle: Text(_lage()),
+            trailing: ziel == null
+                ? null
+                : const Icon(Icons.arrow_forward, semanticLabel: 'Ansehen'),
+            onTap: ziel == null ? null : () => context.go('/reviews/$ziel'),
+          ),
+          // Die Begründung einer Ablehnung gehört dem Verfasser. `moderate_review`
+          // verlangt sie genau deshalb — hier kommt sie bei ihm an. Wer
+          // entschieden hat, steht nicht dabei.
+          if (eintrag.istAbgelehnt && eintrag.rejectionReason != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppLayout.s16,
+                0,
+                AppLayout.s16,
+                AppLayout.s16,
+              ),
+              child: Text(
+                'Begründung: ${eintrag.rejectionReason}',
+                style: const TextStyle(color: AppColors.muted, fontSize: 14),
+              ),
+            ),
+        ],
       ),
     );
   }

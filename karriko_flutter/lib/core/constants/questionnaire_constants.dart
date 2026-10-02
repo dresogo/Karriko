@@ -51,6 +51,13 @@ class QuestionnaireConstants {
     defaultValue: 'submit_review',
   );
 
+  /// Der einzige Weg zu den eigenen abgeschickten Bewertungen. Auf `reviews`
+  /// hat kein Client Zugriff, und `public_reviews` traegt keine `user_id`.
+  static const myReviewsFunction = String.fromEnvironment(
+    'FN_MY_REVIEWS',
+    defaultValue: 'my_reviews',
+  );
+
   // ── Mitgelieferter Rueckfall ──────────────────────────────────────────────
 
   /// Wird benutzt, wenn der Storage nicht erreichbar ist. Muss Zeichen fuer

@@ -381,6 +381,31 @@
       "scopes": ["rows.read", "rows.write", "files.read"]
     },
     {
+      "$id": "my_reviews",
+      "name": "my_reviews",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/my_reviews",
+      "timeout": 30,
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Nur rows.read. Diese Function schreibt nichts, und das ist keine",
+        "Sparsamkeit, sondern die Eigenschaft, die sie harmlos macht: Sie",
+        "stellt die Zuordnung zwischen Konto und Bewertung her, die es in der",
+        "Datenbank absichtlich nicht gibt — aber nur lesend und nur fuer die",
+        "Dauer eines Aufrufs.",
+        "Kein files.read: Sie laedt keine Fragendefinition.",
+        "Kein teams.read: Sie prueft keine Mitgliedschaft, sondern liefert dem",
+        "Aufrufer seine eigenen Zeilen."
+      ],
+      "scopes": ["rows.read"]
+    },
+    {
       "$id": "moderate_review",
       "name": "moderate_review",
       "enabled": true,

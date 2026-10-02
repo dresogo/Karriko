@@ -77,6 +77,9 @@ const JE_FUNCTION = {
   moderate_review: [],
   aggregate_company: [],
   recompute_all: [],
+  // Liest nur. Braucht ausser der Datenbankkennung nichts — insbesondere kein
+  // Salz: Sie hasht nichts und gibt den Geraetehash auch nicht heraus.
+  my_reviews: [],
 };
 
 const fehlt = GEMEINSAM.filter(

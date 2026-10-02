@@ -327,7 +327,7 @@ Umgebungsvariable KARRIKO_DATABASE_ID fehlt" ab.
 appwrite push function --with-variables
 ```
 
-Die CLI baut jede der sechs einzeln und zeigt das Build-Log. `dart pub get` muss
+Die CLI baut jede der sieben einzeln und zeigt das Build-Log. `dart pub get` muss
 durchlaufen. Findet es ein Paket nicht, fehlt `vendor/` im Upload — zurück zu
 Schritt 1.3.
 
@@ -337,7 +337,7 @@ Danach kontrollieren:
 appwrite functions list
 ```
 
-Erwartet: sechs Functions, jede mit `runtime: dart-3.11` und einem aktiven
+Erwartet: sieben Functions, jede mit `runtime: dart-3.11` und einem aktiven
 Deployment.
 
 Dann je Function die Einstellungen, die der Push gesetzt haben sollte:
@@ -349,6 +349,7 @@ appwrite functions get --function-id aggregate_company
 | Function | Prüfen |
 |---|---|
 | `submit_review` | `execute: ["users"]`, Timeout 30 |
+| `my_reviews` | `execute: ["users"]`, und **nur** `rows.read` in den Scopes |
 | `moderate_review` | `execute` enthält `team:moderators` und `team:admins` |
 | `aggregate_company` | drei `events` auf `public_reviews`, **mit deiner Datenbankkennung im String**, `execute` leer |
 | `publish_scheduled` | `schedule: "0 * * * *"`, `execute` leer |
@@ -554,6 +555,39 @@ Dann eine zweite Bewertung **ohne** `reason` ablehnen — der Aufruf muss
 zurückgewiesen werden. Eine Ablehnung ohne Begründung ist für den Verfasser nicht
 nachvollziehbar.
 
+### 8.4 Die eigene Liste
+
+Mit dem Konto, das die Bewertung abgeschickt hat:
+
+```powershell
+appwrite functions create-execution --function-id my_reviews --body '{}'
+```
+
+Erwartet: die abgeschickte Bewertung mit Betrieb, Status, Abschickdatum und den
+eigenen Freitexten. Nach der Freigabe zusätzlich `public_review_id` und
+`published_at`, nach einer Ablehnung die `rejection_reason`.
+
+**Sieh die Antwort wirklich an.** Nichts davon darf darin stehen:
+
+```
+quality_flags  quality_notes  timings_json  answers_json  device_hash
+user_id  detail_overall  sub_*  k5_recommend  k6_overall
+verification_file_id  moderator_id
+```
+
+Steht eines davon drin, ist es ein Fehler und kein Mehrwert. Warum jedes einzelne
+fehlt, steht als `withheldFromAuthor` in
+`packages/karriko_functions/lib/src/my_reviews.dart`.
+
+Dann mit einem **zweiten** Konto, das nichts abgeschickt hat. Erwartet: eine
+leere Liste. Die Function nimmt die Nutzerkennung aus dem geprüften JWT, und es
+gibt keinen Parameter, mit dem man eine fremde einsetzen könnte — genau das ist
+der Punkt.
+
+Zuletzt in der App: „Meine Bewertungen" muss die Liste zeigen, und zwar **ohne**
+den Hinweis, dass sie aus diesem Browser kommt. Erscheint der Hinweis, antwortet
+die Function nicht und der Rückfall greift.
+
 ---
 
 ## 9. Testdaten aufräumen
@@ -604,9 +638,9 @@ Vollständig, damit nichts unbemerkt liegen bleibt.
 * **Ein Löschverlangen eines Nutzers umsetzen.** Es gibt keinen Weg dafür.
   `reviews` findet die Bewertung über `user_id`, aber das Löschen dort lässt die
   öffentliche Zeile stehen. Die größte offene Lücke.
-* **Ein Azubi kann seine abgeschickten Bewertungen nur lokal wiederfinden.** Die
-  Liste liegt im Browser. Dafür wäre eine siebte Function `my_reviews` nötig —
-  dieselbe Zuordnung, die auch ein Löschverlangen bräuchte.
+* **Ein Löschverlangen bleibt offen.** `my_reviews` stellt die Zuordnung
+  zwischen Konto und Bewertung her, aber nur lesend. Löschen hieße, die
+  öffentliche Zeile mit zu entfernen, und dafür gibt es keinen Weg.
 
 ---
 
@@ -630,7 +664,7 @@ Wenn alles vorbereitet ist und du nur die Reihenfolge brauchst:
     node tools/appwrite-setup.mjs --dry-run
     node tools/appwrite-setup.mjs --fix-permissions
 7.  cd appwrite
-    appwrite push function --with-variables
+    appwrite push function --with-variables   (sieben Functions)
 8.  cd ..
     dart run tools/sync_questionnaire.dart
     Get-FileHash …
