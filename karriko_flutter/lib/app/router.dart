@@ -45,6 +45,7 @@ import '../presentation/betrieb/team_screen.dart';
 import '../presentation/betrieb/subscription_screen.dart';
 import '../presentation/betrieb/reports_screen.dart';
 import '../presentation/betrieb/settings_screen.dart' as betrieb;
+import '../presentation/admin/admin_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Bewusst kein ref.watch(authProvider): Das wuerde bei jeder Zustands-
@@ -108,6 +109,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       // spaeteren Tore setzen eine vollstaendige Sitzung voraus, die die
       // frueheren erst herstellen.
       if (auth.isLoading) return null;
+
+      // Der Admin-Bereich meldet selbst an und prueft selbst die Teams. Er
+      // steht in keiner der Listen oben: Ein Admin-Konto hat keine Rolle
+      // 'betrieb', die Azubi-Regeln wuerden es also aufs Dashboard schicken.
+      // Nur der zweite Faktor muss vorher erledigt sein.
+      if (path == '/admin') {
+        return auth.mfaRequired ? '/mfa-challenge' : null;
+      }
 
       // Wie '/verify-email' ein Zwischenzustand mit eigener Seite. Stuende der
       // Pfad in authPaths, schickte ihn der Block dort aufs Dashboard, das den
@@ -282,6 +291,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/betrieb-settings/passkeys',
           builder: (_, __) => const PasskeyManageScreen()),
+      // Bewusst ohne Verweis aus der Oberflaeche, nur ueber die Adresse.
+      GoRoute(path: '/admin', builder: (_, __) => const AdminScreen()),
     ],
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Seite nicht gefunden: ${state.uri}')),

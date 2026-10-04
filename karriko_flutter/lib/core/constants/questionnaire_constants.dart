@@ -58,6 +58,33 @@ class QuestionnaireConstants {
     defaultValue: 'my_reviews',
   );
 
+  /// Freigeben oder ablehnen. Nur `team:moderators` und `team:admins`.
+  static const moderateReviewFunction = String.fromEnvironment(
+    'FN_MODERATE_REVIEW',
+    defaultValue: 'moderate_review',
+  );
+
+  /// Alle freigegebenen Bewertungen neu rechnen. Nur `team:admins`.
+  static const recomputeAllFunction = String.fromEnvironment(
+    'FN_RECOMPUTE_ALL',
+    defaultValue: 'recompute_all',
+  );
+
+  // ── Teams ─────────────────────────────────────────────────────────────────
+
+  /// Dieselben Kennungen wie `KARRIKO_TEAM_*` in den Functions. Weichen sie
+  /// ab, zeigt der Admin-Bereich „kein Zugang", obwohl die Function den Aufruf
+  /// annähme — oder umgekehrt.
+  static const moderatorsTeam = String.fromEnvironment(
+    'TEAM_MODERATORS',
+    defaultValue: 'moderators',
+  );
+
+  static const adminsTeam = String.fromEnvironment(
+    'TEAM_ADMINS',
+    defaultValue: 'admins',
+  );
+
   // ── Mitgelieferter Rueckfall ──────────────────────────────────────────────
 
   /// Wird benutzt, wenn der Storage nicht erreichbar ist. Muss Zeichen fuer
