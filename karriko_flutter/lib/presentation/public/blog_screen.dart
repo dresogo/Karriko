@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../data/blog_content.dart';
 import '../../data/models/blog_entry_model.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
+import 'blog_cover.dart';
 
 /// Filter der Blogseite. Der aktive Filter steht im Query-Parameter `typ`,
 /// damit eine gefilterte Ansicht teilbar ist und der Zurück-Button wirkt.
@@ -25,80 +27,12 @@ enum _Filter {
 
 /// Blog und Neuigkeiten: redaktionelle Artikel als Karten, Produkt-Updates als
 /// Zeitleiste. In der Gesamtansicht stehen beide nebeneinander, damit sich die
-/// zwei Inhaltsarten nicht gegenseitig verdrängen. Die Inhalte sind vorerst
-/// statisch hinterlegt und absteigend nach Datum sortiert.
+/// zwei Inhaltsarten nicht gegenseitig verdrängen. Die Inhalte kommen aus
+/// [BlogContent].
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});
 
-  static final _entries = <BlogEntry>[
-    BlogEntry.update(
-      title: 'Fragebogen für Betriebsbewertungen',
-      teaser:
-          'Azubis beantworten jetzt strukturierte Fragen zu Ausbildungsqualität, '
-          'Betreuung und Übernahmechancen statt nur Freitext zu schreiben.',
-      date: DateTime(2026, 7, 24),
-      version: 'v1.4',
-      updateKind: UpdateKind.neu,
-    ),
-    BlogEntry.article(
-      title: 'Wie finde ich den richtigen Ausbildungsbetrieb?',
-      teaser:
-          'Worauf es bei der Wahl wirklich ankommt – von der Branche über das '
-          'Betriebsklima bis zu den Übernahmechancen.',
-      date: DateTime(2026, 6, 18),
-      category: 'Tipps & Tricks',
-      readingMinutes: 5,
-      slug: 'tipps-ausbildungsbetrieb',
-    ),
-    BlogEntry.update(
-      title: 'Schnellere Suche mit Branchenfiltern',
-      teaser:
-          'Die Betriebssuche filtert jetzt nach Branche, Ort und Mindestbewertung '
-          'und liefert Ergebnisse spürbar schneller.',
-      date: DateTime(2026, 6, 2),
-      version: 'v1.3',
-      updateKind: UpdateKind.verbessert,
-    ),
-    BlogEntry.article(
-      title: 'DSGVO und Ausbildungsbewertungen',
-      teaser:
-          'Was Betriebe über anonyme Bewertungen wissen müssen und welche Rechte '
-          'Azubis beim Veröffentlichen haben.',
-      date: DateTime(2026, 5, 21),
-      category: 'Datenschutz',
-      readingMinutes: 3,
-      slug: 'dsgvo-bewertungen',
-    ),
-    BlogEntry.update(
-      title: 'Benachrichtigungen kamen doppelt an',
-      teaser:
-          'Ein Fehler hat Betrieben dieselbe Bewertungsbenachrichtigung mehrfach '
-          'zugestellt. Das ist behoben.',
-      date: DateTime(2026, 5, 8),
-      version: 'v1.2.1',
-      updateKind: UpdateKind.behoben,
-    ),
-    BlogEntry.article(
-      title: 'Warum Azubi-Feedback Betrieben hilft',
-      teaser:
-          'Ehrliche Rückmeldungen decken auf, woran Ausbildung im Alltag scheitert '
-          '– und was sich mit wenig Aufwand ändern lässt.',
-      date: DateTime(2026, 4, 30),
-      category: 'Für Betriebe',
-      readingMinutes: 4,
-      slug: 'azubi-feedback-betriebe',
-    ),
-    BlogEntry.article(
-      title: 'Top 10 Ausbildungsberufe 2026',
-      teaser:
-          'Welche Ausbildungen aktuell am stärksten nachgefragt werden und wo die '
-          'Übernahmequoten am höchsten liegen.',
-      date: DateTime(2026, 3, 12),
-      category: 'Karriere',
-      readingMinutes: 6,
-      slug: 'top-ausbildungsberufe-2026',
-    ),
-  ];
+  static List<BlogEntry> get _entries => BlogContent.entries;
 
   @override
   Widget build(BuildContext context) {
@@ -526,7 +460,7 @@ class _ArticleListItem extends StatelessWidget {
           children: [
             SizedBox(
               width: wide ? 128 : 56,
-              child: _Cover(
+              child: BlogCover(
                 category: entry.category!,
                 iconSize: wide ? 40 : 24,
                 showLabel: false,
@@ -629,7 +563,7 @@ class _FeaturedArticle extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _Cover(category: entry.category!, height: 136, iconSize: 56),
+              BlogCover(category: entry.category!, height: 136, iconSize: 56),
               body,
             ],
           );
@@ -643,7 +577,7 @@ class _FeaturedArticle extends StatelessWidget {
                 flex: 4,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 260),
-                  child: _Cover(category: entry.category!, iconSize: 80),
+                  child: BlogCover(category: entry.category!, iconSize: 80),
                 ),
               ),
               Expanded(flex: 8, child: body),
@@ -668,7 +602,7 @@ class _ArticleCard extends StatelessWidget {
       builder: (context, active) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _Cover(category: entry.category!, height: 120, iconSize: 44),
+          BlogCover(category: entry.category!, height: 120, iconSize: 44),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(AppLayout.s24),
@@ -740,90 +674,6 @@ class _CardGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: rows,
-    );
-  }
-}
-
-/// Farbfläche je Rubrik – dieselbe Sprache wie die Zielgruppen-Kacheln auf der
-/// Startseite. Die Rubrik steht immer als Text darauf, Farbe und Icon sind nur
-/// zusätzliche Orientierung.
-class _Cover extends StatelessWidget {
-  final String category;
-  final double? height;
-  final double iconSize;
-
-  /// Bei schmalen Kacheln steht die Rubrik im Text daneben statt darauf.
-  final bool showLabel;
-
-  const _Cover({
-    required this.category,
-    required this.iconSize,
-    this.height,
-    this.showLabel = true,
-  });
-
-  static (Color, Color, IconData) _styleFor(String category) =>
-      switch (category) {
-        'Tipps & Tricks' => (
-            AppColors.green,
-            AppColors.paper,
-            Icons.lightbulb_outline
-          ),
-        'Datenschutz' => (
-            AppColors.ink,
-            AppColors.paper,
-            Icons.shield_outlined
-          ),
-        'Für Betriebe' => (
-            AppColors.audienceBeige,
-            AppColors.ink,
-            Icons.storefront_outlined
-          ),
-        'Karriere' => (AppColors.accentDark, Colors.white, Icons.trending_up),
-        _ => (AppColors.audienceBeige, AppColors.ink, Icons.article_outlined),
-      };
-
-  @override
-  Widget build(BuildContext context) {
-    final (background, foreground, icon) = _styleFor(category);
-
-    if (!showLabel) {
-      return ExcludeSemantics(
-        child: Container(
-          height: height,
-          color: background,
-          alignment: Alignment.center,
-          child: Icon(icon, size: iconSize, color: foreground),
-        ),
-      );
-    }
-
-    return ExcludeSemantics(
-      child: Container(
-        height: height,
-        color: background,
-        padding: const EdgeInsets.all(AppLayout.s24),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                category.toUpperCase(),
-                style: TextStyle(
-                  color: foreground,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Icon(icon, size: iconSize, color: foreground),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
