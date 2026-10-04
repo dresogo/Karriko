@@ -58,6 +58,13 @@ class QuestionnaireConstants {
     defaultValue: 'my_reviews',
   );
 
+  /// Arbeitstisch des Admin-Bereichs: Warteschlange, Meldungen, Protokoll,
+  /// Betriebe. Nur `team:moderators` und `team:admins`.
+  static const moderationDeskFunction = String.fromEnvironment(
+    'FN_MODERATION_DESK',
+    defaultValue: 'moderation_desk',
+  );
+
   /// Freigeben oder ablehnen. Nur `team:moderators` und `team:admins`.
   static const moderateReviewFunction = String.fromEnvironment(
     'FN_MODERATE_REVIEW',

@@ -292,7 +292,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/betrieb-settings/passkeys',
           builder: (_, __) => const PasskeyManageScreen()),
       // Bewusst ohne Verweis aus der Oberflaeche, nur ueber die Adresse.
-      GoRoute(path: '/admin', builder: (_, __) => const AdminScreen()),
+      GoRoute(
+          path: '/admin',
+          builder: (_, s) =>
+              AdminScreen(section: s.uri.queryParameters['bereich'])),
     ],
     errorBuilder: (_, state) => Scaffold(
       body: Center(child: Text('Seite nicht gefunden: ${state.uri}')),

@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart' as aw;
 
 import '../../core/constants/questionnaire_constants.dart';
+import '../models/admin_models.dart';
 import '../services/appwrite_service.dart';
 
 /// Was das angemeldete Konto im Admin-Bereich darf.
@@ -17,7 +18,7 @@ class AdminRoles {
   bool get mayModerate => isAdmin || isModerator;
 }
 
-/// Zugang zu `moderate_review` und `recompute_all`.
+/// Zugang zu `moderation_desk`, `moderate_review` und `recompute_all`.
 ///
 /// **Die Rollenprüfung hier ist nur Anzeige.** Sie entscheidet, welche Knöpfe
 /// erscheinen. Geschützt sind die Aktionen durch die Ausführungsrechte der
@@ -50,6 +51,69 @@ class AdminRepository {
         'action': 'reject',
         'reason': reason,
       });
+
+  // ── moderation_desk ─────────────────────────────────────────────────────
+
+  Future<AdminOverview> overview() async =>
+      AdminOverview.fromJson(await _desk('overview'));
+
+  Future<List<QueueItem>> queue(String status) async {
+    final antwort = await _desk('queue', {'status': status});
+    return [
+      for (final e in (antwort['reviews'] as List? ?? const []))
+        if (e is Map) QueueItem.fromJson(e.cast<String, Object?>()),
+    ];
+  }
+
+  Future<List<ReportItem>> reports({required bool onlyOpen}) async {
+    final antwort =
+        await _desk('reports', {'filter': onlyOpen ? 'open' : 'all'});
+    return [
+      for (final e in (antwort['reports'] as List? ?? const []))
+        if (e is Map) ReportItem.fromJson(e.cast<String, Object?>()),
+    ];
+  }
+
+  /// [resolution] ist `dismissed` (kein Handlungsbedarf) oder `actioned`
+  /// (die Bewertung wurde abgelehnt).
+  Future<void> resolveReport(
+    String reportId, {
+    required String resolution,
+    String? note,
+  }) =>
+      _desk('resolve_report', {
+        'report_id': reportId,
+        'resolution': resolution,
+        if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+      });
+
+  Future<List<ModerationLogItem>> log() async {
+    final antwort = await _desk('log');
+    return [
+      for (final e in (antwort['entries'] as List? ?? const []))
+        if (e is Map) ModerationLogItem.fromJson(e.cast<String, Object?>()),
+    ];
+  }
+
+  Future<List<CompanyItem>> companies({String? search}) async {
+    final antwort = await _desk('companies', {
+      if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
+    });
+    return [
+      for (final e in (antwort['companies'] as List? ?? const []))
+        if (e is Map) CompanyItem.fromJson(e.cast<String, Object?>()),
+    ];
+  }
+
+  Future<void> verifyCompany(String companyId, bool verified) =>
+      _desk('verify_company', {'company_id': companyId, 'verified': verified});
+
+  Future<Map<String, Object?>> _desk(String action,
+          [Map<String, Object?> body = const {}]) =>
+      _call(QuestionnaireConstants.moderationDeskFunction,
+          {'action': action, ...body});
+
+  // ── recompute_all ───────────────────────────────────────────────────────
 
   Future<Map<String, Object?>> recompute({
     required int offset,
