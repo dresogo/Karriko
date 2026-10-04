@@ -161,6 +161,15 @@ cd appwrite
 
 ### 3.1 Tabellen
 
+> **Warnung — `push table` löscht.** Die CLI (28.1.0) gleicht den Server an
+> die Konfigurationsdatei an: Jede Tabelle, die **nicht** in der Datei steht,
+> wird gelöscht, mit `-f` ohne Rückfrage. Am 4. Oktober 2026 hat ein solcher
+> Lauf alle Tabellen außer `review_reports` gelöscht; Backups gab es keine.
+> `companies`, `profiles`, `bookmarks` und `jobs` stehen **nicht** in der
+> Vorlage. Schema daher nur über `node tools/appwrite-setup.mjs` oder einzelne
+> `appwrite tables-db create-*`-Befehle ändern. Den Stand vom 2. Oktober stellt
+> `node tools/appwrite-wiederherstellen.mjs --ausfuehren` wieder her.
+
 **Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt.
 
 ```powershell
