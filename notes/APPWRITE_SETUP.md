@@ -687,9 +687,9 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Sieben Functions, alle in Dart.
+Acht Functions, alle in Dart.
 
-### Gemeinsam für alle sieben
+### Gemeinsam für alle acht
 
 | | |
 |---|---|
@@ -705,11 +705,11 @@ Wenn eine Function ins Timeout läuft oder der Speicher nicht reicht, setzt du s
 in der Console unter Settings → Runtime und trägst sie danach in die Vorlage
 nach.
 
-Dass alle sieben dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
+Dass alle acht dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
 `questionnaire_core` ein wie der Client. Dass Server und Client zum selben
 Ergebnis kommen, ist damit keine Absprache zwischen zwei Umsetzungen.
 
-### Die sieben im Einzelnen
+### Die acht im Einzelnen
 
 #### `submit_review`
 
@@ -769,6 +769,41 @@ Die vollständige Liste mit je einem Grund steht als `withheldFromAuthor` in
 `packages/karriko_functions/lib/src/my_reviews.dart`, und ein Test geht sie
 durch: Jede dort genannte Spalte muss in der Antwort fehlen, und jeder Grund
 muss einer sein.
+
+#### `moderation_desk`
+
+| | |
+|---|---|
+| Ausführen darf | `team:moderators`, `team:admins` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read` |
+
+**Der Arbeitstisch des Admin-Bereichs** (`/#/admin`, ohne Verweis aus der
+Oberfläche). Liefert Übersicht, Warteschlange, Meldungen, Protokoll und
+Betriebe. Auf `reviews` hat kein Client Zugriff, auch die Moderation nicht —
+deshalb geht es nur über eine Function.
+
+**Entschieden wird woanders.** Freigeben und Ablehnen bleibt bei
+`moderate_review`, damit es genau einen Weg in `public_reviews` gibt. Diese
+Function schreibt nur zwei Dinge: den Status einer Meldung
+(`review_reports.status` = `dismissed` oder `actioned`, mit `resolved_by` und
+`resolved_at`) und `companies.is_verified` — Letzteres **nur für `admins`**.
+
+**Auch die Moderation sieht nicht alles.** `user_id`, `device_hash`,
+Rohantworten, Zeiten und die Dateikennung des Nachweises bleiben draußen; die
+Liste mit Begründung steht als `withheldFromModeration` in
+`packages/karriko_functions/lib/src/moderation_desk.dart`, ein Test setzt sie
+durch. `users.read` dient nur den Anzeigenamen im Protokoll.
+
+Aufruf mit `{"action": "…"}`: `overview`, `queue` (`status`), `reports`
+(`filter`: `open`/`all`), `resolve_report` (`report_id`, `resolution`,
+`note`), `log`, `companies` (`search`), `verify_company` (`company_id`,
+`verified`).
+
+**Ein Admin-Konto für die Entwicklung** legt
+`node tools/appwrite-dev-admin.mjs` an und trägt es in beide Teams ein. Das
+Passwort wird einmal im Terminal ausgegeben; `--pruefen` zeigt nur den Stand.
 
 #### `moderate_review`
 
@@ -931,7 +966,7 @@ ist.
 
 | Variable | Wer | Bedeutung |
 |---|---|---|
-| `KARRIKO_DATABASE_ID` | alle sieben | Die Datenbankkennung. **Kein Standardwert.** Ein geratener Wert liefe gegen eine erfundene Datenbank und erzeugte eine Fehlermeldung, die auf alles andere hindeutet. Fehlt sie, bricht die Function beim Start ab und sagt, welche Variable fehlt. |
+| `KARRIKO_DATABASE_ID` | alle acht | Die Datenbankkennung. **Kein Standardwert.** Ein geratener Wert liefe gegen eine erfundene Datenbank und erzeugte eine Fehlermeldung, die auf alles andere hindeutet. Fehlt sie, bricht die Function beim Start ab und sagt, welche Variable fehlt. |
 
 ### Das Geheimnis
 
@@ -1366,8 +1401,9 @@ Version.
   Mensch vergeben; heute kann es sich jeder Betrieb selbst geben.
 * **Die Moderation sieht den Nachweis nur über die Console.** Es gibt keine
   Function, die ihn ausliefert.
-* **Es gibt keinen Moderationsbildschirm.** `moderate_review` wird heute über die
-  Console oder einen eigenen Aufruf ausgelöst.
+* **Der Moderationsbildschirm ist der Admin-Bereich unter `/#/admin`.** Er
+  braucht `moderation_desk` und die neuen Spalten in `review_reports`. Den
+  Verifikationsnachweis öffnet die Moderation weiter in der Console.
 * **Die lokale Liste bleibt als Rückfall.** Antwortet `my_reviews` nicht, zeigt
   der Bildschirm, was dieser Browser weiß — und sagt dazu, dass es
   unvollständig sein kann und den Stand der Moderation nicht kennt.
