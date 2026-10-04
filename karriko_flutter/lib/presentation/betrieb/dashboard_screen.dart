@@ -157,6 +157,12 @@ class _ManagementActions extends StatelessWidget {
       '/betrieb-profile',
     ),
     (
+      Icons.work_outline,
+      'Ausbildungsstellen',
+      'Stellen ausschreiben und verwalten',
+      '/betrieb-stellen',
+    ),
+    (
       Icons.insights_outlined,
       'Analytics',
       'Entwicklung im Zeitverlauf',

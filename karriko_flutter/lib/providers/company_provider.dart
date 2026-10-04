@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/company_model.dart';
-import '../data/models/job_model.dart';
 import '../data/repositories/company_repository.dart';
 import 'auth_provider.dart';
 
@@ -150,6 +149,15 @@ final companyBySlugProvider =
   return ref.watch(companyRepositoryProvider).getCompanyBySlug(slug);
 });
 
+/// Ein Unternehmen ueber seine Kennung.
+///
+/// Der Fragebogen bekommt ueber die Adresse nur die ID mit — der Name gehoert
+/// nicht in eine URL, die im Verlauf des Browsers stehenbleibt.
+final companyByIdProvider =
+    FutureProvider.family<CompanyModel, String>((ref, id) {
+  return ref.watch(companyRepositoryProvider).getCompanyById(id);
+});
+
 final searchSuggestionsProvider =
     FutureProvider.family<List<String>, String>((ref, query) {
   if (query.length < 2) return Future.value([]);
@@ -159,33 +167,4 @@ final searchSuggestionsProvider =
 final bookmarkedCompaniesProvider =
     FutureProvider.family<List<CompanyModel>, String>((ref, userId) {
   return ref.watch(companyRepositoryProvider).getBookmarkedCompanies(userId);
-});
-
-/// Suggested Ausbildungsstellen for the search page carousel.
-///
-/// NOTE: There is no jobs backend yet (no jobs collection / repository), so
-/// these entries are derived from real companies as a placeholder. Replace this
-/// with a proper jobs source once one exists.
-final jobSuggestionsProvider = FutureProvider<List<JobModel>>((ref) async {
-  final companies =
-      await ref.watch(companyRepositoryProvider).searchCompanies(limit: 12);
-  return [
-    for (final c in companies)
-      JobModel(
-        id: 'job-${c.id}',
-        title: c.industry != null
-            ? 'Ausbildung · ${c.industry}'
-            : 'Ausbildungsplatz',
-        company: c.name,
-        companySlug: c.slug,
-        companyLogoUrl: c.logoUrl,
-        location: c.location,
-        profession: c.industry,
-        industry: c.industry,
-        badge: 'Neu',
-        badgeVariant: JobBadgeVariant.isNew,
-        isActive: true,
-        createdAt: c.createdAt,
-      ),
-  ];
 });

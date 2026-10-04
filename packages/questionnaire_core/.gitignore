@@ -1,0 +1,5 @@
+# Erzeugt von `dart pub get`.
+.dart_tool/
+
+# `pubspec.lock` gehoert bewusst ins Repository — siehe die Begruendung in der
+# .gitignore des Wurzelverzeichnisses.

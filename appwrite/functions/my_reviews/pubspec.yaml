@@ -1,0 +1,20 @@
+name: my_reviews_function
+description: Appwrite Function "my_reviews" von Karriko.
+publish_to: 'none'
+version: 1.0.0
+
+# Die Runtime ist dart-3.11 (siehe notes/APPWRITE_SETUP.md). Die Untergrenze
+# bleibt bei ^3.4.0, damit dieselben Quellen auch lokal analysiert werden.
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  dart_appwrite: ^29.0.0
+  # Die beiden Pakete liegen als Kopie unter vendor/ und werden vor dem Push
+  # mit `dart run tools/vendor_core.dart` erzeugt. Appwrite laedt nur dieses
+  # Verzeichnis hoch — eine Pfadabhaengigkeit nach ausserhalb zeigte im Build
+  # ins Leere.
+  questionnaire_core:
+    path: vendor/questionnaire_core
+  karriko_functions:
+    path: vendor/karriko_functions

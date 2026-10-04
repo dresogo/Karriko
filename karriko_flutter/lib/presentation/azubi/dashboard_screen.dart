@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/company_model.dart';
-import '../../data/models/review_model.dart';
+import '../../data/models/review_draft.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
-import '../../providers/review_provider.dart';
+import '../../providers/questionnaire_provider.dart';
 import '../common/app_page.dart';
 
 class AzubiDashboardScreen extends ConsumerWidget {
@@ -16,7 +16,7 @@ class AzubiDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
     final userId = auth.user?.id ?? '';
-    final myReviews = ref.watch(myReviewsProvider(userId));
+    final myReviews = ref.watch(myDraftsProvider(userId));
     final bookmarks = ref.watch(bookmarkedCompaniesProvider(userId));
 
     return AppPage(
@@ -48,7 +48,7 @@ class AzubiDashboardScreen extends ConsumerWidget {
 // ─── Kennzahlen ──────────────────────────────────────────────────────────────
 
 class _Stats extends StatelessWidget {
-  final AsyncValue<List<ReviewModel>> reviews;
+  final AsyncValue<List<ReviewDraft>> reviews;
   final AsyncValue<List<CompanyModel>> bookmarks;
 
   const _Stats({required this.reviews, required this.bookmarks});
@@ -58,14 +58,13 @@ class _Stats extends StatelessWidget {
   String _count(AsyncValue<List<Object>> value) =>
       value.maybeWhen(data: (list) => '${list.length}', orElse: () => '–');
 
-  String get _average => reviews.maybeWhen(
-        data: (list) {
-          if (list.isEmpty) return '–';
-          final sum = list.fold<int>(0, (acc, r) => acc + r.overallRating);
-          return (sum / list.length).toStringAsFixed(1);
-        },
-        orElse: () => '–',
-      );
+  /// Kein Durchschnitt mehr.
+  ///
+  /// Abgeschickte Bewertungen sind keinem Konto zugeordnet — `public_reviews`
+  /// traegt keine `user_id`, und `reviews` ist fuer Clients gesperrt. Ein
+  /// Mittelwert ueber die eigenen Bewertungen laesst sich damit nicht bilden,
+  /// und einen ueber die Entwuerfe zu zeigen waere eine erfundene Zahl.
+  String get _offeneEntwuerfe => _count(reviews);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +72,7 @@ class _Stats extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cols = constraints.maxWidth >= 720 ? 3 : 1;
+        final cols = constraints.maxWidth >= 720 ? 2 : 1;
         final width = (constraints.maxWidth - (cols - 1) * gap) / cols;
 
         return Wrap(
@@ -82,11 +81,8 @@ class _Stats extends StatelessWidget {
           children: [
             SizedBox(
               width: width,
-              child: StatTile(value: _count(reviews), label: 'Bewertungen'),
-            ),
-            SizedBox(
-              width: width,
-              child: StatTile(value: _average, label: 'Ø deiner Bewertungen'),
+              child: StatTile(
+                  value: _offeneEntwuerfe, label: 'Angefangene Bewertungen'),
             ),
             SizedBox(
               width: width,
@@ -225,7 +221,7 @@ class _QuickActionState extends State<_QuickAction> {
 // ─── Bewertungen ─────────────────────────────────────────────────────────────
 
 class _ReviewsSection extends StatelessWidget {
-  final AsyncValue<List<ReviewModel>> reviews;
+  final AsyncValue<List<ReviewDraft>> reviews;
 
   const _ReviewsSection({required this.reviews});
 
@@ -235,7 +231,7 @@ class _ReviewsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _SectionHead(
-          label: 'Meine Bewertungen',
+          label: 'Angefangene Bewertungen',
           actionLabel: 'Alle anzeigen',
           onAction: () => context.go('/my-reviews'),
         ),
@@ -243,7 +239,7 @@ class _ReviewsSection extends StatelessWidget {
         reviews.when(
           data: (list) => list.isEmpty
               ? AppEmptyState(
-                  title: 'Noch keine Bewertung',
+                  title: 'Kein offener Entwurf',
                   description:
                       'Teile deine Erfahrung und hilf anderen bei der Wahl '
                       'ihres Ausbildungsbetriebs.',
@@ -254,11 +250,11 @@ class _ReviewsSection extends StatelessWidget {
                   children: [
                     for (final review in list.take(3))
                       AppRow(
-                        icon: Icons.rate_review_outlined,
-                        title: review.title,
-                        subtitle:
-                            '${review.companyName} · ${review.overallRating}/5',
-                        onTap: () => context.go('/reviews/${review.id}'),
+                        icon: Icons.edit_outlined,
+                        title: '${review.answers.length} Antworten',
+                        subtitle: 'Angefangen, noch nicht abgeschickt',
+                        onTap: () => context
+                            .go('/reviews/new?company=${review.companyId}'),
                       ),
                   ],
                 ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/review_provider.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/search_bar_widget.dart';
-import '../common/review_card.dart';
+import '../common/public_review_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -612,7 +613,11 @@ class _RecentReviewsSection extends StatelessWidget {
                               Border(bottom: BorderSide(color: AppColors.line)),
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ReviewCard(review: r, showCompany: true),
+                        child: PublicReviewCard(
+                          review: r,
+                          zeigeBetrieb: true,
+                          onTap: () => context.go('/reviews/${r.id}'),
+                        ),
                       ))
                   .toList(),
             ),

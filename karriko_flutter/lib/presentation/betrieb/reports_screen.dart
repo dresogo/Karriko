@@ -102,7 +102,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               child: ElevatedButton(
                 onPressed: _selectedReviewId != null && reporterId != null
                     ? () async {
-                        await ref.read(reviewRepositoryProvider).reportReview(
+                        await ref.read(reviewReportRepositoryProvider).report(
                               reviewId: _selectedReviewId!,
                               reporterId: reporterId,
                               reason: _reasonCtrl.text.isEmpty

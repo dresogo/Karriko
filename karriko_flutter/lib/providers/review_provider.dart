@@ -1,188 +1,111 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/models/review_model.dart';
-import '../data/repositories/review_repository.dart';
 
-final reviewRepositoryProvider =
-    Provider<ReviewRepository>((ref) => ReviewRepository());
+import '../data/models/company_scores.dart';
+import '../data/models/public_review.dart';
+import '../data/models/review_draft.dart';
+import '../data/models/own_review.dart';
+import '../data/repositories/my_reviews_repository.dart';
+import '../data/repositories/public_review_repository.dart';
+import '../data/repositories/review_report_repository.dart';
+import '../data/services/submitted_reviews_log.dart';
+import 'questionnaire_provider.dart';
 
+final publicReviewRepositoryProvider =
+    Provider<PublicReviewRepository>((ref) => PublicReviewRepository());
+
+final reviewReportRepositoryProvider =
+    Provider<ReviewReportRepository>((ref) => ReviewReportRepository());
+
+/// Die freigegebenen Bewertungen eines Betriebs.
 final companyReviewsProvider =
-    FutureProvider.family<List<ReviewModel>, String>((ref, companyId) {
-  return ref.watch(reviewRepositoryProvider).getReviewsForCompany(companyId);
+    FutureProvider.family<List<PublicReview>, String>((ref, companyId) {
+  return ref.watch(publicReviewRepositoryProvider).forCompany(companyId);
+});
+
+/// Die Aggregate eines Betriebs. `null`, solange es noch keine gibt.
+final companyScoresProvider =
+    FutureProvider.family<CompanyScores?, String>((ref, companyId) {
+  return ref.watch(publicReviewRepositoryProvider).scoresFor(companyId);
 });
 
 final reviewByIdProvider =
-    FutureProvider.family<ReviewModel, String>((ref, id) {
-  return ref.watch(reviewRepositoryProvider).getReviewById(id);
+    FutureProvider.family<PublicReview, String>((ref, id) {
+  return ref.watch(publicReviewRepositoryProvider).byId(id);
 });
 
-final myReviewsProvider =
-    FutureProvider.family<List<ReviewModel>, String>((ref, userId) {
-  return ref.watch(reviewRepositoryProvider).getMyReviews(userId);
+final recentReviewsProvider = FutureProvider<List<PublicReview>>((ref) {
+  return ref.watch(publicReviewRepositoryProvider).recent();
 });
 
-final recentReviewsProvider = FutureProvider<List<ReviewModel>>((ref) {
-  return ref.watch(reviewRepositoryProvider).getRecentReviews();
+/// Was ein Azubi von seinen eigenen Bewertungen sieht.
+///
+/// Nur die Entwürfe. Die abgeschickten holt [ownReviewsProvider] über die
+/// Function `my_reviews` — direkt abrufbar sind sie nicht, weil
+/// `public_reviews` keine `user_id` trägt und kein Client auf `reviews`
+/// zugreift.
+final myDraftsAndReviewsProvider =
+    FutureProvider.family<List<ReviewDraft>, String>((ref, userId) {
+  return ref.watch(reviewDraftRepositoryProvider).forUser(userId);
 });
 
-class NewReviewState {
-  final int step;
-  final String? companyId;
-  final String? companyName;
-  final bool isAnonymous;
-  final int overallRating;
-  final int? trainingQuality;
-  final int? mentoring;
-  final int? workLifeBalance;
-  final int? careerOpportunities;
-  final String title;
-  final String text;
-  final String? pros;
-  final String? cons;
-  final String? profession;
-  final bool isSubmitting;
-  final String? error;
-  final bool submitted;
+/// Die auf diesem Geraet abgeschickten Bewertungen.
+///
+/// Rein lokal. Seit es `my_reviews` gibt, ist das nur noch der Rueckfall —
+/// siehe [ownReviewsProvider].
+final submittedReviewsProvider = FutureProvider<List<SubmittedReview>>((ref) {
+  return SubmittedReviewsLog().read();
+});
 
-  const NewReviewState({
-    this.step = 0,
-    this.companyId,
-    this.companyName,
-    this.isAnonymous = true,
-    this.overallRating = 0,
-    this.trainingQuality,
-    this.mentoring,
-    this.workLifeBalance,
-    this.careerOpportunities,
-    this.title = '',
-    this.text = '',
-    this.pros,
-    this.cons,
-    this.profession,
-    this.isSubmitting = false,
-    this.error,
-    this.submitted = false,
-  });
+final myReviewsRepositoryProvider =
+    Provider<MyReviewsRepository>((ref) => MyReviewsRepository());
 
-  NewReviewState copyWith({
-    int? step,
-    String? companyId,
-    String? companyName,
-    bool? isAnonymous,
-    int? overallRating,
-    int? trainingQuality,
-    int? mentoring,
-    int? workLifeBalance,
-    int? careerOpportunities,
-    String? title,
-    String? text,
-    String? pros,
-    String? cons,
-    String? profession,
-    bool? isSubmitting,
-    String? error,
-    bool? submitted,
-    bool clearError = false,
-  }) {
-    return NewReviewState(
-      step: step ?? this.step,
-      companyId: companyId ?? this.companyId,
-      companyName: companyName ?? this.companyName,
-      isAnonymous: isAnonymous ?? this.isAnonymous,
-      overallRating: overallRating ?? this.overallRating,
-      trainingQuality: trainingQuality ?? this.trainingQuality,
-      mentoring: mentoring ?? this.mentoring,
-      workLifeBalance: workLifeBalance ?? this.workLifeBalance,
-      careerOpportunities: careerOpportunities ?? this.careerOpportunities,
-      title: title ?? this.title,
-      text: text ?? this.text,
-      pros: pros ?? this.pros,
-      cons: cons ?? this.cons,
-      profession: profession ?? this.profession,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      error: clearError ? null : (error ?? this.error),
-      submitted: submitted ?? this.submitted,
-    );
-  }
+/// Woher die Liste der eigenen Bewertungen kam.
+///
+/// Der Unterschied gehoert auf den Bildschirm: Die Liste vom Server ist
+/// vollstaendig, die lokale kennt nur, was von diesem Geraet abgeschickt wurde.
+/// Beides als dasselbe darzustellen waere eine Behauptung, die nicht stimmt.
+class OwnReviewsResult {
+  final List<OwnReview> reviews;
+
+  /// `true` heisst: Der Server war nicht erreichbar, das hier kommt aus dem
+  /// Browser und ist moeglicherweise unvollstaendig.
+  final bool vomGeraet;
+
+  const OwnReviewsResult({required this.reviews, this.vomGeraet = false});
 }
 
-class NewReviewNotifier extends StateNotifier<NewReviewState> {
-  final ReviewRepository _repo;
-
-  NewReviewNotifier(this._repo) : super(const NewReviewState());
-
-  void goToStep(int step) => state = state.copyWith(step: step);
-  void nextStep() => state = state.copyWith(step: state.step + 1);
-  void prevStep() => state = state.copyWith(step: state.step - 1);
-
-  void setCompany(String id, String name) =>
-      state = state.copyWith(companyId: id, companyName: name);
-
-  void setRatings({
-    required int overall,
-    int? training,
-    int? mentoring,
-    int? workLife,
-    int? career,
-  }) {
-    state = state.copyWith(
-      overallRating: overall,
-      trainingQuality: training,
-      mentoring: mentoring,
-      workLifeBalance: workLife,
-      careerOpportunities: career,
-    );
+/// Die eigenen abgeschickten Bewertungen.
+///
+/// Erst der Server ueber `my_reviews`, und nur wenn der nicht antwortet die
+/// lokale Liste. Der Rueckfall ist nicht gleichwertig und wird auch nicht so
+/// dargestellt — er kennt nur dieses Geraet und weiss nichts ueber den Stand
+/// der Moderation.
+final ownReviewsProvider = FutureProvider<OwnReviewsResult>((ref) async {
+  try {
+    final liste = await ref.watch(myReviewsRepositoryProvider).load();
+    return OwnReviewsResult(reviews: liste);
+  } on MyReviewsException {
+    return OwnReviewsResult(reviews: await _vomGeraet(), vomGeraet: true);
+  } catch (_) {
+    return OwnReviewsResult(reviews: await _vomGeraet(), vomGeraet: true);
   }
-
-  void setDetails({
-    required String title,
-    required String text,
-    String? pros,
-    String? cons,
-    String? profession,
-    bool? isAnonymous,
-  }) {
-    state = state.copyWith(
-      title: title,
-      text: text,
-      pros: pros,
-      cons: cons,
-      profession: profession,
-      isAnonymous: isAnonymous,
-    );
-  }
-
-  Future<void> submit(String authorId) async {
-    if (state.companyId == null) return;
-    state = state.copyWith(isSubmitting: true, clearError: true);
-    try {
-      await _repo.createReview(
-        companyId: state.companyId!,
-        authorId: authorId,
-        isAnonymous: state.isAnonymous,
-        overallRating: state.overallRating,
-        trainingQuality: state.trainingQuality,
-        mentoring: state.mentoring,
-        workLifeBalance: state.workLifeBalance,
-        careerOpportunities: state.careerOpportunities,
-        title: state.title,
-        text: state.text,
-        pros: state.pros,
-        cons: state.cons,
-        profession: state.profession,
-      );
-      state = state.copyWith(isSubmitting: false, submitted: true);
-    } catch (e) {
-      state = state.copyWith(
-        isSubmitting: false,
-        error: 'Bewertung konnte nicht gespeichert werden.',
-      );
-    }
-  }
-
-  void reset() => state = const NewReviewState();
-}
-
-final newReviewProvider =
-    StateNotifierProvider<NewReviewNotifier, NewReviewState>((ref) {
-  return NewReviewNotifier(ref.watch(reviewRepositoryProvider));
 });
+
+/// Die lokale Liste in derselben Form, damit der Bildschirm nur einen Fall
+/// kennen muss.
+///
+/// Was das Geraet nicht weiss, bleibt leer: Es kennt den Stand der Moderation
+/// nicht, keine Freitexte und keinen Verweis auf die oeffentliche Zeile.
+Future<List<OwnReview>> _vomGeraet() async {
+  final lokal = await SubmittedReviewsLog().read();
+  return [
+    for (final eintrag in lokal)
+      OwnReview(
+        reviewId: eintrag.reviewId,
+        companyId: eintrag.companyId,
+        companyName: eintrag.companyName.isEmpty ? null : eintrag.companyName,
+        status: eintrag.status,
+        submittedAt: eintrag.submittedAt,
+      ),
+  ];
+}
