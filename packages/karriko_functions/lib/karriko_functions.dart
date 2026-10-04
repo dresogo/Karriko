@@ -16,6 +16,7 @@ export 'src/config.dart';
 export 'src/context.dart';
 export 'src/definition_loader.dart';
 export 'src/device_hash.dart';
+export 'src/moderation_desk.dart';
 export 'src/my_reviews.dart';
 export 'src/publish_decision.dart';
 export 'src/responses.dart';

@@ -313,7 +313,11 @@
       "columns": [
         { "key": "review_id", "type": "varchar", "size": 36, "required": true },
         { "key": "reporter_id", "type": "varchar", "size": 36, "required": true },
-        { "key": "reason", "type": "text", "required": true }
+        { "key": "reason", "type": "text", "required": true },
+        { "key": "status", "type": "varchar", "size": 16, "required": false, "default": "open" },
+        { "key": "resolved_by", "type": "varchar", "size": 36, "required": false },
+        { "key": "resolved_at", "type": "datetime", "required": false },
+        { "key": "resolution_note", "type": "text", "required": false }
       ],
       "indexes": [
         {
@@ -404,6 +408,29 @@
         "Aufrufer seine eigenen Zeilen."
       ],
       "scopes": ["rows.read"]
+    },
+    {
+      "$id": "moderation_desk",
+      "name": "moderation_desk",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/moderation_desk",
+      "timeout": 30,
+      "execute": ["team:${TEAM_MODERATORS}", "team:${TEAM_ADMINS}"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der Arbeitstisch des Admin-Bereichs: liest Warteschlange, Meldungen,",
+        "Protokoll und Betriebe. Schreibt nur den Status einer Meldung und",
+        "is_verified eines Betriebs. Freigeben und Ablehnen bleibt bei",
+        "moderate_review.",
+        "users.read: nur fuer die Anzeigenamen im Moderationsprotokoll.",
+        "teams.read: prueft die Mitgliedschaft des Aufrufers selbst nach."
+      ],
+      "scopes": ["rows.read", "rows.write", "teams.read", "users.read"]
     },
     {
       "$id": "moderate_review",

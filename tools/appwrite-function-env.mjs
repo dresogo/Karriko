@@ -80,6 +80,9 @@ const JE_FUNCTION = {
   // Liest nur. Braucht ausser der Datenbankkennung nichts — insbesondere kein
   // Salz: Sie hasht nichts und gibt den Geraetehash auch nicht heraus.
   my_reviews: [],
+  // Arbeitstisch des Admin-Bereichs. Liest und markiert Meldungen, hasht
+  // nichts — also auch hier kein Salz.
+  moderation_desk: ['KARRIKO_TBL_REVIEW_REPORTS'],
 };
 
 const fehlt = GEMEINSAM.filter(

@@ -4,6 +4,7 @@ import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:dart_appwrite/models.dart' as aw;
 
 import 'config.dart';
+import 'moderation_desk.dart';
 
 /// Zugriff auf die Tabellen, mit den Rechten der Function.
 ///
@@ -329,6 +330,188 @@ class Tables {
     }
     return neueste;
   }
+
+  /// Die jüngsten Einträge des Protokolls.
+  Future<List<aw.Row>> recentModerationLog({int limit = 100}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.moderationLogTable,
+      queries: [Query.orderDesc(r'$createdAt'), Query.limit(limit)],
+    );
+    return ergebnis.rows;
+  }
+
+  // ── Moderationstisch ──────────────────────────────────────────────────────
+
+  /// Wie viele Bewertungen diesen Status haben. Liest eine Zeile und nimmt
+  /// die Gesamtzahl aus der Antwort.
+  Future<int> countReviews(String status) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [
+        Query.equal('status', status),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+      total: true,
+    );
+    return ergebnis.total;
+  }
+
+  /// Die Bewertungen mit diesem Status, höchstens [limit].
+  Future<List<aw.Row>> reviewsWithStatus(String status,
+      {int limit = 100}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [Query.equal('status', status), Query.limit(limit)],
+    );
+    return ergebnis.rows;
+  }
+
+  /// Mehrere interne Bewertungen in einer Abfrage.
+  Future<Map<String, aw.Row>> reviewsByIds(List<String> ids) async {
+    if (ids.isEmpty) return const {};
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [Query.equal(r'$id', ids), Query.limit(ids.length)],
+    );
+    return {for (final zeile in ergebnis.rows) zeile.$id: zeile};
+  }
+
+  /// Öffentliche Zeilen über ihre **eigene** Kennung.
+  ///
+  /// Eine Meldung entsteht auf der öffentlichen Seite und kann deshalb deren
+  /// Kennung tragen statt der internen. Beide Wege werden versucht.
+  Future<Map<String, aw.Row>> publicReviewsByRowIds(List<String> ids) async {
+    if (ids.isEmpty) return const {};
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.publicReviewsTable,
+      queries: [Query.equal(r'$id', ids), Query.limit(ids.length)],
+    );
+    return {for (final zeile in ergebnis.rows) zeile.$id: zeile};
+  }
+
+  /// Offene Meldungen: Status `open` oder — bei Zeilen von vor der Spalte —
+  /// gar keiner.
+  String get _nurOffene => Query.or([
+        Query.isNull('status'),
+        Query.equal('status', ReportStatus.open),
+      ]);
+
+  Future<int> countOpenReports() async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewReportsTable,
+      queries: [
+        _nurOffene,
+        Query.select([r'$id']),
+        Query.limit(1)
+      ],
+      total: true,
+    );
+    return ergebnis.total;
+  }
+
+  /// Meldungen, neueste zuerst. [nurOffene] beschränkt auf unerledigte.
+  Future<List<aw.Row>> reports(
+      {required bool nurOffene, int limit = 100}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewReportsTable,
+      queries: [
+        if (nurOffene) _nurOffene,
+        Query.orderDesc(r'$createdAt'),
+        Query.limit(limit),
+      ],
+    );
+    return ergebnis.rows;
+  }
+
+  /// Wie oft jede dieser Bewertungen gemeldet wurde (offene Meldungen).
+  Future<Map<String, int>> openReportCounts(List<String> reviewIds) async {
+    if (reviewIds.isEmpty) return const {};
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewReportsTable,
+      queries: [
+        Query.equal('review_id', reviewIds),
+        _nurOffene,
+        Query.limit(500),
+      ],
+    );
+    final zaehler = <String, int>{};
+    for (final zeile in ergebnis.rows) {
+      final id = zeile.data['review_id'];
+      if (id is String) zaehler[id] = (zaehler[id] ?? 0) + 1;
+    }
+    return zaehler;
+  }
+
+  Future<aw.Row> getReport(String id) => db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.reviewReportsTable,
+        rowId: id,
+      );
+
+  Future<aw.Row> resolveReport(
+    String id, {
+    required String status,
+    required String resolvedBy,
+    String? note,
+  }) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.reviewReportsTable,
+        rowId: id,
+        data: {
+          'status': status,
+          'resolved_by': resolvedBy,
+          'resolved_at': DateTime.now().toUtc().toIso8601String(),
+          if (note != null && note.trim().isNotEmpty)
+            'resolution_note': note.trim(),
+        },
+      );
+
+  /// Betriebe für die Verwaltungsliste, optional nach Name gefiltert.
+  Future<List<aw.Row>> companies({String? suche, int limit = 100}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [
+        if (suche != null && suche.trim().isNotEmpty)
+          Query.contains('name', [suche.trim()]),
+        Query.orderAsc('name'),
+        Query.limit(limit),
+      ],
+    );
+    return ergebnis.rows;
+  }
+
+  Future<int> countCompanies({bool? verified}) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [
+        if (verified != null) Query.equal('is_verified', verified),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+      total: true,
+    );
+    return ergebnis.total;
+  }
+
+  Future<aw.Row> setCompanyVerified(String companyId, bool verified) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: companyId,
+        data: {'is_verified': verified},
+      );
 
   // ── Seitenweise lesen ─────────────────────────────────────────────────────
 
