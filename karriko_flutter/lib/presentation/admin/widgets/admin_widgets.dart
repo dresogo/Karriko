@@ -371,8 +371,13 @@ class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
           color: AppColors.surface,
           border: Border.all(color: AppColors.line),
         ),
-        padding: const EdgeInsets.all(AppLayout.s24),
+        // Nur seitlich gepolstert und senkrecht zentriert: Bei den flachen
+        // Zeilen (72 px) liessen 24 px oben und unten den beiden Balken nur
+        // 22 px Platz.
+        padding: const EdgeInsets.symmetric(horizontal: AppLayout.s24),
+        alignment: Alignment.centerLeft,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(width: 180, height: 14, color: AppColors.paper),
