@@ -5,8 +5,8 @@ import '../../data/models/blog_entry_model.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 
-/// Filter des gemeinsamen Streams. Der aktive Filter steht im Query-Parameter
-/// `typ`, damit eine gefilterte Ansicht teilbar ist und der Zurück-Button wirkt.
+/// Filter der Blogseite. Der aktive Filter steht im Query-Parameter `typ`,
+/// damit eine gefilterte Ansicht teilbar ist und der Zurück-Button wirkt.
 enum _Filter {
   alle('alle', 'Alle'),
   artikel('artikel', 'Artikel'),
@@ -17,12 +17,16 @@ enum _Filter {
   final String slug;
   final String label;
 
+  String get location => this == _Filter.alle ? '/blog' : '/blog?typ=$slug';
+
   static _Filter fromSlug(String? slug) => _Filter.values
       .firstWhere((f) => f.slug == slug, orElse: () => _Filter.alle);
 }
 
-/// Blog und Neuigkeiten in einem chronologischen Stream: redaktionelle Artikel
-/// und Produkt-Updates. Die Inhalte sind vorerst statisch hinterlegt.
+/// Blog und Neuigkeiten: redaktionelle Artikel als Karten, Produkt-Updates als
+/// Zeitleiste. In der Gesamtansicht stehen beide nebeneinander, damit sich die
+/// zwei Inhaltsarten nicht gegenseitig verdrängen. Die Inhalte sind vorerst
+/// statisch hinterlegt und absteigend nach Datum sortiert.
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});
 
@@ -101,18 +105,13 @@ class BlogScreen extends StatelessWidget {
     final filter =
         _Filter.fromSlug(GoRouterState.of(context).uri.queryParameters['typ']);
 
-    final entries = switch (filter) {
-      _Filter.alle => _entries,
-      _Filter.artikel => _entries.where((e) => e.isArticle).toList(),
-      _Filter.updates => _entries.where((e) => !e.isArticle).toList(),
+    final articles = _entries.where((e) => e.isArticle).toList();
+    final updates = _entries.where((e) => !e.isArticle).toList();
+    final counts = {
+      _Filter.alle: _entries.length,
+      _Filter.artikel: articles.length,
+      _Filter.updates: updates.length,
     };
-
-    // Der jüngste Artikel wird herausgestellt – bei der reinen Update-Ansicht
-    // gibt es keinen Aufmacher.
-    final featured = filter == _Filter.updates
-        ? null
-        : entries.where((e) => e.isArticle).firstOrNull;
-    final rest = entries.where((e) => e != featured).toList();
 
     return Scaffold(
       appBar: const KarrikoAppBar(title: 'Blog & Neuigkeiten'),
@@ -121,28 +120,30 @@ class BlogScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _HeroBand(),
-            _FilterBand(active: filter, count: entries.length),
+            _Header(
+              active: filter,
+              counts: counts,
+              lastUpdate: _entries.isEmpty ? null : _entries.first,
+            ),
             ContentBand(
               padding: const EdgeInsets.only(
                 top: AppLayout.s48,
                 bottom: AppLayout.s64,
               ),
-              child: entries.isEmpty
-                  ? const _EmptyState()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (featured != null) ...[
-                          _FeaturedArticle(entry: featured),
-                          const SizedBox(height: AppLayout.s48),
-                        ],
-                        if (rest.isNotEmpty)
-                          _EntryList(
-                              entries: rest,
-                              showKindLabel: filter == _Filter.alle),
-                      ],
+              child: LayoutBuilder(
+                builder: (context, constraints) => switch (filter) {
+                  _Filter.alle => _OverviewView(
+                      articles: articles,
+                      updates: updates,
+                      width: constraints.maxWidth,
                     ),
+                  _Filter.artikel => _ArticlesView(
+                      articles: articles,
+                      width: constraints.maxWidth,
+                    ),
+                  _Filter.updates => _UpdatesView(updates: updates),
+                },
+              ),
             ),
             const FooterWidget(),
           ],
@@ -152,14 +153,60 @@ class BlogScreen extends StatelessWidget {
   }
 }
 
-// ─── Hero ────────────────────────────────────────────────────────────────────
+// ─── Kopf mit Filter-Tabs ────────────────────────────────────────────────────
 
-class _HeroBand extends StatelessWidget {
-  const _HeroBand();
+class _Header extends StatelessWidget {
+  final _Filter active;
+  final Map<_Filter, int> counts;
+  final BlogEntry? lastUpdate;
+
+  const _Header({
+    required this.active,
+    required this.counts,
+    required this.lastUpdate,
+  });
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
+    final isWide = width > 900;
+
+    final headline = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _Eyebrow(text: 'BLOG & NEUIGKEITEN', color: AppColors.accent),
+        const SizedBox(height: AppLayout.s16),
+        Text(
+          'Was wir schreiben,\nwas wir bauen.',
+          style: TextStyle(
+            color: AppColors.ink,
+            fontSize: (width * 0.045).clamp(34.0, 56.0),
+            fontWeight: FontWeight.w800,
+            height: 1,
+            letterSpacing: -0.5,
+          ),
+        ),
+      ],
+    );
+
+    final intro = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          'Artikel rund um Ausbildung und Karriere – und jede neue Funktion, '
+          'die es auf Karriko schafft.',
+          style: TextStyle(color: AppColors.muted, fontSize: 17, height: 1.55),
+        ),
+        if (lastUpdate != null) ...[
+          const SizedBox(height: AppLayout.s16),
+          Text(
+            'Zuletzt aktualisiert am ${lastUpdate!.formattedDate}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ],
+    );
 
     return Container(
       decoration: const BoxDecoration(
@@ -167,42 +214,26 @@ class _HeroBand extends StatelessWidget {
         border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
       child: ContentBand(
-        padding: EdgeInsets.symmetric(
-          vertical: width > 720 ? AppLayout.s64 : AppLayout.s48,
-        ),
+        padding: EdgeInsets.only(top: isWide ? AppLayout.s64 : AppLayout.s48),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'BLOG & NEUIGKEITEN',
-              style: TextStyle(
-                color: AppColors.accent,
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 1.32,
-              ),
-            ),
-            const SizedBox(height: AppLayout.s16),
-            Text(
-              'Was wir schreiben,\nwas wir bauen.',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: (width * 0.05).clamp(34.0, 60.0),
-                fontWeight: FontWeight.w800,
-                height: 0.98,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: AppLayout.s24),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 620),
-              child: const Text(
-                'Artikel rund um Ausbildung und Karriere – und jede neue Funktion, '
-                'die es auf Karriko schafft.',
-                style: TextStyle(
-                    color: AppColors.muted, fontSize: 17, height: 1.55),
-              ),
-            ),
+            if (isWide)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(flex: 7, child: headline),
+                  const SizedBox(width: AppLayout.s48),
+                  Expanded(flex: 5, child: intro),
+                ],
+              )
+            else ...[
+              headline,
+              const SizedBox(height: AppLayout.s24),
+              intro,
+            ],
+            SizedBox(height: isWide ? AppLayout.s48 : AppLayout.s32),
+            _FilterTabs(active: active, counts: counts),
           ],
         ),
       ),
@@ -210,116 +241,100 @@ class _HeroBand extends StatelessWidget {
   }
 }
 
-// ─── Filterleiste ────────────────────────────────────────────────────────────
-
-class _FilterBand extends StatelessWidget {
+/// Reiter am unteren Rand des Kopfes. Der aktive Reiter trägt eine Tintenkante,
+/// jeder zeigt die Zahl seiner Beiträge. Ein [Wrap] statt einer festen Zeile,
+/// damit die Leiste bei schmalen Viewports oder großer Systemschrift umbricht,
+/// statt über den Rand zu laufen.
+class _FilterTabs extends StatelessWidget {
   final _Filter active;
-  final int count;
+  final Map<_Filter, int> counts;
 
-  const _FilterBand({required this.active, required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    final isWide = MediaQuery.sizeOf(context).width > 720;
-
-    final segments = _FilterSegments(active: active);
-    final label = Text(
-      count == 1 ? '1 Beitrag' : '$count Beiträge',
-      style: const TextStyle(
-        color: AppColors.muted,
-        fontSize: 12,
-        fontWeight: FontWeight.w800,
-        letterSpacing: 0.96,
-      ),
-    );
-
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.line)),
-      ),
-      child: ContentBand(
-        padding: const EdgeInsets.symmetric(vertical: AppLayout.s24),
-        child: isWide
-            ? Row(
-                children: [
-                  Expanded(child: segments),
-                  const SizedBox(width: AppLayout.s24),
-                  label,
-                ],
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  segments,
-                  const SizedBox(height: AppLayout.s16),
-                  label,
-                ],
-              ),
-      ),
-    );
-  }
-}
-
-/// Segmentierte Auswahl im Stil der Website: einzeln umrandete Flächen, das
-/// aktive Segment als Tintenfläche.
-///
-/// Bewusst ein [Wrap] statt einer festen Zeile: Die Leiste bricht um, statt über
-/// den Rand zu laufen – unabhängig von Viewportbreite, Labellänge und
-/// vergrößerter Systemschrift.
-class _FilterSegments extends StatelessWidget {
-  final _Filter active;
-
-  const _FilterSegments({required this.active});
+  const _FilterTabs({required this.active, required this.counts});
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: AppLayout.s8,
-      runSpacing: AppLayout.s8,
       children: [
         for (final filter in _Filter.values)
-          _Segment(filter: filter, selected: filter == active),
+          _Tab(
+            filter: filter,
+            count: counts[filter] ?? 0,
+            selected: filter == active,
+          ),
       ],
     );
   }
 }
 
-class _Segment extends StatelessWidget {
+class _Tab extends StatelessWidget {
   final _Filter filter;
+  final int count;
   final bool selected;
 
-  const _Segment({required this.filter, required this.selected});
+  const _Tab({
+    required this.filter,
+    required this.count,
+    required this.selected,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final color = selected ? AppColors.ink : AppColors.muted;
+
     return Semantics(
       button: true,
       selected: selected,
+      label: '${filter.label}, $count Beiträge',
+      excludeSemantics: true,
       child: Material(
-        color: selected ? AppColors.ink : AppColors.surface,
-        shape: const RoundedRectangleBorder(
-          side: BorderSide(color: AppColors.line),
-          borderRadius: BorderRadius.zero,
-        ),
+        color: Colors.transparent,
         child: InkWell(
           // Der Filter landet in der URL: teilbar, und der Zurück-Button
           // führt zur vorherigen Auswahl zurück.
-          onTap: () => context.go(
-            filter == _Filter.alle ? '/blog' : '/blog?typ=${filter.slug}',
-          ),
-          hoverColor: selected ? AppColors.muted : AppColors.paper,
-          focusColor: selected ? AppColors.muted : AppColors.audienceBeige,
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 44),
-            padding: const EdgeInsets.symmetric(horizontal: AppLayout.s24),
-            alignment: Alignment.center,
-            child: Text(
-              filter.label,
-              style: TextStyle(
-                color: selected ? AppColors.paper : AppColors.muted,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+          onTap: () => context.go(filter.location),
+          hoverColor: AppColors.audienceBeige,
+          focusColor: AppColors.audienceBeige,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            constraints: const BoxConstraints(minHeight: 48),
+            padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: selected ? AppColors.ink : Colors.transparent,
+                  width: 3,
+                ),
               ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  filter.label,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15,
+                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: AppLayout.s8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  color: selected ? AppColors.ink : AppColors.audienceBeige,
+                  child: Text(
+                    '$count',
+                    style: TextStyle(
+                      color: selected ? AppColors.paper : AppColors.muted,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -328,59 +343,362 @@ class _Segment extends StatelessWidget {
   }
 }
 
-// ─── Aufmacher ───────────────────────────────────────────────────────────────
+// ─── Ansichten ───────────────────────────────────────────────────────────────
+
+/// Gesamtansicht: Artikel im Hauptbereich, Updates als Zeitleiste daneben. Auf
+/// schmalen Viewports rutscht die Zeitleiste unter die Artikel.
+class _OverviewView extends StatelessWidget {
+  final List<BlogEntry> articles;
+  final List<BlogEntry> updates;
+  final double width;
+
+  const _OverviewView({
+    required this.articles,
+    required this.updates,
+    required this.width,
+  });
+
+  static const _sidebarWidth = 340.0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (articles.isEmpty && updates.isEmpty) return const _EmptyState();
+
+    final hasSidebar = width >= 960;
+    final mainWidth =
+        hasSidebar ? width - _sidebarWidth - AppLayout.s48 : width;
+
+    final main = articles.isEmpty
+        ? const SizedBox.shrink()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _SectionHeader(
+                title: 'Artikel',
+                actionLabel: 'Alle Artikel',
+                actionLocation: _Filter.artikel.location,
+              ),
+              const SizedBox(height: AppLayout.s24),
+              _ArticleSection(
+                articles: articles,
+                width: mainWidth,
+                compact: true,
+              ),
+            ],
+          );
+
+    final sidebar = updates.isEmpty
+        ? const SizedBox.shrink()
+        : _UpdatesPanel(updates: updates.take(4).toList());
+
+    if (hasSidebar) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: main),
+          const SizedBox(width: AppLayout.s48),
+          SizedBox(width: _sidebarWidth, child: sidebar),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        main,
+        if (articles.isNotEmpty && updates.isNotEmpty)
+          const SizedBox(height: AppLayout.s48),
+        sidebar,
+      ],
+    );
+  }
+}
+
+class _ArticlesView extends StatelessWidget {
+  final List<BlogEntry> articles;
+  final double width;
+
+  const _ArticlesView({required this.articles, required this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    if (articles.isEmpty) return const _EmptyState();
+    return _ArticleSection(articles: articles, width: width);
+  }
+}
+
+class _UpdatesView extends StatelessWidget {
+  final List<BlogEntry> updates;
+
+  const _UpdatesView({required this.updates});
+
+  @override
+  Widget build(BuildContext context) {
+    if (updates.isEmpty) return const _EmptyState();
+
+    // Lesbare Zeilenlänge statt Text über die volle Breite.
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 760),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Was sich auf Karriko geändert hat',
+                style: Theme.of(context).textTheme.headlineMedium),
+            const SizedBox(height: AppLayout.s8),
+            Text(
+              'Neue Funktionen, Verbesserungen und behobene Fehler – die '
+              'neuesten zuerst.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppLayout.s32),
+            for (var i = 0; i < updates.length; i++)
+              _TimelineEntry(
+                entry: updates[i],
+                isLast: i == updates.length - 1,
+                dense: false,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Artikel ─────────────────────────────────────────────────────────────────
+
+/// Jüngster Artikel als Aufmacher, die übrigen darunter: in der Übersicht als
+/// kompakte Liste, in der Artikelansicht als Kartenraster.
+class _ArticleSection extends StatelessWidget {
+  final List<BlogEntry> articles;
+  final double width;
+  final bool compact;
+
+  const _ArticleSection({
+    required this.articles,
+    required this.width,
+    this.compact = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final featured = articles.first;
+    final rest = articles.skip(1).toList();
+    final columns = width >= 960 ? 3 : (width >= 560 ? 2 : 1);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _FeaturedArticle(entry: featured, wide: width >= 640),
+        if (rest.isNotEmpty && compact)
+          for (final e in rest) ...[
+            const SizedBox(height: AppLayout.s16),
+            _ArticleListItem(entry: e, wide: width >= 560),
+          ]
+        else if (rest.isNotEmpty) ...[
+          const SizedBox(height: AppLayout.s24),
+          _CardGrid(
+            columns: columns,
+            children: [for (final e in rest) _ArticleCard(entry: e)],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Kompakte Artikelzeile: kleine Rubrikkachel links, Text rechts.
+class _ArticleListItem extends StatelessWidget {
+  final BlogEntry entry;
+  final bool wide;
+
+  const _ArticleListItem({required this.entry, required this.wide});
+
+  @override
+  Widget build(BuildContext context) {
+    return _Pressable(
+      onTap: () => context.go('/blog/${entry.slug}'),
+      semanticsLabel: 'Artikel: ${entry.title}. ${entry.teaser}',
+      builder: (context, active) => IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: wide ? 128 : 56,
+              child: _Cover(
+                category: entry.category!,
+                iconSize: wide ? 40 : 24,
+                showLabel: false,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(wide ? AppLayout.s24 : AppLayout.s16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _Eyebrow(text: entry.category!.toUpperCase()),
+                    const SizedBox(height: AppLayout.s8),
+                    Text(
+                      entry.title,
+                      style: TextStyle(
+                        color: AppColors.ink,
+                        fontSize: wide ? 18 : 16,
+                        fontWeight: FontWeight.w800,
+                        height: 1.25,
+                      ),
+                    ),
+                    if (wide) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        entry.teaser,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ],
+                    const SizedBox(height: AppLayout.s8),
+                    _ArticleMeta(entry: entry),
+                  ],
+                ),
+              ),
+            ),
+            // Auf schmalen Viewports braucht der Titel die Breite; die ganze
+            // Zeile ist ohnehin die Trefferfläche.
+            if (wide)
+              Padding(
+                padding: const EdgeInsets.only(right: AppLayout.s24),
+                child: Center(child: _Arrow(active: active)),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _FeaturedArticle extends StatelessWidget {
   final BlogEntry entry;
+  final bool wide;
 
-  const _FeaturedArticle({required this.entry});
+  const _FeaturedArticle({required this.entry, required this.wide});
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-
-    return _HoverRow(
+    return _Pressable(
       onTap: () => context.go('/blog/${entry.slug}'),
-      semanticsLabel: 'Artikel: ${entry.title}. ${entry.teaser}',
-      background: AppColors.surface,
-      border: Border.all(color: AppColors.line),
-      padding: EdgeInsets.all(width > 720 ? AppLayout.s48 : AppLayout.s24),
-      builder: (context, arrow) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Eyebrow(text: 'AUFMACHER · ${entry.category!.toUpperCase()}'),
-          const SizedBox(height: AppLayout.s16),
-          Text(
-            entry.title,
-            style: TextStyle(
-              color: AppColors.ink,
-              fontSize: width > 720 ? 36 : 27,
-              fontWeight: FontWeight.w800,
-              height: 1.05,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: AppLayout.s16),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(
-              entry.teaser,
-              style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
-            ),
-          ),
-          const SizedBox(height: AppLayout.s24),
-          Row(
+      semanticsLabel: 'Aufmacher, Artikel: ${entry.title}. ${entry.teaser}',
+      builder: (context, active) {
+        final body = Padding(
+          padding: EdgeInsets.all(wide ? AppLayout.s32 : AppLayout.s24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Text(
-                  '${entry.formattedDate} · ${entry.readingMinutes} Min Lesezeit',
-                  style: Theme.of(context).textTheme.bodySmall,
+              const _Eyebrow(text: 'AUFMACHER', color: AppColors.accent),
+              const SizedBox(height: AppLayout.s16),
+              Text(
+                entry.title,
+                style: TextStyle(
+                  color: AppColors.ink,
+                  fontSize: wide ? 28 : 24,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                  letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(width: AppLayout.s16),
-              arrow,
+              const SizedBox(height: AppLayout.s16),
+              Text(
+                entry.teaser,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: AppColors.muted, height: 1.6),
+              ),
+              const SizedBox(height: AppLayout.s24),
+              _ArticleMeta(entry: entry),
+              const SizedBox(height: AppLayout.s24),
+              _ReadMore(active: active),
             ],
+          ),
+        );
+
+        if (!wide) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _Cover(category: entry.category!, height: 136, iconSize: 56),
+              body,
+            ],
+          );
+        }
+
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 4,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: 260),
+                  child: _Cover(category: entry.category!, iconSize: 80),
+                ),
+              ),
+              Expanded(flex: 8, child: body),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ArticleCard extends StatelessWidget {
+  final BlogEntry entry;
+
+  const _ArticleCard({required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    return _Pressable(
+      onTap: () => context.go('/blog/${entry.slug}'),
+      semanticsLabel: 'Artikel: ${entry.title}. ${entry.teaser}',
+      builder: (context, active) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _Cover(category: entry.category!, height: 120, iconSize: 44),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(AppLayout.s24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ArticleMeta(entry: entry),
+                  const SizedBox(height: AppLayout.s16),
+                  Text(
+                    entry.title,
+                    style: const TextStyle(
+                      color: AppColors.ink,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w800,
+                      height: 1.25,
+                    ),
+                  ),
+                  const SizedBox(height: AppLayout.s8),
+                  Text(
+                    entry.teaser,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const Spacer(),
+                  const SizedBox(height: AppLayout.s24),
+                  _ReadMore(active: active),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -388,130 +706,333 @@ class _FeaturedArticle extends StatelessWidget {
   }
 }
 
-// ─── Stream ──────────────────────────────────────────────────────────────────
+/// Raster mit gleich hohen Karten pro Zeile. Jede Zeile misst ihre höchste
+/// Karte, damit der „Weiterlesen“-Link überall auf derselben Linie sitzt.
+class _CardGrid extends StatelessWidget {
+  final int columns;
+  final List<Widget> children;
 
-class _EntryList extends StatelessWidget {
-  final List<BlogEntry> entries;
-
-  /// In der gemischten Ansicht kennzeichnet ein Label, ob ein Eintrag ein
-  /// Artikel oder ein Produkt-Update ist.
-  final bool showKindLabel;
-
-  const _EntryList({required this.entries, required this.showKindLabel});
+  const _CardGrid({required this.columns, required this.children});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
+    final rows = <Widget>[];
+    for (var i = 0; i < children.length; i += columns) {
+      if (rows.isNotEmpty) rows.add(const SizedBox(height: AppLayout.s24));
+      rows.add(
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var c = 0; c < columns; c++) ...[
+                if (c > 0) const SizedBox(width: AppLayout.s24),
+                Expanded(
+                  child: i + c < children.length
+                      ? children[i + c]
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: rows,
+    );
+  }
+}
+
+/// Farbfläche je Rubrik – dieselbe Sprache wie die Zielgruppen-Kacheln auf der
+/// Startseite. Die Rubrik steht immer als Text darauf, Farbe und Icon sind nur
+/// zusätzliche Orientierung.
+class _Cover extends StatelessWidget {
+  final String category;
+  final double? height;
+  final double iconSize;
+
+  /// Bei schmalen Kacheln steht die Rubrik im Text daneben statt darauf.
+  final bool showLabel;
+
+  const _Cover({
+    required this.category,
+    required this.iconSize,
+    this.height,
+    this.showLabel = true,
+  });
+
+  static (Color, Color, IconData) _styleFor(String category) =>
+      switch (category) {
+        'Tipps & Tricks' => (
+            AppColors.green,
+            AppColors.paper,
+            Icons.lightbulb_outline
+          ),
+        'Datenschutz' => (
+            AppColors.ink,
+            AppColors.paper,
+            Icons.shield_outlined
+          ),
+        'Für Betriebe' => (
+            AppColors.audienceBeige,
+            AppColors.ink,
+            Icons.storefront_outlined
+          ),
+        'Karriere' => (AppColors.accentDark, Colors.white, Icons.trending_up),
+        _ => (AppColors.audienceBeige, AppColors.ink, Icons.article_outlined),
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    final (background, foreground, icon) = _styleFor(category);
+
+    if (!showLabel) {
+      return ExcludeSemantics(
+        child: Container(
+          height: height,
+          color: background,
+          alignment: Alignment.center,
+          child: Icon(icon, size: iconSize, color: foreground),
+        ),
+      );
+    }
+
+    return ExcludeSemantics(
+      child: Container(
+        height: height,
+        color: background,
+        padding: const EdgeInsets.all(AppLayout.s24),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                category.toUpperCase(),
+                style: TextStyle(
+                  color: foreground,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.2,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Icon(icon, size: iconSize, color: foreground),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ArticleMeta extends StatelessWidget {
+  final BlogEntry entry;
+
+  const _ArticleMeta({required this.entry});
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodySmall;
+    return Wrap(
+      spacing: AppLayout.s16,
+      runSpacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        Text(entry.formattedDate, style: style),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.schedule, size: 14, color: AppColors.muted),
+            const SizedBox(width: 4),
+            Flexible(
+              child:
+                  Text('${entry.readingMinutes} Min. Lesezeit', style: style),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ReadMore extends StatelessWidget {
+  final bool active;
+
+  const _ReadMore({required this.active});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Weiterlesen',
+          style: TextStyle(
+            color: active ? AppColors.accent : AppColors.ink,
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(width: AppLayout.s8),
+        _Arrow(active: active, size: 18),
+      ],
+    );
+  }
+}
+
+/// Pfeil, der bei Hover und Fokus nach rechts wandert und die Akzentfarbe
+/// annimmt.
+class _Arrow extends StatelessWidget {
+  final bool active;
+  final double size;
+
+  const _Arrow({required this.active, this.size = 20});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSlide(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
+      offset: active ? const Offset(0.3, 0) : Offset.zero,
+      child: Icon(
+        Icons.arrow_forward,
+        size: size,
+        color: active ? AppColors.accent : AppColors.ink,
+      ),
+    );
+  }
+}
+
+// ─── Produkt-Updates ─────────────────────────────────────────────────────────
+
+/// Kompakte Zeitleiste der jüngsten Updates neben den Artikeln.
+class _UpdatesPanel extends StatelessWidget {
+  final List<BlogEntry> updates;
+
+  const _UpdatesPanel({required this.updates});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppLayout.s24),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.line),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Divider(color: AppColors.line, height: 1),
-          for (final entry in entries) ...[
-            if (entry.isArticle)
-              _ArticleRow(entry: entry, showKindLabel: showKindLabel)
-            else
-              _UpdateRow(entry: entry, showKindLabel: showKindLabel),
-            const Divider(color: AppColors.line, height: 1),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _ArticleRow extends StatelessWidget {
-  final BlogEntry entry;
-  final bool showKindLabel;
-
-  const _ArticleRow({required this.entry, required this.showKindLabel});
-
-  @override
-  Widget build(BuildContext context) {
-    return _HoverRow(
-      onTap: () => context.go('/blog/${entry.slug}'),
-      semanticsLabel: 'Artikel: ${entry.title}. ${entry.teaser}',
-      padding: const EdgeInsets.symmetric(vertical: AppLayout.s32),
-      builder: (context, arrow) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Eyebrow(
-            text: [
-              if (showKindLabel) 'ARTIKEL',
-              entry.category!.toUpperCase(),
-              entry.formattedDate.toUpperCase(),
-            ].join(' · '),
+          Text('Neu auf Karriko',
+              style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 4),
+          Text(
+            'Die jüngsten Änderungen an der Plattform.',
+            style: Theme.of(context).textTheme.bodySmall,
           ),
-          const SizedBox(height: AppLayout.s8),
-          Text(entry.title, style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: AppLayout.s8),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(
-              entry.teaser,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium,
+          const SizedBox(height: AppLayout.s24),
+          for (var i = 0; i < updates.length; i++)
+            _TimelineEntry(
+              entry: updates[i],
+              isLast: i == updates.length - 1,
+              dense: true,
+            ),
+          const SizedBox(height: AppLayout.s24),
+          const Divider(height: 1),
+          const SizedBox(height: AppLayout.s16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _TextLink(
+              label: 'Alle Updates ansehen',
+              location: _Filter.updates.location,
             ),
           ),
-          const SizedBox(height: AppLayout.s16),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '${entry.readingMinutes} Min Lesezeit',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
-              const SizedBox(width: AppLayout.s16),
-              arrow,
-            ],
-          ),
         ],
       ),
     );
   }
 }
 
-class _UpdateRow extends StatelessWidget {
+class _TimelineEntry extends StatelessWidget {
   final BlogEntry entry;
-  final bool showKindLabel;
+  final bool isLast;
 
-  const _UpdateRow({required this.entry, required this.showKindLabel});
+  /// Kompakte Variante für die Seitenspalte.
+  final bool dense;
+
+  const _TimelineEntry({
+    required this.entry,
+    required this.isLast,
+    required this.dense,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Updates verlinken nicht weiter – sie sind hier vollständig.
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppLayout.s32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: AppLayout.s16,
-            runSpacing: AppLayout.s8,
-            crossAxisAlignment: WrapCrossAlignment.center,
+    final kindColor = _UpdateBadge.colorFor(entry.updateKind!);
+
+    // Die Höhe bestimmt allein der Inhalt; Markierung und Verbindungslinie
+    // liegen positioniert dahinter.
+    return Stack(
+      children: [
+        if (!isLast)
+          Positioned(
+            left: 5.5,
+            top: 17,
+            bottom: 0,
+            child: Container(width: 1, color: AppColors.line),
+          ),
+        Positioned(
+          left: 0,
+          top: 5,
+          child: Container(width: 12, height: 12, color: kindColor),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            left: 12 + (dense ? AppLayout.s16 : AppLayout.s24),
+            bottom: isLast ? 0 : (dense ? AppLayout.s24 : AppLayout.s32),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _UpdateBadge(kind: entry.updateKind!),
-              _Eyebrow(
-                text: [
-                  if (showKindLabel) 'PRODUKT-UPDATE',
-                  entry.version!,
-                  entry.formattedDate.toUpperCase(),
-                ].join(' · '),
+              Wrap(
+                spacing: AppLayout.s8,
+                runSpacing: AppLayout.s8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  _UpdateBadge(kind: entry.updateKind!),
+                  Text(
+                    '${entry.version} · ${entry.formattedDate}',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppLayout.s8),
+              Text(
+                entry.title,
+                style: dense
+                    ? const TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        height: 1.35,
+                      )
+                    : Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                entry.teaser,
+                style: dense
+                    ? Theme.of(context).textTheme.bodySmall
+                    : Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),
-          const SizedBox(height: AppLayout.s16),
-          Text(entry.title, style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: AppLayout.s8),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(entry.teaser,
-                style: Theme.of(context).textTheme.bodyMedium),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -523,25 +1044,29 @@ class _UpdateBadge extends StatelessWidget {
 
   const _UpdateBadge({required this.kind});
 
+  static Color colorFor(UpdateKind kind) => switch (kind) {
+        UpdateKind.neu => AppColors.accent,
+        UpdateKind.verbessert => AppColors.green,
+        UpdateKind.behoben => AppColors.muted,
+      };
+
   @override
   Widget build(BuildContext context) {
-    final (icon, color) = switch (kind) {
-      UpdateKind.neu => (Icons.add, AppColors.accent),
-      UpdateKind.verbessert => (Icons.trending_up, AppColors.ink),
-      UpdateKind.behoben => (Icons.build_outlined, AppColors.muted),
+    final icon = switch (kind) {
+      UpdateKind.neu => Icons.add,
+      UpdateKind.verbessert => Icons.trending_up,
+      UpdateKind.behoben => Icons.build_outlined,
     };
+    final color = colorFor(kind);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.audienceBeige,
-        border: Border.all(color: color),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(border: Border.all(color: color)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 6),
+          Icon(icon, size: 13, color: color),
+          const SizedBox(width: 4),
           Text(
             kind.label.toUpperCase(),
             style: const TextStyle(
@@ -561,83 +1086,124 @@ class _UpdateBadge extends StatelessWidget {
 
 class _Eyebrow extends StatelessWidget {
   final String text;
+  final Color color;
 
-  const _Eyebrow({required this.text});
+  const _Eyebrow({required this.text, this.color = AppColors.muted});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        color: AppColors.muted,
+      style: TextStyle(
+        color: color,
         fontSize: 12,
         fontWeight: FontWeight.w800,
-        letterSpacing: 0.96,
+        letterSpacing: 1.32,
       ),
     );
   }
 }
 
-/// Anklickbare Zeile mit sichtbarem Hover-, Fokus- und Druckzustand. Der Fokus
-/// wird als 2 px starke Tintenkante gezeichnet, der Pfeil wandert nach rechts.
-class _HoverRow extends StatefulWidget {
-  final VoidCallback onTap;
-  final String semanticsLabel;
-  final EdgeInsets padding;
-  final Color? background;
-  final BoxBorder? border;
-  final Widget Function(BuildContext context, Widget arrow) builder;
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String actionLabel;
+  final String actionLocation;
 
-  const _HoverRow({
-    required this.onTap,
-    required this.semanticsLabel,
-    required this.padding,
-    required this.builder,
-    this.background,
-    this.border,
+  const _SectionHeader({
+    required this.title,
+    required this.actionLabel,
+    required this.actionLocation,
   });
 
   @override
-  State<_HoverRow> createState() => _HoverRowState();
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+        ),
+        const SizedBox(width: AppLayout.s16),
+        _TextLink(label: actionLabel, location: actionLocation),
+      ],
+    );
+  }
 }
 
-class _HoverRowState extends State<_HoverRow> {
+/// Textlink mit Pfeil und ausreichend großer Trefferfläche.
+class _TextLink extends StatelessWidget {
+  final String label;
+  final String location;
+
+  const _TextLink({required this.label, required this.location});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () => context.go(location),
+      iconAlignment: IconAlignment.end,
+      icon: const Icon(Icons.arrow_forward, size: 16),
+      label: Text(label),
+      style: TextButton.styleFrom(
+        foregroundColor: AppColors.ink,
+        minimumSize: const Size(48, 44),
+        padding: const EdgeInsets.symmetric(horizontal: AppLayout.s8),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      ),
+    );
+  }
+}
+
+/// Anklickbare Fläche mit sichtbarem Hover-, Fokus- und Druckzustand. Bei
+/// Hover und Fokus wird die Haarlinie zur Tintenkante; der Builder erfährt
+/// über `active`, ob er Pfeil und Link hervorheben soll.
+class _Pressable extends StatefulWidget {
+  final VoidCallback onTap;
+  final String semanticsLabel;
+  final Widget Function(BuildContext context, bool active) builder;
+
+  const _Pressable({
+    required this.onTap,
+    required this.semanticsLabel,
+    required this.builder,
+  });
+
+  @override
+  State<_Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<_Pressable> {
   bool _focused = false;
   bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final arrow = AnimatedSlide(
-      duration: const Duration(milliseconds: 150),
-      curve: Curves.easeOut,
-      offset: _hovered || _focused ? const Offset(0.25, 0) : Offset.zero,
-      child: const Icon(Icons.arrow_forward, size: 20, color: AppColors.ink),
-    );
+    final active = _hovered || _focused;
 
     return Semantics(
       button: true,
       label: widget.semanticsLabel,
       excludeSemantics: true,
       child: Material(
-        color: widget.background ?? Colors.transparent,
+        color: AppColors.surface,
         child: InkWell(
           onTap: widget.onTap,
           onFocusChange: (v) => setState(() => _focused = v),
           onHover: (v) => setState(() => _hovered = v),
-          hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
-          focusColor: AppColors.audienceBeige,
+          hoverColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          splashColor: AppColors.audienceBeige.withValues(alpha: 0.5),
+          highlightColor: AppColors.audienceBeige.withValues(alpha: 0.3),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             curve: Curves.easeOut,
-            padding: widget.padding,
             foregroundDecoration: BoxDecoration(
               border: Border.all(
-                color: _focused ? AppColors.ink : Colors.transparent,
-                width: 2,
+                color: active ? AppColors.ink : AppColors.line,
+                width: _focused ? 2 : 1,
               ),
             ),
-            decoration: BoxDecoration(border: widget.border),
-            child: widget.builder(context, arrow),
+            child: widget.builder(context, active),
           ),
         ),
       ),
