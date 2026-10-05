@@ -668,6 +668,123 @@ void main() {
     });
   });
 
+  group('Der Moderationstisch', () {
+    Map<String, Object?> zeile() {
+      final answers = _antworten();
+      final scores = ReviewScores.compute(_v1, answers);
+      return {
+        ...buildReviewRow(
+          questionnaire: _v1,
+          answers: answers,
+          scores: scores,
+          flags: evaluateQuality(
+            questionnaire: _v1,
+            answers: answers,
+            scores: scores,
+          ),
+          companyId: 'betrieb1',
+          userId: 'nutzer1',
+          status: ReviewStatus.pendingModeration,
+          timings: const {'k6_gesamt': 4200},
+          deviceHash: hashDeviceKey('geraet', 'salz'),
+        ),
+        'verification_file_id': 'datei1',
+      };
+    }
+
+    Map<String, Object?> eintrag() => buildQueueEntry(
+          reviewId: 'r1',
+          reviewRow: zeile(),
+          submittedAt: '2026-09-01T10:00:00.000Z',
+          companyName: 'Muster GmbH',
+          reportCount: 2,
+        );
+
+    test('zeigt, was für die Entscheidung nötig ist', () {
+      final e = eintrag();
+      expect(e['review_id'], 'r1');
+      expect(e['company_name'], 'Muster GmbH');
+      expect(e['freitext_gut'], 'Die Kollegen.');
+      expect(e['quality_flags'], isA<List<String>>());
+      expect(e['has_verification'], isTrue);
+      expect(e['report_count'], 2);
+    });
+
+    test('und nichts, was die Anonymität aufhebt', () {
+      final e = eintrag();
+      for (final verboten in withheldFromModeration.keys) {
+        expect(
+          e.containsKey(verboten),
+          isFalse,
+          reason: '$verboten: ${withheldFromModeration[verboten]}',
+        );
+      }
+      // Auch nicht als Wert eines anderen Feldes.
+      final alles = e.values.map((v) => '$v').join(' ');
+      expect(alles, isNot(contains('nutzer1')));
+      expect(alles, isNot(contains('datei1')));
+    });
+
+    test('eine Meldung ohne Bewertung bleibt sichtbar', () {
+      // Zeigt sie ins Leere, muss man sie trotzdem erledigen können.
+      final e = buildReportEntry(
+        reportId: 'm1',
+        reportRow: const {'review_id': 'weg', 'reason': 'Spam'},
+        createdAt: '2026-09-02T10:00:00.000Z',
+      );
+      expect(e['review_found'], isFalse);
+      expect(e['reported_id'], 'weg');
+      expect(e['status'], ReportStatus.open);
+    });
+
+    test('eine Meldung ohne Status gilt als offen', () {
+      // Zeilen von vor der Spalte haben keinen Wert.
+      expect(ReportStatus.isOpen(null), isTrue);
+      expect(ReportStatus.isOpen('open'), isTrue);
+      expect(ReportStatus.isOpen(ReportStatus.dismissed), isFalse);
+      expect(ReportStatus.isOpen(ReportStatus.actioned), isFalse);
+    });
+
+    test('auch eine gemeldete Bewertung verrät ihren Verfasser nicht', () {
+      final e = buildReportEntry(
+        reportId: 'm1',
+        reportRow: const {
+          'review_id': 'r1',
+          'reason': 'Spam',
+          'status': 'dismissed',
+        },
+        createdAt: '2026-09-02T10:00:00.000Z',
+        reviewId: 'r1',
+        review: zeile(),
+      );
+      expect(e['status'], ReportStatus.dismissed);
+      expect(e['freitext_gut'], 'Die Kollegen.');
+      for (final verboten in withheldFromModeration.keys) {
+        expect(e.containsKey(verboten), isFalse, reason: verboten);
+      }
+      expect(e.values.map((v) => '$v').join(' '), isNot(contains('nutzer1')));
+    });
+
+    test('jede zurückgehaltene Spalte hat einen Grund', () {
+      for (final eintrag in withheldFromModeration.entries) {
+        expect(eintrag.value.trim().length, greaterThan(40),
+            reason: eintrag.key);
+      }
+    });
+
+    test('neueste zuerst', () {
+      final liste = [
+        {'t': '2026-01-01'},
+        {'t': '2026-03-01'},
+        {'t': null},
+        {'t': '2026-02-01'},
+      ];
+      sortNewestFirst(liste, 't');
+      expect(liste.map((e) => e['t']),
+          ['2026-03-01', '2026-02-01', '2026-01-01', null]);
+    });
+  });
+
   group('JSON-Spalten', () {
     test('ein kaputter Wert hält keinen Stapellauf an', () {
       expect(decodeJsonColumn('{'), isEmpty);

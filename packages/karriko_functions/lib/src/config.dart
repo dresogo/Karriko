@@ -25,6 +25,10 @@ class FunctionConfig {
   /// öffentlichen Zeile.
   final String companiesTable;
 
+  /// Meldungen zu veröffentlichten Bewertungen. Gelesen und als erledigt
+  /// markiert von `moderation_desk`.
+  final String reviewReportsTable;
+
   final String questionnairesBucket;
   final String verificationBucket;
 
@@ -59,6 +63,7 @@ class FunctionConfig {
     required this.moderationLogTable,
     required this.releasesTable,
     required this.companiesTable,
+    this.reviewReportsTable = 'review_reports',
     required this.questionnairesBucket,
     required this.verificationBucket,
     required this.moderatorsTeam,
@@ -108,6 +113,7 @@ class FunctionConfig {
       moderationLogTable: mit('KARRIKO_TBL_MODERATION_LOG', 'moderation_log'),
       releasesTable: mit('KARRIKO_TBL_RELEASES', 'questionnaire_releases'),
       companiesTable: mit('KARRIKO_TBL_COMPANIES', 'companies'),
+      reviewReportsTable: mit('KARRIKO_TBL_REVIEW_REPORTS', 'review_reports'),
       questionnairesBucket:
           mit('KARRIKO_BUCKET_QUESTIONNAIRES', 'questionnaires'),
       verificationBucket:

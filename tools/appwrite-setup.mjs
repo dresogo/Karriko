@@ -493,6 +493,10 @@ const SCHEMA = [
       str('review_id', 36, { required: true }),
       str('reporter_id', 36, { required: true }),
       txt('reason', { required: true }),
+      str('status', 16, { default: 'open' }),
+      str('resolved_by', 36),
+      when('resolved_at'),
+      txt('resolution_note'),
     ],
     indexes: [
       { key: 'review_id', type: 'key', columns: ['review_id'] },

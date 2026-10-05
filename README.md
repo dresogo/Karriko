@@ -7,6 +7,7 @@
 Azubis bewerten ihren Ausbildungsbetrieb. Betriebe sehen, was wirklich über sie gesagt wird.
 
 [![Flutter CI](https://github.com/dresogo/Karriko/actions/workflows/flutter.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/flutter.yml)
+[![Dart CI](https://github.com/dresogo/Karriko/actions/workflows/dart.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/dart.yml)
 [![Passkey-Dienst](https://github.com/dresogo/Karriko/actions/workflows/passkey-rp.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/passkey-rp.yml)
 [![CodeQL](https://github.com/dresogo/Karriko/actions/workflows/codeql.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/codeql.yml)
 ![Flutter](https://img.shields.io/badge/Flutter-3.44-02569B?logo=flutter&logoColor=white)
@@ -20,23 +21,26 @@ Azubis bewerten ihren Ausbildungsbetrieb. Betriebe sehen, was wirklich über sie
 
 ## ⚠️ Projektstand
 
-**Karriko ist in aktiver Entwicklung und nicht produktionsreif.** Oberfläche, Navigation und Anmeldung stehen weitgehend; die Datenschicht dahinter nicht. Konkret nicht funktionsfähig:
+**Karriko ist in aktiver Entwicklung und nicht produktionsreif.** Seit August trägt die Datenschicht deutlich mehr: Betriebe bekommen bei der Registrierung ein echtes Unternehmen, Bewertungen entstehen über einen strukturierten Fragebogen und laufen serverseitig durch Moderation und Auswertung, und das Schema ist in Appwrite eingespielt. Was weiterhin fehlt:
 
-- **Bei der Betriebsregistrierung entsteht kein `companies`-Dokument.** Das ist die Wurzel mehrerer Folgefehler: Das Unternehmensprofil hat keine ID, gegen die es speichern könnte, und das Betriebs-Dashboard keine Datengrundlage.
-- Abgesendete Bewertungen landen auf einer Platzhalter-Firma statt am echten Betrieb
-- „Konto löschen" ist ein Stub — Art. 17 DSGVO ist damit nicht erfüllt
-- Das Kontaktformular verschickt nichts
-- Analytics, Team und Abonnement sind statische Attrappen
+- **„Konto löschen" ist ein Stub** — Art. 17 DSGVO ist damit nicht erfüllt. Dasselbe gilt für das Löschen einer einzelnen Bewertung.
+- **Das Kontaktformular verschickt nichts.**
+- **Analytics, Team und Abonnement im Betriebsbereich sind statische Attrappen**, das Betriebs-Dashboard hängt noch nicht an `company_scores`.
+- **Der Abnahmetest gegen die echte Instanz steht aus.** Die Bewertungsstrecke ist eingespielt und einzeln angestoßen, aber nicht mit allen vier Personas von Ende zu Ende durchgespielt.
+- **Rechtstexte und acht Punkte der Bewertungsstrecke sind juristisch ungeprüft**, im Fragebogen stehen noch fünf Platzhaltertexte. Vor den ersten echten Bewertungen ist das blockierend.
 
-**Zur Anmeldung:** Alle vier zusätzlichen Verfahren sind eingebaut, aber **keines ist je gegen eine echte Appwrite-Instanz gelaufen** — sämtliche Tests arbeiten gegen Fakes. Was zum Ausprobieren fehlt, ist überwiegend Konfiguration in der Appwrite Console, nicht Code. Siehe [Schnellstart](#schnellstart).
+**Zur Anmeldung:** Alle vier zusätzlichen Verfahren sind eingebaut, aber **keines ist je gegen die echte Appwrite-Instanz gelaufen**. Was fehlt, ist überwiegend Konfiguration in der Appwrite Console, nicht Code. Siehe [Schnellstart](#schnellstart).
 
-Drei Dokumente beschreiben den Stand, und sie haben unterschiedliche Aufgaben:
+Die Dokumentation hat feste Aufgaben:
 
 | Datei | Beantwortet |
 |---|---|
 | [`notes/projekt-referenz.md`](notes/projekt-referenz.md) | Was **soll** Karriko sein? Fachliche Regeln, Grenzwerte, Rollen |
 | [`notes/reports/`](notes/reports/) | Was **ist** gebaut? Statusbericht und Sicherheitsbericht |
 | [`notes/todo.md`](notes/todo.md) | Was steht **an**? Priorisiert, nach Art der Arbeit sortiert |
+| [`notes/APPWRITE_SETUP.md`](notes/APPWRITE_SETUP.md) | Wie ist das Backend aufgebaut? Tabellen, Rechte, Functions, Fristen |
+| [`notes/APPWRITE_EINSPIELEN.md`](notes/APPWRITE_EINSPIELEN.md) | In welcher Reihenfolge wird es eingespielt und abgenommen? |
+| [`notes/projektstruktur.md`](notes/projektstruktur.md) | Wo liegt was im Repository? |
 
 Wer hier einsteigt, fängt am besten mit der Todo-Liste an und liest bei Bedarf im Statusbericht nach.
 
@@ -46,12 +50,45 @@ Wer hier einsteigt, fängt am besten mit der Todo-Liste an und liest bei Bedarf 
 
 | Bereich | Umfang | Stand |
 |---|---|---|
-| **Öffentlich** | Startseite, Suche, Unternehmensprofile, Bewertungsdetails, Blog, FAQ, Rechtstexte | Oberfläche fertig, Inhalte teils statisch |
+| **Öffentlich** | Startseite, Suche, Unternehmensprofile, Stellenseiten, Bewertungsdetails, Blog mit Artikelseiten, FAQ, Rechtstexte | Oberfläche fertig; Blog und Rechtstexte mit statischen Inhalten |
+| **Bewerten** | Fragebogen mit Phasen, Bedingungen und Entwurfsspeicherung; Auswertung, Moderation und Aggregation auf dem Server | eingespielt, Abnahmetest offen |
 | **Anmeldung** | E-Mail/Passwort, Passkeys, Magic Links, Social Login, Zwei-Faktor über TOTP | eingebaut, gegen die echte Instanz ungetestet |
-| **Azubi-Bereich** | Dashboard, Profil, eigene Bewertungen, Lesezeichen, Benachrichtigungen, Einstellungen | Oberfläche fertig, Datenanbindung lückenhaft |
-| **Betriebs-Bereich** | Dashboard, Unternehmensprofil, Bewertungen, Meldungen, Team, Analytics, Abonnement | 3 von 8 Seiten angebunden |
+| **Azubi-Bereich** | Dashboard, Profil, eigene Bewertungen, Lesezeichen, Benachrichtigungen, Einstellungen | eigene Bewertungen angebunden, Rest lückenhaft |
+| **Betriebs-Bereich** | Dashboard, Unternehmensprofil, Ausbildungsstellen, Bewertungen, Meldungen, Team, Analytics, Abonnement | Profil und Stellen angebunden, Analytics/Team/Abo Attrappen |
+| **Admin-Bereich** | Übersicht, Moderations-Warteschlange, Meldungen, Protokoll, Betriebe, System | unter `/#/admin`, prüft die Teams `admins` und `moderators` |
 
-**45 Routen** über GoRouter, mit rollenbasierten Weiterleitungen (Azubi ↔ Betrieb) und einem Wächter, dessen Reihenfolge festliegt: **Laden → zweiter Faktor → E-Mail-Bestätigung → Rolle.** Wer sie umstellt, baut sich eine Weiterleitungsschleife, weil die späteren Tore eine vollständige Sitzung voraussetzen, die die früheren erst herstellen.
+**48 Routen** über GoRouter, mit rollenbasierten Weiterleitungen (Azubi ↔ Betrieb) und einem Wächter, dessen Reihenfolge festliegt: **Laden → zweiter Faktor → E-Mail-Bestätigung → Rolle.** Wer sie umstellt, baut sich eine Weiterleitungsschleife, weil die späteren Tore eine vollständige Sitzung voraussetzen, die die früheren erst herstellen. Der Admin-Bereich steht bewusst außerhalb der Rollenregeln: Er meldet selbst an und prüft selbst die Teams; vorher muss nur der zweite Faktor erledigt sein.
+
+### Die Bewertungsstrecke
+
+Eine Bewertung entsteht an genau einer Stelle: in der Function `submit_review`. Sie nimmt Nutzer und Betrieb aus dem geprüften JWT, nicht aus der Anfrage. Danach trennt sich der Weg:
+
+```
+Fragebogen (Client) ──► submit_review ──► reviews            Rohantworten, nie öffentlich
+                                            │
+                              moderate_review (Freigabe)
+                                            ▼
+                                       public_reviews       ohne user_id
+                                            │
+                                    aggregate_company
+                                            ▼
+                                       company_scores       erst ab 3 Bewertungen ein Wert
+```
+
+Client und Server rechnen mit **demselben Paket** [`questionnaire_core`](packages/questionnaire_core/). Dass beide zum selben Ergebnis kommen, ist deshalb keine Absprache zwischen zwei Umsetzungen. Die Fragendefinition liegt in der App und unter `appwrite/questionnaires/` und muss Zeichen für Zeichen übereinstimmen; die CI prüft das.
+
+| Function | Auslöser | Wofür |
+|---|---|---|
+| `submit_review` | Aufruf | die einzige Stelle, an der eine Bewertung entsteht |
+| `my_reviews` | Aufruf | der einzige Weg zu den eigenen abgeschickten Bewertungen |
+| `moderate_review` | Aufruf (`moderators`, `admins`) | freigeben oder ablehnen |
+| `moderation_desk` | Aufruf (`moderators`, `admins`) | Daten für den Admin-Bereich, ohne `user_id`, Gerätehash und Rohantworten |
+| `aggregate_company` | Änderung an `public_reviews` | rechnet `company_scores` neu |
+| `publish_scheduled` | stündlich | gibt zurückgestellte Bewertungen in die Moderation |
+| `recompute_all` | Aufruf (`admins`) | rechnet alles mit aktuellen Parametern neu |
+| `cleanup` | täglich | verwaiste Entwürfe und geprüfte Nachweise |
+
+Mehr dazu in [`appwrite/functions/README.md`](appwrite/functions/README.md).
 
 ### Anmeldeverfahren im Detail
 
@@ -76,11 +113,12 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 | **Framework** | Flutter 3.44 (Web, iOS, Android — Desktop-Targets sind generiert, aber ungetestet) |
 | **State** | Riverpod (`flutter_riverpod`) |
 | **Routing** | GoRouter mit zentralem Redirect-Wächter |
-| **Backend** | Appwrite Cloud (Region Frankfurt), SDK 25.4 — Auth, `TablesDB`, Realtime |
+| **Backend** | Appwrite Cloud (Region Frankfurt), SDK 25.4 — Auth, `TablesDB`, Realtime, Teams, Storage |
+| **Serverlogik** | acht Appwrite Functions in Dart (Runtime `dart-3.11`), gemeinsame Pakete unter `packages/` |
 | **Passkey-Dienst** | Node 22, TypeScript, `node:http`, zwei Laufzeit-Abhängigkeiten |
 | **Design** | Swiss Design: strenges Raster, keine abgerundeten Ecken, Rot als einziger Akzent |
 
-> **Zu `pubspec.yaml`:** Dort stehen derzeit noch sieben Pakete, die **nirgends verwendet** werden — `dio`, `reactive_forms`, `flutter_svg`, `flutter_animate`, `cached_network_image`, `riverpod_annotation`, `cupertino_icons`, dazu `build_runner` und `riverpod_generator` als Dev-Abhängigkeiten. Formulare laufen über `Validators` und `TextFormField`, HTTP über Appwrites eigenen Weg. Ihre Entfernung schrumpft die Lieferkette von 150 auf 85 Pakete und ist als offener Punkt notiert. Wer sie entfernt: **`flutter clean` nicht vergessen**, sonst kompiliert der inkrementelle Compiler gegen einen Paketstand, den es nicht mehr gibt.
+> **Zu `pubspec.yaml`:** Dort stehen weiterhin sieben Pakete, die **nirgends verwendet** werden — `dio`, `reactive_forms`, `flutter_svg`, `flutter_animate`, `cached_network_image`, `riverpod_annotation`, `cupertino_icons`, dazu `build_runner` und `riverpod_generator` als Dev-Abhängigkeiten. Ihre Entfernung schrumpft die Lieferkette von 150 auf 85 Pakete und ist als offener Punkt notiert. Wer sie entfernt: **`flutter clean` nicht vergessen**, sonst kompiliert der inkrementelle Compiler gegen einen Paketstand, den es nicht mehr gibt.
 
 <details>
 <summary><strong>Farbpalette</strong></summary>
@@ -93,8 +131,11 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 | Surface | `#FFFFFF` |
 | Line | `#D8D8D2` |
 | Akzent | `#E3342F` |
+| Akzent dunkel | `#B91F1A` |
+| Grün | `#526B58` |
+| Beige | `#F1F0E8` |
 
-**Bekannter Mangel:** Der Akzent kommt gegen Weiß auf 4,47:1 und verfehlt damit WCAG AA (4,5:1) für Text unter 18,66 px — betroffen sind alle Kicker und jede rote Schaltfläche. `#B91F1A` liegt bei 6,5:1 und wäre der naheliegende Ersatz; die Umstellung gehört ins Theme, nicht in einzelne Seiten.
+**Bekannter Mangel:** Der Akzent kommt gegen Weiß auf 4,47:1 und verfehlt damit WCAG AA (4,5:1) für Text unter 18,66 px — betroffen sind alle Kicker und jede rote Schaltfläche. `#B91F1A` liegt bei 6,5:1 und ist der naheliegende Ersatz; die Umstellung gehört ins Theme, nicht in einzelne Seiten.
 
 </details>
 
@@ -102,7 +143,7 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 
 ## Schnellstart
 
-**Voraussetzungen:** Flutter 3.44 oder neuer, ein Appwrite-Projekt. Für Passkeys zusätzlich Node 20 oder neuer.
+**Voraussetzungen:** Flutter 3.44 oder neuer, ein Appwrite-Projekt. Für Passkeys und die Werkzeuge unter `tools/` zusätzlich Node 20 oder neuer, für das Einspielen die Appwrite-CLI.
 
 ```bash
 git clone https://github.com/dresogo/Karriko.git
@@ -133,9 +174,24 @@ Dieselbe Adresse muss im Appwrite-Projekt **als Web-Plattform hinterlegt** sein 
 | `OAUTH_ENABLED` | `false` | Schaltet Google und Apple scharf |
 | `PASSKEY_SERVICE_URL` | localhost | Adresse des WebAuthn-Dienstes |
 
+### Schema und Functions einspielen
+
+Tabellen, Indizes und Rechte legt ein idempotentes Skript an. Es ergänzt nur, was fehlt, und fasst bestehende Spalten und Daten nicht an:
+
+```bash
+APPWRITE_API_KEY=… node tools/appwrite-setup.mjs --dry-run           # zeigt Abweichungen
+APPWRITE_API_KEY=… node tools/appwrite-setup.mjs --fix-permissions   # legt an und setzt Rechte
+```
+
+Vor jedem Push einer Function kommen drei Schritte: gemeinsame Pakete kopieren (`dart run tools/vendor_core.dart`), CLI-Konfiguration erzeugen (`node tools/appwrite-config.mjs`) und die Variablen je Function (`node tools/appwrite-function-env.mjs`). Die erzeugten Dateien tragen echte Kennungen und das Salz für den Gerätehash und stehen deshalb in der `.gitignore`. Die vollständige Reihenfolge samt Abnahmetest steht in [`notes/APPWRITE_EINSPIELEN.md`](notes/APPWRITE_EINSPIELEN.md).
+
+> **⚠️ Tabellen nie per `appwrite push table` mit `-f` oder einer gekürzten Konfiguration einspielen.** Die CLI gleicht dann gegen die Datei ab und löscht alles, was dort fehlt. Am 4. Oktober 2026 hat genau das alle Tabellen bis auf eine entfernt; Backups gab es keine. [`tools/appwrite-wiederherstellen.mjs`](tools/appwrite-wiederherstellen.mjs) stellt Schema und bekannte Zeilen auf den Stand vom 2. Oktober wieder her. Für Tabellen ist `tools/appwrite-setup.mjs` der Weg, die CLI bleibt für Teams, Functions und Datei-Uploads.
+
+Für den Admin-Bereich legt `node tools/appwrite-dev-admin.mjs` ein Entwicklungskonto an und trägt es in die Teams `admins` und `moderators` ein. Das Passwort wird zufällig erzeugt und nur einmal im Terminal ausgegeben.
+
 ### Was in der Appwrite Console fehlt
 
-Die Verfahren sind gebaut, aber ohne diese Handgriffe nicht ausprobierbar:
+Die Anmeldeverfahren sind gebaut, aber ohne diese Handgriffe nicht ausprobierbar:
 
 | Verfahren | Nötig |
 |---|---|
@@ -164,30 +220,41 @@ Felder, Indizes und die nötigen Umgebungsvariablen stehen in [`services/passkey
 
 ```
 karriko_flutter/lib/
-├── app/            Router und Wächterlogik
+├── app/              Router und Wächterlogik
 ├── core/
-│   ├── constants/  Appwrite-IDs, Dart-Defines, App-Konstanten
-│   ├── theme/      Farben, Typografie, Abstände
-│   └── utils/      Validatoren
+│   ├── constants/    Appwrite-IDs, Dart-Defines, App-Konstanten
+│   ├── theme/        Farben, Typografie, Abstände
+│   └── utils/        Validatoren, Datumsformat
 ├── data/
-│   ├── models/     UserModel, CompanyModel, ReviewModel …
-│   ├── repositories/  Appwrite-Zugriff pro Domäne, auth_error_mapper
-│   └── services/   Appwrite-Client, Passkey-Client, OAuth-Weiterleitung
+│   ├── models/       UserModel, CompanyModel, JobModel, BlogEntry …
+│   ├── repositories/ Appwrite-Zugriff pro Domäne, auth_error_mapper
+│   ├── services/     Appwrite-Client, Passkey-Client, OAuth-Weiterleitung
+│   └── blog_content.dart  Blogartikel und Produkt-Updates
 ├── presentation/
-│   ├── auth/       Login, Registrierung, MFA, Magic Link, OAuth-Callback
-│   ├── azubi/      Bereich für Auszubildende
-│   ├── betrieb/    Bereich für Betriebe
-│   ├── common/     Baukasten: AppPage, AppCard, StatTile …
-│   ├── public/     Öffentliche Seiten, Rechtstexte
-│   └── settings/   MFA-Einrichtung, Passkey-Verwaltung
-└── providers/      Riverpod-Provider je Domäne
+│   ├── admin/        Admin-Bereich mit sechs Abschnitten
+│   ├── auth/         Login, Registrierung, MFA, Magic Link, OAuth-Callback
+│   ├── azubi/        Bereich für Auszubildende
+│   ├── betrieb/      Bereich für Betriebe
+│   ├── common/       Baukasten: AppPage, AppCard, StatTile …
+│   ├── public/       Öffentliche Seiten, Blog, Rechtstexte
+│   ├── questionnaire/ Fragebogen mit Widget-Registry je Fragetyp
+│   └── settings/     MFA-Einrichtung, Passkey-Verwaltung
+└── providers/        Riverpod-Provider je Domäne
 
-services/passkey-rp/
-├── src/            server, routes, handler, store, appwrite, config
-└── test/           25 Tests gegen eine Ablage im Speicher
+packages/
+├── questionnaire_core/  Ablauf, Prüfung und Scoring des Fragebogens — Client und Server
+└── karriko_functions/   Appwrite-Kleber und die entscheidenden Funktionen ohne Netzzugriff
+
+appwrite/
+├── functions/        acht Functions, je ein eigenes Dart-Paket
+├── questionnaires/   Fragendefinition für den Server
+└── appwrite.config.template.json
+
+services/passkey-rp/  WebAuthn-Dienst (src/, test/)
+tools/                Schema-Setup, Wiederherstellung, Dev-Admin, Vendoring, Fragebogen-Abgleich
 ```
 
-84 Dart-Dateien. Die Schichtung ist durchgehend `presentation → providers → repositories → Appwrite`; einzige Ausnahme ist der Benachrichtigungs-Screen, der direkt auf Appwrite zugreift.
+131 Dart-Dateien in der App. Die Schichtung ist durchgehend `presentation → providers → repositories → Appwrite`; einzige Ausnahme ist der Benachrichtigungs-Screen, der direkt auf Appwrite zugreift.
 
 Plattformabhängiger Code folgt dem Muster `datei.dart` / `datei_web.dart` / `datei_stub.dart` — betrifft die OAuth-Weiterleitung und den Passkey-Client. Die Brücke zur WebAuthn-API des Browsers liegt als eigene Datei unter [`web/passkey.js`](karriko_flutter/web/passkey.js), nicht inline: Eine spätere Content-Security-Policy mit `script-src 'self'` erlaubt Inline-Skripte nicht.
 
@@ -199,7 +266,12 @@ Plattformabhängiger Code folgt dem Muster `datei.dart` / `datei_web.dart` / `da
 cd karriko_flutter
 dart format --output=none --set-exit-if-changed lib test   # Formatierung
 flutter analyze                                            # Analyzer: 0 Hinweise
-flutter test                                               # 185 Tests
+flutter test                                               # 233 Tests
+```
+
+```bash
+cd packages/questionnaire_core && dart test                # 287 Tests
+cd packages/karriko_functions  && dart test                # 50 Tests
 ```
 
 ```bash
@@ -209,13 +281,13 @@ npm test                                                   # 25 Tests
 npm run audit
 ```
 
-Beide Suiten laufen bei jedem Push und Pull Request gegen `main` — als [Flutter CI](.github/workflows/flutter.yml) und [Passkey-Dienst](.github/workflows/passkey-rp.yml). Zusätzlich scannt [CodeQL](.github/workflows/codeql.yml) alles, was JavaScript oder TypeScript ist.
+Alles läuft bei jedem Push und Pull Request gegen `main`: die App als [Flutter CI](.github/workflows/flutter.yml), Pakete, Functions und Werkzeuge als [Dart CI](.github/workflows/dart.yml), der [Passkey-Dienst](.github/workflows/passkey-rp.yml) eigenständig. Dart CI prüft außerdem, dass keine erzeugten Dateien mit echten Kennungen eingecheckt sind, dass beide Kopien der Fragendefinition übereinstimmen und dass das Schema-Skript zur CLI-Vorlage passt. [CodeQL](.github/workflows/codeql.yml) scannt alles, was JavaScript oder TypeScript ist.
 
-**Testabdeckung:** 185 Flutter-Tests über 14 Dateien, dazu 25 im Passkey-Dienst. Schwerpunkt ist weiterhin Layout über fünf bis sieben Viewportbreiten sowie die Wächterlogik des Routers — seit dem Auth-Ausbau kommen Tests hinzu, die **eine Anforderung statt eines Layouts** prüfen: etwa maschinell, dass falsches Passwort und unbekannte Adresse dieselbe Meldung liefern.
+**Testabdeckung:** 595 Tests über alle Teile. Die Fragebogenlogik ist am dichtesten abgedeckt, darunter vier Personas gegen die **echte** Fragendefinition. In der App liegt der Schwerpunkt auf Layout über vier bis sieben Viewportbreiten und der Wächterlogik des Routers, dazu Tests, die **eine Anforderung statt eines Layouts** prüfen — etwa maschinell, dass falsches Passwort und unbekannte Adresse dieselbe Meldung liefern.
 
 Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt und nur zwei Zeilen pro Datei kostet: **Rendern unter vergrößerter Systemschrift** (`textScaleFactorTestValue = 1.3`). Er hat auf Anhieb drei Überläufe gefunden, die bei Standardgröße unsichtbar bleiben. Bislang nutzen ihn nur zwei Testdateien.
 
-**Nicht abgedeckt:** Repositories, Bewertungs-Assistent, Lesezeichen, Suche, Unternehmensdetail, die fünf restlichen Betriebsseiten. Und grundsätzlich: **Kein Test sieht eine echte Appwrite-Antwort.**
+**Nicht abgedeckt:** Repositories, Ausbildungsstellen, Lesezeichen, Suche, Unternehmensdetail, die restlichen Betriebsseiten. Und grundsätzlich: **Kein Test sieht eine echte Appwrite-Antwort** — die Functions sind über ihre reinen Funktionen geprüft, das Zusammenspiel mit Appwrite zeigt erst der Abnahmetest.
 
 ---
 
@@ -224,23 +296,26 @@ Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt 
 | Pfad | Inhalt |
 |---|---|
 | `karriko_flutter/` | die eigentliche Anwendung |
-| `services/passkey-rp/` | WebAuthn-Dienst für Passkeys — der erste eigene Serverdienst |
-| `notes/` | Projektreferenz, Berichte, Todo-Liste, Design-Entwurf |
+| `packages/` | gemeinsame Dart-Pakete für App und Functions |
+| `appwrite/` | Functions, Fragendefinition, CLI-Vorlage |
+| `services/passkey-rp/` | WebAuthn-Dienst für Passkeys |
+| `tools/` | Skripte für Schema, Wiederherstellung, Dev-Admin, Vendoring und Fragebogen |
+| `notes/` | Projektreferenz, Berichte, Todo-Liste, Backend-Anleitungen, Design-Entwurf |
 | `old_tsx/` | abgelöster Next.js-Prototyp, nur noch Referenz |
 
 Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. `old_tsx/` bleibt vorerst als Nachschlagewerk liegen und wird nicht mehr gepflegt.
 
-**Die Dependabot-Warnungen auf `main` stammen sämtlich aus diesem Altbestand** — derzeit 22, alle zu Next.js. Solange `old_tsx/` nicht gebaut oder ausgeliefert wird, ist die reale Gefahr gering; der Schaden ist ein anderer. Wer zwei Dutzend dauerhaft rote Meldungen ignoriert, übersieht die nächste, die echt ist. `old_tsx/` aus `main` zu entfernen steht deshalb auf der Liste — die Historie behält den Code ohnehin.
+**Die Dependabot-Warnungen auf `main` stammen sämtlich aus diesem Altbestand** — derzeit rund 30, alle zu Next.js. Solange `old_tsx/` nicht gebaut oder ausgeliefert wird, ist die reale Gefahr gering; der Schaden ist ein anderer. Wer dauerhaft rote Meldungen ignoriert, übersieht die nächste, die echt ist. `old_tsx/` aus `main` zu entfernen steht deshalb auf der Liste — die Historie behält den Code ohnehin.
 
 ---
 
 ## Mitarbeit
 
-Vor einem Pull Request sollten Format, Analyzer und Tests lokal grün sein — die CI prüft genau das.
+Vor einem Pull Request sollten Format, Analyzer und Tests lokal grün sein — die CI prüft genau das. Wer an Functions oder Paketen arbeitet, lässt zusätzlich `dart run tools/vendor_core.dart --pruefen` laufen.
 
 Wo sich Arbeit am ehesten lohnt, steht in [`notes/todo.md`](notes/todo.md). Zwei Hinweise dazu:
 
-- **Das `companies`-Dokument bei der Betriebsregistrierung ist das Schlüsselstück.** Es löst das Profil-Speichern, ermöglicht echte Dashboard-Kennzahlen und die Bewertungszuordnung — drei Punkte, die einzeln angefasst jeweils an derselben fehlenden Verknüpfung scheitern.
+- **Der Abnahmetest mit den vier Personas ist der nächste Schlüsselschritt.** Er zeigt als Erstes, ob die eingespielte Bewertungsstrecke im Zusammenspiel trägt — und hängt nur noch an einem eigenen Moderationskonto.
 - **Erledigtes wird abgehakt, nicht gelöscht.** Ein Befund aus dem Juni stand zwei Monate offen, weil ihn niemand weiterführte. Genau deshalb gibt es die Liste.
 
 ## Lizenz
