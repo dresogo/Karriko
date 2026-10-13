@@ -12,13 +12,13 @@ dependencies:
   # Deutsche Beschriftungen der eingebauten Material-Dialoge (Datumswaehler).
   flutter_localizations:
     sdk: flutter
-  go_router: ^14.2.0
-  flutter_riverpod: ^2.5.1
+  go_router: ^18.0.2
+  flutter_riverpod: ^3.4.3
   appwrite: ^25.4.0
-  dio: ^5.4.3
+  dio: ^5.11.1
   intl: ^0.20.0
-  cached_network_image: ^3.3.1
-  google_fonts: ^6.2.1
+  cached_network_image: ^4.0.4
+  google_fonts: ^9.0.0
   # QR-Code fuer die TOTP-Einrichtung. Reines Dart (zieht nur `qr` nach),
   # keine nativen Bindungen und kein Netzwerkzugriff.
   qr_flutter: ^4.1.0
@@ -29,7 +29,7 @@ dependencies:
   # Der Entwurf wird nach jeder Antwort lokal gespeichert, damit ein
   # geschlossener Tab keine halbe Stunde Arbeit kostet. localStorage direkt
   # ueber package:web ginge im Browser, traegt aber auf iOS und Android nicht.
-  shared_preferences: ^2.3.0
+  shared_preferences: ^2.5.6
   # Fragebogenlogik, die Client und Appwrite Function gemeinsam benutzen.
   # Reines Dart, siehe packages/questionnaire_core/README.md.
   questionnaire_core:
@@ -41,7 +41,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
