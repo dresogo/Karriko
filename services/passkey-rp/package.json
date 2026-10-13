@@ -5,7 +5,7 @@
   "description": "WebAuthn Relying Party fuer Karriko. Prueft Passkeys und uebersetzt sie ueber einen Appwrite Custom Token in eine Sitzung.",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.6"
   },
   "scripts": {
     "dev": "node --experimental-strip-types --watch src/server.ts",
