@@ -18,11 +18,22 @@ class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(height);
 
+  /// Ob die breite Kopfzeile mit Navigation in der Mitte Platz hat.
+  ///
+  /// Der Umbruchpunkt von 980 px gilt fuer normale Schrift. Mit vergroesserter
+  /// Systemschrift wachsen die Navigationslinks mit, deshalb waechst er im
+  /// selben Verhaeltnis; sonst lief die Zeile bei 1,3-facher Schrift zwischen
+  /// 981 und rund 1150 px ueber. Gemessen wird an der Groesse der Links (14),
+  /// damit auch nichtlineare Skalierung (Android 14) richtig eingeht.
+  static bool isWideAt(BuildContext context) {
+    final factor = MediaQuery.textScalerOf(context).scale(14) / 14;
+    return MediaQuery.sizeOf(context).width > 980 * (factor < 1 ? 1 : factor);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
-    final width = MediaQuery.of(context).size.width;
-    final isWide = width > 980;
+    final isWide = isWideAt(context);
 
     // Kopfzeile ist Bedienfläche, kein Lesetext: von der Textauswahl ausgenommen.
     return SelectionContainer.disabled(
@@ -59,20 +70,26 @@ class _WideHeader extends ConsumerWidget {
           onTap: () => context.go('/'),
           builder: (_, active) => _BrandMark(active: active),
         ),
-        // Nav (center)
+        // Nav (center). FittedBox als Sicherheitsnetz: Knapp ueber dem
+        // Umbruchpunkt und mit langem Namen im Profilmenue gibt die Navigation
+        // ein paar Pixel nach, statt die Zeile zu sprengen. Vergroesserte
+        // Schrift faengt isWideAt ab, nicht dieses Schrumpfen.
         Expanded(
           child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _navLink('Für Azubis', '/', context),
-                const SizedBox(width: 34),
-                _navLink('Für Betriebe', '/fuer-betriebe', context),
-                const SizedBox(width: 34),
-                _navLink('Blog', '/blog', context),
-                const SizedBox(width: 34),
-                _navLink('Über uns', '/ueber-uns', context),
-              ],
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _navLink('Für Azubis', '/', context),
+                  const SizedBox(width: 34),
+                  _navLink('Für Betriebe', '/fuer-betriebe', context),
+                  const SizedBox(width: 34),
+                  _navLink('Blog', '/blog', context),
+                  const SizedBox(width: 34),
+                  _navLink('Über uns', '/ueber-uns', context),
+                ],
+              ),
             ),
           ),
         ),
@@ -255,7 +272,7 @@ class _UserMenuButtonState extends ConsumerState<_UserMenuButton> {
 
   @override
   Widget build(BuildContext context) {
-    final showName = MediaQuery.sizeOf(context).width > 980;
+    final showName = KarrikoAppBar.isWideAt(context);
 
     return PopupMenuButton<String>(
       tooltip: 'Profilmenü öffnen',

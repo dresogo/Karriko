@@ -79,13 +79,8 @@ void main() {
 
   // Vergrößerte Systemschrift verschiebt alle Textmaße und deckt auf, wenn eine
   // Höhe oder Breite im Layout stillschweigend als konstant angenommen wird.
-  //
-  // 1000px ist ausgenommen: dort läuft die breite Navigation der Kopfzeile über
-  // – ein Bestandsfehler in app_bar_widget.dart, der jede Seite betrifft und
-  // unabhängig von dieser Seite behoben gehört.
-  final scaledSizes = Map.of(sizes)..remove('knapp über dem Split-Umbruch');
-
-  scaledSizes.forEach((sizeName, size) {
+  // Die Kopfzeile selbst prüft app_bar_layout_test.dart.
+  sizes.forEach((sizeName, size) {
     testWidgets('Vergrößerte Systemschrift bricht $sizeName nicht',
         (tester) async {
       tester.platformDispatcher.textScaleFactorTestValue = 1.3;
