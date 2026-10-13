@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/list_field.dart';
 import '../../../core/utils/validators.dart';
 import '../../../data/models/company_model.dart';
 import '../../../data/models/job_model.dart';
@@ -55,10 +56,17 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
   }
 
   Future<void> _umschalten(JobModel job) async {
+    final ownerId = widget.ownerId;
+    if (ownerId == null) {
+      _melden('Das Konto ist nicht vollständig geladen.');
+      return;
+    }
     try {
-      await ref
-          .read(jobRepositoryProvider)
-          .setActive(jobId: job.id, isActive: !job.isActive);
+      await ref.read(jobRepositoryProvider).setActive(
+            jobId: job.id,
+            isActive: !job.isActive,
+            ownerId: ownerId,
+          );
       _stellenNeuLaden();
       _melden(job.isActive
           ? 'Stelle zurückgezogen. Sie ist jetzt ein Entwurf.'
@@ -402,13 +410,7 @@ class _JobFormState extends ConsumerState<_JobForm> {
     super.dispose();
   }
 
-  /// Eine Zeile ist ein Punkt. Leerzeilen und führende Aufzählungszeichen
-  /// fallen weg, damit Einfügen aus einem Word-Dokument nicht auffällt.
-  List<String> _punkte(TextEditingController ctrl) => ctrl.text
-      .split('\n')
-      .map((z) => z.replaceFirst(RegExp(r'^\s*[-•*]\s*'), '').trim())
-      .where((z) => z.isNotEmpty)
-      .toList();
+  List<String> _punkte(TextEditingController ctrl) => splitListField(ctrl.text);
 
   Future<void> _beginnWaehlen() async {
     final jetzt = DateTime.now();

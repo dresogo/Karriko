@@ -119,23 +119,43 @@ class JobRepository {
         contactEmail: contactEmail,
         isActive: isActive,
       ),
-      permissions: [
-        Permission.read(Role.any()),
-        Permission.update(Role.user(ownerId)),
-        Permission.delete(Role.user(ownerId)),
-      ],
+      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
     );
     return JobModel.fromJson(_toMap(row));
   }
 
-  /// Schaltet eine Stelle oeffentlich oder nimmt sie zurueck.
-  Future<void> setActive(
-      {required String jobId, required bool isActive}) async {
+  /// Zeilenrechte einer Stelle.
+  ///
+  /// Ein Entwurf ist nur fuer den Eigentuemer lesbar, eine veroeffentlichte
+  /// Stelle fuer alle. Frueher bekam jede Stelle `read("any")`, und die
+  /// oeffentliche Liste filterte nur nach `is_active` – ueber die API oder
+  /// die Adresse `/stellen/<id>` war ein Entwurf trotzdem fuer jeden lesbar.
+  ///
+  /// Wirkt erst vollstaendig, wenn die Tabelle `jobs` selbst kein
+  /// `read("any")` mehr traegt, siehe tools/appwrite-setup.mjs.
+  static List<String> permissionsFor({
+    required String ownerId,
+    required bool isActive,
+  }) =>
+      [
+        Permission.read(isActive ? Role.any() : Role.user(ownerId)),
+        Permission.update(Role.user(ownerId)),
+        Permission.delete(Role.user(ownerId)),
+      ];
+
+  /// Schaltet eine Stelle oeffentlich oder nimmt sie zurueck – samt
+  /// Leserecht, siehe [permissionsFor].
+  Future<void> setActive({
+    required String jobId,
+    required bool isActive,
+    required String ownerId,
+  }) async {
     await _db.updateRow(
       databaseId: AppwriteConstants.databaseId,
       tableId: AppwriteConstants.jobsCollection,
       rowId: jobId,
       data: {'is_active': isActive},
+      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
     );
   }
 

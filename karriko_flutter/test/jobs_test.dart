@@ -1,0 +1,174 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:karriko_flutter/core/theme/app_theme.dart';
+import 'package:karriko_flutter/core/utils/list_field.dart';
+import 'package:karriko_flutter/data/models/company_model.dart';
+import 'package:karriko_flutter/data/models/job_model.dart';
+import 'package:karriko_flutter/data/repositories/job_repository.dart';
+import 'package:karriko_flutter/presentation/betrieb/widgets/jobs_section.dart';
+import 'package:karriko_flutter/providers/company_provider.dart';
+import 'package:karriko_flutter/providers/job_provider.dart';
+
+/// Merkt sich jeden Aufruf, statt Appwrite zu fragen.
+class _FakeJobRepository implements JobRepository {
+  final aufrufe = <Invocation>[];
+
+  Iterable<Invocation> aufrufeVon(Symbol name) =>
+      aufrufe.where((a) => a.memberName == name);
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    aufrufe.add(invocation);
+    if (invocation.memberName == #jobsForCompany) {
+      return Future.value(<JobModel>[]);
+    }
+    return super.noSuchMethod(invocation);
+  }
+}
+
+final _company = CompanyModel(
+  id: 'c1',
+  slug: 'musterbau-gmbh',
+  name: 'Musterbau GmbH',
+  city: 'Dortmund',
+  industry: 'Handwerk',
+  reviewCount: 0,
+  isPremium: false,
+  isVerified: false,
+  ownerId: 'b1',
+  createdAt: DateTime(2026, 2, 9),
+);
+
+void main() {
+  group('Zeilenaufteilung bei Aufgaben und Anforderungen', () {
+    test('eine Zeile ist ein Punkt', () {
+      expect(splitListField('Kunden beraten\nLager pflegen'),
+          ['Kunden beraten', 'Lager pflegen']);
+    });
+
+    test('Leerzeilen und Leerraum fallen weg', () {
+      expect(splitListField('\n  Kunden beraten  \n\n\n   \nLager pflegen\n'),
+          ['Kunden beraten', 'Lager pflegen']);
+    });
+
+    test('führende Aufzählungszeichen fallen weg', () {
+      expect(
+        splitListField('- Bindestrich\n• Punkt\n* Stern\n  -   eingerückt'),
+        ['Bindestrich', 'Punkt', 'Stern', 'eingerückt'],
+      );
+    });
+
+    test('Zeichen mitten im Text bleiben stehen', () {
+      expect(splitListField('Vor- und Nachbereitung\nA * B'),
+          ['Vor- und Nachbereitung', 'A * B']);
+    });
+
+    test('Windows-Zeilenenden aus Word', () {
+      expect(splitListField('Eins\r\nZwei\r\n'), ['Eins', 'Zwei']);
+    });
+
+    test('leeres Feld ergibt keine Punkte', () {
+      expect(splitListField(''), isEmpty);
+      expect(splitListField('\n \n- \n'), isEmpty);
+    });
+  });
+
+  group('Entwurf ist nicht öffentlich', () {
+    test('ein Entwurf ist nur für den Eigentümer lesbar', () {
+      final rechte =
+          JobRepository.permissionsFor(ownerId: 'b1', isActive: false);
+      expect(rechte, contains(Permission.read(Role.user('b1'))));
+      expect(rechte, isNot(contains(Permission.read(Role.any()))));
+    });
+
+    test('eine veröffentlichte Stelle ist für alle lesbar', () {
+      final rechte =
+          JobRepository.permissionsFor(ownerId: 'b1', isActive: true);
+      expect(rechte, contains(Permission.read(Role.any())));
+    });
+
+    test('ändern und löschen darf in beiden Fällen nur der Eigentümer', () {
+      for (final aktiv in [true, false]) {
+        final rechte =
+            JobRepository.permissionsFor(ownerId: 'b1', isActive: aktiv);
+        expect(rechte, contains(Permission.update(Role.user('b1'))));
+        expect(rechte, contains(Permission.delete(Role.user('b1'))));
+        expect(
+            rechte
+                .where((r) => r.startsWith('update') || r.startsWith('delete')),
+            everyElement(contains('user:b1')));
+      }
+    });
+
+    test('das öffentliche Profil fragt nur veröffentlichte Stellen an',
+        () async {
+      final repo = _FakeJobRepository();
+      final container = ProviderContainer(overrides: [
+        jobRepositoryProvider.overrideWithValue(repo),
+        companyBySlugProvider('musterbau-gmbh')
+            .overrideWith((ref) async => _company),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(companyJobsProvider('musterbau-gmbh').future);
+
+      final aufruf = repo.aufrufeVon(#jobsForCompany).single;
+      expect(aufruf.positionalArguments.single, 'c1');
+      expect(aufruf.namedArguments[#onlyActive] ?? true, isTrue);
+    });
+
+    test('die eigene Verwaltung sieht auch Entwürfe', () async {
+      final repo = _FakeJobRepository();
+      final container = ProviderContainer(overrides: [
+        jobRepositoryProvider.overrideWithValue(repo),
+        myCompanyProvider.overrideWith((ref) async => _company),
+      ]);
+      addTearDown(container.dispose);
+
+      await container.read(myJobsProvider.future);
+
+      expect(
+        repo.aufrufeVon(#jobsForCompany).single.namedArguments[#onlyActive],
+        isFalse,
+      );
+    });
+  });
+
+  testWidgets('Formular ohne Titel speichert nicht', (tester) async {
+    tester.view.physicalSize = const Size(1200, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final repo = _FakeJobRepository();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          jobRepositoryProvider.overrideWithValue(repo),
+          myCompanyProvider.overrideWith((ref) async => _company),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: BetriebJobsSection(company: _company, ownerId: 'b1'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Stelle erstellen'));
+    await tester.pumpAndSettle();
+
+    // Der Standort kommt aus dem Profil; nur der Titel fehlt.
+    await tester.ensureVisible(find.text('Veröffentlichen'));
+    await tester.tap(find.text('Veröffentlichen'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Titel ist erforderlich'), findsOneWidget);
+    expect(repo.aufrufeVon(#createJob), isEmpty);
+  });
+}

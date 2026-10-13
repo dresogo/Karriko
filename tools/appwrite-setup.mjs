@@ -249,7 +249,16 @@ const SCHEMA = [
   {
     id: 'jobs',
     name: 'Jobs',
-    permissions: ['read("any")', 'create("users")'],
+    // **Kein `read("any")` auf Tabellenebene.** Es galt fuer jede Zeile, auch
+    // fuer Entwuerfe: Die oeffentliche Liste filterte nur nach `is_active`,
+    // ueber die API oder /stellen/<id> war ein Entwurf fuer jeden lesbar.
+    // Seit Oktober 2026 setzt die App das Leserecht pro Zeile
+    // (JobRepository.permissionsFor): veroeffentlicht `read("any")`, Entwurf
+    // nur der Eigentuemer. Erst die App ausliefern, dann mit
+    // `--fix-permissions` umstellen. Alte Entwuerfe tragen noch `read("any")`
+    // auf der Zeile, bis sie einmal veroeffentlicht und zurueckgezogen werden.
+    permissions: ['create("users")'],
+    exactPermissions: true,
     createIfMissing: true,
     columns: [
       str('company_id'),
