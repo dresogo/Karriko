@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
-/// Inter, Version 4.1, als Asset eingebettet (siehe pubspec.yaml). Frueher
-/// kam die Schrift ueber google_fonts zur Laufzeit von Google; damit ging die
-/// IP jedes Besuchers an Google (LG Muenchen I, 3 O 17493/20).
+/// Inter, Version 4.1, als Asset eingebettet (siehe pubspec.yaml). Alle
+/// Staerken zeigen bewusst auf Inter Regular; die FontWeight-Angaben unten
+/// bleiben stehen, wirken aber erst, wenn echte Schnitte eingetragen sind.
+/// Frueher kam die Schrift ueber google_fonts zur Laufzeit von Google; damit
+/// ging die IP jedes Besuchers an Google (LG Muenchen I, 3 O 17493/20).
 class AppFonts {
   static const family = 'Inter';
 }

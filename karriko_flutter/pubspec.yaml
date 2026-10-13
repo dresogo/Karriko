@@ -61,17 +61,19 @@ flutter:
   # in assets/fonts/inter/LICENSE.txt. Eingebettet statt ueber google_fonts
   # geladen: Kein Seitenaufruf soll Google die IP des Besuchers verraten, und
   # die Content-Security-Policy kommt so ohne fonts.gstatic.com aus.
-  # Nur die Staerken, die die App verwendet; 500 setzt Material intern ein.
+  #
+  # Bewusst nur Regular, auch fuer die fetten Stufen: So sah die Web-App mit
+  # google_fonts tatsaechlich aus, weil Google Inter als variable Schrift
+  # liefert und Flutter deren Staerke nicht einstellt. Die FontWeight-Angaben
+  # im Code wirken deshalb nicht; dieser Stand ist gestalterisch entschieden
+  # (13. Oktober 2026). Fuer echte Abstufungen die passenden Dateien aus dem
+  # Release ergaenzen und hier mit `weight:` eintragen.
+  #
+  # Ein Eintrag ohne Staerke genuegt: Im Web erzeugt Flutter daraus kein
+  # kuenstliches Fett (geprueft am Release-Build). Fuenf Eintraege auf dieselbe
+  # Datei haetten sie fuenfmal geladen. Auf iOS und Android ist das nicht
+  # geprueft; dort kann die Engine Fett synthetisch nachbilden.
   fonts:
     - family: Inter
       fonts:
         - asset: assets/fonts/inter/Inter-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/inter/Inter-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/inter/Inter-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/inter/Inter-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/inter/Inter-ExtraBold.ttf
-          weight: 800
