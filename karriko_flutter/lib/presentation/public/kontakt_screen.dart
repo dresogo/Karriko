@@ -162,27 +162,35 @@ class _ContactInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Flexible: Auf dem Smartphone ist eine lange Angabe wie die E-Mail-Adresse
+    // breiter als die Zeile und lief um bis zu 264 px ueber. Jetzt bricht sie
+    // um; das Symbol bleibt oben an der ersten Zeile.
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 18, color: AppColors.primary),
+        Padding(
+          padding: const EdgeInsets.only(top: 3),
+          child: Icon(icon, size: 18, color: AppColors.primary),
+        ),
         const SizedBox(width: 8),
-        if (uri == null)
-          Text(label, style: Theme.of(context).textTheme.bodyLarge)
-        else
-          Link(
-            uri: uri,
-            builder: (context, followLink) => TapTarget(
-              onTap: followLink,
-              builder: (context, active) => Text(
-                label,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      decoration: active
-                          ? TextDecoration.underline
-                          : TextDecoration.none,
+        Flexible(
+          child: uri == null
+              ? Text(label, style: Theme.of(context).textTheme.bodyLarge)
+              : Link(
+                  uri: uri,
+                  builder: (context, followLink) => TapTarget(
+                    onTap: followLink,
+                    builder: (context, active) => Text(
+                      label,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            decoration: active
+                                ? TextDecoration.underline
+                                : TextDecoration.none,
+                          ),
                     ),
-              ),
-            ),
-          ),
+                  ),
+                ),
+        ),
       ],
     );
   }

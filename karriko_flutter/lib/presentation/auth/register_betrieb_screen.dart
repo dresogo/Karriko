@@ -167,8 +167,12 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // Wrap statt Row, wie bei der Azubi-Registrierung: Auf
+                  // schmalen Fenstern und bei vergroesserter Systemschrift
+                  // bricht die Zeile um, statt ueberzulaufen.
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text('Bereits ein Konto? ',
                           style: Theme.of(context).textTheme.bodyMedium),
@@ -208,10 +212,16 @@ class _StepIndicator extends StatelessWidget {
       children: List.generate(labels.length, (i) {
         final active = i == current;
         final done = i < current;
+        // Aufbau wie bei der Azubi-Registrierung: Kreis und Verbindungslinie
+        // in einer eigenen Zeile, die Beschriftung darunter ueber die volle
+        // Zellenbreite. Frueher stand sie in einer Spalte neben der Linie,
+        // ohne Breitenbegrenzung, und lief auf dem Smartphone um bis zu
+        // 196 px ueber.
         return Expanded(
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
+              Row(
                 children: [
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -241,25 +251,26 @@ class _StepIndicator extends StatelessWidget {
                               )),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(labels[i],
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: active ? AppColors.primary : AppColors.textMuted,
-                        fontWeight:
-                            active ? FontWeight.w600 : FontWeight.normal,
+                  if (i < labels.length - 1)
+                    Expanded(
+                      child: Container(
+                        height: 2,
+                        color: done ? AppColors.primary : AppColors.border,
                       ),
-                      textAlign: TextAlign.center),
+                    ),
                 ],
               ),
-              if (i < labels.length - 1)
-                Expanded(
-                  child: Container(
-                    height: 2,
-                    margin: const EdgeInsets.only(bottom: 18),
-                    color: done ? AppColors.primary : AppColors.border,
-                  ),
+              const SizedBox(height: 4),
+              Text(
+                labels[i],
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: active ? AppColors.primary : AppColors.textMuted,
+                  fontWeight: active ? FontWeight.w600 : FontWeight.normal,
                 ),
+              ),
             ],
           ),
         );
@@ -307,9 +318,16 @@ class _StepUnternehmen extends StatelessWidget {
             DropdownButtonFormField<String>(
               initialValue: industry,
               decoration: const InputDecoration(labelText: 'Branche'),
+              // Ohne isExpanded misst das Feld sich am laengsten Eintrag und
+              // lief damit auf jeder Breite um ein paar Pixel ueber. So nimmt
+              // es die Breite des Formulars, lange Namen enden mit „…“.
+              isExpanded: true,
               items: AppConstants.industries
                   .where((i) => i != 'Alle Branchen')
-                  .map((i) => DropdownMenuItem(value: i, child: Text(i)))
+                  .map((i) => DropdownMenuItem(
+                        value: i,
+                        child: Text(i, overflow: TextOverflow.ellipsis),
+                      ))
                   .toList(),
               onChanged: onIndustryChanged,
             ),
