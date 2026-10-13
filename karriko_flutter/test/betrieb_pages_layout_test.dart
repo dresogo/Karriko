@@ -123,14 +123,37 @@ void main() {
     for (final title in [
       'Bewertungen',
       'Unternehmensprofil',
-      'Analytics',
-      'Team'
+      'Ausbildungsstellen',
     ]) {
       expect(find.text(title), findsWidgets, reason: 'Kachel „$title" fehlt');
     }
-    // Team und Berichte waren zuvor nur ueber die URL erreichbar.
+    // Berichte waren zuvor nur ueber die URL erreichbar.
     expect(find.text('Bewertungen melden'), findsOneWidget);
   });
+
+  testWidgets('Dashboard zeigt keine Attrappen', (tester) async {
+    await _open(tester, '/betrieb-dashboard', const Size(1440, 900));
+
+    for (final title in ['Analytics', 'Team', 'Abonnement']) {
+      expect(find.text(title), findsNothing, reason: '„$title" ist sichtbar');
+    }
+  });
+
+  for (final route in ['/analytics', '/team', '/subscription']) {
+    testWidgets('$route fuehrt aufs Dashboard', (tester) async {
+      await _open(tester, route, const Size(1440, 900));
+
+      expect(
+        _container
+            .read(routerProvider)
+            .routerDelegate
+            .currentConfiguration
+            .uri
+            .toString(),
+        '/betrieb-dashboard',
+      );
+    });
+  }
 
   testWidgets('Unternehmensprofil nutzt keinen erfundenen Namen',
       (tester) async {
@@ -167,14 +190,14 @@ void main() {
         find.textContaining('Neue Funktionen und Tipps · Aus'), findsOneWidget);
   });
 
-  testWidgets('Einstellungen fuehren auf das Team', (tester) async {
+  testWidgets('Einstellungen fuehren auf die Meldungen', (tester) async {
     await _open(tester, '/betrieb-settings', const Size(1440, 900));
 
     // Die Konto-Sektion ist um Passkeys und Zwei-Faktor-Bestaetigung
-    // gewachsen; 'Team' liegt dadurch unterhalb der Sichtkante.
-    await tester.ensureVisible(find.text('Team'));
+    // gewachsen; die Meldungen liegen dadurch unterhalb der Sichtkante.
+    await tester.ensureVisible(find.text('Bewertungen melden'));
     await tester.pump();
-    await tester.tap(find.text('Team'));
+    await tester.tap(find.text('Bewertungen melden'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
@@ -185,7 +208,7 @@ void main() {
           .currentConfiguration
           .uri
           .toString(),
-      '/team',
+      '/reports',
     );
   });
 

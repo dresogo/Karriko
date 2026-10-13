@@ -162,29 +162,13 @@ class _ManagementActions extends StatelessWidget {
       'Stellen ausschreiben und verwalten',
       '/betrieb-stellen',
     ),
-    (
-      Icons.insights_outlined,
-      'Analytics',
-      'Entwicklung im Zeitverlauf',
-      '/analytics',
-    ),
+    // Analytics, Team und Abonnement fehlen, bis sie an echte Daten
+    // angebunden sind; die Routen leiten bis dahin hierher zurueck.
     (
       Icons.flag_outlined,
       'Bewertungen melden',
       'Regelverstösse prüfen lassen',
       '/reports',
-    ),
-    (
-      Icons.group_outlined,
-      'Team',
-      'Zugriffe im Unternehmen verwalten',
-      '/team',
-    ),
-    (
-      Icons.card_membership_outlined,
-      'Abonnement',
-      'Tarif und Leistungen',
-      '/subscription',
     ),
   ];
 

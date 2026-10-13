@@ -541,7 +541,6 @@ class KarrikoDrawer extends ConsumerWidget {
                     label: 'Unternehmensprofil', route: '/betrieb-profile'),
                 const _DrawerItem(
                     label: 'Bewertungen', route: '/betrieb-reviews'),
-                const _DrawerItem(label: 'Analytics', route: '/analytics'),
                 const _DrawerItem(
                     label: 'Einstellungen', route: '/betrieb-settings'),
                 const Divider(color: AppColors.line),

@@ -67,22 +67,11 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
           ],
         ),
         const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Team & Tarif'),
+        // Team und Abonnement stehen hier wieder, sobald sie echt sind.
+        const SectionLabel('Meldungen'),
         const SizedBox(height: AppLayout.s16),
         AppRowGroup(
           children: [
-            AppRow(
-              icon: Icons.group_outlined,
-              title: 'Team',
-              subtitle: 'Zugriffe im Unternehmen verwalten',
-              onTap: () => context.go('/team'),
-            ),
-            AppRow(
-              icon: Icons.card_membership_outlined,
-              title: 'Abonnement',
-              subtitle: 'Aktuell: Basis (kostenlos)',
-              onTap: () => context.go('/subscription'),
-            ),
             AppRow(
               icon: Icons.flag_outlined,
               title: 'Bewertungen melden',

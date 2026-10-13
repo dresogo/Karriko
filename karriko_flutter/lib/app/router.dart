@@ -40,9 +40,6 @@ import '../presentation/betrieb/dashboard_screen.dart' as betrieb;
 import '../presentation/betrieb/profile_screen.dart' as betrieb;
 import '../presentation/betrieb/jobs_screen.dart';
 import '../presentation/betrieb/reviews_screen.dart' as betrieb;
-import '../presentation/betrieb/analytics_screen.dart';
-import '../presentation/betrieb/team_screen.dart';
-import '../presentation/betrieb/subscription_screen.dart';
 import '../presentation/betrieb/reports_screen.dart';
 import '../presentation/betrieb/settings_screen.dart' as betrieb;
 import '../presentation/admin/admin_screen.dart';
@@ -275,11 +272,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/betrieb-reviews',
           builder: (_, __) => const betrieb.BetriebReviewsScreen()),
-      GoRoute(path: '/analytics', builder: (_, __) => const AnalyticsScreen()),
-      GoRoute(path: '/team', builder: (_, __) => const TeamScreen()),
-      GoRoute(
-          path: '/subscription',
-          builder: (_, __) => const SubscriptionScreen()),
+      // Analytics, Team und Abonnement sind noch Attrappen ohne Datenquelle.
+      // Bis sie echt sind, fuehren alte Links und Lesezeichen aufs Dashboard;
+      // die Bildschirme liegen weiter unter presentation/betrieb/.
+      for (final path in const ['/analytics', '/team', '/subscription'])
+        GoRoute(path: path, redirect: (_, __) => '/betrieb-dashboard'),
       GoRoute(path: '/reports', builder: (_, __) => const ReportsScreen()),
       GoRoute(
           path: '/betrieb-settings',
