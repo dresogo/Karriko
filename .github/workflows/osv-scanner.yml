@@ -1,0 +1,38 @@
+name: OSV-Scanner
+
+# Prueft alle Lockfiles im Repository gegen die OSV-Datenbank: pubspec.lock
+# der App, der Pakete und der Functions sowie package-lock.json des
+# Passkey-Dienstes. Bis hierhin hat kein Scanner die Flutter-App geprueft;
+# CodeQL sieht nur JavaScript und TypeScript.
+#
+# Dependabot (.github/dependabot.yml) schlaegt Updates vor, laesst die
+# Functions aber aus, weil ihr vendor/ nicht im Repository liegt. OSV liest
+# nur die Lockfiles und sieht die Functions deshalb mit.
+#
+# Laeuft bei jedem Pull Request und jedem Push auf main, dazu woechentlich:
+# Neue Meldungen erscheinen auch dann, wenn sich am Code nichts aendert.
+# Befunde landen unter Security → Code scanning und lassen den Lauf scheitern.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: OSV-Scanner
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@b1d267aea5211fa648d9d442fa64b90dbdcbdd36 # v2.7.0
+    with:
+      scan-args: |-
+        -r
+        ./

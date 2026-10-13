@@ -1,6 +1,14 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+/// Inter, Version 4.1, als Asset eingebettet (siehe pubspec.yaml). Alle
+/// Staerken zeigen bewusst auf Inter Regular; die FontWeight-Angaben unten
+/// bleiben stehen, wirken aber erst, wenn echte Schnitte eingetragen sind.
+/// Frueher kam die Schrift ueber google_fonts zur Laufzeit von Google; damit
+/// ging die IP jedes Besuchers an Google (LG Muenchen I, 3 O 17493/20).
+class AppFonts {
+  static const family = 'Inter';
+}
 
 class AppColors {
   // Website design tokens (globals.css)
@@ -96,70 +104,82 @@ class ContentBand extends StatelessWidget {
 
 class AppTheme {
   static TextTheme _buildTextTheme(TextTheme base) {
-    return GoogleFonts.interTextTheme(base).copyWith(
-      displayLarge: GoogleFonts.inter(
+    return base.copyWith(
+      displayLarge: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 64,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
         height: 0.92,
         letterSpacing: -1,
       ),
-      displayMedium: GoogleFonts.inter(
+      displayMedium: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 48,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
         height: 0.96,
         letterSpacing: -0.5,
       ),
-      displaySmall: GoogleFonts.inter(
+      displaySmall: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 36,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
         height: 1,
       ),
-      headlineLarge: GoogleFonts.inter(
+      headlineLarge: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 28,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
         height: 1,
       ),
-      headlineMedium: GoogleFonts.inter(
+      headlineMedium: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 22,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
       ),
-      headlineSmall: GoogleFonts.inter(
+      headlineSmall: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: AppColors.ink,
       ),
-      bodyLarge: GoogleFonts.inter(
+      bodyLarge: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 17,
         color: AppColors.ink,
         height: 1.55,
       ),
-      bodyMedium: GoogleFonts.inter(
+      bodyMedium: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 15,
         color: AppColors.muted,
         height: 1.55,
       ),
-      bodySmall: GoogleFonts.inter(
+      bodySmall: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 13,
         color: AppColors.muted,
         height: 1.35,
       ),
-      labelLarge: GoogleFonts.inter(
+      labelLarge: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 14,
         fontWeight: FontWeight.w700,
         color: AppColors.ink,
       ),
-      labelMedium: GoogleFonts.inter(
+      labelMedium: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 12,
         fontWeight: FontWeight.w800,
         color: AppColors.ink,
         letterSpacing: 0.11 * 12,
       ),
-      labelSmall: GoogleFonts.inter(
+      labelSmall: const TextStyle(
+        fontFamily: AppFonts.family,
         fontSize: 11,
         fontWeight: FontWeight.w600,
         color: AppColors.muted,
@@ -168,7 +188,14 @@ class AppTheme {
   }
 
   static ThemeData get light {
-    final base = ThemeData.light(useMaterial3: true);
+    // Die Schrift liegt als Asset in der App (assets/fonts/inter) und wird nicht
+    // zur Laufzeit von Google geladen. Ueber ThemeData gilt sie auch fuer alle
+    // Material-Texte, die unten nicht eigens gestaltet sind.
+    final base = ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      fontFamily: AppFonts.family,
+    );
     return base.copyWith(
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.accent,
@@ -193,17 +220,18 @@ class AppTheme {
             })
           : base.pageTransitionsTheme,
       textTheme: _buildTextTheme(base.textTheme),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.paper,
         foregroundColor: AppColors.ink,
         elevation: 0,
         surfaceTintColor: Colors.transparent,
-        titleTextStyle: GoogleFonts.inter(
+        titleTextStyle: TextStyle(
+          fontFamily: AppFonts.family,
           fontSize: 18,
           fontWeight: FontWeight.w800,
           color: AppColors.ink,
         ),
-        iconTheme: const IconThemeData(color: AppColors.ink),
+        iconTheme: IconThemeData(color: AppColors.ink),
       ),
       cardTheme: const CardThemeData(
         color: AppColors.surface,
@@ -222,7 +250,8 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.button)),
-          textStyle: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontFamily: AppFonts.family,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -235,7 +264,8 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.button)),
-          textStyle: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontFamily: AppFonts.family,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -248,7 +278,8 @@ class AppTheme {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppRadius.button)),
-          textStyle: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontFamily: AppFonts.family,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -257,38 +288,40 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.accent,
-          textStyle: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontFamily: AppFonts.family,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
         ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
+      inputDecorationTheme: const InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surface,
-        border: const OutlineInputBorder(
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: AppColors.line),
         ),
-        enabledBorder: const OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: AppColors.line),
         ),
-        focusedBorder: const OutlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: AppColors.ink, width: 2),
         ),
-        errorBorder: const OutlineInputBorder(
+        errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.zero,
           borderSide: BorderSide(color: AppColors.error),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        hintStyle: GoogleFonts.inter(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        hintStyle: TextStyle(
+          fontFamily: AppFonts.family,
           fontSize: 15,
-          color: const Color(0xFF8C8E88),
+          color: Color(0xFF8C8E88),
         ),
-        labelStyle: GoogleFonts.inter(
+        labelStyle: TextStyle(
+          fontFamily: AppFonts.family,
           fontSize: 14,
           color: AppColors.muted,
         ),
@@ -322,14 +355,16 @@ class AppTheme {
         type: BottomNavigationBarType.fixed,
         elevation: 0,
       ),
-      chipTheme: ChipThemeData(
+      chipTheme: const ChipThemeData(
         backgroundColor: AppColors.paper,
         selectedColor: AppColors.ink,
-        labelStyle:
-            GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600),
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        side: const BorderSide(color: AppColors.line),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        labelStyle: TextStyle(
+            fontFamily: AppFonts.family,
+            fontSize: 12,
+            fontWeight: FontWeight.w600),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        side: BorderSide(color: AppColors.line),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       ),
     );
   }

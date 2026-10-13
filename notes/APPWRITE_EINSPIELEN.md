@@ -479,8 +479,11 @@ Dazu passend muss die App gebaut werden, sonst zeigen die Links aus
 Bestätigungsmails ins Leere:
 
 ```powershell
-flutter build web --dart-define=APP_ORIGIN=https://karriko.de
+dart run tools/build_web.dart https://karriko.de
 ```
+
+Das Skript setzt `--no-web-resources-cdn` und prüft den Build; siehe README,
+Abschnitt „Web-Build zum Ausliefern“.
 
 ---
 

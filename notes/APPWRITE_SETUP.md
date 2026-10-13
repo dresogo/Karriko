@@ -1066,8 +1066,7 @@ Die App liest ihre Kennungen zur Bauzeit. Standard sind sprechende Namen, keine
 echten Kennungen:
 
 ```bash
-flutter build web \
-  --dart-define=APP_ORIGIN=https://… \
+dart run tools/build_web.dart https://… \
   --dart-define=TBL_PUBLIC_REVIEWS=public_reviews \
   --dart-define=TBL_COMPANY_SCORES=company_scores \
   --dart-define=TBL_REVIEW_DRAFTS=review_drafts \
