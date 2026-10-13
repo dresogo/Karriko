@@ -166,6 +166,16 @@ flutter run -d chrome --dart-define=APP_ORIGIN=https://deine-domain.example
 
 Dieselbe Adresse muss im Appwrite-Projekt **als Web-Plattform hinterlegt** sein — sonst weist Appwrite die Ziel-URLs zurück und es kommt weder Bestätigungsmail noch Reset noch Magic Link an. Für einen Produktions-Build ist das Dart-Define zwingend.
 
+### Web-Build zum Ausliefern
+
+Gebaut wird über das Skript, nicht direkt mit `flutter build web`:
+
+```bash
+dart run tools/build_web.dart https://karriko.dresogo.de
+```
+
+Es verlangt `APP_ORIGIN`, setzt immer `--no-web-resources-cdn` und prüft danach, dass CanvasKit aus `build/web` geladen wird und nicht von `www.gstatic.com`. Weitere Flags wie `--base-href /app/` hängt man einfach an. `dart run tools/build_web.dart --pruefen` prüft einen schon vorhandenen Build.
+
 ### Alle Dart-Defines
 
 | Define | Standard | Wofür |
