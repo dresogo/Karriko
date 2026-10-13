@@ -50,8 +50,14 @@ export interface PasskeyStore {
 /** Appwrite-gestuetzte Ablage. */
 export class AppwritePasskeyStore implements PasskeyStore {
   private readonly tables: TablesDB;
+  // Ausgeschrieben statt `constructor(private readonly config: Config)`:
+  // Node entfernt beim Start nur Typen (--experimental-strip-types) und kann
+  // Parameter-Properties nicht uebersetzen. tsconfig.json prueft das ueber
+  // erasableSyntaxOnly.
+  private readonly config: Config;
 
-  constructor(private readonly config: Config) {
+  constructor(config: Config) {
+    this.config = config;
     const client = new Client()
       .setEndpoint(config.appwriteEndpoint)
       .setProject(config.appwriteProjectId)
