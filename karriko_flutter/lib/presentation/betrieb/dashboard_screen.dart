@@ -251,55 +251,57 @@ class _ManagementCardState extends State<_ManagementCard> {
       excludeSemantics: true,
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: () => context.go(widget.route),
-          onFocusChange: (v) => setState(() => _focused = v),
-          onHover: (v) => setState(() => _hovered = v),
-          hoverColor: AppColors.paper,
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            constraints: const BoxConstraints(minHeight: 108),
-            padding: const EdgeInsets.all(AppLayout.s24),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: _focused ? AppColors.ink : AppColors.line,
-                width: _focused ? 2 : 1,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: () => context.go(widget.route),
+            onFocusChange: (v) => setState(() => _focused = v),
+            onHover: (v) => setState(() => _hovered = v),
+            hoverColor: AppColors.paper,
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              constraints: const BoxConstraints(minHeight: 108),
+              padding: const EdgeInsets.all(AppLayout.s24),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: _focused ? AppColors.ink : AppColors.line,
+                  width: _focused ? 2 : 1,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(widget.icon, size: 20, color: AppColors.ink),
-                    const SizedBox(width: AppLayout.s16),
-                    Expanded(
-                      child: Text(
-                        widget.title,
-                        style: const TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(widget.icon, size: 20, color: AppColors.ink),
+                      const SizedBox(width: AppLayout.s16),
+                      Expanded(
+                        child: Text(
+                          widget.title,
+                          style: const TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
-                    ),
-                    AnimatedSlide(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOut,
-                      offset: _hovered || _focused
-                          ? const Offset(0.25, 0)
-                          : Offset.zero,
-                      child: const Icon(Icons.arrow_forward,
-                          size: 18, color: AppColors.muted),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppLayout.s8),
-                Text(widget.description,
-                    style: Theme.of(context).textTheme.bodySmall),
-              ],
+                      AnimatedSlide(
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.easeOut,
+                        offset: _hovered || _focused
+                            ? const Offset(0.25, 0)
+                            : Offset.zero,
+                        child: const Icon(Icons.arrow_forward,
+                            size: 18, color: AppColors.muted),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppLayout.s8),
+                  Text(widget.description,
+                      style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
             ),
           ),
         ),

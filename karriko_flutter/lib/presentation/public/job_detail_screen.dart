@@ -431,66 +431,68 @@ class _CompanyStripState extends State<_CompanyStrip> {
           excludeSemantics: true,
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
-              onTap: () => context.go('/company/${widget.job.companySlug}'),
-              onHover: (v) => setState(() => _hovered = v),
-              onFocusChange: (v) => setState(() => _focused = v),
-              hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
-              focusColor: AppColors.audienceBeige,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                curve: Curves.easeOut,
-                padding: const EdgeInsets.symmetric(vertical: AppLayout.s16),
-                foregroundDecoration: BoxDecoration(
-                  border: Border.all(
-                    color: _focused ? AppColors.ink : Colors.transparent,
-                    width: 2,
+            child: SelectionContainer.disabled(
+              child: InkWell(
+                onTap: () => context.go('/company/${widget.job.companySlug}'),
+                onHover: (v) => setState(() => _hovered = v),
+                onFocusChange: (v) => setState(() => _focused = v),
+                hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
+                focusColor: AppColors.audienceBeige,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  curve: Curves.easeOut,
+                  padding: const EdgeInsets.symmetric(vertical: AppLayout.s16),
+                  foregroundDecoration: BoxDecoration(
+                    border: Border.all(
+                      color: _focused ? AppColors.ink : Colors.transparent,
+                      width: 2,
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    _CompanyMark(name: widget.job.company),
-                    const SizedBox(width: AppLayout.s16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const _Eyebrow(text: 'AUSGESCHRIEBEN VON'),
-                          const SizedBox(height: 4),
-                          Text(
-                            widget.job.company,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: AppColors.ink,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                          if (subtitle.isNotEmpty) ...[
-                            const SizedBox(height: 2),
+                  child: Row(
+                    children: [
+                      _CompanyMark(name: widget.job.company),
+                      const SizedBox(width: AppLayout.s16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const _Eyebrow(text: 'AUSGESCHRIEBEN VON'),
+                            const SizedBox(height: 4),
                             Text(
-                              subtitle,
+                              widget.job.company,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodySmall,
+                              style: const TextStyle(
+                                color: AppColors.ink,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
+                            if (subtitle.isNotEmpty) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                subtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: AppLayout.s16),
-                    AnimatedSlide(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOut,
-                      offset: _hovered || _focused
-                          ? const Offset(0.25, 0)
-                          : Offset.zero,
-                      child: const Icon(Icons.arrow_forward,
-                          size: 20, color: AppColors.ink),
-                    ),
-                  ],
+                      const SizedBox(width: AppLayout.s16),
+                      AnimatedSlide(
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.easeOut,
+                        offset: _hovered || _focused
+                            ? const Offset(0.25, 0)
+                            : Offset.zero,
+                        child: const Icon(Icons.arrow_forward,
+                            size: 20, color: AppColors.ink),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/company_provider.dart';
+import 'tap_target.dart';
 
 /// Höhe der Eingabezeile inkl. 2px-Rahmen oben und unten.
 const double _kBarHeight = 66.0;
@@ -323,15 +324,15 @@ class _SearchFieldState extends State<_SearchField> {
             ),
           ),
           // Roter Such-Button
-          GestureDetector(
+          TapTarget(
             onTap: () => widget.onSubmit(widget.controller.text),
-            child: Container(
+            builder: (_, active) => Container(
               width: 58,
               height: _kFieldHeight,
-              decoration: const BoxDecoration(
-                color: AppColors.accent,
-                border:
-                    Border(left: BorderSide(color: AppColors.ink, width: 2)),
+              decoration: BoxDecoration(
+                color: active ? AppColors.accentDark : AppColors.accent,
+                border: const Border(
+                    left: BorderSide(color: AppColors.ink, width: 2)),
               ),
               child: const Center(
                 child: Icon(Icons.search, color: Colors.white, size: 24),

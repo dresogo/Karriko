@@ -306,22 +306,24 @@ class _AppRowState extends State<AppRow> {
 
     return Semantics(
       button: true,
-      child: InkWell(
-        onTap: widget.onTap,
-        onFocusChange: (v) => setState(() => _focused = v),
-        hoverColor: AppColors.paper,
-        focusColor: AppColors.audienceBeige,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeOut,
-          constraints: const BoxConstraints(minHeight: 56),
-          foregroundDecoration: BoxDecoration(
-            border: Border.all(
-              color: _focused ? AppColors.ink : Colors.transparent,
-              width: 2,
+      child: SelectionContainer.disabled(
+        child: InkWell(
+          onTap: widget.onTap,
+          onFocusChange: (v) => setState(() => _focused = v),
+          hoverColor: AppColors.paper,
+          focusColor: AppColors.audienceBeige,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOut,
+            constraints: const BoxConstraints(minHeight: 56),
+            foregroundDecoration: BoxDecoration(
+              border: Border.all(
+                color: _focused ? AppColors.ink : Colors.transparent,
+                width: 2,
+              ),
             ),
+            child: content,
           ),
-          child: content,
         ),
       ),
     );

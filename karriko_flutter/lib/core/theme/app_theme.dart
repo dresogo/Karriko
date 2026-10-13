@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -178,6 +179,19 @@ class AppTheme {
         error: AppColors.error,
       ),
       scaffoldBackgroundColor: AppColors.paper,
+      // Keine Material-Welle beim Klick: Der wachsende Kreis wirkt im Browser
+      // wie ein Zoom und passt nicht zur flachen Gestaltung. Hover-, Fokus-
+      // und Druckfarben bleiben erhalten.
+      splashFactory: NoSplash.splashFactory,
+      // Im Browser wechseln Seiten ohne Animation, wie bei einer Website.
+      // Flutters Standard ist dort ein Zoom-Uebergang. Die nativen Apps
+      // behalten ihre Uebergaenge samt Wisch-zurueck unter iOS.
+      pageTransitionsTheme: kIsWeb
+          ? PageTransitionsTheme(builders: {
+              for (final platform in TargetPlatform.values)
+                platform: const _NoPageTransitionsBuilder(),
+            })
+          : base.pageTransitionsTheme,
       textTheme: _buildTextTheme(base.textTheme),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.paper,
@@ -319,4 +333,19 @@ class AppTheme {
       ),
     );
   }
+}
+
+/// Seitenwechsel ohne Animation: Die neue Seite steht sofort da.
+class _NoPageTransitionsBuilder extends PageTransitionsBuilder {
+  const _NoPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) =>
+      child;
 }

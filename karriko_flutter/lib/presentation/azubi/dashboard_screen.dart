@@ -167,49 +167,51 @@ class _QuickActionState extends State<_QuickAction> {
       button: true,
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: () => context.go(widget.route),
-          onFocusChange: (v) => setState(() => _focused = v),
-          onHover: (v) => setState(() => _hovered = v),
-          hoverColor: AppColors.paper,
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            constraints: const BoxConstraints(minHeight: 64),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppLayout.s16,
-              vertical: AppLayout.s16,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: _focused ? AppColors.ink : AppColors.line,
-                  width: _focused ? 2 : 1),
-            ),
-            child: Row(
-              children: [
-                Icon(widget.icon, size: 20, color: AppColors.ink),
-                const SizedBox(width: AppLayout.s16),
-                Expanded(
-                  child: Text(
-                    widget.label,
-                    style: const TextStyle(
-                      color: AppColors.ink,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: () => context.go(widget.route),
+            onFocusChange: (v) => setState(() => _focused = v),
+            onHover: (v) => setState(() => _hovered = v),
+            hoverColor: AppColors.paper,
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              constraints: const BoxConstraints(minHeight: 64),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppLayout.s16,
+                vertical: AppLayout.s16,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: _focused ? AppColors.ink : AppColors.line,
+                    width: _focused ? 2 : 1),
+              ),
+              child: Row(
+                children: [
+                  Icon(widget.icon, size: 20, color: AppColors.ink),
+                  const SizedBox(width: AppLayout.s16),
+                  Expanded(
+                    child: Text(
+                      widget.label,
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
-                ),
-                AnimatedSlide(
-                  duration: const Duration(milliseconds: 150),
-                  curve: Curves.easeOut,
-                  offset: _hovered || _focused
-                      ? const Offset(0.25, 0)
-                      : Offset.zero,
-                  child: const Icon(Icons.arrow_forward,
-                      size: 18, color: AppColors.muted),
-                ),
-              ],
+                  AnimatedSlide(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
+                    offset: _hovered || _focused
+                        ? const Offset(0.25, 0)
+                        : Offset.zero,
+                    child: const Icon(Icons.arrow_forward,
+                        size: 18, color: AppColors.muted),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

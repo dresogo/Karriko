@@ -184,33 +184,36 @@ class _NeuberechnungState extends ConsumerState<_Neuberechnung> {
             ),
             Semantics(
               toggled: _probelauf,
-              child: InkWell(
-                onTap: () => setState(() => _probelauf = !_probelauf),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(minHeight: 48),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Switch(
-                        value: _probelauf,
-                        onChanged: (v) => setState(() => _probelauf = v),
-                        activeThumbColor: AppColors.paper,
-                        activeTrackColor: AppColors.ink,
-                        inactiveThumbColor: AppColors.surface,
-                        inactiveTrackColor: AppColors.line,
-                      ),
-                      const SizedBox(width: AppLayout.s8),
-                      Text(
-                        _probelauf
-                            ? 'Probelauf – schreibt nichts'
-                            : 'Ernstfall – schreibt alle Werte',
-                        style: TextStyle(
-                          color:
-                              _probelauf ? AppColors.ink : AppColors.accentDark,
-                          fontWeight: FontWeight.w700,
+              child: SelectionContainer.disabled(
+                child: InkWell(
+                  onTap: () => setState(() => _probelauf = !_probelauf),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Switch(
+                          value: _probelauf,
+                          onChanged: (v) => setState(() => _probelauf = v),
+                          activeThumbColor: AppColors.paper,
+                          activeTrackColor: AppColors.ink,
+                          inactiveThumbColor: AppColors.surface,
+                          inactiveTrackColor: AppColors.line,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: AppLayout.s8),
+                        Text(
+                          _probelauf
+                              ? 'Probelauf – schreibt nichts'
+                              : 'Ernstfall – schreibt alle Werte',
+                          style: TextStyle(
+                            color: _probelauf
+                                ? AppColors.ink
+                                : AppColors.accentDark,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

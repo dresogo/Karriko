@@ -311,29 +311,31 @@ class _ReviewCardState extends ConsumerState<ReviewCard> {
                 alignment: WrapAlignment.spaceBetween,
                 children: [
                   if (_i.hasVerification)
-                    InkWell(
-                      onTap: _laeuft
-                          ? null
-                          : () => setState(
-                              () => _nachweisBelegt = !_nachweisBelegt),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minHeight: 44),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Checkbox(
-                              value: _nachweisBelegt,
-                              onChanged: _laeuft
-                                  ? null
-                                  : (v) => setState(
-                                      () => _nachweisBelegt = v ?? false),
-                              activeColor: AppColors.ink,
-                            ),
-                            const Text('Nachweis geprüft und belegt',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.ink)),
-                          ],
+                    SelectionContainer.disabled(
+                      child: InkWell(
+                        onTap: _laeuft
+                            ? null
+                            : () => setState(
+                                () => _nachweisBelegt = !_nachweisBelegt),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minHeight: 44),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Checkbox(
+                                value: _nachweisBelegt,
+                                onChanged: _laeuft
+                                    ? null
+                                    : (v) => setState(
+                                        () => _nachweisBelegt = v ?? false),
+                                activeColor: AppColors.ink,
+                              ),
+                              const Text('Nachweis geprüft und belegt',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.ink)),
+                            ],
+                          ),
                         ),
                       ),
                     )

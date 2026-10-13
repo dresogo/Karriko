@@ -770,34 +770,37 @@ class _DateField extends StatelessWidget {
       button: true,
       label: 'Ausbildungsbeginn: $text',
       excludeSemantics: true,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 56),
-          padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
-          decoration: BoxDecoration(border: Border.all(color: AppColors.line)),
-          child: Row(
-            children: [
-              const Icon(Icons.event_outlined,
-                  size: 18, color: AppColors.muted),
-              const SizedBox(width: AppLayout.s16),
-              Expanded(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: value == null ? AppColors.muted : AppColors.ink,
+      child: SelectionContainer.disabled(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            constraints: const BoxConstraints(minHeight: 56),
+            padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
+            decoration:
+                BoxDecoration(border: Border.all(color: AppColors.line)),
+            child: Row(
+              children: [
+                const Icon(Icons.event_outlined,
+                    size: 18, color: AppColors.muted),
+                const SizedBox(width: AppLayout.s16),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: value == null ? AppColors.muted : AppColors.ink,
+                    ),
                   ),
                 ),
-              ),
-              if (value != null)
-                IconButton(
-                  onPressed: onClear,
-                  icon: const Icon(Icons.clear, size: 18),
-                  color: AppColors.muted,
-                  tooltip: 'Datum entfernen',
-                ),
-            ],
+                if (value != null)
+                  IconButton(
+                    onPressed: onClear,
+                    icon: const Icon(Icons.clear, size: 18),
+                    color: AppColors.muted,
+                    tooltip: 'Datum entfernen',
+                  ),
+              ],
+            ),
           ),
         ),
       ),

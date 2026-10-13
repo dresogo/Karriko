@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../common/tap_target.dart';
 
 class RegisterBetriebScreen extends ConsumerStatefulWidget {
   const RegisterBetriebScreen({super.key});
@@ -171,13 +172,17 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                     children: [
                       Text('Bereits ein Konto? ',
                           style: Theme.of(context).textTheme.bodyMedium),
-                      GestureDetector(
+                      TapTarget(
                         onTap: () => context.go('/login'),
-                        child: const Text('Anmelden',
+                        builder: (_, active) => Text('Anmelden',
                             style: TextStyle(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 14)),
+                                fontSize: 14,
+                                decoration: active
+                                    ? TextDecoration.underline
+                                    : TextDecoration.none,
+                                decorationColor: AppColors.primary)),
                       ),
                     ],
                   ),
