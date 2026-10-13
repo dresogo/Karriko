@@ -25,7 +25,7 @@ Azubis bewerten ihren Ausbildungsbetrieb. Betriebe sehen, was wirklich über sie
 
 - **„Konto löschen" ist ein Stub** — Art. 17 DSGVO ist damit nicht erfüllt. Dasselbe gilt für das Löschen einer einzelnen Bewertung.
 - **Das Kontaktformular verschickt nichts.**
-- **Analytics, Team und Abonnement im Betriebsbereich sind statische Attrappen**, das Betriebs-Dashboard hängt noch nicht an `company_scores`.
+- **Analytics, Team und Abonnement im Betriebsbereich sind statische Attrappen** und deshalb ausgeblendet; ihre Routen führen aufs Dashboard. Das Betriebs-Dashboard hängt noch nicht an `company_scores`.
 - **Der Abnahmetest gegen die echte Instanz steht aus.** Die Bewertungsstrecke ist eingespielt und einzeln angestoßen, aber nicht mit allen vier Personas von Ende zu Ende durchgespielt.
 - **Rechtstexte und acht Punkte der Bewertungsstrecke sind juristisch ungeprüft**, im Fragebogen stehen noch fünf Platzhaltertexte. Vor den ersten echten Bewertungen ist das blockierend.
 
@@ -54,7 +54,7 @@ Wer hier einsteigt, fängt am besten mit der Todo-Liste an und liest bei Bedarf 
 | **Bewerten** | Fragebogen mit Phasen, Bedingungen und Entwurfsspeicherung; Auswertung, Moderation und Aggregation auf dem Server | eingespielt, Abnahmetest offen |
 | **Anmeldung** | E-Mail/Passwort, Passkeys, Magic Links, Social Login, Zwei-Faktor über TOTP | eingebaut, gegen die echte Instanz ungetestet |
 | **Azubi-Bereich** | Dashboard, Profil, eigene Bewertungen, Lesezeichen, Benachrichtigungen, Einstellungen | eigene Bewertungen angebunden, Rest lückenhaft |
-| **Betriebs-Bereich** | Dashboard, Unternehmensprofil, Ausbildungsstellen, Bewertungen, Meldungen, Team, Analytics, Abonnement | Profil und Stellen angebunden, Analytics/Team/Abo Attrappen |
+| **Betriebs-Bereich** | Dashboard, Unternehmensprofil, Ausbildungsstellen, Bewertungen, Meldungen, Team, Analytics, Abonnement | Profil und Stellen angebunden, Analytics/Team/Abo als Attrappen ausgeblendet |
 | **Admin-Bereich** | Übersicht, Moderations-Warteschlange, Meldungen, Protokoll, Betriebe, System | unter `/#/admin`, prüft die Teams `admins` und `moderators` |
 
 **48 Routen** über GoRouter, mit rollenbasierten Weiterleitungen (Azubi ↔ Betrieb) und einem Wächter, dessen Reihenfolge festliegt: **Laden → zweiter Faktor → E-Mail-Bestätigung → Rolle.** Wer sie umstellt, baut sich eine Weiterleitungsschleife, weil die späteren Tore eine vollständige Sitzung voraussetzen, die die früheren erst herstellen. Der Admin-Bereich steht bewusst außerhalb der Rollenregeln: Er meldet selbst an und prüft selbst die Teams; vorher muss nur der zweite Faktor erledigt sein.
@@ -301,11 +301,8 @@ Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt 
 | `services/passkey-rp/` | WebAuthn-Dienst für Passkeys |
 | `tools/` | Skripte für Schema, Wiederherstellung, Dev-Admin, Vendoring und Fragebogen |
 | `notes/` | Projektreferenz, Berichte, Todo-Liste, Backend-Anleitungen, Design-Entwurf |
-| `old_tsx/` | abgelöster Next.js-Prototyp, nur noch Referenz |
 
-Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. `old_tsx/` bleibt vorerst als Nachschlagewerk liegen und wird nicht mehr gepflegt.
-
-**Die Dependabot-Warnungen auf `main` stammen sämtlich aus diesem Altbestand** — derzeit rund 30, alle zu Next.js. Solange `old_tsx/` nicht gebaut oder ausgeliefert wird, ist die reale Gefahr gering; der Schaden ist ein anderer. Wer dauerhaft rote Meldungen ignoriert, übersieht die nächste, die echt ist. `old_tsx/` aus `main` zu entfernen steht deshalb auf der Liste — die Historie behält den Code ohnehin.
+Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. Der alte Prototyp lag bis Oktober 2026 unter `old_tsx/` und ist seitdem aus `main` entfernt; die Git-Historie enthält ihn weiterhin. Mit ihm sind die rund 30 Dependabot-Warnungen zu Next.js verschwunden, die sämtlich aus diesem Altbestand stammten.
 
 ---
 

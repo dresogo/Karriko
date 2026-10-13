@@ -30,6 +30,10 @@ on:
       - 'karriko_flutter/assets/questionnaire/**'
       - '.github/workflows/dart.yml'
 
+# Nur Lesezugriff auf den Code. Kein Schritt hier schreibt ins Repository.
+permissions:
+  contents: read
+
 jobs:
   # ── Die gemeinsamen Pakete ──────────────────────────────────────────────────
   #
@@ -48,10 +52,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           flutter-version: 3.44.x
           channel: stable
@@ -59,7 +65,7 @@ jobs:
 
       - name: questionnaire_core · pub get
         working-directory: packages/questionnaire_core
-        run: dart pub get
+        run: dart pub get --enforce-lockfile
 
       - name: questionnaire_core · Formatierung
         working-directory: packages/questionnaire_core
@@ -75,7 +81,7 @@ jobs:
 
       - name: karriko_functions · pub get
         working-directory: packages/karriko_functions
-        run: dart pub get
+        run: dart pub get --enforce-lockfile
 
       - name: karriko_functions · Formatierung
         working-directory: packages/karriko_functions
@@ -101,10 +107,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           flutter-version: 3.44.x
           channel: stable
@@ -123,7 +131,7 @@ jobs:
             [ -f "$f/pubspec.yaml" ] || continue
             name=$(basename "$f")
             echo "::group::$name"
-            if (cd "$f" && dart pub get && dart format --output=none --set-exit-if-changed lib && dart analyze --fatal-infos); then
+            if (cd "$f" && dart pub get --enforce-lockfile && dart format --output=none --set-exit-if-changed lib && dart analyze --fatal-infos); then
               echo "$name ok"
             else
               gescheitert="$gescheitert $name"
@@ -157,17 +165,19 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           flutter-version: 3.44.x
           channel: stable
           cache: true
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 

@@ -1,0 +1,44 @@
+version: 2
+
+# Sicherheitsmeldungen und Versionsvorschlaege fuer alles, was die App und die
+# CI tatsaechlich benutzen.
+#
+# Die Appwrite Functions fehlen bewusst: Jede haengt per Pfad an `vendor/`, und
+# `vendor/` steht in der .gitignore. Dependabot faende die beiden Pakete nicht
+# und wuerde bei jedem Lauf scheitern. Ihre Abhaengigkeiten sind im Kern die von
+# `packages/karriko_functions`, und das ist hier mit drin.
+#
+# Gebuendelt wird je Oekosystem, damit nicht jede Kleinigkeit einen eigenen
+# Pull Request oeffnet. Sicherheitsupdates kommen davon unabhaengig sofort.
+
+updates:
+  - package-ecosystem: pub
+    directories:
+      - /karriko_flutter
+      - /packages/questionnaire_core
+      - /packages/karriko_functions
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      pub:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directory: /services/passkey-rp
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      npm:
+        patterns: ['*']
+
+  # Haelt die festgenagelten Commit-Hashes in .github/workflows aktuell und
+  # pflegt den Versionskommentar dahinter mit.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
