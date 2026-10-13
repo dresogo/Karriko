@@ -387,6 +387,43 @@ void main() {
       }
     });
 
+    // Referenz §5, kritischer Testfall „Anonymität“: keinerlei Nutzerdaten,
+    // auch nicht in der API-Antwort. Die Liste oben schützt nur vor bekannten
+    // Lecks. Diese hier ist abschließend: Wer eine Spalte ergänzt, muss sie
+    // hier eintragen und damit bewusst entscheiden, dass jeder sie lesen darf.
+    test('trägt nur freigegebene Spalten', () {
+      expect(
+        oeffentlich().keys.toSet(),
+        {
+          'review_id',
+          'company_id',
+          'company_name',
+          'company_slug',
+          'beruf_code',
+          'beruf_name',
+          'start_year',
+          'end_year',
+          'respondent_status',
+          'k5_recommend',
+          'k6_overall',
+          ...subscoreColumns.values,
+          ...separateColumns.values,
+          'freitext_gut',
+          'freitext_schlecht',
+          'is_aged',
+          'verified',
+          'published_at',
+        },
+      );
+    });
+
+    test('kein Wert verrät Nutzer oder Gerät', () {
+      final alles = oeffentlich().values.join(' ');
+      expect(alles, isNot(contains('nutzer1')));
+      expect(alles, isNot(contains('geraet')));
+      expect(alles, isNot(contains(hashDeviceKey('geraet', 'salz')!)));
+    });
+
     test('verlinkt den Betrieb', () {
       // Ohne Name und Slug zeigte die Einzelansicht keinen Verweis auf den
       // Betrieb — der Knopf dorthin haengt an `company_slug`.
