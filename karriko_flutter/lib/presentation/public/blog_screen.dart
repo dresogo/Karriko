@@ -246,12 +246,18 @@ class _Tab extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    filter.label,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 15,
-                      fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  // Flexible: Der Wrap darueber bricht zwischen den Reitern um,
+                  // aber ein einzelner Reiter kann bei grosser Schrift breiter
+                  // sein als die ganze Zeile. Dann bricht sein Text um.
+                  Flexible(
+                    child: Text(
+                      filter.label,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 15,
+                        fontWeight:
+                            selected ? FontWeight.w800 : FontWeight.w600,
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppLayout.s8),

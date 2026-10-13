@@ -74,11 +74,19 @@ void main() {
 
   locations.forEach((filterName, location) {
     sizes.forEach((sizeName, size) {
-      testWidgets('Filter „$filterName" rendert fehlerfrei bei $sizeName',
-          (tester) async {
-        await _pumpAt(tester, location, size);
-        expect(tester.takeException(), isNull);
-      });
+      // Normale und vergrößerte Systemschrift: deckt auf, wo eine Höhe
+      // oder Breite stillschweigend als konstant angenommen wird.
+      for (final scale in const [1.0, 1.3]) {
+        testWidgets(
+            'Filter „$filterName" rendert fehlerfrei bei $sizeName${scale == 1.0 ? '' : ', Schrift $scale'}',
+            (tester) async {
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+          await _pumpAt(tester, location, size);
+          expect(tester.takeException(), isNull);
+        });
+      }
     });
   });
 

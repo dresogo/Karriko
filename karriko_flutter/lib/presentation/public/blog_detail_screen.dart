@@ -365,12 +365,16 @@ class _Byline extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppLayout.s8),
-            const Text(
-              'Karriko-Redaktion',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+            // Flexible: Auf schmalen Geraeten mit grosser Schrift ist schon
+            // diese eine Zeile breiter als der Platz; dann bricht der Name um.
+            const Flexible(
+              child: Text(
+                'Karriko-Redaktion',
+                style: TextStyle(
+                  color: AppColors.ink,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

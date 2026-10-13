@@ -48,23 +48,51 @@ class _HeroSection extends StatelessWidget {
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: AppColors.line)),
       ),
+      // Mindestens bildschirmhoch, aber nicht fest: Mit vergroesserter
+      // Systemschrift braucht die Ueberschrift mehr Platz, und eine feste Hoehe
+      // liess sie dann um bis zu 186 px ueberlaufen. Flaechen und Trennlinie
+      // liegen wie auf „Für Betriebe“ als eigene Ebene dahinter, damit beide
+      // Spalten ohne IntrinsicHeight ueber dem Row bis ganz unten reichen.
       child: isWide
-          ? SizedBox(
-              height: MediaQuery.of(context).size.height - 76,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Expanded(
-                    flex: 53,
-                    child: _HeroCopy(isWide: true),
+          ? Stack(
+              children: [
+                Positioned.fill(
+                  child: Row(
+                    children: [
+                      const Expanded(flex: 53, child: SizedBox.expand()),
+                      Container(width: 1, color: AppColors.line),
+                      const Expanded(
+                        flex: 37,
+                        child: ColoredBox(color: AppColors.surface),
+                      ),
+                    ],
                   ),
-                  Container(width: 1, color: AppColors.line),
-                  const Expanded(
-                    flex: 37,
-                    child: _SearchPanel(isWide: true),
-                  ),
-                ],
-              ),
+                ),
+                Row(
+                  // Unten buendig: Waechst die Textspalte, rutscht die Suche
+                  // mit nach unten und bleibt an der Unterkante.
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      flex: 53,
+                      child: _MinHeight(
+                        height: MediaQuery.sizeOf(context).height -
+                            KarrikoAppBar.height,
+                        child: const _HeroCopy(isWide: true),
+                      ),
+                    ),
+                    const SizedBox(width: 1),
+                    Expanded(
+                      flex: 37,
+                      child: _MinHeight(
+                        height: MediaQuery.sizeOf(context).height -
+                            KarrikoAppBar.height,
+                        child: const _SearchPanel(isWide: true),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             )
           : const Column(
               children: [
@@ -73,6 +101,27 @@ class _HeroSection extends StatelessWidget {
                 _SearchPanel(isWide: false),
               ],
             ),
+    );
+  }
+}
+
+/// Gibt [child] mindestens [height], mehr wenn der Inhalt es braucht.
+///
+/// IntrinsicHeight sitzt hier um eine einzelne Spalte mit fester Breite, nicht
+/// um ein Row mit Expanded-Kindern; nur dort misst es umbrechenden Text falsch.
+/// Gebraucht wird es, weil die Spalten ihren Inhalt mit spaceBetween bzw. end
+/// verteilen und dafuer eine begrenzte Hoehe brauchen.
+class _MinHeight extends StatelessWidget {
+  final double height;
+  final Widget child;
+
+  const _MinHeight({required this.height, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: height),
+      child: IntrinsicHeight(child: child),
     );
   }
 }

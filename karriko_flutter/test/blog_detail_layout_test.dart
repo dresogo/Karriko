@@ -70,12 +70,20 @@ void main() {
 
   for (final article in BlogContent.articles) {
     sizes.forEach((sizeName, size) {
-      testWidgets('„${article.slug}" rendert fehlerfrei bei $sizeName',
-          (tester) async {
-        await _pumpAt(tester, '/blog/${article.slug}', size);
-        expect(tester.takeException(), isNull);
-        expect(find.text(article.title), findsOneWidget);
-      });
+      // Normale und vergrößerte Systemschrift: deckt auf, wo eine Höhe
+      // oder Breite stillschweigend als konstant angenommen wird.
+      for (final scale in const [1.0, 1.3]) {
+        testWidgets(
+            '„${article.slug}" rendert fehlerfrei bei $sizeName${scale == 1.0 ? '' : ', Schrift $scale'}',
+            (tester) async {
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+          await _pumpAt(tester, '/blog/${article.slug}', size);
+          expect(tester.takeException(), isNull);
+          expect(find.text(article.title), findsOneWidget);
+        });
+      }
     });
   }
 
