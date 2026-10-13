@@ -43,6 +43,7 @@ import '../presentation/betrieb/reviews_screen.dart' as betrieb;
 import '../presentation/betrieb/reports_screen.dart';
 import '../presentation/betrieb/settings_screen.dart' as betrieb;
 import '../presentation/admin/admin_screen.dart';
+import '../presentation/public/not_found_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Bewusst kein ref.watch(authProvider): Das wuerde bei jeder Zustands-
@@ -294,9 +295,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (_, s) =>
               AdminScreen(section: s.uri.queryParameters['bereich'])),
     ],
-    errorBuilder: (_, state) => Scaffold(
-      body: Center(child: Text('Seite nicht gefunden: ${state.uri}')),
-    ),
+    errorBuilder: (_, state) => NotFoundScreen(uri: state.uri),
   );
 });
 
