@@ -12,7 +12,8 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 ///
 /// Was hier passiert, in dieser Reihenfolge:
 ///
-/// 1. Anmeldung prüfen. Ohne Nutzer keine Bewertung.
+/// 1. Anmeldung prüfen. Ohne Nutzer keine Bewertung, ohne bestätigte
+///    E-Mail-Adresse auch nicht.
 /// 2. **Genau die Version laden**, mit der die Einreichung erstellt wurde.
 /// 3. Gegen diese Version prüfen: nur sichtbare Fragen beantwortet, Typen und
 ///    Wertebereiche korrekt, Pflichtfragen vorhanden.
@@ -40,6 +41,18 @@ Future<dynamic> main(final context) async {
       context,
       FunctionResponse.unauthorized(
         'Bitte melde dich an, um deine Bewertung abzuschicken.',
+      ),
+    );
+  }
+
+  // Die App leitet unbestätigte Konten vorher ab, aber die Function ist auch
+  // ohne App erreichbar. Ohne diese Prüfung könnte ein Wegwerfkonto bewerten.
+  if (!await hasVerifiedEmail(ctx)) {
+    return _antwort(
+      context,
+      FunctionResponse.forbidden(
+        'Bitte bestätige zuerst deine E-Mail-Adresse. Dein Entwurf bleibt '
+        'gespeichert.',
       ),
     );
   }
