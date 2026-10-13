@@ -301,11 +301,8 @@ Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt 
 | `services/passkey-rp/` | WebAuthn-Dienst für Passkeys |
 | `tools/` | Skripte für Schema, Wiederherstellung, Dev-Admin, Vendoring und Fragebogen |
 | `notes/` | Projektreferenz, Berichte, Todo-Liste, Backend-Anleitungen, Design-Entwurf |
-| `old_tsx/` | abgelöster Next.js-Prototyp, nur noch Referenz |
 
-Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. `old_tsx/` bleibt vorerst als Nachschlagewerk liegen und wird nicht mehr gepflegt.
-
-**Die Dependabot-Warnungen auf `main` stammen sämtlich aus diesem Altbestand** — derzeit rund 30, alle zu Next.js. Solange `old_tsx/` nicht gebaut oder ausgeliefert wird, ist die reale Gefahr gering; der Schaden ist ein anderer. Wer dauerhaft rote Meldungen ignoriert, übersieht die nächste, die echt ist. `old_tsx/` aus `main` zu entfernen steht deshalb auf der Liste — die Historie behält den Code ohnehin.
+Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. Der alte Prototyp lag bis Oktober 2026 unter `old_tsx/` und ist seitdem aus `main` entfernt; die Git-Historie enthält ihn weiterhin. Mit ihm sind die rund 30 Dependabot-Warnungen zu Next.js verschwunden, die sämtlich aus diesem Altbestand stammten.
 
 ---
 
