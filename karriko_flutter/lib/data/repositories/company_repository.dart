@@ -294,19 +294,6 @@ class CompanyRepository {
     return companies;
   }
 
-  Future<bool> isBookmarked(String userId, String companyId) async {
-    final result = await _db.listRows(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
-      queries: [
-        Query.equal('user_id', userId),
-        Query.equal('company_id', companyId),
-        Query.limit(1),
-      ],
-    );
-    return result.rows.isNotEmpty;
-  }
-
   Map<String, dynamic> _toMap(aw.Row doc) => {
         'id': doc.$id,
         'created_at': doc.$createdAt,
