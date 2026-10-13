@@ -80,23 +80,25 @@ class _Kachel extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          width: 52,
-          height: 52,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? AppColors.ink : AppColors.surface,
-            border:
-                Border.all(color: selected ? AppColors.ink : AppColors.line),
-          ),
-          child: Text(
-            '$wert',
-            style: TextStyle(
-              color: selected ? AppColors.paper : AppColors.ink,
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
+      child: SelectionContainer.disabled(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            width: 52,
+            height: 52,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: selected ? AppColors.ink : AppColors.surface,
+              border:
+                  Border.all(color: selected ? AppColors.ink : AppColors.line),
+            ),
+            child: Text(
+              '$wert',
+              style: TextStyle(
+                color: selected ? AppColors.paper : AppColors.ink,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),

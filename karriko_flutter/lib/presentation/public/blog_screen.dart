@@ -223,52 +223,54 @@ class _Tab extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          // Der Filter landet in der URL: teilbar, und der Zurück-Button
-          // führt zur vorherigen Auswahl zurück.
-          onTap: () => context.go(filter.location),
-          hoverColor: AppColors.audienceBeige,
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: selected ? AppColors.ink : Colors.transparent,
-                  width: 3,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            // Der Filter landet in der URL: teilbar, und der Zurück-Button
+            // führt zur vorherigen Auswahl zurück.
+            onTap: () => context.go(filter.location),
+            hoverColor: AppColors.audienceBeige,
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              constraints: const BoxConstraints(minHeight: 48),
+              padding: const EdgeInsets.symmetric(horizontal: AppLayout.s16),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: selected ? AppColors.ink : Colors.transparent,
+                    width: 3,
+                  ),
                 ),
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  filter.label,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 15,
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(width: AppLayout.s8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                  color: selected ? AppColors.ink : AppColors.audienceBeige,
-                  child: Text(
-                    '$count',
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    filter.label,
                     style: TextStyle(
-                      color: selected ? AppColors.paper : AppColors.muted,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      fontFeatures: const [FontFeature.tabularFigures()],
+                      color: color,
+                      fontSize: 15,
+                      fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppLayout.s8),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                    color: selected ? AppColors.ink : AppColors.audienceBeige,
+                    child: Text(
+                      '$count',
+                      style: TextStyle(
+                        color: selected ? AppColors.paper : AppColors.muted,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1036,24 +1038,26 @@ class _PressableState extends State<_Pressable> {
       excludeSemantics: true,
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: widget.onTap,
-          onFocusChange: (v) => setState(() => _focused = v),
-          onHover: (v) => setState(() => _hovered = v),
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          splashColor: AppColors.audienceBeige.withValues(alpha: 0.5),
-          highlightColor: AppColors.audienceBeige.withValues(alpha: 0.3),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            foregroundDecoration: BoxDecoration(
-              border: Border.all(
-                color: active ? AppColors.ink : AppColors.line,
-                width: _focused ? 2 : 1,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: widget.onTap,
+            onFocusChange: (v) => setState(() => _focused = v),
+            onHover: (v) => setState(() => _hovered = v),
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            splashColor: AppColors.audienceBeige.withValues(alpha: 0.5),
+            highlightColor: AppColors.audienceBeige.withValues(alpha: 0.3),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              foregroundDecoration: BoxDecoration(
+                border: Border.all(
+                  color: active ? AppColors.ink : AppColors.line,
+                  width: _focused ? 2 : 1,
+                ),
               ),
+              child: widget.builder(context, active),
             ),
-            child: widget.builder(context, active),
           ),
         ),
       ),

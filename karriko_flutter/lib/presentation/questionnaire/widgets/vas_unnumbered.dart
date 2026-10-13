@@ -114,15 +114,23 @@ class _VasUnnumberedState extends State<VasUnnumbered> {
                   _ausPosition(position.dx / breite);
                 }
 
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (d) => ausLokal(d.localPosition),
-                  onHorizontalDragStart: (d) => ausLokal(d.localPosition),
-                  onHorizontalDragUpdate: (d) => ausLokal(d.localPosition),
-                  child: _Bahn(
-                    anteil:
-                        _wert == null ? null : (_wert! - _min) / (_max - _min),
-                    fokussiert: _focus.hasFocus,
+                // Ziehen auf der Bahn stellt den Wert ein und darf keine
+                // Textauswahl der umgebenden SelectionArea anstossen.
+                return SelectionContainer.disabled(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTapDown: (d) => ausLokal(d.localPosition),
+                      onHorizontalDragStart: (d) => ausLokal(d.localPosition),
+                      onHorizontalDragUpdate: (d) => ausLokal(d.localPosition),
+                      child: _Bahn(
+                        anteil: _wert == null
+                            ? null
+                            : (_wert! - _min) / (_max - _min),
+                        fokussiert: _focus.hasFocus,
+                      ),
+                    ),
                   ),
                 );
               },

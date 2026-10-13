@@ -520,28 +520,30 @@ class _Segment extends StatelessWidget {
       button: true,
       child: Material(
         color: active ? AppColors.ink : AppColors.surface,
-        child: InkWell(
-          onTap: onTap,
-          hoverColor: active ? null : AppColors.paper,
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 44),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              border:
-                  Border.all(color: active ? AppColors.ink : AppColors.line),
-            ),
-            // Kein `alignment`: Ein ausgerichteter Container dehnt sich auf
-            // die volle Breite, die Segmente stünden dann untereinander.
-            child: Center(
-              widthFactor: 1,
-              heightFactor: 1,
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: active ? AppColors.paper : AppColors.ink,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  fontFeatures: const [FontFeature.tabularFigures()],
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: onTap,
+            hoverColor: active ? null : AppColors.paper,
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 44),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                border:
+                    Border.all(color: active ? AppColors.ink : AppColors.line),
+              ),
+              // Kein `alignment`: Ein ausgerichteter Container dehnt sich auf
+              // die volle Breite, die Segmente stünden dann untereinander.
+              child: Center(
+                widthFactor: 1,
+                heightFactor: 1,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: active ? AppColors.paper : AppColors.ink,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
                 ),
               ),
             ),

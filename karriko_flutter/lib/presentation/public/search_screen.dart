@@ -8,6 +8,7 @@ import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
+import '../common/tap_target.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -304,16 +305,18 @@ class _IndustryLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 7),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected ? AppColors.accent : AppColors.ink,
-            fontSize: 15,
-            fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
+    return SelectionContainer.disabled(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 7),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected ? AppColors.accent : AppColors.ink,
+              fontSize: 15,
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
+            ),
           ),
         ),
       ),
@@ -331,28 +334,30 @@ class _CityCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Container(
-              width: 18,
-              height: 18,
-              decoration: BoxDecoration(
-                color: selected ? AppColors.ink : AppColors.surface,
-                border: Border.all(
-                    color: selected ? AppColors.ink : AppColors.line),
+    return SelectionContainer.disabled(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Row(
+            children: [
+              Container(
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: selected ? AppColors.ink : AppColors.surface,
+                  border: Border.all(
+                      color: selected ? AppColors.ink : AppColors.line),
+                ),
+                child: selected
+                    ? const Icon(Icons.check, size: 14, color: Colors.white)
+                    : null,
               ),
-              child: selected
-                  ? const Icon(Icons.check, size: 14, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 12),
-            Text(label,
-                style: const TextStyle(color: AppColors.ink, fontSize: 15)),
-          ],
+              const SizedBox(width: 12),
+              Text(label,
+                  style: const TextStyle(color: AppColors.ink, fontSize: 15)),
+            ],
+          ),
         ),
       ),
     );
@@ -405,14 +410,14 @@ class _MainColumn extends ConsumerWidget {
                   ),
                 ),
               ),
-              GestureDetector(
+              TapTarget(
                 onTap: onSearch,
-                child: Container(
+                builder: (_, active) => Container(
                   width: 58,
                   height: 60,
-                  decoration: const BoxDecoration(
-                    color: AppColors.accent,
-                    border: Border(
+                  decoration: BoxDecoration(
+                    color: active ? AppColors.accentDark : AppColors.accent,
+                    border: const Border(
                         left: BorderSide(color: AppColors.ink, width: 2)),
                   ),
                   child: const Center(
@@ -580,11 +585,12 @@ class _LoadMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TapTarget(
       onTap: loading ? null : onTap,
-      child: Container(
+      builder: (_, active) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
         decoration: BoxDecoration(
+          color: active ? AppColors.audienceBeige : null,
           border: Border.all(color: AppColors.ink),
           borderRadius: BorderRadius.circular(AppRadius.button),
         ),
@@ -769,13 +775,15 @@ class _ArrowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TapTarget(
       onTap: enabled ? onTap : null,
-      child: Container(
+      builder: (_, active) => Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: enabled ? AppColors.ink : AppColors.surface,
+          color: active
+              ? AppColors.accent
+              : (enabled ? AppColors.ink : AppColors.surface),
           border: Border.all(color: enabled ? AppColors.ink : AppColors.line),
           borderRadius: BorderRadius.circular(AppRadius.button),
         ),
@@ -799,14 +807,14 @@ class _CompanyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rating = company.averageRating;
-    return GestureDetector(
+    return TapTarget(
       onTap: () => context.go('/company/${company.slug}'),
       behavior: HitTestBehavior.opaque,
-      child: Container(
+      builder: (context, active) => Container(
         padding: const EdgeInsets.all(AppLayout.s24),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          border: Border.all(color: AppColors.line),
+          border: Border.all(color: active ? AppColors.ink : AppColors.line),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -882,14 +890,14 @@ class _JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TapTarget(
       onTap: () => context.go('/stellen/${job.id}'),
       behavior: HitTestBehavior.opaque,
-      child: Container(
+      builder: (context, active) => Container(
         padding: const EdgeInsets.all(AppLayout.s24),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          border: Border.all(color: AppColors.line),
+          border: Border.all(color: active ? AppColors.ink : AppColors.line),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

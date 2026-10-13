@@ -228,35 +228,37 @@ class OptionTile extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: AppLayout.s16,
-            vertical: gross ? 20 : 14,
-          ),
-          decoration: BoxDecoration(
-            color: selected ? AppColors.ink : AppColors.surface,
-            border: Border.all(
-              color: selected ? AppColors.ink : AppColors.line,
+      child: SelectionContainer.disabled(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppLayout.s16,
+              vertical: gross ? 20 : 14,
             ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: selected ? AppColors.paper : AppColors.ink,
-                    fontSize: gross ? 17 : 16,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                    height: 1.4,
+            decoration: BoxDecoration(
+              color: selected ? AppColors.ink : AppColors.surface,
+              border: Border.all(
+                color: selected ? AppColors.ink : AppColors.line,
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: selected ? AppColors.paper : AppColors.ink,
+                      fontSize: gross ? 17 : 16,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                      height: 1.4,
+                    ),
                   ),
                 ),
-              ),
-              if (selected)
-                const Icon(Icons.check, color: AppColors.paper, size: 18),
-            ],
+                if (selected)
+                  const Icon(Icons.check, color: AppColors.paper, size: 18),
+              ],
+            ),
           ),
         ),
       ),
@@ -281,20 +283,22 @@ class OptionChip extends StatelessWidget {
     return Semantics(
       button: true,
       selected: selected,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          decoration: BoxDecoration(
-            color: selected ? AppColors.ink : AppColors.surface,
-            border:
-                Border.all(color: selected ? AppColors.ink : AppColors.line),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: selected ? AppColors.paper : AppColors.ink,
-              fontWeight: FontWeight.w600,
+      child: SelectionContainer.disabled(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            decoration: BoxDecoration(
+              color: selected ? AppColors.ink : AppColors.surface,
+              border:
+                  Border.all(color: selected ? AppColors.ink : AppColors.line),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppColors.paper : AppColors.ink,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

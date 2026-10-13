@@ -88,7 +88,9 @@ class PublicReviewCard extends StatelessWidget {
     );
 
     if (onTap == null) return karte;
-    return InkWell(onTap: onTap, child: karte);
+    return SelectionContainer.disabled(
+      child: InkWell(onTap: onTap, child: karte),
+    );
   }
 
   /// Die Anzeigenamen der Dimensionen.

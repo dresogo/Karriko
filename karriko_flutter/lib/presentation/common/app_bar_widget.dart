@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
+import 'tap_target.dart';
 
 class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
   /// Höhe der Kopfzeile. Seiten, die eine Sektion auf volle Bildschirmhöhe
@@ -23,17 +24,20 @@ class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final width = MediaQuery.of(context).size.width;
     final isWide = width > 980;
 
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: AppColors.paper.withValues(alpha: 0.94),
-        border: const Border(bottom: BorderSide(color: AppColors.line)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: isWide ? 32 : 18),
-        child: isWide
-            ? _WideHeader(auth: auth, showBack: showBack, title: title)
-            : _NarrowHeader(auth: auth, showBack: showBack, title: title),
+    // Kopfzeile ist Bedienfläche, kein Lesetext: von der Textauswahl ausgenommen.
+    return SelectionContainer.disabled(
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: AppColors.paper.withValues(alpha: 0.94),
+          border: const Border(bottom: BorderSide(color: AppColors.line)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: isWide ? 32 : 18),
+          child: isWide
+              ? _WideHeader(auth: auth, showBack: showBack, title: title)
+              : _NarrowHeader(auth: auth, showBack: showBack, title: title),
+        ),
       ),
     );
   }
@@ -51,9 +55,9 @@ class _WideHeader extends ConsumerWidget {
     return Row(
       children: [
         // Brand (left)
-        GestureDetector(
+        TapTarget(
           onTap: () => context.go('/'),
-          child: const _BrandMark(),
+          builder: (_, active) => _BrandMark(active: active),
         ),
         // Nav (center)
         Expanded(
@@ -97,19 +101,23 @@ class _NarrowHeader extends ConsumerWidget {
     return Row(
       children: [
         if (showBack && context.canPop())
-          GestureDetector(
-            onTap: () => context.pop(),
-            child: const Padding(
-              padding: EdgeInsets.only(right: 12),
-              child: Icon(Icons.arrow_back, color: AppColors.ink, size: 20),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: TapTarget(
+              onTap: () => context.pop(),
+              builder: (_, active) => _IconHover(
+                active: active,
+                child: const Icon(Icons.arrow_back,
+                    color: AppColors.ink, size: 20),
+              ),
             ),
           ),
         // Flexible statt fester Breite: bei schmalen Viewports oder vergrößerter
         // Systemschrift schrumpft der Schriftzug, statt die Zeile zu sprengen.
         Flexible(
-          child: GestureDetector(
+          child: TapTarget(
             onTap: () => context.go('/'),
-            child: const _BrandMark(),
+            builder: (_, active) => _BrandMark(active: active),
           ),
         ),
         const Spacer(),
@@ -122,9 +130,12 @@ class _NarrowHeader extends ConsumerWidget {
           _UserMenuButton(auth: auth),
         const SizedBox(width: 12),
         Builder(
-          builder: (ctx) => GestureDetector(
+          builder: (ctx) => TapTarget(
             onTap: () => Scaffold.of(ctx).openDrawer(),
-            child: const Icon(Icons.menu, color: AppColors.ink),
+            builder: (_, active) => _IconHover(
+              active: active,
+              child: const Icon(Icons.menu, color: AppColors.ink),
+            ),
           ),
         ),
       ],
@@ -133,11 +144,14 @@ class _NarrowHeader extends ConsumerWidget {
 }
 
 class _BrandMark extends StatelessWidget {
-  const _BrandMark();
+  /// Hover oder Fokus: der Schriftzug wird unterstrichen.
+  final bool active;
+
+  const _BrandMark({this.active = false});
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
+    return Text(
       'Karriko',
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -145,18 +159,37 @@ class _BrandMark extends StatelessWidget {
         color: AppColors.ink,
         fontWeight: FontWeight.w800,
         fontSize: 18,
+        decoration: active ? TextDecoration.underline : TextDecoration.none,
+        decorationColor: AppColors.ink,
       ),
     );
   }
 }
 
+/// Hover-Fläche hinter einem Kopfzeilen-Icon, im Ton des Anmelde-Buttons.
+/// Ohne Innenabstand, damit die Zeile ihre Masse behält.
+class _IconHover extends StatelessWidget {
+  final bool active;
+  final Widget child;
+
+  const _IconHover({required this.active, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: active ? AppColors.audienceBeige : Colors.transparent,
+      child: child,
+    );
+  }
+}
+
 Widget _navLink(String label, String route, BuildContext context) {
-  return GestureDetector(
+  return TapTarget(
     onTap: () => context.go(route),
-    child: Text(
+    builder: (_, active) => Text(
       label,
-      style: const TextStyle(
-        color: AppColors.muted,
+      style: TextStyle(
+        color: active ? AppColors.ink : AppColors.muted,
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
@@ -449,83 +482,87 @@ class KarrikoDrawer extends ConsumerWidget {
 
     return Drawer(
       backgroundColor: AppColors.surface,
+      // Der Drawer liegt als Overlay ueber dem Scaffold, aber unter der
+      // globalen SelectionArea – Menueeintraege sollen nicht markierbar sein.
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: _BrandMark(),
-            ),
-            const Divider(color: AppColors.line),
-            const _DrawerItem(label: 'Für Azubis', route: '/'),
-            const _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
-            const _DrawerItem(label: 'Blog', route: '/blog'),
-            const _DrawerItem(label: 'Über uns', route: '/ueber-uns'),
-            const _DrawerItem(label: 'Kontakt', route: '/kontakt'),
-            const _DrawerItem(label: 'Häufige Fragen', route: '/faq'),
-            const Divider(color: AppColors.line),
-            if (!auth.isAuthenticated) ...[
-              const _DrawerItem(label: 'Anmelden', route: '/login'),
-              const _DrawerItem(
-                  label: 'Als Azubi registrieren', route: '/register/azubi'),
-              const _DrawerItem(
-                  label: 'Als Betrieb registrieren',
-                  route: '/register/betrieb'),
-            ] else if (auth.isAzubi) ...[
-              const _DrawerItem(label: 'Dashboard', route: '/dashboard'),
-              const _DrawerItem(label: 'Mein Profil', route: '/profile'),
-              const _DrawerItem(
-                  label: 'Bewertung schreiben', route: '/reviews/new'),
-              const _DrawerItem(
-                  label: 'Fragen bewerten', route: '/fragen-bewerten'),
-              const _DrawerItem(
-                  label: 'Meine Bewertungen', route: '/my-reviews'),
-              const _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
-              const _DrawerItem(
-                  label: 'Benachrichtigungen', route: '/notifications'),
-              const _DrawerItem(label: 'Einstellungen', route: '/settings'),
-              const Divider(color: AppColors.line),
-              ListTile(
-                title: const Text('Abmelden',
-                    style: TextStyle(
-                        color: AppColors.muted,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600)),
-                onTap: () {
-                  context.pop();
-                  ref.read(authProvider.notifier).signOut();
-                },
+      child: SelectionContainer.disabled(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: _BrandMark(),
               ),
-            ] else if (auth.isBetrieb) ...[
-              const _DrawerItem(
-                  label: 'Dashboard', route: '/betrieb-dashboard'),
-              const _DrawerItem(
-                  label: 'Unternehmensprofil', route: '/betrieb-profile'),
-              const _DrawerItem(
-                  label: 'Bewertungen', route: '/betrieb-reviews'),
-              const _DrawerItem(label: 'Analytics', route: '/analytics'),
-              const _DrawerItem(
-                  label: 'Einstellungen', route: '/betrieb-settings'),
               const Divider(color: AppColors.line),
-              ListTile(
-                title: const Text('Abmelden',
-                    style: TextStyle(
-                        color: AppColors.muted,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600)),
-                onTap: () {
-                  context.pop();
-                  ref.read(authProvider.notifier).signOut();
-                },
-              ),
+              const _DrawerItem(label: 'Für Azubis', route: '/'),
+              const _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
+              const _DrawerItem(label: 'Blog', route: '/blog'),
+              const _DrawerItem(label: 'Über uns', route: '/ueber-uns'),
+              const _DrawerItem(label: 'Kontakt', route: '/kontakt'),
+              const _DrawerItem(label: 'Häufige Fragen', route: '/faq'),
+              const Divider(color: AppColors.line),
+              if (!auth.isAuthenticated) ...[
+                const _DrawerItem(label: 'Anmelden', route: '/login'),
+                const _DrawerItem(
+                    label: 'Als Azubi registrieren', route: '/register/azubi'),
+                const _DrawerItem(
+                    label: 'Als Betrieb registrieren',
+                    route: '/register/betrieb'),
+              ] else if (auth.isAzubi) ...[
+                const _DrawerItem(label: 'Dashboard', route: '/dashboard'),
+                const _DrawerItem(label: 'Mein Profil', route: '/profile'),
+                const _DrawerItem(
+                    label: 'Bewertung schreiben', route: '/reviews/new'),
+                const _DrawerItem(
+                    label: 'Fragen bewerten', route: '/fragen-bewerten'),
+                const _DrawerItem(
+                    label: 'Meine Bewertungen', route: '/my-reviews'),
+                const _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
+                const _DrawerItem(
+                    label: 'Benachrichtigungen', route: '/notifications'),
+                const _DrawerItem(label: 'Einstellungen', route: '/settings'),
+                const Divider(color: AppColors.line),
+                ListTile(
+                  title: const Text('Abmelden',
+                      style: TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600)),
+                  onTap: () {
+                    context.pop();
+                    ref.read(authProvider.notifier).signOut();
+                  },
+                ),
+              ] else if (auth.isBetrieb) ...[
+                const _DrawerItem(
+                    label: 'Dashboard', route: '/betrieb-dashboard'),
+                const _DrawerItem(
+                    label: 'Unternehmensprofil', route: '/betrieb-profile'),
+                const _DrawerItem(
+                    label: 'Bewertungen', route: '/betrieb-reviews'),
+                const _DrawerItem(label: 'Analytics', route: '/analytics'),
+                const _DrawerItem(
+                    label: 'Einstellungen', route: '/betrieb-settings'),
+                const Divider(color: AppColors.line),
+                ListTile(
+                  title: const Text('Abmelden',
+                      style: TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600)),
+                  onTap: () {
+                    context.pop();
+                    ref.read(authProvider.notifier).signOut();
+                  },
+                ),
+              ],
+              const Divider(color: AppColors.line),
+              const _DrawerItem(label: 'Impressum', route: '/impressum'),
+              const _DrawerItem(label: 'Datenschutz', route: '/datenschutz'),
+              const _DrawerItem(label: 'AGB', route: '/agb'),
             ],
-            const Divider(color: AppColors.line),
-            const _DrawerItem(label: 'Impressum', route: '/impressum'),
-            const _DrawerItem(label: 'Datenschutz', route: '/datenschutz'),
-            const _DrawerItem(label: 'AGB', route: '/agb'),
-          ],
+          ),
         ),
       ),
     );

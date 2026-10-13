@@ -39,6 +39,9 @@ dependencies:
   # Reines Dart, siehe packages/questionnaire_core/README.md.
   questionnaire_core:
     path: ../packages/questionnaire_core
+  # Echte Links (<a href>) im Web ueber das Link-Widget: Rechtsklick, neuer
+  # Tab, Adresse in der Statuszeile. Lag ohnehin transitiv vor.
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:

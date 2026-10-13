@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
+import 'tap_target.dart';
 
 class FooterWidget extends StatelessWidget {
   const FooterWidget({super.key});
@@ -119,11 +120,11 @@ class _NarrowFooter extends StatelessWidget {
             ('Häufige Fragen', '/faq'),
           ]
               .map((l) => Builder(
-                    builder: (ctx) => GestureDetector(
+                    builder: (ctx) => TapTarget(
                       onTap: () => ctx.go(l.$2),
-                      child: Text(l.$1,
-                          style: const TextStyle(
-                              color: AppColors.muted,
+                      builder: (_, active) => Text(l.$1,
+                          style: TextStyle(
+                              color: active ? AppColors.ink : AppColors.muted,
                               fontSize: 14,
                               fontWeight: FontWeight.w600)),
                     ),
@@ -140,11 +141,11 @@ class _NarrowFooter extends StatelessWidget {
             ('AGB', '/agb'),
           ]
               .map((l) => Builder(
-                    builder: (ctx) => GestureDetector(
+                    builder: (ctx) => TapTarget(
                       onTap: () => ctx.go(l.$2),
-                      child: Text(l.$1,
-                          style: const TextStyle(
-                              color: AppColors.muted,
+                      builder: (_, active) => Text(l.$1,
+                          style: TextStyle(
+                              color: active ? AppColors.ink : AppColors.muted,
                               fontSize: 14,
                               fontWeight: FontWeight.w600)),
                     ),
@@ -215,11 +216,11 @@ class _FooterColumn extends StatelessWidget {
         const SizedBox(height: 12),
         ...links.map((l) => Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: GestureDetector(
+              child: TapTarget(
                 onTap: () => context.go(l.$2),
-                child: Text(l.$1,
-                    style: const TextStyle(
-                      color: AppColors.muted,
+                builder: (_, active) => Text(l.$1,
+                    style: TextStyle(
+                      color: active ? AppColors.ink : AppColors.muted,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     )),

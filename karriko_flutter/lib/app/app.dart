@@ -24,6 +24,25 @@ class KarrikoApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       routerConfig: router,
+      builder: selectableAppBuilder,
     );
   }
 }
+
+/// Eine SelectionArea fuer alle Seiten: Im Browser laesst sich Text markieren
+/// und kopieren wie auf einer Website. Sie liegt ueber dem Navigator und damit
+/// ueber jedem Scaffold, Dialog und Drawer. Bedienflaechen nehmen sich mit
+/// SelectionContainer.disabled aus.
+///
+/// Overlay.wrap, weil Markierungsgriffe und Kontextmenue ein Overlay oberhalb
+/// der SelectionArea brauchen; das des Navigators liegt darunter.
+///
+/// Ohne Lupe: Auf Touchgeraeten erschien beim Markieren eine vergroessernde
+/// Linse, die wie eine Zoom-Animation wirkte.
+Widget selectableAppBuilder(BuildContext context, Widget? child) =>
+    Overlay.wrap(
+      child: SelectionArea(
+        magnifierConfiguration: TextMagnifierConfiguration.disabled,
+        child: child!,
+      ),
+    );

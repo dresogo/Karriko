@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/link.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
+import '../common/tap_target.dart';
 
 class KontaktScreen extends StatefulWidget {
   const KontaktScreen({super.key});
@@ -130,8 +132,10 @@ class _KontaktScreenState extends State<KontaktScreen> {
                   Text('Alternativ erreichst du uns unter:',
                       style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 12),
-                  const _ContactInfo(
-                      icon: Icons.email_outlined, label: 'hallo@karriko.de'),
+                  _ContactInfo(
+                      icon: Icons.email_outlined,
+                      label: 'hallo@karriko.de',
+                      uri: Uri.parse('mailto:hallo@karriko.de')),
                   const SizedBox(height: 8),
                   const _ContactInfo(
                       icon: Icons.location_on_outlined,
@@ -150,7 +154,11 @@ class _KontaktScreenState extends State<KontaktScreen> {
 class _ContactInfo extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _ContactInfo({required this.icon, required this.label});
+
+  /// Macht die Angabe zum echten Link (im Web ein <a href>).
+  final Uri? uri;
+
+  const _ContactInfo({required this.icon, required this.label, this.uri});
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +166,23 @@ class _ContactInfo extends StatelessWidget {
       children: [
         Icon(icon, size: 18, color: AppColors.primary),
         const SizedBox(width: 8),
-        Text(label, style: Theme.of(context).textTheme.bodyLarge),
+        if (uri == null)
+          Text(label, style: Theme.of(context).textTheme.bodyLarge)
+        else
+          Link(
+            uri: uri,
+            builder: (context, followLink) => TapTarget(
+              onTap: followLink,
+              builder: (context, active) => Text(
+                label,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      decoration: active
+                          ? TextDecoration.underline
+                          : TextDecoration.none,
+                    ),
+              ),
+            ),
+          ),
       ],
     );
   }

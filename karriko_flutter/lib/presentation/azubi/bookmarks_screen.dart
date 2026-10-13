@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
 import '../common/app_bar_widget.dart';
+import '../common/tap_target.dart';
 
 class BookmarksScreen extends ConsumerWidget {
   const BookmarksScreen({super.key});
@@ -47,14 +48,15 @@ class BookmarksScreen extends ConsumerWidget {
                 separatorBuilder: (_, __) => const SizedBox(height: 10),
                 itemBuilder: (_, i) {
                   final c = companies[i];
-                  return GestureDetector(
+                  return TapTarget(
                     onTap: () => context.go('/company/${c.slug}'),
-                    child: Container(
+                    builder: (context, active) => Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(
+                            color: active ? AppColors.ink : AppColors.border),
                         boxShadow: const [AppColors.cardShadow],
                       ),
                       child: Row(

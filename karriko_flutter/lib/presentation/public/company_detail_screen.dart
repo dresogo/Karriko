@@ -665,83 +665,85 @@ class _JobMiniCardState extends State<_JobMiniCard> {
       excludeSemantics: true,
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: () => context.go('/stellen/${job.id}'),
-          onHover: (v) => setState(() => _hovered = v),
-          onFocusChange: (v) => setState(() => _focused = v),
-          hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            constraints: const BoxConstraints(minHeight: 180),
-            padding: const EdgeInsets.all(AppLayout.s24),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: active ? AppColors.ink : AppColors.line,
-                width: active ? 2 : 1,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: () => context.go('/stellen/${job.id}'),
+            onHover: (v) => setState(() => _hovered = v),
+            onFocusChange: (v) => setState(() => _focused = v),
+            hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              constraints: const BoxConstraints(minHeight: 180),
+              padding: const EdgeInsets.all(AppLayout.s24),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: active ? AppColors.ink : AppColors.line,
+                  width: active ? 2 : 1,
+                ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        color: AppColors.audienceBeige,
-                        border: Border.fromBorderSide(
-                            BorderSide(color: AppColors.line)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          color: AppColors.audienceBeige,
+                          border: Border.fromBorderSide(
+                              BorderSide(color: AppColors.line)),
+                        ),
+                        child: const Icon(Icons.work_outline,
+                            size: 18, color: AppColors.ink),
                       ),
-                      child: const Icon(Icons.work_outline,
-                          size: 18, color: AppColors.ink),
-                    ),
-                    const Spacer(),
-                    if (job.badge.isNotEmpty) _JobBadge(job: job),
-                  ],
-                ),
-                const SizedBox(height: AppLayout.s16),
-                Text(
-                  job.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.ink,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w800,
-                    height: 1.15,
+                      const Spacer(),
+                      if (job.badge.isNotEmpty) _JobBadge(job: job),
+                    ],
                   ),
-                ),
-                const SizedBox(height: AppLayout.s8),
-                if (job.location.isNotEmpty)
-                  _MetaItem(icon: Icons.place_outlined, label: job.location),
-                const SizedBox(height: AppLayout.s16),
-                Row(
-                  children: [
-                    Text(
-                      job.startDate != null
-                          ? 'Start ${DateFormat('MM.yyyy').format(job.startDate!)}'
-                          : 'Zur Stelle',
-                      style: const TextStyle(
-                        color: AppColors.muted,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
+                  const SizedBox(height: AppLayout.s16),
+                  Text(
+                    job.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.ink,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w800,
+                      height: 1.15,
+                    ),
+                  ),
+                  const SizedBox(height: AppLayout.s8),
+                  if (job.location.isNotEmpty)
+                    _MetaItem(icon: Icons.place_outlined, label: job.location),
+                  const SizedBox(height: AppLayout.s16),
+                  Row(
+                    children: [
+                      Text(
+                        job.startDate != null
+                            ? 'Start ${DateFormat('MM.yyyy').format(job.startDate!)}'
+                            : 'Zur Stelle',
+                        style: const TextStyle(
+                          color: AppColors.muted,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    AnimatedSlide(
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.easeOut,
-                      offset: active ? const Offset(0.25, 0) : Offset.zero,
-                      child: const Icon(Icons.arrow_forward,
-                          size: 18, color: AppColors.ink),
-                    ),
-                  ],
-                ),
-              ],
+                      const Spacer(),
+                      AnimatedSlide(
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.easeOut,
+                        offset: active ? const Offset(0.25, 0) : Offset.zero,
+                        child: const Icon(Icons.arrow_forward,
+                            size: 18, color: AppColors.ink),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1072,38 +1074,40 @@ class _ReviewRowState extends State<_ReviewRow> {
       excludeSemantics: true,
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
-          onTap: () => context.go('/reviews/${review.id}'),
-          onHover: (v) => setState(() => _hovered = v),
-          onFocusChange: (v) => setState(() => _focused = v),
-          hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            padding: const EdgeInsets.symmetric(vertical: AppLayout.s24),
-            foregroundDecoration: BoxDecoration(
-              border: Border.all(
-                color: _focused ? AppColors.ink : Colors.transparent,
-                width: 2,
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(child: PublicReviewCard(review: review)),
-                AnimatedSlide(
-                  duration: const Duration(milliseconds: 150),
-                  curve: Curves.easeOut,
-                  offset: _hovered || _focused
-                      ? const Offset(0.25, 0)
-                      : Offset.zero,
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: AppLayout.s16),
-                    child: Icon(Icons.arrow_forward,
-                        size: 20, color: AppColors.ink),
-                  ),
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: () => context.go('/reviews/${review.id}'),
+            onHover: (v) => setState(() => _hovered = v),
+            onFocusChange: (v) => setState(() => _focused = v),
+            hoverColor: AppColors.audienceBeige.withValues(alpha: 0.6),
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              padding: const EdgeInsets.symmetric(vertical: AppLayout.s24),
+              foregroundDecoration: BoxDecoration(
+                border: Border.all(
+                  color: _focused ? AppColors.ink : Colors.transparent,
+                  width: 2,
                 ),
-              ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(child: PublicReviewCard(review: review)),
+                  AnimatedSlide(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
+                    offset: _hovered || _focused
+                        ? const Offset(0.25, 0)
+                        : Offset.zero,
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: AppLayout.s16),
+                      child: Icon(Icons.arrow_forward,
+                          size: 20, color: AppColors.ink),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

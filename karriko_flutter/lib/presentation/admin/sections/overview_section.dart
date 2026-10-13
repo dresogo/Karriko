@@ -291,10 +291,12 @@ class _Kachel extends StatelessWidget {
       label: '$label: $wert',
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: onTap,
-          hoverColor: AppColors.paper,
-          child: inhalt,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: onTap,
+            hoverColor: AppColors.paper,
+            child: inhalt,
+          ),
         ),
       ),
     );

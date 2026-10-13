@@ -578,51 +578,53 @@ class _NavEintrag extends StatelessWidget {
       button: true,
       child: Material(
         color: aktiv ? const Color(0xFF242422) : Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          hoverColor: const Color(0xFF1C1C1B),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 48),
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: aktiv ? AppColors.accent : Colors.transparent,
-                  width: 3,
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(section.icon, size: 20, color: farbe),
-                const SizedBox(width: AppLayout.s16),
-                Expanded(
-                  child: Text(
-                    section.label,
-                    style: TextStyle(
-                      color: farbe,
-                      fontSize: 15,
-                      fontWeight: aktiv ? FontWeight.w800 : FontWeight.w600,
-                    ),
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: onTap,
+            hoverColor: const Color(0xFF1C1C1B),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 48),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: aktiv ? AppColors.accent : Colors.transparent,
+                    width: 3,
                   ),
                 ),
-                if (zaehler != null && zaehler! > 0)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    color: AppColors.accent,
+              ),
+              child: Row(
+                children: [
+                  Icon(section.icon, size: 20, color: farbe),
+                  const SizedBox(width: AppLayout.s16),
+                  Expanded(
                     child: Text(
-                      '$zaehler',
-                      semanticsLabel: '$zaehler offen',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        fontFeatures: [FontFeature.tabularFigures()],
+                      section.label,
+                      style: TextStyle(
+                        color: farbe,
+                        fontSize: 15,
+                        fontWeight: aktiv ? FontWeight.w800 : FontWeight.w600,
                       ),
                     ),
                   ),
-              ],
+                  if (zaehler != null && zaehler! > 0)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      color: AppColors.accent,
+                      child: Text(
+                        '$zaehler',
+                        semanticsLabel: '$zaehler offen',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

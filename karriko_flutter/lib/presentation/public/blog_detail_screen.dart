@@ -821,55 +821,58 @@ class _TocItem extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: active ? AppColors.audienceBeige : Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          hoverColor: AppColors.audienceBeige,
-          focusColor: AppColors.audienceBeige,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            constraints: const BoxConstraints(minHeight: 44),
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(
-                  color: active ? AppColors.ink : Colors.transparent,
-                  width: 3,
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: onTap,
+            hoverColor: AppColors.audienceBeige,
+            focusColor: AppColors.audienceBeige,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              constraints: const BoxConstraints(minHeight: 44),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(
+                    color: active ? AppColors.ink : Colors.transparent,
+                    width: 3,
+                  ),
                 ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppLayout.s8,
-                vertical: 10,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 28,
-                    child: Text(
-                      number.toString().padLeft(2, '0'),
-                      style: const TextStyle(
-                        color: AppColors.accent,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        height: 1.5,
-                        fontFeatures: [FontFeature.tabularFigures()],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppLayout.s8,
+                  vertical: 10,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 28,
+                      child: Text(
+                        number.toString().padLeft(2, '0'),
+                        style: const TextStyle(
+                          color: AppColors.accent,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                          height: 1.5,
+                          fontFeatures: [FontFeature.tabularFigures()],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 14,
-                        fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-                        height: 1.5,
+                    Expanded(
+                      child: Text(
+                        text,
+                        style: TextStyle(
+                          color: AppColors.ink,
+                          fontSize: 14,
+                          fontWeight:
+                              active ? FontWeight.w800 : FontWeight.w600,
+                          height: 1.5,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1018,66 +1021,71 @@ class _RelatedCardState extends State<_RelatedCard> {
       excludeSemantics: true,
       child: Material(
         color: AppColors.surface,
-        child: InkWell(
-          onTap: () => context.go('/blog/${entry.slug}'),
-          onHover: (v) => setState(() => _hovered = v),
-          onFocusChange: (v) => setState(() => _focused = v),
-          hoverColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          splashColor: AppColors.audienceBeige.withValues(alpha: 0.5),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOut,
-            foregroundDecoration: BoxDecoration(
-              border: Border.all(
-                color: active ? AppColors.ink : AppColors.line,
-                width: _focused ? 2 : 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                BlogCover(category: entry.category!, height: 96, iconSize: 36),
-                Padding(
-                  padding: const EdgeInsets.all(AppLayout.s24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        entry.title,
-                        style: const TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          height: 1.3,
-                        ),
-                      ),
-                      const SizedBox(height: AppLayout.s16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${entry.formattedDate} · '
-                              '${entry.readingMinutes} Min.',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ),
-                          AnimatedSlide(
-                            duration: const Duration(milliseconds: 150),
-                            curve: Curves.easeOut,
-                            offset: active ? const Offset(0.3, 0) : Offset.zero,
-                            child: Icon(
-                              Icons.arrow_forward,
-                              size: 18,
-                              color: active ? AppColors.accent : AppColors.ink,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+        child: SelectionContainer.disabled(
+          child: InkWell(
+            onTap: () => context.go('/blog/${entry.slug}'),
+            onHover: (v) => setState(() => _hovered = v),
+            onFocusChange: (v) => setState(() => _focused = v),
+            hoverColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            splashColor: AppColors.audienceBeige.withValues(alpha: 0.5),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOut,
+              foregroundDecoration: BoxDecoration(
+                border: Border.all(
+                  color: active ? AppColors.ink : AppColors.line,
+                  width: _focused ? 2 : 1,
                 ),
-              ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  BlogCover(
+                      category: entry.category!, height: 96, iconSize: 36),
+                  Padding(
+                    padding: const EdgeInsets.all(AppLayout.s24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.title,
+                          style: const TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(height: AppLayout.s16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${entry.formattedDate} · '
+                                '${entry.readingMinutes} Min.',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            AnimatedSlide(
+                              duration: const Duration(milliseconds: 150),
+                              curve: Curves.easeOut,
+                              offset:
+                                  active ? const Offset(0.3, 0) : Offset.zero,
+                              child: Icon(
+                                Icons.arrow_forward,
+                                size: 18,
+                                color:
+                                    active ? AppColors.accent : AppColors.ink,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
