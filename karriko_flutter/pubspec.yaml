@@ -18,7 +18,6 @@ dependencies:
   dio: ^5.4.3
   intl: ^0.20.0
   cached_network_image: ^3.3.1
-  google_fonts: ^6.2.1
   # QR-Code fuer die TOTP-Einrichtung. Reines Dart (zieht nur `qr` nach),
   # keine nativen Bindungen und kein Netzwerkzugriff.
   qr_flutter: ^4.1.0
@@ -57,3 +56,22 @@ flutter:
     # entsteht mit `dart run tools/import_berufe.dart` aus einer CSV der
     # Bundesagentur fuer Arbeit; siehe notes/REVIEW_TEXTE.md.
     - assets/data/berufe_beispiel.json
+
+  # Inter 4.1 aus dem offiziellen Release (github.com/rsms/inter), Lizenz OFL
+  # in assets/fonts/inter/LICENSE.txt. Eingebettet statt ueber google_fonts
+  # geladen: Kein Seitenaufruf soll Google die IP des Besuchers verraten, und
+  # die Content-Security-Policy kommt so ohne fonts.gstatic.com aus.
+  # Nur die Staerken, die die App verwendet; 500 setzt Material intern ein.
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/inter/Inter-ExtraBold.ttf
+          weight: 800
