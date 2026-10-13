@@ -143,7 +143,7 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 
 ## Schnellstart
 
-**Voraussetzungen:** Flutter 3.44 oder neuer, ein Appwrite-Projekt. Für Passkeys und die Werkzeuge unter `tools/` zusätzlich Node 20 oder neuer, für das Einspielen die Appwrite-CLI.
+**Voraussetzungen:** Flutter 3.44 oder neuer, ein Appwrite-Projekt. Für die Werkzeuge unter `tools/` zusätzlich Node 20 oder neuer, für den Passkey-Dienst Node 22.6 oder neuer, für das Einspielen die Appwrite-CLI.
 
 ```bash
 git clone https://github.com/dresogo/Karriko.git
