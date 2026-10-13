@@ -66,6 +66,26 @@ class Tables {
     return result.rows.isEmpty ? null : result.rows.first;
   }
 
+  /// Wie viele Bewertungen der Nutzer seit [since] abgegeben hat.
+  ///
+  /// Liest eine Zeile und nimmt die Gesamtzahl aus der Antwort, wie
+  /// [countReviews]. Der Index auf `user_id` + `company_id` bedient den Filter
+  /// über seine erste Spalte; `$createdAt` grenzt danach eine kleine Menge ein.
+  Future<int> countReviewsByUserSince(String userId, DateTime since) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [
+        Query.equal('user_id', userId),
+        Query.greaterThanEqual(r'$createdAt', since.toUtc().toIso8601String()),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+      total: true,
+    );
+    return ergebnis.total;
+  }
+
   /// Die Bewertungen eines Nutzers.
   ///
   /// Keine Sortierung in der Abfrage: Ein `orderDesc` auf `$createdAt` würde

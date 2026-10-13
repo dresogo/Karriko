@@ -40,6 +40,14 @@ class FunctionResponse {
         'message': message,
       });
 
+  /// Ein Grenzwert ist erreicht, siehe `rate_limits.dart`. Später wieder
+  /// möglich, deshalb 429 und nicht 403.
+  static FunctionResponse rateLimited(String message) => FunctionResponse(429, {
+        'ok': false,
+        'code': 'rate_limited',
+        'message': message,
+      });
+
   static FunctionResponse forbidden(String message) => FunctionResponse(403, {
         'ok': false,
         'code': 'forbidden',

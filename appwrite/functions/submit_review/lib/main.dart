@@ -17,7 +17,7 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 /// 2. **Genau die Version laden**, mit der die Einreichung erstellt wurde.
 /// 3. Gegen diese Version prüfen: nur sichtbare Fragen beantwortet, Typen und
 ///    Wertebereiche korrekt, Pflichtfragen vorhanden.
-/// 4. Dublette prüfen.
+/// 4. Dublette prüfen, danach das Limit von drei Bewertungen je 24 h.
 /// 5. Werte und Qualitäts-Flags **neu** berechnen. Was der Client gerechnet
 ///    hat, war für die Anzeige.
 /// 6. Zeile anlegen, Entwurf löschen.
@@ -126,6 +126,23 @@ Future<dynamic> main(final context) async {
       context,
       FunctionResponse.duplicate(
         'Du hast diesen Betrieb schon bewertet.',
+      ),
+    );
+  }
+
+  // Nach der Dublette: Wer denselben Betrieb noch einmal schickt, soll das
+  // erfahren und nicht von einem Limit hören.
+  final juengst = await tables.countReviewsByUserSince(
+    userId,
+    reviewWindowStart(DateTime.now()),
+  );
+  if (reviewLimitReached(juengst)) {
+    ctx.log('Limit erreicht: $juengst Bewertungen in 24 h.');
+    return _antwort(
+      context,
+      FunctionResponse.rateLimited(
+        'Du hast heute schon $maxReviewsPerWindow Bewertungen abgegeben. '
+        'Dein Entwurf ist gespeichert, schick ihn bitte morgen ab.',
       ),
     );
   }

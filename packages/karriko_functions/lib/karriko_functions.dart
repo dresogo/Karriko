@@ -20,6 +20,7 @@ export 'src/email_verification.dart';
 export 'src/moderation_desk.dart';
 export 'src/my_reviews.dart';
 export 'src/publish_decision.dart';
+export 'src/rate_limits.dart';
 export 'src/responses.dart';
 export 'src/review_row.dart';
 export 'src/tables.dart';
