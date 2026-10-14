@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen, alte nicht gelöscht, sondern als abgelöst markiert.
 
-**Stand:** 14. Oktober 2026 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 14. Oktober 2026, abgeglichen mit `main` @ `7076495` und den PRs #11–#17 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -49,7 +49,8 @@ Karriko ist eine Bewertungsplattform für die duale Ausbildung im DACH-Raum. Azu
 
 - **Inter** (v4.1), einzige Schriftfamilie. Fallback im Web: `Inter, Arial, Helvetica, sans-serif`.
 - **Lokal eingebettet** (`assets/fonts/inter/`), nie über Google Fonts zur Laufzeit. Grund: LG München I, 3 O 17493/20 – dynamisches Laden überträgt die IP an Google. Gilt auch für Website, Landingpages und Mails.
-- Überschriften Gewicht 800, eng gesetzt (Display 64/48/36 px, Zeilenhöhe ≈ 1). Fließtext 17/15 px, Zeilenhöhe 1,55. Labels 12 px, 800, Sperrung 0,11 em.
+- **Eingebettet ist bewusst nur Inter Regular** (PR #13). So sah die Web-App tatsächlich schon immer aus: Google lieferte Inter als variable Schrift, deren Stärke Flutter nicht einstellt. Fette Schnitte (~1,6 MB für vier) kommen erst mit einer eigenen Entscheidung.
+- Größen laut Theme: Display 64/48/36 px, Zeilenhöhe ≈ 1; Fließtext 17/15 px, Zeilenhöhe 1,55; Labels 12 px, Sperrung 0,11 em. Die Gewichte 700/800 im Theme sind vorbereitet und wirken erst mit echten Schnitten.
 
 ### 2.3 Form und Raster
 
@@ -105,7 +106,10 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-07 | 10/2026 | **Lieferkette klein halten**: ungenutzte Pakete entfernt, Actions festgenagelt, Lockfile erzwungen, Dependabot, CodeQL, OSV-Scanner. | Jede Abhängigkeit ist ein Risiko. Neue Pakete nur mit Begründung. |
 | E-08 | 10/2026 | **SEO: öffentliche Seiten als serverseitiges HTML** (Next.js), getrennt von der Flutter-App, die unter `/app` läuft. Routing per Pfad (nginx/Caddy). | Flutter Web rendert auf Canvas, Suchmaschinen sehen keinen Inhalt. Vorbild: kununu. |
 | E-09 | 10/2026 | **Zieldomain karriko.de**. Vor dem Umzug beachten: Passkey-`rpId` ist an die Domain gebunden und nicht migrierbar; `APP_ORIGIN` und Appwrite-Web-Plattform müssen karriko.de kennen. | Übergangsdomain soll keine Altlasten erzeugen. |
-| E-10 | 10/2026 | Im Browser **kein Ripple, keine Seitenübergänge, Text markierbar, Hand-Cursor**. | Die App soll sich wie eine Website anfühlen. |
+| E-10 | 10/2026 | Im Browser **kein Ripple, keine Seitenübergänge, Text markierbar, Hand-Cursor** (PR #11). Umsetzung: globale `SelectionArea` im `builder` der App; Navigation, Karten, Buttons und Fragebogen per `SelectionContainer.disabled` ausgenommen. Klickziele immer über `TapTarget` (`presentation/common/tap_target.dart`), nicht über `GestureDetector`. Native Apps behalten ihre Übergänge. | Die App soll sich wie eine Website anfühlen; `TapTarget` bringt Cursor, Hover, Fokus, Tastaturbedienung und Button-Semantik mit. |
+| E-11 | 10/2026 | **Major-Updates von Abhängigkeiten nie über einen Dependabot-Sammel-PR**, sondern als eigene Migration mit Tests. Anstehend: `flutter_riverpod` 2→3, `go_router` 14→18, `cached_network_image` 3→4, `flutter_lints` 4→6 (PR #16 deshalb geschlossen). | Brechende Änderungen brauchen eigene Prüfung. |
+| E-12 | 10/2026 | **Passkey-Dienst läuft ohne Build-Schritt** über Nodes Type-Stripping. `tsconfig` mit `erasableSyntaxOnly`: keine Parameter-Properties, Enums o. ä. (PR #17). | `npm start` brach an nicht entfernbarer TS-Syntax ab; die Tests (vitest) merkten es nicht. |
+| E-13 | 10/2026 | **Squash-Merge**, wenn Zwischenstände eines PRs Ballast enthalten (z. B. große Binärdateien). | Was nie nach `main` kommt, muss nicht aus der Historie entfernt werden. |
 
 ### Bewertungen und Daten
 
@@ -133,6 +137,9 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-43 | – | Passwort: min. 8 Zeichen, ein Großbuchstabe, eine Ziffer. Unbestätigte Konten dürfen lesen, nicht bewerten. | – |
 | E-44 | – | **Jede Berechtigung serverseitig.** Client-Weiterleitungen sind Bequemlichkeit, keine Sicherheit. Ein Betrieb sieht nie Daten eines anderen. | – |
 | E-45 | 10/2026 | **`companies` mit Row Security**: Tabellenrechte nur `read("any")`, `create("users")`; Änderungsrecht pro Zeile für den Eigentümer. | Vorher durfte jeder Angemeldete jede Firma ändern. |
+| E-46 | 10/2026 | **Von Betrieben eingegebene URLs werden nicht verlinkt** (Website, Bewerbungs-URL, Kontakt-Mail), bis eine Prüfung auf `http`/`https` existiert. | Sonst wird eine `javascript:`-URL zum Einfallstor (PR #11). |
+| E-47 | 10/2026 | **Die Fehlerseite zeigt nur den Pfad, nie die Query.** | Die alte Fassung gab mögliche Einmal-Codes aus Mail-Links aus (PR #13). |
+| E-48 | 08/2026 | **Zugangsdaten nie ins Repo.** Fund im öffentlichen Repo → sofort rotieren, `git filter-repo --replace-text`, Force-Push, danach GitHub-Support um Purge unerreichbarer Objekte bitten. API-Schlüssel nach Gebrauch widerrufen, nicht ablaufen lassen. | Fall `notes/fehler.md`: 26 Tage öffentlich lesbar; alte Commits bleiben per SHA abrufbar. |
 
 ### Datenschutz und Löschkonzept
 
@@ -201,9 +208,14 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 - **Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
 - **Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme.
 - **Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
-- **Schriftschnitte:** Nur Inter Regular ist eingebettet. Gewichte 600–800 im Theme wirken erst, wenn die echten Schnitte in `pubspec.yaml` stehen.
+- **Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
+- **Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP.
+- **README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete.
+- **Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250.
 - **Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
 - **Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.
 - **Social-Media-Vorlagen** (10/2026) wurden mit Archivo und `#D42A1B` gebaut. Für Karriko gelten Inter und `#E3342F`.
 
-**Offene Produktentscheidungen** (Details in `notes/todo.md` G): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium.
+**Offene Produktentscheidungen** (Details in `notes/todo.md` G): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
+
+**Nächster Schlüsselschritt laut `notes/todo.md` A:** eigenes Moderationskonto anlegen, dann Abnahmetest mit den vier Personas.
