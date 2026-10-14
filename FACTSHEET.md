@@ -189,7 +189,7 @@ Vor jedem PR: `dart format`, `flutter analyze` (0 Hinweise), alle Tests grün. B
 
 | Datei | Inhalt |
 |---|---|
-| `FACTSHEET.md` | Was gilt und warum (diese Datei) |
+| `FACTSHEET.md` | Was gilt und warum (diese Datei); Nummernsystem in Abschnitt 10 |
 | `notes/projekt-referenz.md` | Fachliche Anforderungen (Teile durch E-23 überholt) |
 | `notes/todo.md` | Offene Aufgaben, priorisiert |
 | `notes/reports/` | Was gebaut ist: Status- und Sicherheitsbericht |
@@ -202,20 +202,58 @@ Vor jedem PR: `dart format`, `flutter analyze` (0 Hinweise), alle Tests grün. B
 
 ## 9. Offene Widersprüche
 
-Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. Beim Auflösen hier streichen und in Abschnitt 4 eintragen.
+Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. Aufgelöste Punkte werden durchgestrichen, nicht gelöscht, und die Lösung kommt als Entscheidung in Abschnitt 4.
 
-- **Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
-- **Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
-- **Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme.
-- **Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
-- **Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
-- **Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP.
-- **README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete.
-- **Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250.
-- **Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
-- **Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.
-- **Social-Media-Vorlagen** (10/2026) wurden mit Archivo und `#D42A1B` gebaut. Für Karriko gelten Inter und `#E3342F`.
+**W-10 · Design**
+
+- **W-10.1 · Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
+- **W-10.2 · Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
+- **W-10.3 · Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme (T-60.2).
+- **W-10.4 · Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
+- **W-10.5 · Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
+- **W-10.6 · Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.
+- **W-10.7 · Social-Media-Vorlagen** (10/2026) wurden mit Archivo und `#D42A1B` gebaut. Für Karriko gelten Inter und `#E3342F`.
+
+**W-20 · Technik und Doku**
+
+- **W-20.1 · Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP (T-50.26).
+- **W-20.2 · README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete (T-60.20).
+- **W-20.3 · Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250 (T-60.20).
+
+**W-30 · Daten und Recht**
+
+- **W-30.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
 
 **Offene Produktentscheidungen** (Details in `notes/todo.md` G): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 
 **Nächster Schlüsselschritt laut `notes/todo.md` A:** eigenes Moderationskonto anlegen, dann Abnahmetest mit den vier Personas.
+
+---
+
+## 10. Nummernsystem
+
+Jede Liste im Projekt hat einen eigenen Buchstaben. Ein Buchstabe steht nur für eine Art von Liste.
+
+**Aufbau:** `<Buchstabe>-<Abschnitt>.<laufende Nummer>`, zum Beispiel `T-20.3`. Abschnitte zählen in Zehnerschritten: erster Abschnitt 10, zweiter 20 und so weiter. Die laufende Nummer beginnt in jedem Abschnitt bei 1 und hat keine Obergrenze.
+
+**Regeln:**
+
+1. Eine vergebene Nummer bleibt für immer. Erledigtes wird abgehakt oder durchgestrichen, nie gelöscht, nie umnummeriert.
+2. Neues bekommt die nächste freie Nummer seines Abschnitts, auch wenn es inhaltlich weiter oben stünde.
+3. Ein neuer Abschnitt nimmt den nächsten freien Zehner. Gehört er zwischen zwei bestehende, nimmt er die Fünf dazwischen (z. B. 65).
+4. Verweise immer mit voller Nummer und Buchstabe, auch über Dokumente hinweg („siehe T-60.17", „widerspricht E-06").
+
+| Buchstabe | Liste | Wo | Stand |
+|---|---|---|---|
+| **E** | Entscheidungen | Abschnitt 4 | Altbestand E-01 bis E-53 behält seine Nummern; neue Einträge im Format `E-<Abschnitt>.<Nr.>` |
+| **T** | Offene Aufgaben (To-do) | Tab „Offene Aufgaben" im Artefakt „Karriko: Plan" | eingeführt, T-10 bis T-100 |
+| **W** | Widersprüche zwischen Code, Doku und Entscheidungen | Abschnitt 9 | eingeführt |
+| **R** | Risiken | Tab „Website-Umbau SEO", `projekt-referenz.md` §7 | reserviert |
+| **J** | Fragen an den Anwalt (juristisch) | Tab „Fragen an den Anwalt" | reserviert |
+| **V** | Verarbeitungstätigkeiten nach Art. 30 DSGVO | Tab „Verarbeitungsverzeichnis" | reserviert |
+| **L** | Löschfristen | Tab „Löschkonzept" | reserviert |
+| **N** | Schritte im Notfall | Tab „Notfallplan" | reserviert |
+| **Z** | Wiederkehrende Routinen | Tab „Routinen" | reserviert |
+| **B** | Fehler (Bugs) | Tab „Fehlerreport Website" | reserviert |
+
+**Nicht vergeben, weil schon belegt:** **A** (Abweichungen A1–A15 in `PLAN_FRAGEBOGEN.md`, Abschluss-Fragen a1–a5), **K** (Kernfragen k1–k12), **S** (Steuerfragen s1–s10, Sicherheitsbefunde S1–S10), **P** (Priorität P1–P3). Diese Kürzel sind älter und stehen im Code oder in der Fragendefinition.
