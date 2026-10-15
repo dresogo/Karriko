@@ -16,6 +16,14 @@ import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/public_review_card.dart';
 
+/// Einstieg in den Fragebogen mit diesem Betrieb vorausgewählt.
+///
+/// Ohne `?company=` beginnt der Fragebogen bei der Betriebsauswahl, und der
+/// Azubi müsste den Betrieb, von dessen Profil er kommt, noch einmal suchen.
+String bewertenRoute(String companyId) =>
+    Uri(path: '/reviews/new', queryParameters: {'company': companyId})
+        .toString();
+
 /// Profilseite eines Betriebs im Bandraster der Website: Vollbreite Bänder mit
 /// Haarlinien, Inhalt auf lesbarem Mass ([ContentBand]), scharfe Kanten.
 class CompanyDetailScreen extends ConsumerWidget {
@@ -66,7 +74,11 @@ class _CompanyDetailBody extends ConsumerWidget {
           if (company.description != null &&
               company.description!.trim().isNotEmpty)
             _AboutBand(description: company.description!),
-          _ReviewsBand(reviews: reviews, isAzubi: auth.isAzubi),
+          _ReviewsBand(
+            reviews: reviews,
+            companyId: company.id,
+            isAzubi: auth.isAzubi,
+          ),
           const FooterWidget(),
         ],
       ),
@@ -202,7 +214,7 @@ class _CompanyIdentity extends StatelessWidget {
           children: [
             if (isAzubi)
               ElevatedButton.icon(
-                onPressed: () => context.go('/reviews/new'),
+                onPressed: () => context.go(bewertenRoute(company.id)),
                 icon: const Icon(Icons.add, size: 18),
                 label: const Text('Betrieb bewerten'),
               ),
@@ -982,9 +994,14 @@ class _AboutBand extends StatelessWidget {
 
 class _ReviewsBand extends StatelessWidget {
   final AsyncValue<List<PublicReview>> reviews;
+  final String companyId;
   final bool isAzubi;
 
-  const _ReviewsBand({required this.reviews, required this.isAzubi});
+  const _ReviewsBand({
+    required this.reviews,
+    required this.companyId,
+    required this.isAzubi,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1021,7 +1038,7 @@ class _ReviewsBand extends StatelessWidget {
           const SizedBox(height: AppLayout.s24),
           reviews.when(
             data: (list) => list.isEmpty
-                ? _EmptyReviews(isAzubi: isAzubi)
+                ? _EmptyReviews(companyId: companyId, isAzubi: isAzubi)
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -1119,9 +1136,10 @@ class _ReviewRowState extends State<_ReviewRow> {
 // ─── Zustände ────────────────────────────────────────────────────────────────
 
 class _EmptyReviews extends StatelessWidget {
+  final String companyId;
   final bool isAzubi;
 
-  const _EmptyReviews({required this.isAzubi});
+  const _EmptyReviews({required this.companyId, required this.isAzubi});
 
   @override
   Widget build(BuildContext context) {
@@ -1150,7 +1168,7 @@ class _EmptyReviews extends StatelessWidget {
           if (isAzubi) ...[
             const SizedBox(height: AppLayout.s24),
             ElevatedButton(
-              onPressed: () => context.go('/reviews/new'),
+              onPressed: () => context.go(bewertenRoute(companyId)),
               child: const Text('Jetzt bewerten'),
             ),
           ],

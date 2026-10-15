@@ -187,7 +187,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.14 · P3 · Verbleibende `IntrinsicHeight`-Konstruktionen durch `Table` ersetzen (todo E)
   Stellen: `home_screen.dart:483`, `fuer_betriebe_screen.dart:586`, `login_shell.dart:88`, `company_detail_screen.dart:109` und `:1248`. Bei nebeneinanderstehenden Zellen mit Trennlinien ist `Table` das Mittel.
 
-- [ ] T-6.16 · P1 · Fehler: „Bewerten“ auf dem Unternehmensprofil öffnet `/reviews/new` ohne `?company=`, der Betrieb muss im Fragebogen neu gesucht werden (`company_detail_screen.dart:205`, Sitemap)
 - [ ] T-6.17 · P1 · Seite „Eigene Bewertung“ unter `/my-reviews/:id`: Status, Begründung bei Ablehnung (Art. 17 DSA), Freitext ändern, zurückziehen. Die Danke-Seite verspricht „Bis dahin kannst du sie noch ändern“, einen Weg dafür gibt es nicht (Sitemap)
 - [ ] T-6.18 · P1 · „Melden“ auf jeder Bewertung, auch ohne Konto, etwa unter `/reviews/:id/melden`; heute melden nur Betriebe über `/reports` (Sitemap, Art. 16 DSA)
 - [ ] T-6.19 · P2 · Bewertungsrichtlinien als öffentliche Seite, der Entwurf vom August liegt vor (Sitemap)
