@@ -1,0 +1,10 @@
+# Karriko – Meldestelle für Sicherheitslücken (RFC 9116)
+# Bitte Schwachstellen vertraulich über den Kontakt unten melden,
+# nicht als öffentliches Issue.
+
+Contact: https://github.com/dresogo/Karriko/security/advisories/new
+Expires: 2027-04-15T00:00:00.000Z
+Preferred-Languages: de, en
+Canonical: https://karriko.de/.well-known/security.txt
+Canonical: https://karriko.dresogo.de/.well-known/security.txt
+Policy: https://github.com/dresogo/Karriko/security/policy

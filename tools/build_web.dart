@@ -112,6 +112,8 @@ List<String> _pruefen() {
     fehler.add('$_ausgabe/canvaskit/canvaskit.wasm fehlt.');
   }
 
+  fehler.addAll(_pruefeSecurityTxt());
+
   final bootstrap = File('$_ausgabe/flutter_bootstrap.js');
   if (!bootstrap.existsSync()) {
     fehler.add('$_ausgabe/flutter_bootstrap.js fehlt.');
@@ -136,5 +138,40 @@ List<String> _pruefen() {
     }
   }
 
+  return fehler;
+}
+
+// RFC 9116: Pflicht sind mindestens ein `Contact` und genau ein `Expires`.
+// Eine abgelaufene Datei gilt als veraltet und gehoert nicht auf den Server;
+// 30 Tage vorher kommt eine Warnung, damit das Datum rechtzeitig wandert.
+List<String> _pruefeSecurityTxt() {
+  const pfad = '$_ausgabe/.well-known/security.txt';
+  final datei = File(pfad);
+  if (!datei.existsSync()) return ['$pfad fehlt.'];
+
+  final felder = datei
+      .readAsLinesSync()
+      .where((z) => z.isNotEmpty && !z.startsWith('#'))
+      .map((z) => z.split(':'))
+      .where((t) => t.length > 1)
+      .map((t) => MapEntry(t.first.toLowerCase(), t.skip(1).join(':').trim()));
+
+  final fehler = <String>[];
+  if (!felder.any((f) => f.key == 'contact')) {
+    fehler.add('security.txt: kein Contact-Feld.');
+  }
+  final expires = felder.where((f) => f.key == 'expires').toList();
+  if (expires.length != 1) {
+    fehler.add('security.txt: Expires muss genau einmal vorkommen.');
+    return fehler;
+  }
+  final ablauf = DateTime.tryParse(expires.single.value);
+  if (ablauf == null) {
+    fehler.add('security.txt: Expires ist kein Datum nach RFC 3339.');
+  } else if (ablauf.isBefore(DateTime.now())) {
+    fehler.add('security.txt ist seit $ablauf abgelaufen.');
+  } else if (ablauf.difference(DateTime.now()).inDays < 30) {
+    stderr.writeln('Hinweis: security.txt laeuft am $ablauf ab.');
+  }
   return fehler;
 }

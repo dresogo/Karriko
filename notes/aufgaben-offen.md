@@ -123,7 +123,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.14 · P2 · Protokollierung kritischer Aktionen ohne personenbezogene Daten in Logs (Plan, Referenz §4.1)
 - [ ] T-4.15 · P2 · Verfügbarkeitsüberwachung für das Ziel 99,9 % (Referenz §5, neu)
 - [ ] T-4.16 · P2 · Notfallplan auf einer Seite: Entwurf steht im Tab Notfallplan (Plan)
-- [ ] T-4.17 · P2 · `security.txt` und Meldestelle für Schwachstellen (Plan)
 - [ ] T-4.18 · P2 · Erkennung gefälschter Bewertungen: gleicher Gerätehash, kurze Bearbeitungszeit, Häufung (Plan)
 - [ ] T-4.19 · P2 · Uploads von Logos und Bildern: MIME-Typ serverseitig prüfen, Größe begrenzen (Referenz §3.4)
 - [ ] T-4.20 · P3 · Admin-Bereich als eigener Build unter eigener Subdomain (Plan)
@@ -135,6 +134,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.25 · P1 · `create("users")` auf `users/verified` umstellen, wo nur bestätigte Konten schreiben sollen: `review_reports`, `review_drafts`, `companies`, `bookmarks` u. a.; Vorlage, `appwrite-setup.mjs` und Console gemeinsam (Export 13.10.)
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
+- [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
 
 ## 5 · Datenschutz und Recht
 
