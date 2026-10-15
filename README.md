@@ -35,6 +35,7 @@ Die Dokumentation hat feste Aufgaben:
 
 | Datei | Beantwortet |
 |---|---|
+| [`FACTSHEET.md`](FACTSHEET.md) | Was **gilt** und warum? CD, Schrift, Entscheidungsprotokoll — Pflichtlektüre für jede KI |
 | [`notes/projekt-referenz.md`](notes/projekt-referenz.md) | Was **soll** Karriko sein? Fachliche Regeln, Grenzwerte, Rollen |
 | [`notes/reports/`](notes/reports/) | Was **ist** gebaut? Statusbericht und Sicherheitsbericht |
 | [`notes/aufgaben-offen.md`](notes/aufgaben-offen.md) | Was steht **an**? Nummeriert und priorisiert, nach Art der Arbeit sortiert |
