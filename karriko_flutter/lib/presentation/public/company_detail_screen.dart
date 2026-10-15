@@ -1383,7 +1383,7 @@ class _VerifiedTag extends StatelessWidget {
 // ─── Auswertung ──────────────────────────────────────────────────────────────
 
 /// Verteilung und Kategoriemittel aus den geladenen Bewertungen. Beides wird
-/// hier gerechnet, weil das Unternehmensdokument nur Schnitt und Anzahl kennt.
+/// hier gerechnet, weil die Unternehmenszeile nur Schnitt und Anzahl kennt.
 class _ReviewStats {
   final Map<int, int> distribution;
   final int total;

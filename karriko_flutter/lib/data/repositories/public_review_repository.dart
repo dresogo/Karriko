@@ -23,7 +23,7 @@ class PublicReviewRepository {
   }) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.publicReviewsCollection,
+      tableId: QuestionnaireConstants.publicReviewsTable,
       queries: [
         Query.equal('company_id', companyId),
         Query.orderDesc('published_at'),
@@ -39,7 +39,7 @@ class PublicReviewRepository {
   Future<PublicReview> byId(String id) async {
     final row = await _db.getRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.publicReviewsCollection,
+      tableId: QuestionnaireConstants.publicReviewsTable,
       rowId: id,
     );
     return PublicReview.fromJson(_toMap(row));
@@ -48,7 +48,7 @@ class PublicReviewRepository {
   Future<List<PublicReview>> recent({int limit = 6}) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.publicReviewsCollection,
+      tableId: QuestionnaireConstants.publicReviewsTable,
       queries: [
         Query.orderDesc('published_at'),
         Query.limit(limit),
@@ -66,7 +66,7 @@ class PublicReviewRepository {
   Future<CompanyScores?> scoresFor(String companyId) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.companyScoresCollection,
+      tableId: QuestionnaireConstants.companyScoresTable,
       queries: [
         Query.equal('company_id', companyId),
         Query.limit(1),

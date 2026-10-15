@@ -20,7 +20,7 @@ class ReviewReportRepository {
   }) async {
     await _db.createRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.reviewReportsCollection,
+      tableId: AppwriteConstants.reviewReportsTable,
       rowId: ID.unique(),
       data: {
         'review_id': reviewId,

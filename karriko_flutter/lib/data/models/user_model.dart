@@ -9,7 +9,7 @@ class UserModel {
   /// Name des Unternehmens. Nur bei Betriebskonten gesetzt.
   final String? companyName;
 
-  /// Verknuepfung zum `companies`-Dokument. Nur bei Betriebskonten gesetzt.
+  /// Verknuepfung zur `companies`-Zeile. Nur bei Betriebskonten gesetzt.
   ///
   /// Ohne sie hat das Betriebskonto keine Firma, gegen die es schreiben
   /// koennte – weder das Unternehmensprofil noch die Zuordnung von Bewertungen

@@ -78,7 +78,7 @@ class CompanyRepository {
 
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       queries: queries,
     );
     return result.rows.map((d) => CompanyModel.fromJson(_toMap(d))).toList();
@@ -87,7 +87,7 @@ class CompanyRepository {
   Future<CompanyModel> getCompanyBySlug(String slug) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       queries: [Query.equal('slug', slug), Query.limit(1)],
     );
     if (result.rows.isEmpty) throw Exception('Unternehmen nicht gefunden');
@@ -97,7 +97,7 @@ class CompanyRepository {
   Future<CompanyModel> getCompanyById(String id) async {
     final doc = await _db.getRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       rowId: id,
     );
     return CompanyModel.fromJson(_toMap(doc));
@@ -106,7 +106,7 @@ class CompanyRepository {
   Future<List<CompanyModel>> getFeaturedCompanies({int limit = 6}) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       queries: [
         Query.equal('is_premium', true),
         Query.orderDesc('average_rating'),
@@ -120,7 +120,7 @@ class CompanyRepository {
     if (query.length < 2) return [];
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       queries: [Query.search('name', query), Query.limit(5)],
     );
     return result.rows.map((d) => d.data['name'] as String).toList();
@@ -134,7 +134,7 @@ class CompanyRepository {
   Future<CompanyModel?> findCompanyByOwner(String ownerId) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       queries: [Query.equal('owner_id', ownerId), Query.limit(1)],
     );
     if (result.rows.isEmpty) return null;
@@ -143,18 +143,18 @@ class CompanyRepository {
 
   /// Legt das Unternehmen zu einem Betriebskonto an.
   ///
-  /// Rechte am Dokument:
+  /// Rechte an der Zeile:
   /// - **Lesen fuer alle.** Unternehmensprofile sind der oeffentliche Teil der
   ///   Plattform; ohne das faende die Suche sie fuer Besucher nicht.
   /// - **Schreiben nur fuer den Eigentuemer.**
   /// - **Kein Loeschrecht**, auch nicht fuer den Eigentuemer. Beim Loeschen
   ///   eines Betriebskontos bleiben die Bewertungen erhalten und das Profil
   ///   wird lediglich inaktiv (projekt-referenz.md Paragraf 3.4) – ein
-  ///   Loeschrecht am Dokument wuerde genau das aushebeln.
+  ///   Loeschrecht an der Zeile wuerde genau das aushebeln.
   ///
-  /// Das ersetzt keine serverseitige Regel: Dokumentrechte greifen erst,
+  /// Das ersetzt keine serverseitige Regel: Zeilenrechte greifen erst,
   /// nachdem der Client sie gesetzt hat. Die tragende Grenze sind die
-  /// Berechtigungen der Collection.
+  /// Berechtigungen der Tabelle.
   Future<CompanyModel> createCompany({
     required String ownerId,
     required String name,
@@ -163,7 +163,7 @@ class CompanyRepository {
   }) async {
     final row = await _db.createRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       rowId: ID.unique(),
       data: {
         'slug': await _freierSlug(name),
@@ -197,7 +197,7 @@ class CompanyRepository {
     try {
       final vergeben = await _db.listRows(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.companiesCollection,
+        tableId: AppwriteConstants.companiesTable,
         queries: [Query.equal('slug', basis), Query.limit(1)],
       );
       if (vergeben.rows.isEmpty) return basis;
@@ -226,7 +226,7 @@ class CompanyRepository {
   }) async {
     await _db.updateRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesCollection,
+      tableId: AppwriteConstants.companiesTable,
       rowId: companyId,
       data: {
         if (name != null) 'name': name,
@@ -244,7 +244,7 @@ class CompanyRepository {
   Future<void> bookmarkCompany(String userId, String companyId) async {
     final existing = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
+      tableId: AppwriteConstants.bookmarksTable,
       queries: [
         Query.equal('user_id', userId),
         Query.equal('company_id', companyId),
@@ -254,7 +254,7 @@ class CompanyRepository {
     if (existing.rows.isNotEmpty) return;
     await _db.createRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
+      tableId: AppwriteConstants.bookmarksTable,
       rowId: ID.unique(),
       data: {'user_id': userId, 'company_id': companyId},
       permissions: [
@@ -267,7 +267,7 @@ class CompanyRepository {
   Future<void> removeBookmark(String userId, String companyId) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
+      tableId: AppwriteConstants.bookmarksTable,
       queries: [
         Query.equal('user_id', userId),
         Query.equal('company_id', companyId),
@@ -277,7 +277,7 @@ class CompanyRepository {
     if (result.rows.isEmpty) return;
     await _db.deleteRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
+      tableId: AppwriteConstants.bookmarksTable,
       rowId: result.rows.first.$id,
     );
   }
@@ -285,7 +285,7 @@ class CompanyRepository {
   Future<List<CompanyModel>> getBookmarkedCompanies(String userId) async {
     final bookmarks = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.bookmarksCollection,
+      tableId: AppwriteConstants.bookmarksTable,
       queries: [Query.equal('user_id', userId), Query.limit(100)],
     );
     final companies = await Future.wait(

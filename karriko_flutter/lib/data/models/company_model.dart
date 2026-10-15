@@ -18,7 +18,7 @@ class CompanyModel {
   /// Wird bei der Betriebsregistrierung gesetzt und dient zwei Zwecken: Er
   /// erlaubt, ein Unternehmen wiederzufinden, dessen Verknuepfung im Profil
   /// fehlt, und ist die Grundlage fuer eine spaetere serverseitige Regel, die
-  /// Schreibzugriffe nicht mehr nur ueber Dokumentrechte absichert.
+  /// Schreibzugriffe nicht mehr nur ueber Zeilenrechte absichert.
   final String? ownerId;
 
   final DateTime createdAt;

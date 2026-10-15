@@ -153,7 +153,7 @@ class AuthRepository {
       throw _mapError(e, 'Registrierung fehlgeschlagen.');
     }
 
-    await _createProfileDocument(
+    await _createProfileRow(
       userId: created.$id,
       data: {
         'email': email,
@@ -221,7 +221,7 @@ class AuthRepository {
       city: city,
     );
 
-    await _createProfileDocument(
+    await _createProfileRow(
       userId: created.$id,
       data: {
         'email': email,
@@ -251,9 +251,9 @@ class AuthRepository {
 
   /// Legt das Unternehmen an und haelt die ID auch in den Account-Prefs fest.
   ///
-  /// Die Prefs sind der Rueckfallweg von [_fetchCurrentUser]: Ist das
-  /// Profildokument nicht lesbar, kommt die Verknuepfung von dort. Ohne diesen
-  /// zweiten Ort waere die Firma bei jedem Ausfall der Profil-Collection
+  /// Die Prefs sind der Rueckfallweg von [_fetchCurrentUser]: Ist die
+  /// Profilzeile nicht lesbar, kommt die Verknuepfung von dort. Ohne diesen
+  /// zweiten Ort waere die Firma bei jedem Ausfall der Profil-Tabelle
   /// unerreichbar, obwohl sie existiert.
   ///
   /// Liefert `null`, wenn das Anlegen fehlschlaegt. Der Aufrufer darf daran
@@ -350,7 +350,7 @@ class AuthRepository {
     try {
       await _db.updateRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: userId,
         data: {'company_id': companyId},
       );
@@ -370,21 +370,21 @@ class AuthRepository {
     }
   }
 
-  /// Legt das Profildokument an, aus dem die App die Rolle liest.
+  /// Legt die Profilzeile an, aus der die App die Rolle liest.
   ///
-  /// Schlägt das fehl (Collection fehlt, Attribut unbekannt, Berechtigung),
+  /// Schlägt das fehl (Tabelle fehlt, Attribut unbekannt, Berechtigung),
   /// darf die Registrierung nicht scheitern: Konto und Sitzung bestehen zu
   /// diesem Zeitpunkt bereits, und die Rolle liegt zusätzlich in den
   /// Account-Prefs, auf die [_fetchCurrentUser] zurückfällt. Andernfalls
   /// bliebe ein angelegtes Konto zurück, das die App als Fehlschlag meldet.
-  Future<void> _createProfileDocument({
+  Future<void> _createProfileRow({
     required String userId,
     required Map<String, dynamic> data,
   }) async {
     try {
       await _db.createRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: userId,
         data: data,
         permissions: [
@@ -396,7 +396,7 @@ class AuthRepository {
     } on AppwriteException catch (e) {
       if (kDebugMode) {
         debugPrint(
-          'Profildokument konnte nicht angelegt werden (${e.type}): ${e.message}. '
+          'Profilzeile konnte nicht angelegt werden (${e.type}): ${e.message}. '
           'Die Rolle wird aus den Account-Prefs gelesen.',
         );
       }
@@ -580,7 +580,7 @@ class AuthRepository {
   ///    Ohne diese Pruefung kaeme ein Betrieb mit passendem Google- oder
   ///    Mail-Konto ohne Passwort und ohne Firmenpruefung hinein.
   /// 2. **Rollen-Nachzug.** Nach einer Anmeldung ohne Registrierung gibt es
-  ///    weder Profildokument noch Rolle in den Prefs. [_fetchCurrentUser]
+  ///    weder Profilzeile noch Rolle in den Prefs. [_fetchCurrentUser]
   ///    faellt still auf `azubi` zurueck – fuer neue Nutzer das gewuenschte
   ///    Ergebnis, aber aus dem falschen Grund. Deshalb wird es festgeschrieben.
   Future<UserModel> _finishTokenSignIn() async {
@@ -595,12 +595,12 @@ class AuthRepository {
     return user;
   }
 
-  /// Legt Profildokument und Rolle an, falls sie fehlen.
+  /// Legt Profilzeile und Rolle an, falls sie fehlen.
   Future<void> _ensureAzubiProfile(UserModel user) async {
     try {
       await _db.getRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: user.id,
       );
       return;
@@ -608,7 +608,7 @@ class AuthRepository {
       // Kein Profil vorhanden – wird gleich angelegt.
     }
 
-    await _createProfileDocument(
+    await _createProfileRow(
       userId: user.id,
       data: {'email': user.email, 'role': 'azubi'},
     );
@@ -821,14 +821,14 @@ class AuthRepository {
     try {
       await _db.updateRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: userId,
         data: updates,
       );
     } catch (_) {
       await _db.createRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: userId,
         data: updates,
         permissions: [
@@ -871,7 +871,7 @@ class AuthRepository {
     try {
       final doc = await _db.getRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.profilesCollection,
+        tableId: AppwriteConstants.profilesTable,
         rowId: user.$id,
       );
       return UserModel(

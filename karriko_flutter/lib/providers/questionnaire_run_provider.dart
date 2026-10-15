@@ -288,7 +288,7 @@ class QuestionnaireRunNotifier extends StateNotifier<QuestionnaireRunState> {
 
   /// Nach jeder Änderung, aber mit Verzögerung.
   ///
-  /// Ohne sie schriebe jeder Tastendruck im Freitext ein Dokument nach
+  /// Ohne sie schriebe jeder Tastendruck im Freitext eine Zeile nach
   /// Appwrite. Der lokale Stand steht ohnehin im Speicher der Seite; was hier
   /// verzögert wird, ist allein die Sicherung über das Gerät hinaus.
   void _entwurfPlanen() {

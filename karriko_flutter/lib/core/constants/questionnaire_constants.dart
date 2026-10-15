@@ -10,22 +10,22 @@ class QuestionnaireConstants {
 
   // ── Tabellen ──────────────────────────────────────────────────────────────
 
-  static const releasesCollection = String.fromEnvironment(
+  static const releasesTable = String.fromEnvironment(
     'TBL_QUESTIONNAIRE_RELEASES',
     defaultValue: 'questionnaire_releases',
   );
 
-  static const draftsCollection = String.fromEnvironment(
+  static const draftsTable = String.fromEnvironment(
     'TBL_REVIEW_DRAFTS',
     defaultValue: 'review_drafts',
   );
 
-  static const publicReviewsCollection = String.fromEnvironment(
+  static const publicReviewsTable = String.fromEnvironment(
     'TBL_PUBLIC_REVIEWS',
     defaultValue: 'public_reviews',
   );
 
-  static const companyScoresCollection = String.fromEnvironment(
+  static const companyScoresTable = String.fromEnvironment(
     'TBL_COMPANY_SCORES',
     defaultValue: 'company_scores',
   );
@@ -110,7 +110,7 @@ class QuestionnaireConstants {
   /// Wie lange nach der letzten Antwort gewartet wird, bevor der Entwurf nach
   /// Appwrite geht. Lokal wird sofort gespeichert.
   ///
-  /// Ohne die Verzoegerung schriebe jeder Tastendruck im Freitext ein Dokument.
+  /// Ohne die Verzoegerung schriebe jeder Tastendruck im Freitext eine Zeile.
   static const draftSyncDelay = Duration(seconds: 3);
 
   /// Query-Parameter, ueber den eine Einladung ihre Quelle mitgibt.

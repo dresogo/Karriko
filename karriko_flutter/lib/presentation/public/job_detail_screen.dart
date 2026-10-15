@@ -41,8 +41,8 @@ class _JobDetailBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Für den Betriebsstreifen: Note und Anzahl der Bewertungen stehen im
-    // Unternehmensdokument, nicht an der Stelle.
+    // Für den Betriebsstreifen: Note und Anzahl der Bewertungen stehen in der
+    // Unternehmenszeile, nicht an der Stelle.
     final company = ref.watch(companyBySlugProvider(job.companySlug));
 
     return SingleChildScrollView(

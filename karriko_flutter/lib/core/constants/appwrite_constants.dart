@@ -56,14 +56,12 @@ class AppwriteConstants {
     defaultValue: 'http://localhost:3000',
   );
 
-  // Database & collection IDs (must match what you create in the Appwrite console)
+  // Datenbank und Tabellen, angelegt mit tools/appwrite-setup.mjs (E-05).
   static const databaseId = '6a3ea0a4002b4cf10630';
-  static const profilesCollection = 'profiles';
-  static const companiesCollection = 'companies';
-  static const reviewsCollection = 'reviews';
-  static const bookmarksCollection = 'bookmarks';
-  static const reviewReportsCollection = 'review_reports';
-  static const questionsCollection = 'questions';
-  static const jobsCollection = 'jobs';
-  static const notificationsCollection = 'notifications';
+  static const profilesTable = 'profiles';
+  static const companiesTable = 'companies';
+  static const bookmarksTable = 'bookmarks';
+  static const reviewReportsTable = 'review_reports';
+  static const jobsTable = 'jobs';
+  static const notificationsTable = 'notifications';
 }

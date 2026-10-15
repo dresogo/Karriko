@@ -10,7 +10,7 @@ import 'package:karriko_flutter/data/repositories/company_repository.dart';
 import 'package:karriko_flutter/providers/auth_provider.dart';
 import 'package:karriko_flutter/providers/company_provider.dart';
 
-/// Prueft die Verknuepfung zwischen Betriebskonto und `companies`-Dokument.
+/// Prueft die Verknuepfung zwischen Betriebskonto und `companies`-Zeile.
 ///
 /// Vor dieser Verknuepfung schrieb das Unternehmensprofil nirgendwohin: Dem
 /// Konto fehlte jede Firma, gegen die es haette speichern koennen. Die Tests

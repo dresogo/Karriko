@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 15.10.2026 | T-1.11 | `dart fix --apply` und Migrationsreste entfernen | `dart fix` findet in App, `questionnaire_core` und `karriko_functions` nichts. Reste der Umstellung auf TablesDB umbenannt: `*Collection` → `*Table`, `_createProfileDocument` → `_createProfileRow`, „Dokument“ → „Zeile“ in Kommentaren. Ungenutzte Konstanten `reviews` und `questions` entfernt. `--dart-define`-Schlüssel unverändert | dieser Commit |
 | 15.10.2026 | T-6.20 | README nachziehen: Pakete und Testzahlen | Nachgezählt statt übernommen: 110 Pakete im Lockfile, 661 App-Tests, 287 `questionnaire_core`, 60 `karriko_functions`, 25 Passkey-Dienst, zusammen 1033. W-2.2 und W-2.3 im Factsheet durchgestrichen | dieser Commit |
 | 15.10.2026 | T-6.16 | „Bewerten“ auf dem Unternehmensprofil ohne `?company=` | Beide Knöpfe („Betrieb bewerten“, „Jetzt bewerten“) öffnen `/reviews/new?company=<id>`, Test `company_detail_bewerten_test.dart` | dieser Commit |
 | 15.10.2026 | T-4.17 | `security.txt` und Meldestelle für Schwachstellen | `karriko_flutter/web/.well-known/security.txt` nach RFC 9116, Kontakt über GitHubs private Schwachstellenmeldung, `SECURITY.md` als Policy. `tools/build_web.dart` bricht ab, wenn die Datei fehlt, kein `Contact` hat oder abgelaufen ist. Rest offen als T-4.28 | dieser Commit |

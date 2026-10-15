@@ -70,7 +70,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     try {
       final result = await _db.listRows(
         databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.notificationsCollection,
+        tableId: AppwriteConstants.notificationsTable,
         queries: [
           Query.equal('user_id', userId),
           Query.orderDesc('\$createdAt'),
@@ -100,7 +100,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     // Rest der Migration ist das eine Zeichenkette, die der Compiler nicht
     // prueft – Aenderungen hier gegen eine echte Instanz gegentesten.
     _subscription = realtime.subscribe([
-      'databases.${AppwriteConstants.databaseId}.tables.${AppwriteConstants.notificationsCollection}.rows',
+      'databases.${AppwriteConstants.databaseId}.tables.${AppwriteConstants.notificationsTable}.rows',
     ]);
     _subscription!.stream.listen((event) {
       if (mounted) _loadNotifications();
@@ -114,7 +114,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     await Future.wait(
       unread.map((n) => _db.updateRow(
             databaseId: AppwriteConstants.databaseId,
-            tableId: AppwriteConstants.notificationsCollection,
+            tableId: AppwriteConstants.notificationsTable,
             rowId: n.id,
             data: {'is_read': true},
           )),

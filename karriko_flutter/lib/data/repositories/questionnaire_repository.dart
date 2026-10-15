@@ -144,7 +144,7 @@ class QuestionnaireRepository {
   Future<QuestionnaireRelease?> _activeRelease(String locale) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.releasesCollection,
+      tableId: QuestionnaireConstants.releasesTable,
       queries: [
         Query.equal('locale', locale),
         Query.equal('active', true),
@@ -162,7 +162,7 @@ class QuestionnaireRepository {
   ) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.releasesCollection,
+      tableId: QuestionnaireConstants.releasesTable,
       queries: [
         Query.equal('locale', locale),
         Query.equal('version', version),

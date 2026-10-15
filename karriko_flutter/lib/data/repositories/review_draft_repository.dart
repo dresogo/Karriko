@@ -21,7 +21,7 @@ class ReviewDraftRepository {
   }) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.draftsCollection,
+      tableId: QuestionnaireConstants.draftsTable,
       queries: [
         Query.equal('user_id', userId),
         Query.equal('company_id', companyId),
@@ -37,7 +37,7 @@ class ReviewDraftRepository {
   Future<List<ReviewDraft>> forUser(String userId) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.draftsCollection,
+      tableId: QuestionnaireConstants.draftsTable,
       queries: [
         Query.equal('user_id', userId),
         Query.orderDesc('updated_at'),
@@ -58,7 +58,7 @@ class ReviewDraftRepository {
     if (draft.id != null) {
       final row = await _db.updateRow(
         databaseId: AppwriteConstants.databaseId,
-        tableId: QuestionnaireConstants.draftsCollection,
+        tableId: QuestionnaireConstants.draftsTable,
         rowId: draft.id!,
         data: data,
       );
@@ -67,7 +67,7 @@ class ReviewDraftRepository {
 
     final row = await _db.createRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.draftsCollection,
+      tableId: QuestionnaireConstants.draftsTable,
       rowId: ID.unique(),
       data: data,
       permissions: [
@@ -84,7 +84,7 @@ class ReviewDraftRepository {
   Future<void> delete(String draftId) async {
     await _db.deleteRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: QuestionnaireConstants.draftsCollection,
+      tableId: QuestionnaireConstants.draftsTable,
       rowId: draftId,
     );
   }

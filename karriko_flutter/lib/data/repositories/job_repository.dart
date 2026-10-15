@@ -22,7 +22,7 @@ class JobRepository {
   }) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       queries: [
         Query.equal('company_id', companyId),
         if (onlyActive) Query.equal('is_active', true),
@@ -38,7 +38,7 @@ class JobRepository {
   Future<List<JobModel>> recentJobs({int limit = 12}) async {
     final result = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       queries: [
         Query.equal('is_active', true),
         Query.orderDesc('\$createdAt'),
@@ -51,7 +51,7 @@ class JobRepository {
   Future<JobModel> getJob(String id) async {
     final row = await _db.getRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       rowId: id,
     );
     return JobModel.fromJson(_toMap(row));
@@ -59,11 +59,11 @@ class JobRepository {
 
   /// Legt eine Stelle an.
   ///
-  /// Rechte am Dokument – dasselbe Muster wie beim Unternehmensprofil:
+  /// Rechte an der Zeile – dasselbe Muster wie beim Unternehmensprofil:
   /// - **Lesen fuer alle**, sonst faende die Suche die Stelle nicht.
   /// - **Aendern und Loeschen nur fuer den Eigentuemer** des Betriebskontos.
   ///
-  /// Das ersetzt keine serverseitige Regel: Dokumentrechte greifen erst,
+  /// Das ersetzt keine serverseitige Regel: Zeilenrechte greifen erst,
   /// nachdem der Client sie gesetzt hat. Die tragende Grenze sind die
   /// Berechtigungen der Sammlung.
   ///
@@ -96,7 +96,7 @@ class JobRepository {
   }) async {
     final row = await _db.createRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       rowId: ID.unique(),
       data: _payload(
         companyId: companyId,
@@ -152,7 +152,7 @@ class JobRepository {
   }) async {
     await _db.updateRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       rowId: jobId,
       data: {'is_active': isActive},
       permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
@@ -162,7 +162,7 @@ class JobRepository {
   Future<void> deleteJob(String jobId) async {
     await _db.deleteRow(
       databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsCollection,
+      tableId: AppwriteConstants.jobsTable,
       rowId: jobId,
     );
   }
