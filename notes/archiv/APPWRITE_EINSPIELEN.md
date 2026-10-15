@@ -6,7 +6,7 @@ was er tut, was danach anders ist und was die CLI ausgeben sollte.
 **Ich habe keinen dieser Befehle ausgeführt.** Sie laufen gegen dein
 Produktivprojekt, und das ist deine Hand.
 
-Das *Warum* zu jedem Schritt steht in [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md).
+Das *Warum* zu jedem Schritt steht in [`APPWRITE_SETUP.md`](../APPWRITE_SETUP.md).
 Hier steht nur das *Was* und in welcher Reihenfolge.
 
 Die Befehle sind für PowerShell geschrieben, weil das deine Standardshell ist.

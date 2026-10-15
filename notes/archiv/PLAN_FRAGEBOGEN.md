@@ -1,7 +1,7 @@
 # Plan: Bewertungsfragebogen in Karriko
 
 **Stand:** 21. September 2026
-**Grundlage:** [`karriko-fragebogen.md`](karriko-fragebogen.md) (fachliche Quelle) und der Auftrag dazu.
+**Grundlage:** [`karriko-fragebogen.md`](../karriko-fragebogen.md) (fachliche Quelle) und der Auftrag dazu.
 **Status:** Entwurf, wartet auf Freigabe. Bis zur Freigabe wird kein Code geschrieben.
 **Entschieden am 21. September 2026:** die vier Fragen aus Abschnitt 8 — siehe dort.
 
@@ -46,13 +46,13 @@ Das ist der wichtigste Befund: **es gibt bereits zwei konkurrierende Bewertungss
 
 | Datei | Was sie ist |
 |---|---|
-| [`lib/presentation/azubi/new_review_screen.dart`](../karriko_flutter/lib/presentation/azubi/new_review_screen.dart) | 615 Zeilen, vierstufiger Assistent (Betrieb → 5 Sterneskalen → Titel/Text/Pro/Contra → Bestätigung). Schreibt über `ReviewRepository.createReview` direkt in `reviews`. Route `/reviews/new`. |
-| [`lib/presentation/azubi/fragen_bewerten_screen.dart`](../karriko_flutter/lib/presentation/azubi/fragen_bewerten_screen.dart) | 303 Zeilen, Fragenkatalog aus der Collection `questions`, drei Typen (Sterne, Ja/Nein, Freitext), **alles auf einem Bildschirm**. Der Absenden-Knopf zeigt eine SnackBar: „Das Speichern wird noch angebunden." Route `/fragen-bewerten`. |
-| [`lib/data/models/question_model.dart`](../karriko_flutter/lib/data/models/question_model.dart) | `id, category, text, hint, type, isRequired, sortOrder`. Keine Bedingungen, keine Module, keine Varianten, keine Gewichte. |
-| [`lib/data/repositories/question_repository.dart`](../karriko_flutter/lib/data/repositories/question_repository.dart) | Lädt aus `questions`, fällt auf **acht hartcodierte deutsche Fragetexte im Dart-Code** zurück. |
-| [`lib/data/models/review_model.dart`](../karriko_flutter/lib/data/models/review_model.dart) | Flaches Modell mit `overall_rating`, vier Subwerten, `title`, `text`, `pros`, `cons`, `betrieb_reply`. |
-| [`lib/data/repositories/review_repository.dart`](../karriko_flutter/lib/data/repositories/review_repository.dart) | **Der Client schreibt direkt in `reviews`** und setzt die Dokumentrechte selbst. |
-| [`lib/presentation/common/review_card.dart`](../karriko_flutter/lib/presentation/common/review_card.dart) | `ReviewCard` + `StarRating`. Wird in Dashboard, Suche, Unternehmensprofil und Detailseite benutzt. |
+| [`lib/presentation/azubi/new_review_screen.dart`](../../karriko_flutter/lib/presentation/azubi/new_review_screen.dart) | 615 Zeilen, vierstufiger Assistent (Betrieb → 5 Sterneskalen → Titel/Text/Pro/Contra → Bestätigung). Schreibt über `ReviewRepository.createReview` direkt in `reviews`. Route `/reviews/new`. |
+| [`lib/presentation/azubi/fragen_bewerten_screen.dart`](../../karriko_flutter/lib/presentation/azubi/fragen_bewerten_screen.dart) | 303 Zeilen, Fragenkatalog aus der Collection `questions`, drei Typen (Sterne, Ja/Nein, Freitext), **alles auf einem Bildschirm**. Der Absenden-Knopf zeigt eine SnackBar: „Das Speichern wird noch angebunden." Route `/fragen-bewerten`. |
+| [`lib/data/models/question_model.dart`](../../karriko_flutter/lib/data/models/question_model.dart) | `id, category, text, hint, type, isRequired, sortOrder`. Keine Bedingungen, keine Module, keine Varianten, keine Gewichte. |
+| [`lib/data/repositories/question_repository.dart`](../../karriko_flutter/lib/data/repositories/question_repository.dart) | Lädt aus `questions`, fällt auf **acht hartcodierte deutsche Fragetexte im Dart-Code** zurück. |
+| [`lib/data/models/review_model.dart`](../../karriko_flutter/lib/data/models/review_model.dart) | Flaches Modell mit `overall_rating`, vier Subwerten, `title`, `text`, `pros`, `cons`, `betrieb_reply`. |
+| [`lib/data/repositories/review_repository.dart`](../../karriko_flutter/lib/data/repositories/review_repository.dart) | **Der Client schreibt direkt in `reviews`** und setzt die Dokumentrechte selbst. |
+| [`lib/presentation/common/review_card.dart`](../../karriko_flutter/lib/presentation/common/review_card.dart) | `ReviewCard` + `StarRating`. Wird in Dashboard, Suche, Unternehmensprofil und Detailseite benutzt. |
 
 Beides ist Fragebogen-Gebiet. Der Auftrag sagt „Code, der nichts mit dem Fragebogen zu tun hat, fasst du nicht an" — diese Dateien haben damit zu tun. → **Offene Frage 1**.
 
@@ -83,13 +83,13 @@ Nachgeschlagen, nicht aus dem Gedächtnis:
 | Event-Syntax | `tablesdb.<DB_ID>.tables.<TABLE_ID>.rows.*.create` / `.update` / `.delete` / `.upsert` | [Events](https://appwrite.io/docs/advanced/platform/events) |
 | Spaltentypen für Text | Vier Typen: `varchar`, `text`, `mediumtext`, `longtext`. **`varchar` zählt auf die 64-KB-Zeilengrenze von MariaDB, `text` nicht** (nur ein 20-Byte-Zeiger in der Zeile). Volltextindex und Sortierung gehen nur bis 768 Zeichen. | [Neue String-Typen](https://appwrite.io/blog/post/new-string-types) |
 
-Ein bestehendes Provisionierungswerkzeug gibt es: [`tools/appwrite-setup.mjs`](../tools/appwrite-setup.mjs), 327 Zeilen, idempotent, mit Probelauf, Erkennung ob die Instanz `tablesdb` oder `databases` spricht, und Warten auf `status: available` vor dem Indexbau. Das ist die etablierte Lösung im Projekt und deutlich robuster als ein CLI-Push gegen eine teilweise befüllte Datenbank.
+Ein bestehendes Provisionierungswerkzeug gibt es: [`tools/appwrite-setup.mjs`](../../tools/appwrite-setup.mjs), 327 Zeilen, idempotent, mit Probelauf, Erkennung ob die Instanz `tablesdb` oder `databases` spricht, und Warten auf `status: available` vor dem Indexbau. Das ist die etablierte Lösung im Projekt und deutlich robuster als ein CLI-Push gegen eine teilweise befüllte Datenbank.
 
 ### 1.6 Zwei Dinge, die mir beim Lesen aufgefallen sind
 
 Beide gehören nicht zum Fragebogen. Ich fasse sie nicht an, nenne sie aber, weil sie die Anleitung betreffen:
 
-1. **Projekt-ID und Datenbank-ID stehen im Klartext im Repository** ([`appwrite_constants.dart:7`](../karriko_flutter/lib/core/constants/appwrite_constants.dart#L7), [`:60`](../karriko_flutter/lib/core/constants/appwrite_constants.dart#L60), und nochmal in `tools/appwrite-setup.mjs`). Das Repository ist öffentlich. Die Qualitätsanforderung „keine echten Schlüssel oder Projekt-IDs im Repository" ist heute also schon verletzt. Meine neuen Konstanten lese ich über `String.fromEnvironment` mit unverfänglichem Standard. Die bestehenden umzustellen ist **entschieden als eigene Aufgabe** und wird hier nicht angefasst; ich vermerke sie in `notes/todo.md`.
+1. **Projekt-ID und Datenbank-ID stehen im Klartext im Repository** ([`appwrite_constants.dart:7`](../../karriko_flutter/lib/core/constants/appwrite_constants.dart#L7), [`:60`](../../karriko_flutter/lib/core/constants/appwrite_constants.dart#L60), und nochmal in `tools/appwrite-setup.mjs`). Das Repository ist öffentlich. Die Qualitätsanforderung „keine echten Schlüssel oder Projekt-IDs im Repository" ist heute also schon verletzt. Meine neuen Konstanten lese ich über `String.fromEnvironment` mit unverfänglichem Standard. Die bestehenden umzustellen ist **entschieden als eigene Aufgabe** und wird hier nicht angefasst; ich vermerke sie in `notes/todo.md`.
 2. Die `reviews`-Collection erlaubt dem Client heute das Schreiben. Teil D verlangt ausdrücklich das Gegenteil.
 
 ---
@@ -380,7 +380,7 @@ Alles hier ist eine Annahme, die ich getroffen habe, weil der Auftrag sie offenl
 ## 8. Entscheidungen vom 21. September 2026
 
 **1. Die alte Bewertungsstrecke wird ersetzt.**
-Der neue Fragebogen übernimmt `/reviews/new`. `/fragen-bewerten` leitet dorthin weiter, damit alte Lesezeichen und der Verweis aus dem Azubi-Dashboard nicht ins Leere laufen. [`new_review_screen.dart`](../karriko_flutter/lib/presentation/azubi/new_review_screen.dart) und [`fragen_bewerten_screen.dart`](../karriko_flutter/lib/presentation/azubi/fragen_bewerten_screen.dart) werden entfernt, ebenso `QuestionModel`, `QuestionRepository`, `questionsProvider` und `ReviewRepository.createReview`. Die Leseabfragen bleiben, zeigen aber auf `public_reviews`.
+Der neue Fragebogen übernimmt `/reviews/new`. `/fragen-bewerten` leitet dorthin weiter, damit alte Lesezeichen und der Verweis aus dem Azubi-Dashboard nicht ins Leere laufen. [`new_review_screen.dart`](../../karriko_flutter/lib/presentation/azubi/new_review_screen.dart) und [`fragen_bewerten_screen.dart`](../../karriko_flutter/lib/presentation/azubi/fragen_bewerten_screen.dart) werden entfernt, ebenso `QuestionModel`, `QuestionRepository`, `questionsProvider` und `ReviewRepository.createReview`. Die Leseabfragen bleiben, zeigen aber auf `public_reviews`.
 
 Mit betroffen, weil sie an denselben Modellen hängen: `my_reviews_screen.dart`, `review_detail_screen.dart`, der Bewertungsblock in `company_detail_screen.dart`, `betrieb/reviews_screen.dart`, `home_screen.dart` und `review_provider.dart`. Diese Dateien werden auf `PublicReview` umgestellt, nicht neu gebaut.
 

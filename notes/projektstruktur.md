@@ -1,7 +1,7 @@
 # Karriko – Aufbau des Projekts
 
 **Stand:** 30. August 2026
-**Zweck:** Wo liegt was, und warum dort. Gedacht als Landkarte für den Einstieg — nicht als Beschreibung dessen, was funktioniert (das steht in [`reports/`](reports/)) und nicht als fachliche Regel (die steht in [`projekt-referenz.md`](projekt-referenz.md)).
+**Zweck:** Wo liegt was, und warum dort. Gedacht als Landkarte für den Einstieg — nicht als Beschreibung dessen, was funktioniert (das steht in [`aufgaben-erledigt.md`](aufgaben-erledigt.md) und im README) und nicht als fachliche Regel (die steht in [`projekt-referenz.md`](projekt-referenz.md)).
 
 Nicht behandelt, weil Werkzeug- und nicht Projektsache: `.claude/`, `.github/`, `.idea/`, `.vscode/`, `.next/`, `graphify-out/`.
 
@@ -180,19 +180,21 @@ services/passkey-rp/
 
 ## 4. `notes/` — die Dokumentation
 
-Vier Dinge mit klar verschiedenen Aufgaben. Wer sie verwechselt, liest das Falsche:
+Jede Datei hat eine eigene Aufgabe. Wer sie verwechselt, liest das Falsche. Was **gilt**, steht nicht hier, sondern in `FACTSHEET.md` im Wurzelverzeichnis.
 
 | Datei | Beantwortet | Kann veralten? |
 |---|---|---|
 | [`projekt-referenz.md`](projekt-referenz.md) | Was **soll** Karriko sein? Regeln, Grenzwerte, Rollen | kaum — beschreibt Anforderungen |
-| [`reports/status-report-2026-08-02.md`](reports/status-report-2026-08-02.md) | Was **ist** gebaut? | ständig |
-| [`reports/sicherheitsbericht-2026-08-04.md`](reports/sicherheitsbericht-2026-08-04.md) | Wie kommt Fremdcode herein? | mittel |
+| [`karriko-fragebogen.md`](karriko-fragebogen.md) | Wie ist der Fragebogen fachlich gedacht? Spezifikation | selten |
+| [`REVIEW_TEXTE.md`](REVIEW_TEXTE.md) | Welche Texte stehen zur Durchsicht an? Erzeugt von `tools/review_texte.dart` | bei jeder Fragebogen-Version |
+| [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md) | Wie ist das Backend eingerichtet und abgenommen? | bei jeder Schemaänderung |
+| [`UMSETZUNG_BERICHT.md`](UMSETZUNG_BERICHT.md) | Warum ist der Fragebogen so gebaut? Abweichungen A1–A15 | selten |
 | [`aufgaben-offen.md`](aufgaben-offen.md) | Was steht **an**? | ständig |
 | [`aufgaben-erledigt.md`](aufgaben-erledigt.md) | Was ist **erledigt**, wann und mit welchem Commit? | bei jedem erledigten Punkt |
 | `karriko_design_swiss/` | Design-Entwurf als HTML/CSS | nein — Referenz |
 | `projektstruktur.md` | *diese Datei* — wo liegt was? | bei Umbauten |
+| [`archiv/`](archiv/README.md) | Erledigte Berichte und Pläne, mit Grund und Nachfolger | nein — abgeschlossen |
 
-**Der Dateiname des Statusberichts trägt das Datum der Erstfassung**, nicht des letzten Stands. Er ist inzwischen bei Abschnitt 12 und dem 30. August; umbenannt wird er nicht, weil README, Projektreferenz und Todo-Liste darauf verweisen.
 
 **Zur Pflege:** Erledigtes wird in der Todo-Liste abgehakt, nicht gelöscht. Grund steht dort — ein Sicherheitsbefund vom Juni stand zwei Monate offen, weil ihn niemand weiterführte.
 

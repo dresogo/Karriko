@@ -5,7 +5,7 @@
 
 Diese Datei fasst vierzehn ältere Notizen zusammen, die zwischen März und Juni 2026 entstanden sind. Alles Überholte ist entfernt, alles fachlich Gültige übernommen.
 
-**Wichtige Abgrenzung:** Dieses Dokument beschreibt **Anforderungen**, nicht den Umsetzungsstand. Was tatsächlich gebaut ist, steht in `notes/reports/` — dort liegen der Statusbericht und der Sicherheitsbericht, und nur die sind zum aktuellen Stand aussagekräftig.
+**Wichtige Abgrenzung:** Dieses Dokument beschreibt **Anforderungen**, nicht den Umsetzungsstand. Was tatsächlich gebaut ist, steht in `notes/aufgaben-erledigt.md`, was offen ist, in `notes/aufgaben-offen.md`; die früheren Berichte liegen in `notes/archiv/`.
 
 **Zum Technologie-Wechsel:** Die Ursprungsdokumente beschrieben durchgehend einen Next.js-/Supabase-Stack mit tRPC, Prisma und Vercel. Davon ist nichts mehr gültig — die Anwendung ist eine **Flutter-App mit Appwrite als Backend**. Alle stack-spezifischen Vorgaben wurden beim Zusammenführen entfernt; die fachlichen Regeln dahinter gelten unverändert weiter, weil sie nichts mit der Technik zu tun haben.
 
@@ -205,7 +205,7 @@ Zwei der Befunde sind **nie behoben worden und gelten für die heutige Flutter-W
 
 | Befund | Stand 4. August 2026 |
 |---|---|
-| **Content Security Policy fehlt** | weiterhin offen — siehe Sicherheitsbericht, S2 |
+| **Content Security Policy fehlt** | weiterhin offen — T-4.9 |
 | **Anti-Clickjacking-Header fehlt** | weiterhin offen — `frame-ancestors 'none'` deckt es mit ab |
 
 Die beiden geringen Befunde (`X-Powered-By`, `X-Content-Type-Options`) betrafen den Express-/Next.js-Server und sind mit dessen Abschaffung gegenstandslos.
@@ -225,7 +225,7 @@ Die beiden geringen Befunde (`X-Powered-By`, `X-Content-Type-Options`) betrafen 
 | Breakpoints | 375 / 768 / 1024 / 1440 px, Mobile-First |
 | Testabdeckung Geschäftslogik | > 80 % |
 
-Die Barrierefreiheit ist derzeit an zwei Stellen verfehlt: Die Akzentfarbe erreicht den Kontrastwert nicht, und die Kopfzeile bricht bei vergrößerter Systemschrift. Beides steht im Statusbericht.
+Die Barrierefreiheit ist derzeit an zwei Stellen verfehlt: Die Akzentfarbe erreicht den Kontrastwert nicht, und die Kopfzeile bricht bei vergrößerter Systemschrift. Die Kopfzeile ist am 13.10.2026 behoben, die Akzentfarbe steht als T-6.2 offen.
 
 ### Kritische Testfälle
 

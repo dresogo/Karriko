@@ -1140,7 +1140,7 @@ ist in dieser Arbeit zweimal passiert, und beide Male hat es Zeit gekostet.
 | Acht Werkzeuge | Definition gleichhalten, Vendoring, CLI-Konfiguration erzeugen, Variablen schreiben, Schema anlegen, Altdaten löschen | `tools/` |
 
 Dazu drei Dokumente: [`APPWRITE_SETUP.md`](../APPWRITE_SETUP.md) (warum etwas so
-eingestellt wird), [`APPWRITE_EINSPIELEN.md`](../APPWRITE_EINSPIELEN.md) (die
+eingestellt wird), [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md) (die
 Befehlsfolge) und [`UMSETZUNG_BERICHT.md`](../UMSETZUNG_BERICHT.md) (die
 Entscheidungen).
 

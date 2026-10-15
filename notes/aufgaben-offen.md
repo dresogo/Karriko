@@ -2,7 +2,7 @@
 
 **Stand:** 15. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-155 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+156 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -35,8 +35,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-1.5 · P2 · Unerreichbaren Commit `9d25f8d` beim GitHub-Support purgen lassen (todo A)
   GitHub hält den alten Commit per SHA weiter abrufbar. Hier verzichtbar, weil der Wert bedeutungslos war, aber beim nächsten echten Fund ist das der Schritt, der vergessen wird.
 - [ ] T-1.7 · P2 · SonarCloud Automatic Analysis abschalten (todo H)
-- [ ] T-1.8 · P2 · `APPWRITE_EINSPIELEN.md` nachziehen: Skriptweg statt `push table`, öffentliche Function-Domains, JWT-Weg für die Moderation, `ID.unique()` in PowerShell, CLI nur aus `appwrite/` (todo A)
-  Dazu der doppelte Spiegelstrich in §10. `ID.unique()` steht in §6.4; im Wurzelverzeichnis meldet die CLI „project is not set“.
 - [ ] T-1.9 · P2 · `projekt-referenz.md` auf den aktuellen Stand bringen: Die Börse ist entschieden, Löschmodell und Gewichtung stammen noch aus der alten Strecke (neu)
 - [ ] T-1.10 · P3 · Lizenz festlegen oder bewusst ohne Lizenz bleiben (README)
 - [ ] T-1.11 · P3 · `dart fix --apply` und Migrationsreste entfernen (todo H)
@@ -47,7 +45,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.2 · P1 · Automatische Backups plus externer Export, Restore einmal testen (Plan, README zum 4. Oktober)
 - [ ] T-2.3 · P1 · Eigenes Moderations- und Admin-Konto anlegen, nicht eines der Testkonten (todo A)
 - [ ] T-2.4 · P1 · Abnahmetest mit den vier Personas, inklusive JWT-Weg für `moderate_review` und `recompute_all` (todo A, Setup §13)
-  Lücke in der Befehlsfolge: §8.1 und §8.3 rufen `recompute_all` und `moderate_review` per `appwrite functions create-execution` auf. Die CLI läuft als Console-Konto, beide Functions verlangen aber ein Projektkonto (`ctx.userId`) und brechen mit 401 ab. Gangbar: per API-Schlüssel ein JWT für das Moderationskonto ausstellen.
+  Die CLI läuft als Console-Konto und bekommt von `moderate_review` und `recompute_all` eine 401. Der einfachste Weg ist der Admin-Bereich unter `/#/admin` mit dem Moderationskonto, sonst ein JWT für dieses Konto (Setup §13).
 - [ ] T-2.5 · P1 · API-Schlüssel nach der Abnahme löschen und in der Console widerrufen (todo A)
   Die Datei unter `karriko_local/` löschen und den Schlüssel widerrufen, nicht nur ablaufen lassen.
 - [ ] T-2.6 · P1 · Testzeilen in `companies` löschen, darunter die verwaiste „Test GmbH“ (Setup §11)
@@ -103,7 +101,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-3.16 · P2 · Passkey-Dienst fertigstellen: Tabellen ohne Berechtigung, Schlüssel nur `users.read` und `users.write`, Ratenbegrenzung, abgelaufene Challenges aufräumen, als Function deployen (todo C)
   Tabellen `passkeys` und `webauthn_challenges` ohne jede Berechtigung, Felder und Indizes in `services/passkey-rp/README.md`. Als Appwrite Function, damit kein zweiter Auftragsverarbeiter entsteht.
 - [ ] T-3.17 · P2 · Google freischalten, Logo als Asset statt zur Laufzeit geladen (todo C)
-  Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend.
+  Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend. Die Schritte in der Google Cloud Console (Redirect-URI aus der Appwrite Console kopieren, nicht abtippen) stehen in `archiv/status-report-2026-08-02.md` §9.9.
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
 
@@ -134,6 +132,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
 - [ ] T-4.25 · P1 · `create("users")` auf `users/verified` umstellen, wo nur bestätigte Konten schreiben sollen: `review_reports`, `review_drafts`, `companies`, `bookmarks` u. a.; Vorlage, `appwrite-setup.mjs` und Console gemeinsam (Export 13.10.)
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
+- [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 
 ## 5 · Datenschutz und Recht
 
@@ -203,6 +202,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-7.6 · P2 · Nicht abgedeckte Bereiche: Repositories, Lesezeichen, Suche, Unternehmensdetail, Betriebsseiten (todo F)
 - [ ] T-7.7 · P3 · Layout-Durchlauf als dauerhaften Test (todo F)
 - [ ] T-7.8 · P3 · Testabdeckung der Geschäftslogik messen, Ziel über 80 % (Referenz §5)
+- [ ] T-7.9 · P2 · Klickwege auf einem echten Telefon durchspielen; bisher nur in der Mobil-Emulation angesehen, dort blieben Klicks hängen (Statusbericht 13.7, im Archiv)
 
 ## 8 · Produktentscheidungen
 
@@ -253,4 +253,5 @@ Damit die Liste nicht künstlich wächst (übernommen aus `notes/todo.md`):
 
 - **Conditional UI für Passkeys:** nicht machbar, solange die App auf Flutter Web läuft (Textfelder liegen auf einer Canvas). Eine Plattformgrenze, keine Aufgabe.
 - **Registrierung als Konto-Orakel:** bewusste, im Mapper dokumentierte Abweichung von Referenz §3.2. Nur mit serverseitiger Registrierung lösbar; erst dann wieder aufmachen.
+- **Social Login in einer nativen App:** braucht einen Deep-Link-Rückweg. Bis zur Mobile App (T-8.7) scheitert er dort mit klarer Meldung; im Browser läuft er.
 - **Build-Hooks in der transitiven Kette** (S6): lassen sich nicht wegkonfigurieren, solange Appwrite genutzt wird. Bewusst getragen; die Hebel darauf sind schlanke Abhängigkeiten und aktuelle Versionen.

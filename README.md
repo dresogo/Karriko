@@ -37,14 +37,13 @@ Die Dokumentation hat feste Aufgaben:
 |---|---|
 | [`FACTSHEET.md`](FACTSHEET.md) | Was **gilt** und warum? CD, Schrift, Entscheidungsprotokoll — Pflichtlektüre für jede KI |
 | [`notes/projekt-referenz.md`](notes/projekt-referenz.md) | Was **soll** Karriko sein? Fachliche Regeln, Grenzwerte, Rollen |
-| [`notes/reports/`](notes/reports/) | Was **ist** gebaut? Statusbericht und Sicherheitsbericht |
 | [`notes/aufgaben-offen.md`](notes/aufgaben-offen.md) | Was steht **an**? Nummeriert und priorisiert, nach Art der Arbeit sortiert |
-| [`notes/aufgaben-erledigt.md`](notes/aufgaben-erledigt.md) | Was ist **erledigt**? Mit Datum, Nummer und Commit |
-| [`notes/APPWRITE_SETUP.md`](notes/APPWRITE_SETUP.md) | Wie ist das Backend aufgebaut? Tabellen, Rechte, Functions, Fristen |
-| [`notes/APPWRITE_EINSPIELEN.md`](notes/APPWRITE_EINSPIELEN.md) | In welcher Reihenfolge wird es eingespielt und abgenommen? |
+| [`notes/aufgaben-erledigt.md`](notes/aufgaben-erledigt.md) | Was ist **erledigt** und gebaut? Mit Datum, Nummer und Commit |
+| [`notes/APPWRITE_SETUP.md`](notes/APPWRITE_SETUP.md) | Wie ist das Backend aufgebaut, wie wird es eingespielt und abgenommen? Tabellen, Rechte, Functions, Fristen |
 | [`notes/projektstruktur.md`](notes/projektstruktur.md) | Wo liegt was im Repository? |
+| [`notes/archiv/`](notes/archiv/README.md) | Erledigte Berichte und Pläne, nur noch zum Nachlesen |
 
-Wer hier einsteigt, fängt am besten mit der Todo-Liste an und liest bei Bedarf im Statusbericht nach.
+Wer hier einsteigt, liest zuerst das Factsheet und dann die offenen Aufgaben.
 
 ---
 
@@ -195,7 +194,7 @@ APPWRITE_API_KEY=… node tools/appwrite-setup.mjs --dry-run           # zeigt A
 APPWRITE_API_KEY=… node tools/appwrite-setup.mjs --fix-permissions   # legt an und setzt Rechte
 ```
 
-Vor jedem Push einer Function kommen drei Schritte: gemeinsame Pakete kopieren (`dart run tools/vendor_core.dart`), CLI-Konfiguration erzeugen (`node tools/appwrite-config.mjs`) und die Variablen je Function (`node tools/appwrite-function-env.mjs`). Die erzeugten Dateien tragen echte Kennungen und das Salz für den Gerätehash und stehen deshalb in der `.gitignore`. Die vollständige Reihenfolge samt Abnahmetest steht in [`notes/APPWRITE_EINSPIELEN.md`](notes/APPWRITE_EINSPIELEN.md).
+Vor jedem Push einer Function kommen drei Schritte: gemeinsame Pakete kopieren (`dart run tools/vendor_core.dart`), CLI-Konfiguration erzeugen (`node tools/appwrite-config.mjs`) und die Variablen je Function (`node tools/appwrite-function-env.mjs`). Die erzeugten Dateien tragen echte Kennungen und das Salz für den Gerätehash und stehen deshalb in der `.gitignore`. Die vollständige Reihenfolge samt Abnahmetest steht in [`notes/APPWRITE_SETUP.md`](notes/APPWRITE_SETUP.md), Abschnitte 2 und 13.
 
 > **⚠️ Tabellen nie per `appwrite push table` mit `-f` oder einer gekürzten Konfiguration einspielen.** Die CLI gleicht dann gegen die Datei ab und löscht alles, was dort fehlt. Am 4. Oktober 2026 hat genau das alle Tabellen bis auf eine entfernt; Backups gab es keine. [`tools/appwrite-wiederherstellen.mjs`](tools/appwrite-wiederherstellen.mjs) stellt Schema und bekannte Zeilen auf den Stand vom 2. Oktober wieder her. Für Tabellen ist `tools/appwrite-setup.mjs` der Weg, die CLI bleibt für Teams, Functions und Datei-Uploads.
 
