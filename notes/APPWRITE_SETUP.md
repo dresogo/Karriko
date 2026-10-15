@@ -8,15 +8,12 @@ er gewirkt hat.
 Datenbank-ID. Das Repository ist öffentlich. Überall, wo eine Kennung gebraucht
 wird, steht, wo sie in der Console zu finden ist.
 
-**Wenn du nur die Befehle brauchst:** [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md)
-ist dieselbe Einrichtung als Befehlsfolge zum Abarbeiten, ohne die Begründungen.
-Diese Datei hier erklärt, warum etwas so eingestellt wird.
-
-**Was ich nicht ausprobiert habe:** nichts davon lief gegen dein Projekt. Die
-CLI-Konfiguration entstand aus der Dokumentation und aus der installierten CLI
-27.3.0, nicht aus einem `appwrite pull`. An zwei Stellen steht deshalb
-ausdrücklich, was die CLI anzeigen sollte, damit du eine Abweichung siehst,
-bevor sie eingespielt wird.
+**Stand:** Das Schema ist am 2. Oktober 2026 eingespielt, Tabellen und Ablagen
+über `tools/appwrite-setup.mjs` statt `appwrite push table/bucket` (Factsheet
+E-05). Die frühere Befehlsfolge `APPWRITE_EINSPIELEN.md` ist seit dem 15.
+Oktober 2026 in diese Datei eingearbeitet und liegt in
+[`archiv/`](archiv/README.md). Die Abschnitte 1, 2 und 11 beschreiben den
+Erstaufbau; für den laufenden Betrieb zählen 6 bis 10 und 13 bis 16.
 
 ## Inhalt
 
@@ -35,6 +32,8 @@ bevor sie eingespielt wird.
 12. [Datenschutz-Checkliste](#12-datenschutz-checkliste)
 13. [Abnahmetest](#13-abnahmetest)
 14. [Fehlersuche](#14-fehlersuche)
+15. [Was nur in der Console geht](#15-was-nur-in-der-console-geht)
+16. [Wo Vorsicht geboten ist](#16-wo-vorsicht-geboten-ist)
 
 ---
 
@@ -175,19 +174,10 @@ beschrieben; du brauchst nur einen.
 | Wiederholbar | ja | nein |
 | Risiko | ein Push kann mehr ändern als gedacht | ein Tippfehler in einem Spaltennamen |
 
-Empfehlung: **CLI für alle sieben Tabellen, die Buckets, die Teams und die
-Functions. Das Skript für `companies`.**
-
-Zwei Dinge vorher:
-
-1. **`reviews` in der Console löschen.** Begründung in Abschnitt 1. Ohne das
-   schreibt der Push die neuen Spalten neben die alten, und die Pflichtspalten
-   der alten Strecke lassen jede Einreichung scheitern.
-2. **`companies` steht nicht in der Konfiguration**, absichtlich. Die Tabelle
-   hat Spalten und Indizes, die ich nicht vollständig kenne; ein Push würde sie
-   nach meiner Teilbeschreibung umschreiben. Dafür ist
-   `tools/appwrite-setup.mjs` da — es legt nur an, nimmt nichts weg, und bei den
-   Rechten meldet es, was abweicht:
+**Verbindlich (Factsheet E-05): Tabellen und Ablagen nur über
+`tools/appwrite-setup.mjs`. Die CLI nur für Teams, Functions und Datei-Uploads.**
+Die Spalte „CLI“ oben gilt also nur für diese drei. Das Skript legt nur an, nimmt
+nichts weg, und bei den Rechten meldet es, was abweicht:
 
 ```bash
 node tools/appwrite-setup.mjs --dry-run
@@ -195,7 +185,15 @@ node tools/appwrite-setup.mjs --fix-permissions
 ```
 
 Der zweite Aufruf **entfernt** `update("users")` von `companies` und schaltet
-Row Security ein. Siehe Abschnitt 4a, bevor du ihn ausführst.
+Row Security ein. Siehe Abschnitt 4a, bevor du ihn ausführst. So ist es am
+2. Oktober 2026 gelaufen; `--dry-run` meldete danach keine Abweichung mehr.
+
+Beim Erstaufbau kam ein Schritt davor: **`reviews` in der Console löschen**
+(Begründung in Abschnitt 1), sonst schreibt jedes Werkzeug die neuen Spalten neben
+die alten. Erledigt am 2. Oktober 2026, nachdem `total: 0` bestätigt war.
+
+**Die CLI kennt das Projekt nur aus dem Ordner `appwrite/` heraus.** Im
+Wurzelverzeichnis meldet sie „project is not set“.
 
 ### Vor jedem Push
 
@@ -249,21 +247,17 @@ der Functions sind relativ zur Konfigurationsdatei.
 > `node tools/appwrite-wiederherstellen.mjs --ausfuehren` wieder her.
 
 ```bash
+node tools/appwrite-setup.mjs          # Tabellen und Ablagen, aus dem Wurzelverzeichnis
 cd appwrite
-appwrite push table
-appwrite push bucket
 appwrite push team
 appwrite push function --with-variables
 ```
 
-**Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt. Beim ersten
-Mal ist das der Moment, in dem du siehst, ob die Konfiguration stimmt:
+**Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt.
 
-* Bei `push table` sollte sie **sechs Tabellen anlegen** — `reviews` darunter,
-  wenn du sie vorher gelöscht hast — und bei `review_reports` Änderungen melden:
-  Row Security von aus auf an, Rechte dazu. Null Zeilen, also unkritisch, aber es
-  soll absichtlich passieren. Meldet sie bei `reviews` Änderungen statt
-  Anlegen, steht die alte Tabelle noch da.
+* Die Team-Kennungen müssen genau `moderators` und `admins` lauten — die
+  Ausführungsrechte der Functions heißen `team:moderators` und `team:admins`.
+  Kontrolle mit `appwrite teams list`.
 * Bei `push function` baut sie jede Function einzeln und zeigt das Build-Log.
   `dart pub get` muss durchlaufen; findet es `vendor/` nicht, hast du
   `vendor_core.dart` vergessen.
@@ -272,6 +266,13 @@ Mal ist das der Moment, in dem du siehst, ob die Konfiguration stimmt:
   Settings. Dann den Wert in `appwrite.config.template.json` korrigieren und
   `node tools/appwrite-config.mjs` erneut laufen lassen — nicht in der erzeugten
   Datei, die wird überschrieben.
+* Danach `appwrite functions list`: jede Function mit `runtime: dart-3.11` und
+  einem aktiven Deployment.
+
+**`push function` legt für jede Function eine öffentliche Domain** unter
+`*.appwrite.network` an. Geprüft am 2. Oktober 2026: Sie hält sich an die
+`execute`-Rechte und antwortet ohne Anmeldung mit `router_unauthorized_execution`.
+Sie kann bleiben.
 
 ### Der Weg von Hand
 
@@ -1171,10 +1172,13 @@ Mit der CLI:
 appwrite storage create-file \
   --bucket-id questionnaires \
   --file-id questionnaire-v1 \
-  --path appwrite/questionnaires/questionnaire_v1.json
+  --file appwrite/questionnaires/questionnaire_v1.json
 ```
 
-Eine sprechende File-ID wie `questionnaire-v1` ist bequemer als eine erzeugte.
+Das Flag heißt `--file`, nicht `--path`. Eine sprechende File-ID wie
+`questionnaire-v1` ist bequemer als eine erzeugte. Keine Dateirechte setzen: Die
+CLI vergibt zwar standardmäßig alle Rechte an dein Konto, aber `questionnaires`
+hat `fileSecurity: false`, es gelten allein die Bucket-Rechte.
 
 ### Schritt 4 — die Release-Zeile anlegen
 
@@ -1191,6 +1195,16 @@ Console → Databases → `questionnaire_releases` → Create row:
 | `published_at` | jetzt, ISO 8601 mit Z, z. B. `2026-09-29T12:00:00.000Z` |
 
 Rechte der Zeile leer lassen.
+
+Mit der CLI (PowerShell, daher die maskierten Anführungszeichen):
+
+```powershell
+appwrite tables-db create-row --database-id $env:APPWRITE_DATABASE_ID --table-id questionnaire_releases --row-id "ID.unique()" --data '{\"locale\":\"de-DE\",\"version\":1,\"bucket_id\":\"questionnaires\",\"file_id\":\"questionnaire-v1\",\"checksum\":\"…\",\"active\":true,\"published_at\":\"2026-10-01T12:00:00.000Z\"}'
+```
+
+Die Zeichenkette für eine erzeugte Kennung ist `ID.unique()`, nicht `unique()`.
+Die Release-Zeile von v1 trägt die ID `unique` statt einer erzeugten. Das schadet
+nicht, gefunden wird sie über `locale` und `active`. Scheitert der Befehl am Maskieren, ist die Console der kürzere Weg.
 
 ### Schritt 5 — prüfen
 
@@ -1288,8 +1302,15 @@ Tabelle ist dem Löschen einzelner Zeilen vorzuziehen, solange sie leer ist: Es
 nimmt auch das Enum und die Pflichtspalten mit, die sonst jede Einreichung
 scheitern lassen.
 
-Die zwei Testzeilen in `companies` gehören ebenfalls weg. „Test GmbH" ist
-verwaist — `owner_id` zeigt auf die eigene Zeilen-ID und zu keinem Nutzer.
+Die zwei Testzeilen in `companies` gehören ebenfalls weg (T-2.6), aber erst
+**nach** der Abnahme, falls du sie dort als Testbetrieb brauchst. „Test GmbH" ist
+verwaist — `owner_id` zeigt auf die eigene Zeilen-ID und zu keinem Nutzer. Lösche
+keine Firma, zu der schon eine Bewertung existiert: In `public_reviews` bliebe eine
+Zeile mit `company_id` ins Leere stehen.
+
+Testbewertungen aus der Abnahme gehören vor dem Livegang ebenfalls weg. Dafür ist
+`node tools/appwrite-purge-reviews.mjs` da — Probelauf als Standard, Export vor
+dem Löschen, erwartete Zeilenzahl, wie unten beschrieben.
 
 ### Der Ablauf, falls doch Zeilen da sind
 
@@ -1309,14 +1330,14 @@ Drei Sicherungen, und alle drei sind Absicht:
 
 1. Ohne `--wirklich-loeschen` passiert nichts.
 2. Vor dem Löschen entsteht ein vollständiger Export nach
-   `notes/reports/exporte/`. **Scheitert er, wird nicht gelöscht.**
+   `notes/exporte/`. **Scheitert er, wird nicht gelöscht.**
 3. Die Zahl in `--anzahl` muss genau der gefundenen entsprechen. Wer sie nicht
    kennt, hat den Probelauf nicht gelesen. Stimmt sie nicht, hat sich der Bestand
    zwischen Probelauf und Löschen geändert, und dann willst du erst nachsehen.
 
 ### Der Export
 
-Er liegt in `notes/reports/exporte/` und steht über die `.gitignore` außerhalb
+Er liegt in `notes/exporte/` und steht über die `.gitignore` außerhalb
 des Repositories. **Er enthält Rohantworten und Nutzerkennungen.** Bewahre ihn so
 auf, wie es für diese Daten vorgesehen ist, und nicht länger — auch dieser Punkt
 steht in Abschnitt 12.
@@ -1425,8 +1446,41 @@ Vier Durchläufe. Es sind dieselben vier, die in
 — dort mechanisch, hier von Hand, weil ein Test nicht sieht, ob ein Bildschirm
 lesbar ist.
 
-Vorher: ein Testkonto als Azubi, ein Betrieb in `companies`, und ein Konto im Team
-`moderators`.
+Vorher: ein Testkonto als Azubi, ein Betrieb in `companies`, und ein **eigenes**
+Konto in den Teams `moderators` und `admins` (T-2.3) — nicht das Azubi-Konto:
+Wer die eigene Bewertung freigibt, verwischt genau die Trennung, die die Abnahme
+zeigen soll.
+
+### Wie man `moderate_review` und `recompute_all` aufruft
+
+Beide verlangen die Kennung eines **Projektkontos** (`ctx.userId`) und prüfen die
+Teams. `appwrite functions create-execution` läuft aber als Console-Konto und
+bricht deshalb mit 401 ab, egal wie die Teams besetzt sind.
+
+**Der einfachste Weg ist der Admin-Bereich unter `/#/admin`:** Mit dem
+Moderationskonto in der App angemeldet, ruft `admin_repository.dart` beide
+Functions mit dieser Sitzung auf. Nur ohne App bleibt der Weg über ein JWT:
+
+1. Mit einem API-Schlüssel (Scope `users.write`) ein JWT für das
+   Moderationskonto ausstellen, etwa `appwrite users create-jwt --user-id …`
+   oder über die Users-API.
+2. Die Execution mit diesem JWT anlegen: `POST /v1/functions/<id>/executions`
+   mit den Headern `X-Appwrite-Project` und `X-Appwrite-JWT`.
+3. Den Schlüssel danach widerrufen (T-2.5).
+
+**Ungeprüft:** Befehl und Header stammen aus der Dokumentation, nicht aus einem
+Lauf gegen das Projekt.
+
+### Durchstich, vor den Personas
+
+`cleanup` mit `{ "dry_run": true }` ausführen (Ausführungsrecht: niemand, also aus
+der Console): Erwartet `ok: true` und `dry_run: true`, keine 503. Eine 503 mit
+„Nicht eingerichtet" heißt, die Variablen fehlen (`--with-variables`). Am
+2. Oktober 2026 gelaufen: Status 200, `ok: true`.
+
+`recompute_all` mit `{ "offset": 0, "dry_run": true }` über einen der Wege oben:
+Erwartet `recomputed: 0` und `done: true`, solange es keine Bewertungen gibt. Eine
+403 heißt, das Konto ist nicht im Team `admins`.
 
 ### Vor allen vier
 
@@ -1515,7 +1569,8 @@ Bei jeder Persona vor dem Absenden:
 
 ### Die Moderation
 
-Mit dem Konto aus `moderators` `moderate_review` aufrufen:
+Mit dem Konto aus `moderators` `moderate_review` aufrufen, über den Admin-Bereich
+oder den JWT-Weg oben:
 
 ```json
 { "review_id": "…", "action": "approve", "verified": false }
@@ -1693,3 +1748,61 @@ Und ein Probelauf gegen das Projekt, der nichts ändert:
 ```bash
 node tools/appwrite-setup.mjs --dry-run
 ```
+
+---
+
+## 15. Was nur in der Console geht
+
+Vollständig, damit nichts unbemerkt liegen bleibt.
+
+| Schritt | Warum von Hand |
+|---|---|
+| **Scopes der Functions prüfen** | Die gültigen Namen stehen nur in der Console (Functions → *Function* → Settings → Scopes). `rows.*` und `files.read` hat die Console am 2. Oktober 2026 angenommen; `files.write` und `teams.read` sind begründet, aber nicht einzeln geprüft. |
+| **`KARRIKO_DEVICE_HASH_SALT` als Secret markieren** | Ein Console-Schalter. Ohne ihn zeigt die Console den Wert im Klartext. Functions → `submit_review` → Settings → Variables. Am 2. Oktober 2026 gesetzt. |
+| **Mitglieder in die Teams** | Geht mit `appwrite teams create-membership`, braucht aber die Nutzerkennungen. Über die Console (Auth → Teams) ist es weniger fehleranfällig. |
+| **Wertgrenzen auf bestehenden Spalten** | `companies.average_rating` hat keine `min`/`max`. Eine bestehende Spalte lässt sich nicht ändern, nur löschen und neu anlegen (T-2.19). |
+| **Den Nachweis einer Bewertung ansehen** | Es gibt keine Function dafür (T-2.20). Die Moderation öffnet die Datei in der Console. |
+| **`fileSecurity` von `verification_documents` prüfen** | `appwrite storage get-bucket --bucket-id verification_documents` muss `fileSecurity: true` zeigen. Bei `false` gelten die Bucket-Rechte statt der leeren Dateirechte, und die Nachweise wären lesbar. |
+
+---
+
+## 16. Wo Vorsicht geboten ist
+
+Die Stellen, an denen eine naheliegende Änderung etwas kaputt macht. Übernommen
+aus `UMSETZUNG_BERICHT.md` §10.
+
+**Keine Tabelle mit `appwrite push table` ändern** (Factsheet E-05). Die CLI
+gleicht den Server an die Konfigurationsdatei an und löscht, was dort fehlt —
+`companies`, `profiles`, `bookmarks` und `jobs` stehen absichtlich nicht drin.
+
+**Alte Versionen der Definition nie löschen.** Weder die Datei im Bucket noch die
+Zeile in `questionnaire_releases`. Eine Bewertung mit `schema_version: 1` lässt
+sich ohne v1 nicht neu rechnen, und `recompute_all` überspringt sie dann.
+
+**`vendor/` vor jedem Push erneuern.** Sonst läuft eine Function mit veralteter
+Logik, und zwar still. Dagegen gibt es `--pruefen` vor dem Push; in der CI wird
+kopiert und danach geprüft, weil `vendor/` dort nicht im Checkout liegt.
+
+**Die erzeugten Dateien nicht bearbeiten.** `appwrite/appwrite.config.json` und
+die `.env` je Function werden überschrieben. Änderungen gehören in
+`appwrite.config.template.json` bzw. in die Umgebung.
+
+**`companies.average_rating` nicht von Hand setzen.** `aggregate_company`
+überschreibt es bei der nächsten Änderung. Der verbindliche Wert steht in
+`company_scores`.
+
+**Das Salz nicht ohne Grund ändern.** Alte Hashes passen danach nicht mehr zu
+neuen. Sie werden nicht falsch, nur unvergleichbar.
+
+**Die beiden Definitionsdateien nur über `sync_questionnaire.dart` gleichhalten**,
+und die Prüfsumme immer auf der Datei berechnen, die hochgeladen wird. Sie ist
+byteweise.
+
+**Rechte in `reviews` und `public_reviews` nicht weiten.** `reviews` hat
+absichtlich keine. Ein Leserecht dort gibt Rohantworten, Bearbeitungszeiten,
+Gerätehash und Nutzerkennung mit heraus. `node tools/appwrite-setup.mjs` meldet
+es, wenn dort ein Recht steht, das nicht hingehört.
+
+**Keine Pflichtspalte in `reviews` nachrüsten**, solange dort Zeilen ohne Wert
+stehen. Es scheitert, und es ergänzt nichts: Geschrieben wird dort nur von
+`submit_review`.

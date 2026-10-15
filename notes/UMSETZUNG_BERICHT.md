@@ -1,18 +1,19 @@
 # Der Bewertungsfragebogen: was gebaut wurde und warum
 
-Stand: 2. Oktober 2026. Sechs Etappen, nichts gegen das Produktivprojekt
-ausgeführt. Abschnitt 6 nennt zwei Befunde, die erst mit dem tatsächlichen
-Stand der Datenbank sichtbar wurden.
+Stand: 2. Oktober 2026, überarbeitet am 15. Oktober 2026. Sechs Etappen; das
+Schema ist seit dem 2. Oktober eingespielt. Abschnitt 6 nennt zwei Befunde, die
+erst mit dem tatsächlichen Stand der Datenbank sichtbar wurden.
 
 Dieser Bericht ist für den Zeitpunkt geschrieben, an dem jemand — du in einem
 halben Jahr, oder jemand anders — wissen will, warum etwas so ist. Er nennt auch,
 was nicht funktioniert und was offen ist.
 
 Die fachliche Quelle ist und bleibt [`karriko-fragebogen.md`](karriko-fragebogen.md).
-Der freigegebene Plan mit den Abweichungen A1–A15 und den Annahmen steht in
-[`PLAN_FRAGEBOGEN.md`](PLAN_FRAGEBOGEN.md). Das *Warum* der Appwrite-Einrichtung
-steht in [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md), die Befehlsfolge zum
-Abarbeiten in [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md).
+Die Abweichungen A1–A15 und die Entscheidungen vom 21. September 2026 stehen in
+den Abschnitten 11 und 12; der Plan, aus dem sie stammen, liegt in
+[`archiv/PLAN_FRAGEBOGEN.md`](archiv/PLAN_FRAGEBOGEN.md). Die Appwrite-Einrichtung
+mit Begründungen und Befehlen steht in [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md).
+Offene Punkte führt allein [`aufgaben-offen.md`](aufgaben-offen.md).
 
 ## Inhalt
 
@@ -26,6 +27,8 @@ Abarbeiten in [`APPWRITE_EINSPIELEN.md`](APPWRITE_EINSPIELEN.md).
 8. [Was nicht geht](#8-was-nicht-geht)
 9. [Was offen ist](#9-was-offen-ist)
 10. [Wo Vorsicht geboten ist](#10-wo-vorsicht-geboten-ist)
+11. [Abweichungen von der Spezifikation (A1–A15)](#11-abweichungen-von-der-spezifikation-a1a15)
+12. [Entscheidungen vom 21. September 2026](#12-entscheidungen-vom-21-september-2026)
 
 ---
 
@@ -375,8 +378,7 @@ Function zu führen — siehe Abschnitt 9.
 
 ### Die vier Fragen aus dem Plan
 
-Beantwortet am 21. September 2026, in `PLAN_FRAGEBOGEN.md` Abschnitt 8
-festgehalten: Altstrecke ersetzen, alte Zeilen löschen, IDs als eigene Aufgabe,
+Beantwortet am 21. September 2026, in Abschnitt 12 festgehalten: Altstrecke ersetzen, alte Zeilen löschen, IDs als eigene Aufgabe,
 Dokumentation nach `notes/`.
 
 Bei „alte Zeilen löschen" habe ich widersprochen und es dann so gebaut, wie du
@@ -407,21 +409,18 @@ speichern**: `buildReviewRow`, `buildPublicReviewRow`, `buildCompanyScoresRow`,
 wichtigste davon prüft, dass in `public_reviews` **keine** `user_id`, keine
 Rohantworten, keine Zeiten, keine Flags und kein Gerätehash landen.
 
+Die Zahlen sind der Stand vom 2. Oktober 2026. Aktuelle Testzahlen nennt das
+README.
+
 ### Was nicht geprüft ist
 
-* **Nichts lief gegen Appwrite.** Kein Push, kein Deployment, keine echte
-  Ausführung einer Function. Die CLI-Konfiguration ist aus der Dokumentation und
-  aus der installierten CLI 27.3.0 gebaut, nicht aus einem `appwrite pull`.
-* **Die Scope-Namen sind teils begründet, nicht belegt.** Dass es `rows.read` und
-  `rows.write` heißt und nicht `documents.*`, ist belegt. `files.read`,
-  `files.write` und `teams.read` sind plausibel und ungeprüft. Verbindlich ist die
-  Liste in der Console.
+* **Das Zusammenspiel mit Appwrite** über den Durchstich hinaus. Eingespielt ist
+  seit dem 2. Oktober, `cleanup` lief als Probelauf durch. Der Abnahmetest mit
+  den vier Personas steht aus (T-2.4).
 * **`specification` ist nicht gesetzt**, damit kein erfundener Wert den Push
-  scheitern lässt.
+  scheitern lässt (T-2.22).
 * **Eine Function lokal auszuführen** ginge nur mit der open-runtimes-Umgebung in
-  Docker. Die Logik dahinter ist ohne Docker geprüft; was ein lokaler Lauf
-  zusätzlich zeigt, ist das Zusammenspiel mit Appwrite — und das prüft der
-  Abnahmetest in der Anleitung.
+  Docker. Die Logik dahinter ist ohne Docker geprüft.
 
 ## 8. Was nicht geht
 
@@ -432,8 +431,8 @@ Ehrliche Liste.
   öffentliche Zeile mit zu entfernen, und dafür gibt es keinen Weg. Das ist
   weiter die größte offene Lücke — aber sie ist jetzt kleiner: Die Zuordnung,
   an der es fehlte, ist gebaut.
-* **Es gibt keinen Moderationsbildschirm.** `moderate_review` wird über die
-  Console oder einen eigenen Aufruf ausgelöst.
+* ~~**Es gibt keinen Moderationsbildschirm.**~~ Inzwischen gibt es ihn: den
+  Admin-Bereich unter `/#/admin` mit der Function `moderation_desk`.
 * **Die Moderation sieht den Verifikationsnachweis nur über die Console.** Es gibt
   keine Function, die ihn ausliefert, und das ist gewollt vorsichtig — aber es
   bedeutet, dass die Moderation zwei Werkzeuge braucht.
@@ -457,71 +456,83 @@ Ehrliche Liste.
 
 ## 9. Was offen ist
 
-### Deine Entscheidung
+Seit dem 15. Oktober 2026 führt das allein
+[`aufgaben-offen.md`](aufgaben-offen.md). Die Punkte, die hier standen:
 
-Zum Zeitpunkt dieses Stands keine offene. `my_reviews` ist am 2. Oktober 2026
-gebaut worden — siehe Abschnitt 4.
+| Punkt | Nummer |
+|---|---|
+| Acht Punkte juristisch prüfen (Fristen, Lösch- und Auskunftsverlangen, Fragebogentexte) | T-5.2 |
+| Fünf Platzhaltertexte im Fragebogen | T-5.3 |
+| Löschverlangen für einzelne Bewertungen | T-2.9 |
+| Vergütungsmodul an oder aus | T-8.10 |
+| Vollständige Berufsliste mit `import_berufe.dart` | T-2.30 |
 
-### Juristisch zu prüfen
+**Zu keinem der juristischen Punkte steht im Code oder in der Dokumentation eine
+rechtliche Aussage.** Die Fristen haben Standardwerte, weil eine Function ohne
+Frist nicht läuft — nicht, weil diese Werte richtig wären.
 
-Acht Punkte, in `APPWRITE_SETUP.md` Abschnitt 12 mit ⚖️ markiert, hier nur
-aufgezählt: die Aufbewahrungsfristen für Nachweise, Entwürfe, Rohantworten, den
-Gerätehash und den Export aus der Altdatenlöschung; Löschverlangen und
-Auskunftsverlangen; die fünf Platzhaltertexte im Fragebogen.
-
-**Zu keinem dieser Punkte steht im Code oder in der Dokumentation eine rechtliche
-Aussage.** Die Fristen haben Standardwerte, weil eine Function ohne Frist nicht
-läuft — nicht, weil diese Werte richtig wären.
-
-### Technisch offen
-
-* Das `module_verguetung` ist per Feature-Flag aus.
-* Die Berufsliste kommt aus einer Beispielliste. `import_berufe.dart` steht bereit
-  für die amtlichen Schlüssel; solange sendet der Client nur den Namen und
-  `beruf_code` bleibt leer.
-* Kein Bildschirm für die Meldungen aus `review_reports`.
+Der Bildschirm für die Meldungen aus `review_reports` ist inzwischen der
+Admin-Bereich.
 
 ## 10. Wo Vorsicht geboten ist
 
-Die Stellen, an denen eine naheliegende Änderung etwas kaputt macht.
+Seit dem 15. Oktober 2026 in [`APPWRITE_SETUP.md`](APPWRITE_SETUP.md) Abschnitt
+16, weil die Warnungen beim Arbeiten am Backend gebraucht werden. Was dort
+fehlt, weil es nur die Erstaufbauten betraf:
 
-**Alte Versionen der Definition nie löschen.** Weder die Datei im Bucket noch die
-Zeile in `questionnaire_releases`. Eine Bewertung mit `schema_version: 1` lässt
-sich ohne v1 nicht neu rechnen, und `recompute_all` überspringt sie dann.
+**`reviews` vor dem ersten Push löschen.** Am 2. Oktober 2026 erledigt.
 
-**`vendor/` vor jedem Push erneuern.** Sonst läuft eine Function mit veralteter
-Logik, und zwar still. Dagegen gibt es `--pruefen` vor dem Push; in der CI wird
-kopiert und danach geprüft, weil `vendor/` dort nicht im Checkout liegt.
+## 11. Abweichungen von der Spezifikation (A1–A15)
 
-**Die erzeugten Dateien nicht bearbeiten.** `appwrite/appwrite.config.json` und
-die `.env` je Function werden überschrieben. Änderungen gehören in
-`appwrite.config.template.json` bzw. in die Umgebung.
+Übernommen am 15. Oktober 2026 aus `PLAN_FRAGEBOGEN.md` §5, der seitdem im
+Archiv liegt. Die Nummern bleiben, das Kürzel A ist im Factsheet (Abschnitt 10)
+dafür reserviert. Die Tabelle ist der Stand vom 21. September 2026, Verweise wie
+„(3.2)“ zeigen in den archivierten Plan. Was daraus geworden ist:
 
-**`reviews` vor dem ersten Push löschen.** Steht die alte Tabelle noch da,
-schreibt der Push die neuen Spalten daneben, und die Pflichtspalten der alten
-Strecke lassen jede Einreichung scheitern. Das Setup-Skript meldet es nicht — es
-ergänzt nur.
+- **A4:** Die Schrumpfung läuft gegen `priorMean 3.2` (Factsheet E-23), ein
+  echtes Branchenmittel gibt es noch nicht.
+- **A5:** Umgesetzt, jeder nicht leere Freitext geht durch die Moderation
+  (Factsheet E-24).
+- **A6:** Umgesetzt, das Vergütungsmodul ist aus (E-25). Die Entscheidung steht
+  als T-8.10 offen.
+- **A7:** Offen als T-8.1.
+- **A12:** Die vollständige Berufsliste steht als T-2.30 offen.
+- **A14:** Umgesetzt, `ReviewCard` und `StarRating` sind entfernt (E-27).
 
-**`companies` nicht mit der CLI pushen.** Die Tabelle steht nicht in der
-Konfiguration, weil ich sie nicht vollständig kenne. Ein Push würde sie nach
-einer Teilbeschreibung umschreiben.
+| # | Stelle | Abweichung | Grund |
+|---|---|---|---|
+| A1 | Teil D, Functions in Dart | **Keine Abweichung.** Dart-Runtime `dart-3.11` ist verfügbar und passt zum lokalen SDK. | — |
+| A2 | Teil A, Ort des Pakets | `packages/questionnaire_core` wie vorgeschlagen, mit Vendoring in die Functions (3.2) | Appwrite lädt nur das Function-Verzeichnis hoch |
+| A3 | Teil E, CLI-Konfiguration | Ich liefere **beides**: `appwrite/appwrite.config.json` für den CLI-Push *und* die Erweiterung von `tools/appwrite-setup.mjs`. | Die CLI ist hier nicht installiert, und ein `push` gegen eine bereits befüllte Datenbank überschreibt Rechte. Das bestehende Skript legt nur an, was fehlt. |
+| A4 | Abschnitt 8, „Branchenmittel" | Ohne Daten gibt es noch kein Branchenmittel. Ich implementiere die Schrumpfung gegen einen **Parameter `priorMean` aus der Definition** (Standard 3.2, `review: true`) und bereite die Ablösung durch einen echten Branchenwert vor: `aggregate_company` liest ihn aus `company_scores` aller Betriebe derselben `industry`, sobald genug da sind. | Nicht erfindbar, aber vorbereitbar |
+| A5 | Abschnitt 9, „Textprüfung auf Namen, Beleidigungen" | Ich baue **kein** Text-Klassifikat. Stattdessen setzt `submit_review` das Flag `text_needs_review` immer, wenn ein Freitext nicht leer ist — jeder Freitext geht also durch die Moderation. | Eine automatische Namens- und Beleidigungserkennung auf Deutsch ist ein eigenes Projekt; ein schlechter Filter ist schlimmer als keiner, weil er Vertrauen vortäuscht. In der Anleitung als offener Punkt markiert. |
+| A6 | Abschnitt 11, Vergütung | Feature-Flag `module_verguetung`, Standard **aus**. Modul und Scoring-Dimension existieren vollständig, werden nur nicht angeboten. Der Subscore `sub_verguetung` fällt dann aus der Gewichtung heraus und die übrigen fünf werden neu normiert. | So verlangt |
+| A7 | Abschnitt 11, Antwort des Betriebs | `public_reviews` bekommt **keine** Antwortspalte. Die bestehende `reviews.betrieb_reply` bleibt unangetastet am alten Modell. | Offene Frage laut Spezifikation — ich entscheide sie nicht |
+| A8 | Abschnitt 6, A5 Verifikation | Es gibt noch keine Verifikation im Projekt (1.4). Ich baue sie neu: Upload in `verification_documents`, pseudonyme Ablage (Dateiname = Hash aus `review_id` + Salz), `reviews.verification_file_id`. **Keine** automatische Prüfung — ein Moderator sieht das Dokument und setzt `verified`. | Rechtlich ist die Prüfbarkeit gefordert, nicht die Automatik |
+| A9 | Abschnitt 10, Kleinbetriebe | Variante 1 als Grundeinstellung (Hinweis + Wahl), Variante 2 als Angebot im selben Dialog — wie empfohlen. Gesteuert über `delayed_publish_small_business`, Standard **an**. | So verlangt |
+| A10 | Rechtstexte | Der Satz aus A1 („Deine Meinung darfst du frei sagen…") steht wörtlich in der Definition, weil er in der Spezifikation wörtlich steht. **Alle anderen** rechtlichen Aussagen (Anonymitätszusage im Detail, Aufbewahrungsfristen, Hinweis für Minderjährige) bleiben als `PLATZHALTER — juristisch zu prüfen` in der Definition und in `docs/REVIEW_TEXTE.md`. | Rechtliche Aussagen erfinde ich nicht |
+| A11 | Anlaufstellen (Modul Konflikte) | Kammer-Ausbildungsberatung, JAV, Gewerkschaftsberatung sind in der Spezifikation namentlich genannt und kommen in die Definition. **Ohne** Telefonnummern und URLs — die stehen als Platzhalter mit `review: true`. | Kontaktdaten, die ich nicht prüfen kann, sind schlimmer als keine |
+| A12 | Berufsliste (S3) | Kleine Beispielliste als Asset (ca. 40 Berufe, `review: true`), dazu `tools/import_berufe.dart` für die vollständige Liste aus einer CSV. In der Anleitung steht, woher die CSV kommt (BERUFENET/Klassifikation der Berufe der BA) und welche Spalten das Skript erwartet. | So verlangt |
+| A13 | `vas_unnumbered` auf dem Web | „Griff erscheint erst bei Berührung" wird zu „bei Berührung **oder Klick oder Tastenfokus**". Auf dem Desktop gibt es keine Berührung. Der Zustand „nicht beantwortet" bleibt davon unberührt. | Die App ist zuerst Flutter Web |
+| A15 | A2, Operanden der Bedingungssprache | Der Auftrag nennt als Operanden `{"answer": "<id>"}`, `{"computed": "<key>"}` und Literale. Ich habe den Antwortverweis um ein optionales `"field"` erweitert: `{"answer": "s8_alltag", "field": "schicht"}`. | Die Wischkarten S8 und K1 liefern **eine** Antwort in Form einer Zuordnung Karte → Ja/Nein/Weiß-ich-nicht. Das Arbeitszeitmodul hängt laut Abschnitt 5 an genau einer davon („S8 Schicht oder Wochenende"). Ohne den Feldzugriff müsste jede Karte eine eigene Frage sein — aus einem Bildschirm würden sieben, und das Wischformat wäre hin. Kein neuer Operator, nur ein zweiter Schlüssel am vorhandenen Operanden; für die Prüfung beim Laden zählt er weiterhin als Verweis auf die ganze Frage. |
+| A14 | A4 Vorschau / öffentliche Einzelansicht | Neues `PublicReviewCard` gegen ein `PublicReview`-Modell, an beiden Stellen benutzt. Das bestehende `ReviewCard` samt `StarRating` wird **entfernt**, sobald die letzte Verwendung auf `PublicReviewCard` umgestellt ist. | Folgt zwingend aus den Entscheidungen 1 und 2: Titel, Fließtext und Sterne erzeugt der neue Fragebogen nicht mehr, und alte Zeilen gibt es nach der Leerung nicht mehr. Betroffen sind Dashboard, Suche, Unternehmensprofil, Detailseite und `my_reviews`. |
 
-**`companies.average_rating` nicht von Hand setzen.** `aggregate_company`
-überschreibt es bei der nächsten Änderung. Der verbindliche Wert steht in
-`company_scores`.
+## 12. Entscheidungen vom 21. September 2026
 
-**Das Salz nicht ohne Grund ändern.** Alte Hashes passen danach nicht mehr zu
-neuen. Sie werden nicht falsch, nur unvergleichbar.
+Übernommen aus `PLAN_FRAGEBOGEN.md` §8, gekürzt. Die vier Fragen des Plans, so
+beantwortet:
 
-**Die beiden Definitionsdateien nur über `sync_questionnaire.dart` gleichhalten**,
-und die Prüfsumme immer auf der Datei berechnen, die hochgeladen wird. Sie ist
-byteweise.
+1. **Die alte Bewertungsstrecke wird ersetzt.** Der neue Fragebogen übernimmt
+   `/reviews/new`, `/fragen-bewerten` leitet dorthin weiter. Der alte Assistent,
+   `QuestionModel`, `QuestionRepository` und `ReviewRepository.createReview`
+   wurden entfernt; die Leseabfragen zeigen auf `public_reviews`.
+2. **Die bestehenden Zeilen in `reviews` werden gelöscht**, damit die Functions
+   nur ein Schema kennen. Dafür `tools/appwrite-purge-reviews.mjs` mit Probelauf
+   als Standard, Export vor dem Löschen und erwarteter Zeilenzahl. Am 1. Oktober
+   zeigte sich, dass es keine Zeilen gab (Abschnitt 6).
+3. **Projekt-ID und Datenbank-ID im öffentlichen Repository** sind eine eigene
+   Aufgabe. Neue Konstanten sind von vornherein umgebungsabhängig; die beiden
+   alten in `appwrite_constants.dart` stehen weiter fest im Code (T-4.27).
+4. **Die Dokumente liegen in `notes/`.**
 
-**Rechte in `reviews` und `public_reviews` nicht weiten.** `reviews` hat
-absichtlich keine. Ein Leserecht dort gibt Rohantworten, Bearbeitungszeiten,
-Gerätehash und Nutzerkennung mit heraus. `node tools/appwrite-setup.mjs` meldet
-es, wenn dort ein Recht steht, das nicht hingehört.
-
-**Keine Pflichtspalte in `reviews` nachrüsten**, solange dort Zeilen ohne Wert
-stehen. Es scheitert, und es ergänzt nichts: Geschrieben wird dort nur von
-`submit_review`.
+Als Folge mitentschieden: `PublicReviewCard` ersetzt `ReviewCard` überall (A14).

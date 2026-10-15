@@ -34,7 +34,7 @@
 //   --tabelle=<id>      Standard `reviews`.
 //   --nur-alte          Nur Zeilen ohne `schema_version` — also nur die der
 //                       alten Strecke. Empfohlen, sobald neue dazukommen.
-//   --export-nach=<p>   Standard notes/reports/exporte/.
+//   --export-nach=<p>   Standard notes/exporte/.
 //
 // Der Export landet ausserhalb des Repositories im Sinne der .gitignore: Er
 // enthaelt Rohantworten und Nutzerkennungen.
@@ -56,7 +56,7 @@ const wert = (name, standard) => {
 const WIRKLICH = flag('wirklich-loeschen');
 const NUR_ALTE = flag('nur-alte');
 const TABELLE = wert('tabelle', 'reviews');
-const EXPORT_NACH = wert('export-nach', 'notes/reports/exporte');
+const EXPORT_NACH = wert('export-nach', 'notes/exporte');
 const ERWARTET = wert('anzahl', null);
 
 if (!PROJECT || !DATABASE || !KEY) {
