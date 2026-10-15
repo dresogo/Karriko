@@ -220,8 +220,8 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-2 · Technik und Doku**
 
 - **W-2.1 · Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP (T-5.26).
-- **W-2.2 · README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete (T-6.20).
-- **W-2.3 · Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250 (T-6.20).
+- ~~**W-2.2 · README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete (T-6.20).~~ Behoben am 15.10.2026: README nennt 110 Pakete laut Lockfile (T-6.20).
+- ~~**W-2.3 · Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250 (T-6.20).~~ Behoben am 15.10.2026: README auf 661 App-Tests und 1033 insgesamt gezählt (T-6.20).
 
 **W-3 · Daten und Recht**
 

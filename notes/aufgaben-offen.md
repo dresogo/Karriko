@@ -190,7 +190,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.17 · P1 · Seite „Eigene Bewertung“ unter `/my-reviews/:id`: Status, Begründung bei Ablehnung (Art. 17 DSA), Freitext ändern, zurückziehen. Die Danke-Seite verspricht „Bis dahin kannst du sie noch ändern“, einen Weg dafür gibt es nicht (Sitemap)
 - [ ] T-6.18 · P1 · „Melden“ auf jeder Bewertung, auch ohne Konto, etwa unter `/reviews/:id/melden`; heute melden nur Betriebe über `/reports` (Sitemap, Art. 16 DSA)
 - [ ] T-6.19 · P2 · Bewertungsrichtlinien als öffentliche Seite, der Entwurf vom August liegt vor (Sitemap)
-- [ ] T-6.20 · P3 · README nachziehen: 107 Pakete, `dio` und `cached_network_image` sind in Gebrauch, 250 App-Tests (Factsheet §9)
 
 - [ ] T-6.21 · P2 · Anmeldeschranke umsetzen: gesperrte Teile erst nach Anmeldung vom Server ausliefern, für Google als gesperrt kennzeichnen, Vergleich mit zwei Betrieben ohne Konto, Anonymitätsgrenzen gelten auch angemeldet (Konzept: Tab Anmeldeschranke)
 

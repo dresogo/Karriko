@@ -119,7 +119,7 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 | **Passkey-Dienst** | Node 22, TypeScript, `node:http`, zwei Laufzeit-Abhängigkeiten |
 | **Design** | Swiss Design: strenges Raster, keine abgerundeten Ecken, Rot als einziger Akzent |
 
-> **Zu `pubspec.yaml`:** Dort stehen weiterhin sieben Pakete, die **nirgends verwendet** werden — `dio`, `reactive_forms`, `flutter_svg`, `flutter_animate`, `cached_network_image`, `riverpod_annotation`, `cupertino_icons`, dazu `build_runner` und `riverpod_generator` als Dev-Abhängigkeiten. Ihre Entfernung schrumpft die Lieferkette von 150 auf 85 Pakete und ist als offener Punkt notiert. Wer sie entfernt: **`flutter clean` nicht vergessen**, sonst kompiliert der inkrementelle Compiler gegen einen Paketstand, den es nicht mehr gibt.
+> **Zu `pubspec.yaml`:** Ungenutzte Pakete sind entfernt (T-4.10). `dio` und `cached_network_image` bleiben, beide sind in Gebrauch. Das Lockfile der App führt 110 Pakete, vorher waren es 152. Wer Pakete entfernt: **`flutter clean` nicht vergessen**, sonst kompiliert der inkrementelle Compiler gegen einen Paketstand, den es nicht mehr gibt.
 
 <details>
 <summary><strong>Farbpalette</strong></summary>
@@ -277,12 +277,12 @@ Plattformabhängiger Code folgt dem Muster `datei.dart` / `datei_web.dart` / `da
 cd karriko_flutter
 dart format --output=none --set-exit-if-changed lib test   # Formatierung
 flutter analyze                                            # Analyzer: 0 Hinweise
-flutter test                                               # 233 Tests
+flutter test                                               # 661 Tests
 ```
 
 ```bash
 cd packages/questionnaire_core && dart test                # 287 Tests
-cd packages/karriko_functions  && dart test                # 50 Tests
+cd packages/karriko_functions  && dart test                # 60 Tests
 ```
 
 ```bash
@@ -294,9 +294,9 @@ npm run audit
 
 Alles läuft bei jedem Push und Pull Request gegen `main`: die App als [Flutter CI](.github/workflows/flutter.yml), Pakete, Functions und Werkzeuge als [Dart CI](.github/workflows/dart.yml), der [Passkey-Dienst](.github/workflows/passkey-rp.yml) eigenständig. Dart CI prüft außerdem, dass keine erzeugten Dateien mit echten Kennungen eingecheckt sind, dass beide Kopien der Fragendefinition übereinstimmen und dass das Schema-Skript zur CLI-Vorlage passt. [CodeQL](.github/workflows/codeql.yml) scannt alles, was JavaScript oder TypeScript ist.
 
-**Testabdeckung:** 595 Tests über alle Teile. Die Fragebogenlogik ist am dichtesten abgedeckt, darunter vier Personas gegen die **echte** Fragendefinition. In der App liegt der Schwerpunkt auf Layout über vier bis sieben Viewportbreiten und der Wächterlogik des Routers, dazu Tests, die **eine Anforderung statt eines Layouts** prüfen — etwa maschinell, dass falsches Passwort und unbekannte Adresse dieselbe Meldung liefern.
+**Testabdeckung:** 1033 Tests über alle Teile. Die Fragebogenlogik ist am dichtesten abgedeckt, darunter vier Personas gegen die **echte** Fragendefinition. In der App liegt der Schwerpunkt auf Layout über vier bis sieben Viewportbreiten und der Wächterlogik des Routers, dazu Tests, die **eine Anforderung statt eines Layouts** prüfen — etwa maschinell, dass falsches Passwort und unbekannte Adresse dieselbe Meldung liefern.
 
-Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt und nur zwei Zeilen pro Datei kostet: **Rendern unter vergrößerter Systemschrift** (`textScaleFactorTestValue = 1.3`). Er hat auf Anhieb drei Überläufe gefunden, die bei Standardgröße unsichtbar bleiben. Bislang nutzen ihn nur zwei Testdateien.
+Ein Testtyp lohnt besondere Erwähnung, weil er eine ganze Fehlerklasse abdeckt und nur zwei Zeilen pro Datei kostet: **Rendern unter vergrößerter Systemschrift** (`textScaleFactorTestValue = 1.3`). Er hat auf Anhieb drei Überläufe gefunden, die bei Standardgröße unsichtbar bleiben. Inzwischen nutzen ihn elf Testdateien.
 
 **Nicht abgedeckt:** Repositories, Ausbildungsstellen, Lesezeichen, Suche, Unternehmensdetail, die restlichen Betriebsseiten. Und grundsätzlich: **Kein Test sieht eine echte Appwrite-Antwort** — die Functions sind über ihre reinen Funktionen geprüft, das Zusammenspiel mit Appwrite zeigt erst der Abnahmetest.
 
