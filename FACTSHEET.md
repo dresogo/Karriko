@@ -204,25 +204,25 @@ Vor jedem PR: `dart format`, `flutter analyze` (0 Hinweise), alle Tests grün. B
 
 Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. Aufgelöste Punkte werden durchgestrichen, nicht gelöscht, und die Lösung kommt als Entscheidung in Abschnitt 4.
 
-**W-10 · Design**
+**W-1 · Design**
 
-- **W-10.1 · Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
-- **W-10.2 · Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
-- **W-10.3 · Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme (T-60.2).
-- **W-10.4 · Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
-- **W-10.5 · Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
-- **W-10.6 · Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.
-- **W-10.7 · Social-Media-Vorlagen** (10/2026) wurden mit Archivo und `#D42A1B` gebaut. Für Karriko gelten Inter und `#E3342F`.
+- **W-1.1 · Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
+- **W-1.2 · Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
+- **W-1.3 · Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme (T-6.2).
+- **W-1.4 · Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
+- **W-1.5 · Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
+- **W-1.6 · Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.
+- **W-1.7 · Social-Media-Vorlagen** (10/2026) wurden mit Archivo und `#D42A1B` gebaut. Für Karriko gelten Inter und `#E3342F`.
 
-**W-20 · Technik und Doku**
+**W-2 · Technik und Doku**
 
-- **W-20.1 · Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP (T-50.26).
-- **W-20.2 · README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete (T-60.20).
-- **W-20.3 · Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250 (T-60.20).
+- **W-2.1 · Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP (T-5.26).
+- **W-2.2 · README veraltet bei Paketen:** nennt `dio` und `cached_network_image` als ungenutzt und „150 → 85 Pakete". Laut PR #12 sind beide in Gebrauch, Stand 107 Pakete (T-6.20).
+- **W-2.3 · Testzahlen:** README nennt 233 App-Tests, nach PR #13 sind es 250 (T-6.20).
 
-**W-30 · Daten und Recht**
+**W-3 · Daten und Recht**
 
-- **W-30.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
+- **W-3.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
 
 **Offene Produktentscheidungen** (Details in `notes/todo.md` G): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 
@@ -234,19 +234,19 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 
 Jede Liste im Projekt hat einen eigenen Buchstaben. Ein Buchstabe steht nur für eine Art von Liste.
 
-**Aufbau:** `<Buchstabe>-<Abschnitt>.<laufende Nummer>`, zum Beispiel `T-20.3`. Abschnitte zählen in Zehnerschritten: erster Abschnitt 10, zweiter 20 und so weiter. Die laufende Nummer beginnt in jedem Abschnitt bei 1 und hat keine Obergrenze.
+**Aufbau:** `<Buchstabe>-<Abschnitt>.<laufende Nummer>`, zum Beispiel `T-2.3`. Abschnitte zählen fortlaufend: erster Abschnitt 1, zweiter 2 und so weiter. Die laufende Nummer beginnt in jedem Abschnitt bei 1 und hat keine Obergrenze.
 
 **Regeln:**
 
 1. Eine vergebene Nummer bleibt für immer. Erledigtes wird abgehakt oder durchgestrichen, nie gelöscht, nie umnummeriert.
 2. Neues bekommt die nächste freie Nummer seines Abschnitts, auch wenn es inhaltlich weiter oben stünde.
-3. Ein neuer Abschnitt nimmt den nächsten freien Zehner. Gehört er zwischen zwei bestehende, nimmt er die Fünf dazwischen (z. B. 65).
-4. Verweise immer mit voller Nummer und Buchstabe, auch über Dokumente hinweg („siehe T-60.17", „widerspricht E-06").
+3. Ein neuer Abschnitt bekommt die nächste freie Abschnittsnummer, auch wenn er inhaltlich zwischen zwei bestehenden steht.
+4. Verweise immer mit voller Nummer und Buchstabe, auch über Dokumente hinweg („siehe T-6.17", „widerspricht E-06").
 
 | Buchstabe | Liste | Wo | Stand |
 |---|---|---|---|
 | **E** | Entscheidungen | Abschnitt 4 | Altbestand E-01 bis E-53 behält seine Nummern; neue Einträge im Format `E-<Abschnitt>.<Nr.>` |
-| **T** | Offene Aufgaben (To-do) | Tab „Offene Aufgaben" im Artefakt „Karriko: Plan" | eingeführt, T-10 bis T-100 |
+| **T** | Offene Aufgaben (To-do) | Tab „Offene Aufgaben" im Artefakt „Karriko: Plan" | eingeführt, T-1 bis T-10 |
 | **W** | Widersprüche zwischen Code, Doku und Entscheidungen | Abschnitt 9 | eingeführt |
 | **R** | Risiken | Tab „Website-Umbau SEO", `projekt-referenz.md` §7 | reserviert |
 | **J** | Fragen an den Anwalt (juristisch) | Tab „Fragen an den Anwalt" | reserviert |
