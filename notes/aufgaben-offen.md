@@ -2,7 +2,7 @@
 
 **Stand:** 15. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-156 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+157 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -38,6 +38,8 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-1.9 · P2 · `projekt-referenz.md` auf den aktuellen Stand bringen: Die Börse ist entschieden, Löschmodell und Gewichtung stammen noch aus der alten Strecke (neu)
 - [ ] T-1.10 · P3 · Lizenz festlegen oder bewusst ohne Lizenz bleiben (README)
 - [ ] T-1.11 · P3 · `dart fix --apply` und Migrationsreste entfernen (todo H)
+- [ ] T-1.15 · P2 · Entscheiden, was mit den lokalen Exporten `notes/claude_plan/` und `notes/Karriko Sitemap.html` passiert: committen (dann öffentlich, darunter Anwaltsfragen, Notfallplan, CEO-Routinen und eine Geschäftsidee), per `.gitignore` lokal halten oder nach git-crypt in `notes/intern/` (Chat)
+  Bis dahin nicht eingecheckt; sie erscheinen deshalb als ungespeicherte Änderung. Hängt mit T-1.1 zusammen.
 
 ## 2 · Datenschicht und Funktionen
 
