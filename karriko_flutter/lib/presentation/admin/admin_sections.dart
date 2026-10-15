@@ -10,6 +10,9 @@ enum AdminSection {
   reports('meldungen', 'Meldungen', Icons.outlined_flag_rounded),
   log('protokoll', 'Protokoll', Icons.history_rounded),
   companies('betriebe', 'Betriebe', Icons.domain_outlined),
+  users('nutzer', 'Nutzer', Icons.manage_accounts_outlined, adminOnly: true),
+  requests('anfragen', 'Anfragen', Icons.mark_email_unread_outlined,
+      adminOnly: true),
   system('system', 'System', Icons.tune_rounded, adminOnly: true);
 
   final String slug;

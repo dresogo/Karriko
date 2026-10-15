@@ -15,6 +15,7 @@ import 'sections/log_section.dart';
 import 'sections/moderation_section.dart';
 import 'sections/overview_section.dart';
 import 'sections/reports_section.dart';
+import 'sections/planned_admin_section.dart';
 import 'sections/system_section.dart';
 
 /// Interner Bereich unter `/admin`.
@@ -378,6 +379,42 @@ class AdminShell extends ConsumerWidget {
       AdminSection.log => const LogSection(),
       AdminSection.companies => CompaniesSection(isAdmin: rollen.isAdmin),
       AdminSection.system => const SystemSection(),
+      AdminSection.users => const PlannedAdminSection(
+          eyebrow: 'NUTZER',
+          title: 'Benutzerverwaltung',
+          lede: 'Konto suchen, sperren, Rollenfehler beheben. Grobgerüst, '
+              'noch ohne Function dahinter.',
+          refs: ['T-2.28'],
+          sections: [
+            PlannedSection('Konto suchen', 'Nach E-Mail oder Kennung.'),
+            PlannedSection(
+                'Sperren und entsperren',
+                'Mit Begründung im '
+                    'Protokoll.'),
+            PlannedSection('Rolle korrigieren', 'Azubi oder Betrieb.'),
+          ],
+        ),
+      AdminSection.requests => const PlannedAdminSection(
+          eyebrow: 'ANFRAGEN',
+          title: 'Anfragen',
+          lede: 'Ein Eingang für Kontaktformular, Auskunfts- und '
+              'Löschverlangen und Beanstandungen von Betrieben. Grobgerüst.',
+          refs: ['T-2.29', 'T-2.9', 'T-5.11'],
+          sections: [
+            PlannedSection(
+                'Eingang',
+                'Alle Anfragen mit Eingangsdatum und '
+                    'Frist.'),
+            PlannedSection(
+                'Auskunft und Löschung',
+                'Art. 15 und 17 DSGVO, '
+                    'Frist ein Monat.'),
+            PlannedSection(
+                'Beanstandungen von Betrieben',
+                'Prüfung mit '
+                    'Rückfrage beim Verfasser.'),
+          ],
+        ),
     };
 
     final seitenleiste = _Seitenleiste(

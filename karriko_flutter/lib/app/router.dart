@@ -44,6 +44,7 @@ import '../presentation/betrieb/reports_screen.dart';
 import '../presentation/betrieb/settings_screen.dart' as betrieb;
 import '../presentation/admin/admin_screen.dart';
 import '../presentation/public/not_found_screen.dart';
+import '../presentation/planned/planned_catalog.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Bewusst kein ref.watch(authProvider): Das wuerde bei jeder Zustands-
@@ -80,6 +81,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         '/betrieb-profile',
         '/betrieb-stellen',
         '/betrieb-reviews',
+        '/betrieb-bewerbungen',
+        '/betrieb-einladen',
         '/analytics',
         '/team',
         '/subscription',
@@ -294,6 +297,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/admin',
           builder: (_, s) =>
               AdminScreen(section: s.uri.queryParameters['bereich'])),
+      // Grobgerueste der Seiten aus der Sitemap, die es noch nicht gibt. Nicht
+      // verlinkt; geschuetzt sind sie ueber die Praefixe in den Listen oben.
+      ...plannedRoutes(),
     ],
     errorBuilder: (_, state) => NotFoundScreen(uri: state.uri),
   );

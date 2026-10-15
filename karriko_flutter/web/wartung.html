@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Wartung – Karriko</title>
+  <!-- Grobgeruest (T-9.13, Notfallplan). Statisch und ohne Abhaengigkeiten, damit die Seite
+       auch erscheint, wenn die App selbst nicht laeuft. Keine fremden Quellen
+       (Factsheet E-06); Farben aus app_theme.dart. -->
+  <style>
+    :root { --ink:#111111; --muted:#5F625F; --line:#D8D8D2; --paper:#F7F7F2;
+            --surface:#FFFFFF; --accent-dark:#B91F1A; }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; }
+    body { background:var(--paper); color:var(--ink);
+           font-family:Inter, Arial, Helvetica, sans-serif; line-height:1.55; }
+    header { border-bottom:1px solid var(--line); background:var(--surface); }
+    .wrap { max-width:1200px; margin:0 auto; padding:0 24px; }
+    @media (min-width:600px) { .wrap { padding:0 48px; } }
+    @media (min-width:1024px) { .wrap { padding:0 64px; } }
+    .bar { display:flex; align-items:center; gap:12px; min-height:72px;
+           font-weight:800; font-size:18px; }
+    .mark { display:grid; place-items:center; width:34px; height:34px;
+            background:var(--ink); color:var(--paper); }
+    main .wrap { padding-top:64px; padding-bottom:64px; }
+    .kicker { color:var(--accent-dark); font-size:12px; font-weight:800;
+              letter-spacing:.11em; text-transform:uppercase; margin:0 0 16px; }
+    h1 { font-size:clamp(34px, 7vw, 64px); line-height:1; font-weight:800;
+         letter-spacing:-.01em; margin:0; max-width:16ch; }
+    .lede { color:var(--muted); font-size:17px; max-width:62ch; margin:24px 0 0; }
+    .slot { margin-top:48px; border-top:1px solid var(--line); padding-top:32px;
+            display:grid; gap:16px; }
+    .slot .ph { min-height:112px; display:grid; place-items:center;
+                background:#F1F0E8; border:1px solid var(--line); color:var(--muted);
+                font-size:12px; font-weight:700; letter-spacing:.08em; }
+    .note { margin-top:32px; background:var(--surface); padding:24px;
+            border-left:3px solid var(--accent-dark); max-width:62ch; }
+  </style>
+</head>
+<body>
+  <header><div class="wrap bar"><span class="mark" aria-hidden="true">K</span>Karriko</div></header>
+  <main>
+    <div class="wrap">
+      <p class="kicker">Kurz nicht erreichbar</p>
+      <h1>Wartung</h1>
+      <p class="lede">Karriko ist gerade nicht erreichbar. Wir arbeiten daran und sind bald wieder da.</p>
+      <div class="slot">
+        <div><strong>Was passiert ist</strong><div class="ph" aria-hidden="true">INHALT FOLGT</div></div>
+        <div><strong>Wann es weitergeht</strong><div class="ph" aria-hidden="true">INHALT FOLGT</div></div>
+        <div><strong>Kontakt</strong><div class="ph" aria-hidden="true">INHALT FOLGT</div></div>
+      </div>
+      <p class="note">Grobgerüst. Inhalt und Gestaltung folgen.</p>
+    </div>
+  </main>
+</body>
+</html>
