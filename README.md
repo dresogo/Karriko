@@ -24,7 +24,7 @@ Azubis bewerten ihren Ausbildungsbetrieb. Betriebe sehen, was wirklich über sie
 **Karriko ist in aktiver Entwicklung und nicht produktionsreif.** Seit August trägt die Datenschicht deutlich mehr: Betriebe bekommen bei der Registrierung ein echtes Unternehmen, Bewertungen entstehen über einen strukturierten Fragebogen und laufen serverseitig durch Moderation und Auswertung, und das Schema ist in Appwrite eingespielt. Was weiterhin fehlt:
 
 - **„Konto löschen" ist ein Stub** — Art. 17 DSGVO ist damit nicht erfüllt. Dasselbe gilt für das Löschen einer einzelnen Bewertung.
-- **Das Kontaktformular verschickt nichts.**
+- **Ein Kontaktformular gibt es nicht.** Die Kontaktseite öffnet das Mailprogramm (`mailto:`); ein Eingang im Admin-Bereich ist T-2.29.
 - **Analytics, Team und Abonnement im Betriebsbereich sind statische Attrappen** und deshalb ausgeblendet; ihre Routen führen aufs Dashboard. Das Betriebs-Dashboard hängt noch nicht an `company_scores`.
 - **Der Abnahmetest gegen die echte Instanz steht aus.** Die Bewertungsstrecke ist eingespielt und einzeln angestoßen, aber nicht mit allen vier Personas von Ende zu Ende durchgespielt.
 - **Rechtstexte und acht Punkte der Bewertungsstrecke sind juristisch ungeprüft**, im Fragebogen stehen noch fünf Platzhaltertexte. Vor den ersten echten Bewertungen ist das blockierend.

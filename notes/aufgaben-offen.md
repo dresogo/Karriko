@@ -55,7 +55,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.9 · P1 · Löschverlangen für einzelne Bewertungen, inklusive der Zeile in `public_reviews` (todo G, Setup §12)
   Größte offene Lücke der Bewertungsstrecke: `public_reviews` trägt absichtlich keine `user_id`. Braucht wie T-2.8 eine Function, die mit Schlüssel löscht.
 - [ ] T-2.10 · P1 · Datenexport nach Art. 20 DSGVO als JSON (todo H)
-- [ ] T-2.11 · P1 · Kontaktformular anbinden oder durch einen ehrlichen `mailto:`-Link ersetzen (todo B4)
 - [ ] T-2.12 · P2 · Betriebs-Dashboard und Analytics an `company_scores`, mit Erklärung unter drei Bewertungen (todo B5)
   `company_scores` trägt erst ab drei Bewertungen einen Wert, Zahlen erscheinen erst ab fünf und nur in Spannen. Ein leeres Dashboard ist dann richtig und muss das erklären.
 - [ ] T-2.13 · P2 · Benachrichtigungen über Repository und Provider, Stellen bauen, die sie erzeugen, Fehlerzustand statt `LateInitializationError` (todo B6)

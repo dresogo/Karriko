@@ -1,39 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/link.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/utils/validators.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/tap_target.dart';
 
-class KontaktScreen extends StatefulWidget {
+/// Adresse für alle Anfragen über die Kontaktseite.
+const kontaktEmail = 'demharter@dresogo.de';
+
+/// Kontakt per E-Mail.
+///
+/// Hier stand ein Formular, das nichts verschickte und trotzdem „Nachricht
+/// gesendet!“ meldete (T-2.11). Bis es einen Eingang dafür gibt (T-2.29),
+/// öffnet die Seite ehrlich das Mailprogramm. Die Adresse steht zusätzlich als
+/// Text da, für alle ohne eingerichtetes Mailprogramm.
+class KontaktScreen extends StatelessWidget {
   const KontaktScreen({super.key});
 
-  @override
-  State<KontaktScreen> createState() => _KontaktScreenState();
-}
-
-class _KontaktScreenState extends State<KontaktScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
-  final _emailCtrl = TextEditingController();
-  final _subjectCtrl = TextEditingController();
-  final _messageCtrl = TextEditingController();
-  bool _sent = false;
-
-  @override
-  void dispose() {
-    _nameCtrl.dispose();
-    _emailCtrl.dispose();
-    _subjectCtrl.dispose();
-    _messageCtrl.dispose();
-    super.dispose();
-  }
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _sent = true);
-  }
+  static final _mailto = Uri(scheme: 'mailto', path: kontaktEmail);
 
   @override
   Widget build(BuildContext context) {
@@ -51,91 +35,28 @@ class _KontaktScreenState extends State<KontaktScreen> {
                   Text('Kontakt',
                       style: Theme.of(context).textTheme.displaySmall),
                   const SizedBox(height: 8),
-                  Text('Schreib uns – wir antworten innerhalb von 24 Stunden.',
+                  Text('Fragen, Hinweise oder Kritik: Schreib uns eine E-Mail.',
                       style: Theme.of(context).textTheme.bodyLarge),
                   const SizedBox(height: 32),
-                  _sent
-                      ? Container(
-                          padding: const EdgeInsets.all(32),
-                          decoration: BoxDecoration(
-                            color: AppColors.lightGreen,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            children: [
-                              const Icon(Icons.check_circle,
-                                  size: 48, color: AppColors.success),
-                              const SizedBox(height: 16),
-                              Text('Nachricht gesendet!',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium,
-                                  textAlign: TextAlign.center),
-                              const SizedBox(height: 8),
-                              Text('Wir melden uns bald bei dir.',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        )
-                      : Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TextFormField(
-                                controller: _nameCtrl,
-                                decoration:
-                                    const InputDecoration(labelText: 'Name'),
-                                validator: (v) =>
-                                    Validators.required(v, label: 'Name'),
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _emailCtrl,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                    labelText: 'E-Mail-Adresse'),
-                                validator: Validators.email,
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _subjectCtrl,
-                                decoration:
-                                    const InputDecoration(labelText: 'Betreff'),
-                                validator: (v) =>
-                                    Validators.required(v, label: 'Betreff'),
-                              ),
-                              const SizedBox(height: 16),
-                              TextFormField(
-                                controller: _messageCtrl,
-                                maxLines: 5,
-                                decoration: const InputDecoration(
-                                  labelText: 'Nachricht',
-                                  alignLabelWithHint: true,
-                                ),
-                                validator: (v) => Validators.minLength(v, 20,
-                                    label: 'Nachricht'),
-                              ),
-                              const SizedBox(height: 24),
-                              SizedBox(
-                                height: 48,
-                                child: ElevatedButton(
-                                  onPressed: _submit,
-                                  child: const Text('Nachricht senden'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  Link(
+                    uri: _mailto,
+                    builder: (context, followLink) => SizedBox(
+                      height: 48,
+                      child: ElevatedButton.icon(
+                        onPressed: followLink,
+                        icon: const Icon(Icons.email_outlined, size: 18),
+                        label: const Text('E-Mail schreiben'),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 40),
-                  Text('Alternativ erreichst du uns unter:',
+                  Text('Oder direkt an:',
                       style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 12),
                   _ContactInfo(
                       icon: Icons.email_outlined,
-                      label: 'hallo@karriko.de',
-                      uri: Uri.parse('mailto:hallo@karriko.de')),
+                      label: kontaktEmail,
+                      uri: _mailto),
                   const SizedBox(height: 8),
                   const _ContactInfo(
                       icon: Icons.location_on_outlined,
