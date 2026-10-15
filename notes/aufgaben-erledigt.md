@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 15.10.2026 | T-1.2 | gitleaks als Pre-Commit-Hook und in der CI | `.github/workflows/gitleaks.yml` prüft die Commits jedes Push und PR, gitleaks 8.30.1 als Binary mit SHA-256-Prüfung statt Action (E-07). Hook `.githooks/pre-commit`, einzurichten mit `git config core.hooksPath .githooks`. Ein Lauf über die ganze Historie steht noch aus | dieser Commit |
 | 15.10.2026 | T-1.11 | `dart fix --apply` und Migrationsreste entfernen | `dart fix` findet in App, `questionnaire_core` und `karriko_functions` nichts. Reste der Umstellung auf TablesDB umbenannt: `*Collection` → `*Table`, `_createProfileDocument` → `_createProfileRow`, „Dokument“ → „Zeile“ in Kommentaren. Ungenutzte Konstanten `reviews` und `questions` entfernt. `--dart-define`-Schlüssel unverändert | dieser Commit |
 | 15.10.2026 | T-6.20 | README nachziehen: Pakete und Testzahlen | Nachgezählt statt übernommen: 110 Pakete im Lockfile, 661 App-Tests, 287 `questionnaire_core`, 60 `karriko_functions`, 25 Passkey-Dienst, zusammen 1033. W-2.2 und W-2.3 im Factsheet durchgestrichen | dieser Commit |
 | 15.10.2026 | T-6.16 | „Bewerten“ auf dem Unternehmensprofil ohne `?company=` | Beide Knöpfe („Betrieb bewerten“, „Jetzt bewerten“) öffnen `/reviews/new?company=<id>`, Test `company_detail_bewerten_test.dart` | dieser Commit |

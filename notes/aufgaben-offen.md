@@ -29,7 +29,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 ## 1 · Repository und Projektorganisation
 
 - [ ] T-1.1 · P1 · Interne Notizen (Todo-Liste, Berichte) in ein privates Repo verschieben oder das Repo auf privat stellen (Chat)
-- [ ] T-1.2 · P1 · gitleaks als Pre-Commit-Hook und in der CI (Plan)
 - [ ] T-1.3 · P1 · Branch `fragebogen` mit Pull Request #9 abschließen und mergen (todo)
 - [ ] T-1.4 · P2 · GitHub Student Developer Pack aktivieren, damit Branch Protection auch im privaten Repo greift (Chat)
 - [ ] T-1.5 · P2 · Unerreichbaren Commit `9d25f8d` beim GitHub-Support purgen lassen (todo A)

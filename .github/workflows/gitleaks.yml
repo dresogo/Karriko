@@ -1,0 +1,59 @@
+name: gitleaks
+
+# Sucht in neuen Commits nach Zugangsdaten (T-1.2). Anlass ist der Fall hinter
+# E-48: Ein Schluessel lag 26 Tage im oeffentlichen Repository, und alte
+# Commits bleiben per SHA abrufbar. Der Pre-Commit-Hook unter
+# .githooks/ faengt dasselbe lokal ab, bevor es ueberhaupt einen Commit gibt;
+# dieser Lauf ist das Netz fuer alle, die den Hook nicht eingerichtet haben.
+#
+# gitleaks kommt als Release-Binary mit festgenagelter Version und Pruefsumme,
+# nicht als Action (E-07): Die offizielle Action waere eine weitere
+# Abhaengigkeit und braucht fuer Organisationen eine Lizenz.
+#
+# Geprueft werden nur die Commits des Push oder Pull Requests. Beim ersten
+# Push eines Branches (kein Vorgaenger) faellt das auf die ganze Historie
+# bis HEAD zurueck.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: gitleaks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: gitleaks installieren
+        env:
+          VERSION: 8.30.1
+          SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"
+          echo "${SHA256}  gitleaks.tar.gz" | sha256sum -c -
+          tar -xzf gitleaks.tar.gz gitleaks
+          rm gitleaks.tar.gz
+
+      - name: Neue Commits pruefen
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            range="$HEAD"
+          else
+            range="$BASE..$HEAD"
+          fi
+          ./gitleaks git --redact --no-banner --verbose --log-opts="$range" .

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Prueft die vorgemerkten Aenderungen mit gitleaks auf Zugangsdaten (T-1.2).
+#
+# Einrichten, einmal je Klon:
+#   git config core.hooksPath .githooks
+#
+# Ohne installiertes gitleaks laeuft der Commit mit einem Hinweis durch; die
+# CI (.github/workflows/gitleaks.yml) prueft trotzdem. Einen Fehlalarm nicht
+# mit --no-verify uebergehen, sondern die Stelle mit `gitleaks:allow` am
+# Zeilenende markieren und im Commit begruenden.
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "Hinweis: gitleaks ist nicht installiert, Suche nach Zugangsdaten uebersprungen." >&2
+  exit 0
+fi
+
+exec gitleaks git --pre-commit --staged --redact --no-banner --verbose

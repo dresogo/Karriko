@@ -9,3 +9,6 @@
 # Kopien Zeichen fuer Zeichen.
 karriko_flutter/assets/questionnaire/*.json text eol=lf
 appwrite/questionnaires/*.json text eol=lf
+
+# Git-Hooks laufen unter sh; ein CR am Ende der Shebang-Zeile bricht sie.
+.githooks/* text eol=lf
