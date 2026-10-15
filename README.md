@@ -37,7 +37,8 @@ Die Dokumentation hat feste Aufgaben:
 |---|---|
 | [`notes/projekt-referenz.md`](notes/projekt-referenz.md) | Was **soll** Karriko sein? Fachliche Regeln, Grenzwerte, Rollen |
 | [`notes/reports/`](notes/reports/) | Was **ist** gebaut? Statusbericht und Sicherheitsbericht |
-| [`notes/todo.md`](notes/todo.md) | Was steht **an**? Priorisiert, nach Art der Arbeit sortiert |
+| [`notes/aufgaben-offen.md`](notes/aufgaben-offen.md) | Was steht **an**? Nummeriert und priorisiert, nach Art der Arbeit sortiert |
+| [`notes/aufgaben-erledigt.md`](notes/aufgaben-erledigt.md) | Was ist **erledigt**? Mit Datum, Nummer und Commit |
 | [`notes/APPWRITE_SETUP.md`](notes/APPWRITE_SETUP.md) | Wie ist das Backend aufgebaut? Tabellen, Rechte, Functions, Fristen |
 | [`notes/APPWRITE_EINSPIELEN.md`](notes/APPWRITE_EINSPIELEN.md) | In welcher Reihenfolge wird es eingespielt und abgenommen? |
 | [`notes/projektstruktur.md`](notes/projektstruktur.md) | Wo liegt was im Repository? |
@@ -320,10 +321,10 @@ Karriko begann als Next.js-Anwendung und wurde auf Flutter portiert. Der alte Pr
 
 Vor einem Pull Request sollten Format, Analyzer und Tests lokal grün sein — die CI prüft genau das. Wer an Functions oder Paketen arbeitet, lässt zusätzlich `dart run tools/vendor_core.dart --pruefen` laufen.
 
-Wo sich Arbeit am ehesten lohnt, steht in [`notes/todo.md`](notes/todo.md). Zwei Hinweise dazu:
+Wo sich Arbeit am ehesten lohnt, steht in [`notes/aufgaben-offen.md`](notes/aufgaben-offen.md). Zwei Hinweise dazu:
 
 - **Der Abnahmetest mit den vier Personas ist der nächste Schlüsselschritt.** Er zeigt als Erstes, ob die eingespielte Bewertungsstrecke im Zusammenspiel trägt — und hängt nur noch an einem eigenen Moderationskonto.
-- **Erledigtes wird abgehakt, nicht gelöscht.** Ein Befund aus dem Juni stand zwei Monate offen, weil ihn niemand weiterführte. Genau deshalb gibt es die Liste.
+- **Erledigtes verschwindet nicht, es zieht um.** Es wandert mit Datum, Nummer und Commit nach [`notes/aufgaben-erledigt.md`](notes/aufgaben-erledigt.md). Ein Befund aus dem Juni stand zwei Monate offen, weil ihn niemand weiterführte. Genau deshalb gibt es die Liste.
 
 ## Lizenz
 

@@ -102,7 +102,7 @@ const ALT = [
       v('role', 20, { required: true }),
       v('first_name', 100),
       // So stand es da, auch wenn 10 Zeichen fuer Nachnamen zu wenig sind —
-      // offener Punkt in notes/todo.md, nicht Teil der Wiederherstellung.
+      // offener Punkt T-2.7 in notes/aufgaben-offen.md, nicht Teil der Wiederherstellung.
       v('last_name', 10),
       { key: 'avatar_url', type: 'url', required: false },
       v('company_name', 200),

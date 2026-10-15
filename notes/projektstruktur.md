@@ -81,7 +81,7 @@ lib/
 
 **Die Regel dahinter:** `presentation → providers → repositories → Appwrite`. Jede Schicht kennt nur die unter ihr. Ein Bildschirm greift nie direkt auf Appwrite zu.
 
-> **Eine Ausnahme, und sie ist ein bekannter Mangel:** `presentation/azubi/notifications_screen.dart` spricht direkt mit `TablesDB`, an Provider und Repository vorbei. Steht als offener Punkt in der [Todo-Liste](todo.md), Abschnitt B.6.
+> **Eine Ausnahme, und sie ist ein bekannter Mangel:** `presentation/azubi/notifications_screen.dart` spricht direkt mit `TablesDB`, an Provider und Repository vorbei. Steht als offener Punkt T-2.13 in [`aufgaben-offen.md`](aufgaben-offen.md).
 
 ### 2.2 Die vier Bereiche der Oberfläche
 
@@ -187,7 +187,8 @@ Vier Dinge mit klar verschiedenen Aufgaben. Wer sie verwechselt, liest das Falsc
 | [`projekt-referenz.md`](projekt-referenz.md) | Was **soll** Karriko sein? Regeln, Grenzwerte, Rollen | kaum — beschreibt Anforderungen |
 | [`reports/status-report-2026-08-02.md`](reports/status-report-2026-08-02.md) | Was **ist** gebaut? | ständig |
 | [`reports/sicherheitsbericht-2026-08-04.md`](reports/sicherheitsbericht-2026-08-04.md) | Wie kommt Fremdcode herein? | mittel |
-| [`todo.md`](todo.md) | Was steht **an**? | ständig |
+| [`aufgaben-offen.md`](aufgaben-offen.md) | Was steht **an**? | ständig |
+| [`aufgaben-erledigt.md`](aufgaben-erledigt.md) | Was ist **erledigt**, wann und mit welchem Commit? | bei jedem erledigten Punkt |
 | `karriko_design_swiss/` | Design-Entwurf als HTML/CSS | nein — Referenz |
 | `projektstruktur.md` | *diese Datei* — wo liegt was? | bei Umbauten |
 
