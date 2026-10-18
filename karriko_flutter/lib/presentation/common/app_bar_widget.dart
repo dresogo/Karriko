@@ -536,8 +536,6 @@ class KarrikoDrawer extends ConsumerWidget {
                 const _DrawerItem(
                     label: 'Meine Bewertungen', route: '/my-reviews'),
                 const _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
-                const _DrawerItem(
-                    label: 'Benachrichtigungen', route: '/notifications'),
                 const _DrawerItem(label: 'Einstellungen', route: '/settings'),
                 const Divider(color: AppColors.line),
                 ListTile(

@@ -34,7 +34,6 @@ import '../presentation/azubi/profile_screen.dart';
 import '../presentation/questionnaire/questionnaire_screen.dart';
 import '../presentation/azubi/my_reviews_screen.dart';
 import '../presentation/azubi/bookmarks_screen.dart';
-import '../presentation/azubi/notifications_screen.dart';
 import '../presentation/azubi/settings_screen.dart';
 import '../presentation/betrieb/dashboard_screen.dart' as betrieb;
 import '../presentation/betrieb/profile_screen.dart' as betrieb;
@@ -252,9 +251,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/fragen-bewerten', redirect: (_, __) => '/reviews/new'),
       GoRoute(path: '/my-reviews', builder: (_, __) => const MyReviewsScreen()),
       GoRoute(path: '/bookmarks', builder: (_, __) => const BookmarksScreen()),
-      GoRoute(
-          path: '/notifications',
-          builder: (_, __) => const NotificationsScreen()),
+      // Benachrichtigungen gibt es noch nicht: keine Tabelle, nichts erzeugt
+      // sie (E-30, T-2.13). Alte Lesezeichen landen auf dem Dashboard.
+      GoRoute(path: '/notifications', redirect: (_, __) => '/dashboard'),
       GoRoute(
           path: '/settings', builder: (_, __) => const AzubiSettingsScreen()),
       // Ueber den Praefixvergleich in azubiPaths bereits geschuetzt.

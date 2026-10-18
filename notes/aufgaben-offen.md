@@ -59,6 +59,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   `company_scores` trägt erst ab drei Bewertungen einen Wert, Zahlen erscheinen erst ab fünf und nur in Spannen. Ein leeres Dashboard ist dann richtig und muss das erklären.
 - [ ] T-2.13 · P2 · Benachrichtigungen über Repository und Provider, Stellen bauen, die sie erzeugen, Fehlerzustand statt `LateInitializationError` (todo B6)
   Heute erzeugt keine Stelle Benachrichtigungen; ohne initialisierten Client kommt `LateInitializationError`.
+  Am 18.10.2026 nach E-30 ausgeblendet: Die Tabelle `notifications` steht weder in der Vorlage noch in `appwrite.config.json`. Menüeintrag entfernt, `/notifications` führt aufs Dashboard, `notifications_screen.dart` gelöscht (in der Historie bis `3c90891`). Zum Bau gehören jetzt auch Tabelle, Seite und die Schalter aus T-2.14.
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
 - [ ] T-2.17 · P2 · Eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)` (todo D)
 - [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
@@ -178,6 +179,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Betrifft `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`.
 - [ ] T-6.6 · P2 · Restliche Betriebsseiten: Analytics, Abonnement, Team, Bewertungen, Meldungen (todo E)
 - [ ] T-6.7 · P2 · Restliche Azubi-Seiten: Lesezeichen, Benachrichtigungen (todo E)
+  Benachrichtigungen sind seit 18.10.2026 ausgeblendet (T-2.13); offen ist hier nur noch die Merkliste.
 - [ ] T-6.8 · P2 · Restliche öffentliche Seiten: Bewertungsdetail, Blogartikel, Kontakt, Über uns (todo E)
 - [ ] T-6.11 · P2 · Ladezeit auf dem Smartphone messen: LCP unter 2,5 s, CLS unter 0,1 (Referenz §5)
 

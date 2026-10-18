@@ -125,6 +125,22 @@ void main() {
     expect(find.text('Benachrichtigungen'), findsNothing);
   });
 
+  testWidgets('Benachrichtigungen führen aufs Dashboard', (tester) async {
+    // E-30: Es gibt weder Tabelle noch Auslöser (T-2.13). Alte Lesezeichen
+    // auf /notifications sollen nicht auf eine immer leere Seite führen.
+    await _open(tester, '/notifications', const Size(1440, 900));
+
+    expect(
+      _container
+          .read(routerProvider)
+          .routerDelegate
+          .currentConfiguration
+          .uri
+          .toString(),
+      '/dashboard',
+    );
+  });
+
   testWidgets('Profilmenue zeigt Kopfbereich und alle Ziele', (tester) async {
     await _open(tester, '/dashboard', const Size(1440, 900));
 
