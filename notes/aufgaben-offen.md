@@ -2,7 +2,7 @@
 
 **Stand:** 18. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-156 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+154 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -59,7 +59,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   `company_scores` trägt erst ab drei Bewertungen einen Wert, Zahlen erscheinen erst ab fünf und nur in Spannen. Ein leeres Dashboard ist dann richtig und muss das erklären.
 - [ ] T-2.13 · P2 · Benachrichtigungen über Repository und Provider, Stellen bauen, die sie erzeugen, Fehlerzustand statt `LateInitializationError` (todo B6)
   Heute erzeugt keine Stelle Benachrichtigungen; ohne initialisierten Client kommt `LateInitializationError`.
-- [ ] T-2.14 · P2 · Einstellungs-Schalter persistieren, Hinweistexte entfernen (todo B8)
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
 - [ ] T-2.17 · P2 · Eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)` (todo D)
 - [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
@@ -160,6 +159,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.20 · P1 · Moderationsrichtlinie mit Regel für Namen von Privatpersonen in Freitexten (Verarbeitungsverzeichnis)
 
 - [ ] T-5.21 · P1 · `public_reviews.published_at` nur als Quartal speichern; der genaue Zeitstempel ist öffentlich lesbar, obwohl die Vorschau den Monat als unsichtbar ausweist (Fragebogen)
+  Teilweise erledigt am 18.10.2026: `published_at` ist der Quartalsbeginn in UTC, die Karte zeigt „Q4 2026“ statt des Monats (E-2.12). Wirkt erst nach neuem Deploy von `moderate_review` und `publish_scheduled` (vorher `dart run tools/vendor_core.dart`). Offen: `$createdAt` der Zeile in `public_reviews` ist weiter sekundengenau und für jeden lesbar; bestehende Zeilen tragen noch den genauen Zeitpunkt.
 - [ ] T-5.22 · P2 · Freitextlänge festlegen: Fragebogen erlaubt 4000 Zeichen, Referenz nennt 1000 (Fragebogen)
 - [ ] T-5.23 · P3 · Dateiformate für Nachweise in Fragebogen und Ablage angleichen (Fragebogen)
 
@@ -180,8 +180,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.7 · P2 · Restliche Azubi-Seiten: Lesezeichen, Benachrichtigungen (todo E)
 - [ ] T-6.8 · P2 · Restliche öffentliche Seiten: Bewertungsdetail, Blogartikel, Kontakt, Über uns (todo E)
 - [ ] T-6.11 · P2 · Ladezeit auf dem Smartphone messen: LCP unter 2,5 s, CLS unter 0,1 (Referenz §5)
-- [ ] T-6.14 · P3 · Verbleibende `IntrinsicHeight`-Konstruktionen durch `Table` ersetzen (todo E)
-  Stellen: `home_screen.dart:483`, `fuer_betriebe_screen.dart:586`, `login_shell.dart:88`, `company_detail_screen.dart:109` und `:1248`. Bei nebeneinanderstehenden Zellen mit Trennlinien ist `Table` das Mittel.
 
 - [ ] T-6.17 · P1 · Seite „Eigene Bewertung“ unter `/my-reviews/:id`: Status, Begründung bei Ablehnung (Art. 17 DSA), Freitext ändern, zurückziehen. Die Danke-Seite verspricht „Bis dahin kannst du sie noch ändern“, einen Weg dafür gibt es nicht (Sitemap)
 - [ ] T-6.18 · P1 · „Melden“ auf jeder Bewertung, auch ohne Konto, etwa unter `/reviews/:id/melden`; heute melden nur Betriebe über `/reports` (Sitemap, Art. 16 DSA)

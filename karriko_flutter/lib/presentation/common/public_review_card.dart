@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/date_format.dart';
 import '../../data/models/public_review.dart';
 
 /// Eine Bewertung, so wie sie öffentlich aussieht.
@@ -139,7 +139,7 @@ class _Kopf extends StatelessWidget {
         if (!vorschau) ...[
           const Spacer(),
           Text(
-            DateFormat('MM.yyyy').format(review.publishedAt),
+            quarterLabel(review.publishedAt),
             style: const TextStyle(color: AppColors.muted, fontSize: 13),
           ),
         ],

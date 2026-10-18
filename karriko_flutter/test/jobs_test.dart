@@ -218,6 +218,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Stelle bearbeiten'), findsOneWidget);
+    // Der Schalter nennt seinen Zustand als Text, nicht nur über die Farbe.
+    expect(find.textContaining('Wird als Entwurf gespeichert · Aus'),
+        findsOneWidget);
     expect(find.text('Ausbildung Maurer (m/w/d)'), findsOneWidget);
     expect(find.text('Mauern\nPutzen'), findsOneWidget);
     // Weitere Stelle anlegen geht erst, wenn das Formular zu ist.

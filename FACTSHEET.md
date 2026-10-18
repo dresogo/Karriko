@@ -127,6 +127,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-28 | 08/2026 | **Ausbildungsbörse kommt.** Betriebe schreiben Stellen selbst aus, eigene Stellenseite. Umfang (Bewerbungen, Upload, Stellensuche) noch offen. | Behelfslösung aus Firmendaten versprach etwas, das es nicht gab. |
 | E-29 | 08/2026 | **Bewertungen und ihre Reihenfolge sind nicht käuflich**, auch nicht über Premium. Premium darf bessere Selbstdarstellung bieten, nie Ranking-Vorteile; keine Konkurrenzwerbung auf Profilen nicht zahlender Betriebe. | Glaubwürdigkeit; BGH-Rechtsprechung zu Jameda (2018, 2021). |
 | E-30 | 10/2026 | **Attrappen ausblenden statt zeigen**: Analytics, Team, Abo im Betriebsbereich sind ausgeblendet, Routen führen aufs Dashboard. | Nichts versprechen, was nicht funktioniert. |
+| E-2.12 | 18.10.2026 | **`public_reviews.published_at` ist nur der Quartalsbeginn** (UTC, z. B. `2026-10-01T00:00Z`), die Karte zeigt „Q4 2026“. Die Alterung rechnet weiter mit dem Einreichen in `reviews`. | Die Tabelle ist für jeden lesbar; ein genauer Zeitpunkt erlaubt in kleinen Betrieben den Rückschluss auf die Person, und die Vorschau sagt zu, dass der Monat nicht sichtbar wird (T-5.21). |
 
 ### Anmeldung und Sicherheit
 

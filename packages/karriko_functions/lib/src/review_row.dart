@@ -146,8 +146,20 @@ Map<String, Object?> buildPublicReviewRow({
     'is_aged': isAged,
     'verified': reviewRow['verified'] ?? false,
     'published_at':
-        (publishedAt ?? DateTime.now().toUtc()).toUtc().toIso8601String(),
+        quarterStart(publishedAt ?? DateTime.now()).toIso8601String(),
   };
+}
+
+/// Beginn des Quartals, in dem [zeitpunkt] liegt, in UTC.
+///
+/// `public_reviews` ist für jeden lesbar. Ein genauer Zeitstempel verriete,
+/// wann jemand bewertet hat, und in einem kleinen Betrieb damit oft auch, wer
+/// (T-5.21). Die Vorschau sagt zu, dass der Monat nicht sichtbar wird. Für
+/// die Alterung zählt ohnehin das Einreichen in `reviews`, nicht dieser Wert.
+DateTime quarterStart(DateTime zeitpunkt) {
+  final utc = zeitpunkt.toUtc();
+  final ersterMonat = ((utc.month - 1) ~/ 3) * 3 + 1;
+  return DateTime.utc(utc.year, ersterMonat);
 }
 
 /// Die Steuerangaben, die als eigene Spalte gebraucht werden.

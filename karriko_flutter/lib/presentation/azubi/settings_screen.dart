@@ -14,9 +14,8 @@ class AzubiSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
-  bool _emailNotifications = true;
-  bool _pushNotifications = true;
-  bool _publicProfile = false;
+  // Schalter für Sichtbarkeit und Benachrichtigungen stehen hier erst wieder,
+  // wenn es ein öffentliches Profil und Benachrichtigungen gibt (E-30, T-2.13).
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
       appBarTitle: 'Einstellungen',
       eyebrow: 'EINSTELLUNGEN',
       title: 'Dein Konto\nund was daran hängt.',
-      lede: 'Zugangsdaten, Sichtbarkeit und Benachrichtigungen an einem Ort.',
+      lede: 'Zugangsdaten, Anmeldung und Rechtliches an einem Ort.',
       children: [
         const SectionLabel('Konto'),
         const SizedBox(height: AppLayout.s16),
@@ -61,43 +60,6 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
               icon: Icons.mail_outline,
               title: 'E-Mail-Adresse',
               value: auth.user?.email ?? '–',
-            ),
-          ],
-        ),
-        const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Sichtbarkeit'),
-        const SizedBox(height: AppLayout.s16),
-        AppRowGroup(
-          children: [
-            AppSwitchRow(
-              icon: Icons.visibility_outlined,
-              title: 'Öffentliches Profil',
-              subtitle: 'Andere Nutzer sehen deinen Namen',
-              value: _publicProfile,
-              onChanged: (v) => setState(() => _publicProfile = v),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppLayout.s16),
-        const _NotPersistedHint(),
-        const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Benachrichtigungen'),
-        const SizedBox(height: AppLayout.s16),
-        AppRowGroup(
-          children: [
-            AppSwitchRow(
-              icon: Icons.mail_outline,
-              title: 'E-Mail-Benachrichtigungen',
-              subtitle: 'Antworten und Statusänderungen',
-              value: _emailNotifications,
-              onChanged: (v) => setState(() => _emailNotifications = v),
-            ),
-            AppSwitchRow(
-              icon: Icons.notifications_outlined,
-              title: 'Push-Benachrichtigungen',
-              subtitle: 'Direkt im Browser',
-              value: _pushNotifications,
-              onChanged: (v) => setState(() => _pushNotifications = v),
             ),
           ],
         ),
@@ -218,38 +180,6 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
           textColor: AppColors.paper,
           onPressed: () => context.go('/kontakt'),
         ),
-      ),
-    );
-  }
-}
-
-/// Weist darauf hin, dass die Schalter noch nicht gespeichert werden. Solange
-/// die Anbindung fehlt, ist der Hinweis ehrlicher als ein stummer Schalter,
-/// der nach dem Neuladen zurückspringt.
-class _NotPersistedHint extends StatelessWidget {
-  const _NotPersistedHint();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppLayout.s16),
-      decoration: const BoxDecoration(
-        color: AppColors.paper,
-        border: Border(left: BorderSide(color: AppColors.line, width: 3)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
-          const SizedBox(width: AppLayout.s8),
-          Expanded(
-            child: Text(
-              'Diese Schalter werden noch nicht gespeichert und stehen nach dem '
-              'Neuladen wieder auf dem Ausgangswert.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ],
       ),
     );
   }

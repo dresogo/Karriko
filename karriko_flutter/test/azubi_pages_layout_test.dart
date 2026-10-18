@@ -114,15 +114,15 @@ void main() {
     expect(find.text('Azubi'), findsOneWidget);
   });
 
-  testWidgets('Einstellungen benennen den Schalterzustand als Text',
+  testWidgets('Einstellungen zeigen keine Schalter ohne Wirkung',
       (tester) async {
     await _open(tester, '/settings', const Size(1440, 900));
 
-    // Zustand darf nicht allein an Farbe und Position haengen.
-    expect(find.textContaining('Andere Nutzer sehen deinen Namen · Aus'),
-        findsOneWidget);
-    expect(find.textContaining('Antworten und Statusänderungen · An'),
-        findsOneWidget);
+    // E-30: Profil und Benachrichtigungen gibt es noch nicht, also auch
+    // keine Schalter dafuer (T-2.14).
+    expect(find.byType(Switch), findsNothing);
+    expect(find.text('Öffentliches Profil'), findsNothing);
+    expect(find.text('Benachrichtigungen'), findsNothing);
   });
 
   testWidgets('Profilmenue zeigt Kopfbereich und alle Ziele', (tester) async {

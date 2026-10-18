@@ -436,6 +436,33 @@ void main() {
       expect(oeffentlich(alt: true)['is_aged'], isTrue);
       expect(oeffentlich()['is_aged'], isFalse);
     });
+
+    // T-5.21: Die Vorschau sagt zu, dass der Monat nicht sichtbar wird.
+    test('speichert den Zeitpunkt nur als Quartalsbeginn', () {
+      final row = buildPublicReviewRow(
+        reviewId: 'r1',
+        reviewRow: const {'company_id': 'betrieb1'},
+        isAged: false,
+        publishedAt: DateTime.utc(2026, 11, 17, 14, 32, 5),
+      );
+      expect(row['published_at'], '2026-10-01T00:00:00.000Z');
+    });
+
+    test('Quartalsgrenzen', () {
+      expect(quarterStart(DateTime.utc(2026, 1, 1)), DateTime.utc(2026, 1));
+      expect(quarterStart(DateTime.utc(2026, 3, 31, 23, 59)),
+          DateTime.utc(2026, 1));
+      expect(quarterStart(DateTime.utc(2026, 4, 1)), DateTime.utc(2026, 4));
+      expect(quarterStart(DateTime.utc(2026, 9, 30)), DateTime.utc(2026, 7));
+      expect(quarterStart(DateTime.utc(2026, 12, 31, 23, 59)),
+          DateTime.utc(2026, 10));
+    });
+
+    test('rechnet in UTC, nicht in Ortszeit', () {
+      // 1. Januar, 0:30 Uhr in Berlin ist in UTC noch das alte Jahr.
+      final berlin = DateTime.parse('2027-01-01T00:30:00+01:00');
+      expect(quarterStart(berlin), DateTime.utc(2026, 10));
+    });
   });
 
   group('Aggregate', () {

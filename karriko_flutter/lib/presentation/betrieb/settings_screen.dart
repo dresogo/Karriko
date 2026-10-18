@@ -14,9 +14,8 @@ class BetriebSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
-  bool _emailNewReviews = true;
-  bool _emailWeeklyDigest = true;
-  bool _emailMarketing = false;
+  // Benachrichtigungen und API-Schlüssel stehen hier erst wieder, wenn es sie
+  // gibt (E-30, T-2.13).
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
     return AppPage(
       appBarTitle: 'Einstellungen',
       eyebrow: 'EINSTELLUNGEN',
-      title: 'Konto, Tarif\nund Benachrichtigungen.',
+      title: 'Dein Betriebskonto\nund was daran hängt.',
       lede: user?.companyName?.isNotEmpty == true
           ? 'Einstellungen für ${user!.companyName}'
           : 'Alles rund um deinen Betriebszugang.',
@@ -81,49 +80,6 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
           ],
         ),
         const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Benachrichtigungen'),
-        const SizedBox(height: AppLayout.s16),
-        AppRowGroup(
-          children: [
-            AppSwitchRow(
-              icon: Icons.star_outline,
-              title: 'Neue Bewertungen',
-              subtitle: 'E-Mail bei jeder neuen Bewertung',
-              value: _emailNewReviews,
-              onChanged: (v) => setState(() => _emailNewReviews = v),
-            ),
-            AppSwitchRow(
-              icon: Icons.summarize_outlined,
-              title: 'Wöchentlicher Digest',
-              subtitle: 'Zusammenfassung jeden Montag',
-              value: _emailWeeklyDigest,
-              onChanged: (v) => setState(() => _emailWeeklyDigest = v),
-            ),
-            AppSwitchRow(
-              icon: Icons.campaign_outlined,
-              title: 'Produktneuigkeiten',
-              subtitle: 'Neue Funktionen und Tipps',
-              value: _emailMarketing,
-              onChanged: (v) => setState(() => _emailMarketing = v),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppLayout.s16),
-        const _NotPersistedHint(),
-        const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Schnittstelle'),
-        const SizedBox(height: AppLayout.s16),
-        const AppRowGroup(
-          children: [
-            AppRow(
-              icon: Icons.code,
-              title: 'API-Schlüssel',
-              subtitle: 'Teil des Premium-Tarifs',
-              value: 'Gesperrt',
-            ),
-          ],
-        ),
-        const SizedBox(height: AppLayout.s48),
         const SectionLabel('Rechtliches'),
         const SizedBox(height: AppLayout.s16),
         AppRowGroup(
@@ -162,36 +118,6 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
           ],
         ),
       ],
-    );
-  }
-}
-
-/// Solange die Schalter nicht gespeichert werden, wird das offen gesagt.
-class _NotPersistedHint extends StatelessWidget {
-  const _NotPersistedHint();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppLayout.s16),
-      decoration: const BoxDecoration(
-        color: AppColors.paper,
-        border: Border(left: BorderSide(color: AppColors.line, width: 3)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.info_outline, size: 18, color: AppColors.muted),
-          const SizedBox(width: AppLayout.s8),
-          Expanded(
-            child: Text(
-              'Diese Schalter werden noch nicht gespeichert und stehen nach dem '
-              'Neuladen wieder auf dem Ausgangswert.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -189,14 +189,13 @@ void main() {
     expect(find.text('Handwerk'), findsWidgets);
   });
 
-  testWidgets('Betriebs-Einstellungen benennen den Schalterzustand',
-      (tester) async {
+  testWidgets('Betriebs-Einstellungen zeigen keine Attrappen', (tester) async {
     await _open(tester, '/betrieb-settings', const Size(1440, 900));
 
-    expect(find.textContaining('E-Mail bei jeder neuen Bewertung · An'),
-        findsOneWidget);
-    expect(
-        find.textContaining('Neue Funktionen und Tipps · Aus'), findsOneWidget);
+    // E-30: Benachrichtigungen und API-Schluessel gibt es noch nicht (T-2.14).
+    expect(find.byType(Switch), findsNothing);
+    expect(find.text('Benachrichtigungen'), findsNothing);
+    expect(find.text('API-Schlüssel'), findsNothing);
   });
 
   testWidgets('Einstellungen fuehren auf die Meldungen', (tester) async {
