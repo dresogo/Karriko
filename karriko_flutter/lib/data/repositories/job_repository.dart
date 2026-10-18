@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as aw;
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../../core/constants/appwrite_constants.dart';
 import '../models/job_model.dart';
 import '../services/appwrite_service.dart';
@@ -98,7 +99,7 @@ class JobRepository {
       databaseId: AppwriteConstants.databaseId,
       tableId: AppwriteConstants.jobsTable,
       rowId: ID.unique(),
-      data: _payload(
+      data: payloadFor(
         companyId: companyId,
         companyName: companyName,
         companySlug: companySlug,
@@ -118,6 +119,67 @@ class JobRepository {
         applyUrl: applyUrl,
         contactEmail: contactEmail,
         isActive: isActive,
+      ),
+      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
+    );
+    return JobModel.fromJson(_toMap(row));
+  }
+
+  /// Ueberschreibt eine bestehende Stelle mit dem Stand des Formulars.
+  ///
+  /// Anders als beim Anlegen gehen geleerte Felder als `null` mit: Sonst
+  /// bliebe ein geloeschter Text in der Zeile stehen, und die Stellenseite
+  /// zeigte ihn weiter. Die Rechte werden mit dem Zustand neu gesetzt, damit
+  /// ein Entwurf beim Speichern nicht versehentlich oeffentlich lesbar wird
+  /// (siehe [permissionsFor]).
+  Future<JobModel> updateJob({
+    required String jobId,
+    required String ownerId,
+    required String companyId,
+    required String companyName,
+    required String companySlug,
+    String? companyLogoUrl,
+    required String title,
+    required String location,
+    String? profession,
+    String? industry,
+    String? employmentType,
+    String? description,
+    List<String> tasks = const [],
+    List<String> requirements = const [],
+    List<String> benefits = const [],
+    DateTime? startDate,
+    String? duration,
+    String? salary,
+    String? applyUrl,
+    String? contactEmail,
+    required bool isActive,
+  }) async {
+    final row = await _db.updateRow(
+      databaseId: AppwriteConstants.databaseId,
+      tableId: AppwriteConstants.jobsTable,
+      rowId: jobId,
+      data: payloadFor(
+        companyId: companyId,
+        companyName: companyName,
+        companySlug: companySlug,
+        companyLogoUrl: companyLogoUrl,
+        title: title,
+        location: location,
+        profession: profession,
+        industry: industry,
+        employmentType: employmentType,
+        description: description,
+        tasks: tasks,
+        requirements: requirements,
+        benefits: benefits,
+        startDate: startDate,
+        duration: duration,
+        salary: salary,
+        applyUrl: applyUrl,
+        contactEmail: contactEmail,
+        isActive: isActive,
+        leereFelderLeeren: true,
       ),
       permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
     );
@@ -170,7 +232,11 @@ class JobRepository {
   /// Leere Freitextfelder werden weggelassen statt als leerer String
   /// gespeichert: Die Stellenseite entscheidet an `null`, ob ein Abschnitt
   /// ueberhaupt erscheint.
-  Map<String, dynamic> _payload({
+  ///
+  /// Mit [leereFelderLeeren] gehen sie stattdessen als `null` mit – beim
+  /// Bearbeiten, wo Weglassen den alten Wert stehen liesse.
+  @visibleForTesting
+  static Map<String, dynamic> payloadFor({
     required String companyId,
     required String companyName,
     required String companySlug,
@@ -190,34 +256,38 @@ class JobRepository {
     String? applyUrl,
     String? contactEmail,
     required bool isActive,
+    bool leereFelderLeeren = false,
   }) {
     String? clean(String? value) {
       final trimmed = value?.trim();
       return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
     }
 
+    final optional = <String, Object?>{
+      'company_logo_url': clean(companyLogoUrl),
+      'profession': clean(profession),
+      'industry': clean(industry),
+      'employment_type': clean(employmentType),
+      'description': clean(description),
+      'start_date': startDate?.toIso8601String(),
+      'duration': clean(duration),
+      'salary': clean(salary),
+      'apply_url': clean(applyUrl),
+      'contact_email': clean(contactEmail),
+    };
+
     return {
       'company_id': companyId,
       'company': companyName,
       'company_slug': companySlug,
-      if (clean(companyLogoUrl) != null)
-        'company_logo_url': clean(companyLogoUrl),
       'title': title.trim(),
       'location': location.trim(),
-      if (clean(profession) != null) 'profession': clean(profession),
-      if (clean(industry) != null) 'industry': clean(industry),
-      if (clean(employmentType) != null)
-        'employment_type': clean(employmentType),
-      if (clean(description) != null) 'description': clean(description),
       'tasks': tasks,
       'requirements': requirements,
       'benefits': benefits,
-      if (startDate != null) 'start_date': startDate.toIso8601String(),
-      if (clean(duration) != null) 'duration': clean(duration),
-      if (clean(salary) != null) 'salary': clean(salary),
-      if (clean(applyUrl) != null) 'apply_url': clean(applyUrl),
-      if (clean(contactEmail) != null) 'contact_email': clean(contactEmail),
       'is_active': isActive,
+      for (final e in optional.entries)
+        if (e.value != null || leereFelderLeeren) e.key: e.value,
     };
   }
 

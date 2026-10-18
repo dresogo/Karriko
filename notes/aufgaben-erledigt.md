@@ -1,6 +1,6 @@
 # Karriko – Erledigte Aufgaben
 
-**Stand:** 15. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
+**Stand:** 18. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
 
 Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, Nummer und Beleg. Neue Einträge kommen oben in die Tabelle, im selben Commit, der den Punkt aus der offenen Liste nimmt. Die Nummern bleiben vergeben und werden nie neu besetzt.
 
@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 18.10.2026 | T-2.15 | Stelle bearbeiten: `JobRepository.updateJob` und Bearbeitungsmodus im Formular | „Bearbeiten“ an jeder Stelle öffnet das Formular an ihrem Platz, vorausgefüllt. `updateJob` setzt geleerte Felder auf `null` statt sie wegzulassen, und die Zeilenrechte gehen mit dem Zustand neu mit, damit ein Entwurf nicht öffentlich lesbar wird. Tests in `jobs_test.dart` | dieser Commit |
 | 15.10.2026 | T-2.11 | Kontaktformular anbinden oder durch `mailto:` ersetzen | Das Formular meldete „Nachricht gesendet!“, ohne etwas zu senden. Ersetzt durch `mailto:demharter@dresogo.de` (Adresse vom Nutzer vorgegeben); die erfundene Adresse `hallo@karriko.de` und das Versprechen „Antwort innerhalb von 24 Stunden“ sind entfernt. Test `kontakt_test.dart` | dieser Commit |
 | 15.10.2026 | T-1.2 | gitleaks als Pre-Commit-Hook und in der CI | `.github/workflows/gitleaks.yml` prüft die Commits jedes Push und PR, gitleaks 8.30.1 als Binary mit SHA-256-Prüfung statt Action (E-07). Hook `.githooks/pre-commit`, einzurichten mit `git config core.hooksPath .githooks`. Ein Lauf über die ganze Historie steht noch aus | dieser Commit |
 | 15.10.2026 | T-1.11 | `dart fix --apply` und Migrationsreste entfernen | `dart fix` findet in App, `questionnaire_core` und `karriko_functions` nichts. Reste der Umstellung auf TablesDB umbenannt: `*Collection` → `*Table`, `_createProfileDocument` → `_createProfileRow`, „Dokument“ → „Zeile“ in Kommentaren. Ungenutzte Konstanten `reviews` und `questions` entfernt. `--dart-define`-Schlüssel unverändert | dieser Commit |

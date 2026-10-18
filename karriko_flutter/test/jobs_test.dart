@@ -13,7 +13,10 @@ import 'package:karriko_flutter/providers/job_provider.dart';
 
 /// Merkt sich jeden Aufruf, statt Appwrite zu fragen.
 class _FakeJobRepository implements JobRepository {
+  final List<JobModel> stellen;
   final aufrufe = <Invocation>[];
+
+  _FakeJobRepository([this.stellen = const []]);
 
   Iterable<Invocation> aufrufeVon(Symbol name) =>
       aufrufe.where((a) => a.memberName == name);
@@ -22,11 +25,29 @@ class _FakeJobRepository implements JobRepository {
   dynamic noSuchMethod(Invocation invocation) {
     aufrufe.add(invocation);
     if (invocation.memberName == #jobsForCompany) {
-      return Future.value(<JobModel>[]);
+      return Future.value(stellen);
+    }
+    if (invocation.memberName == #updateJob) {
+      return Future<JobModel>.value(stellen.first);
     }
     return super.noSuchMethod(invocation);
   }
 }
+
+final _stelle = JobModel(
+  id: 'j1',
+  companyId: 'c1',
+  company: 'Musterbau GmbH',
+  companySlug: 'musterbau-gmbh',
+  title: 'Ausbildung Maurer (m/w/d)',
+  location: 'Dortmund',
+  profession: 'Maurer',
+  employmentType: 'Ausbildung',
+  salary: '1. Jahr 1.050 €',
+  tasks: const ['Mauern', 'Putzen'],
+  isActive: false,
+  createdAt: DateTime(2026, 9, 1),
+);
 
 final _company = CompanyModel(
   id: 'c1',
@@ -134,6 +155,87 @@ void main() {
         isFalse,
       );
     });
+  });
+
+  group('Daten einer Stelle', () {
+    Map<String, dynamic> payload({required bool leeren}) =>
+        JobRepository.payloadFor(
+          companyId: 'c1',
+          companyName: 'Musterbau GmbH',
+          companySlug: 'musterbau-gmbh',
+          title: '  Ausbildung  ',
+          location: 'Dortmund',
+          salary: '   ',
+          tasks: const [],
+          requirements: const [],
+          benefits: const [],
+          isActive: true,
+          leereFelderLeeren: leeren,
+        );
+
+    test('beim Anlegen fallen leere Felder weg', () {
+      final daten = payload(leeren: false);
+      expect(daten['title'], 'Ausbildung');
+      expect(daten.containsKey('salary'), isFalse);
+      expect(daten.containsKey('start_date'), isFalse);
+    });
+
+    test('beim Bearbeiten werden geleerte Felder auf null gesetzt', () {
+      final daten = payload(leeren: true);
+      expect(daten.containsKey('salary'), isTrue);
+      expect(daten['salary'], isNull);
+      expect(daten.containsKey('start_date'), isTrue);
+      expect(daten['start_date'], isNull);
+    });
+  });
+
+  testWidgets('Bearbeiten füllt das Formular und speichert die Stelle',
+      (tester) async {
+    tester.view.physicalSize = const Size(1200, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    final repo = _FakeJobRepository([_stelle]);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          jobRepositoryProvider.overrideWithValue(repo),
+          myCompanyProvider.overrideWith((ref) async => _company),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: BetriebJobsSection(company: _company, ownerId: 'b1'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Bearbeiten'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Stelle bearbeiten'), findsOneWidget);
+    expect(find.text('Ausbildung Maurer (m/w/d)'), findsOneWidget);
+    expect(find.text('Mauern\nPutzen'), findsOneWidget);
+    // Weitere Stelle anlegen geht erst, wenn das Formular zu ist.
+    expect(find.text('Weitere Stelle erstellen'), findsNothing);
+
+    await tester.enterText(find.text('1. Jahr 1.050 €'), '');
+    await tester.ensureVisible(find.text('Änderungen speichern'));
+    await tester.tap(find.text('Änderungen speichern'));
+    await tester.pumpAndSettle();
+
+    final aufruf = repo.aufrufeVon(#updateJob).single;
+    expect(aufruf.namedArguments[#jobId], 'j1');
+    expect(aufruf.namedArguments[#ownerId], 'b1');
+    expect(aufruf.namedArguments[#salary], '');
+    // Ein Entwurf bleibt beim Speichern ein Entwurf.
+    expect(aufruf.namedArguments[#isActive], isFalse);
+    expect(repo.aufrufeVon(#createJob), isEmpty);
+    expect(find.text('Änderungen am Entwurf gespeichert.'), findsOneWidget);
   });
 
   testWidgets('Formular ohne Titel speichert nicht', (tester) async {

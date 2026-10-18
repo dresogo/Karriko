@@ -13,9 +13,10 @@ import '../../common/app_page.dart';
 
 /// Verwaltung der Ausbildungsstellen im Unternehmensprofil.
 ///
-/// Der Bereich zeigt die eigenen Stellen – veröffentlichte wie Entwürfe – und
-/// legt neue an. Das Formular erscheint erst auf Wunsch: Wer nur nachsehen
-/// will, wie viele Stellen laufen, soll nicht an zwanzig Feldern vorbeiscrollen.
+/// Der Bereich zeigt die eigenen Stellen – veröffentlichte wie Entwürfe –,
+/// legt neue an und bearbeitet bestehende. Das Formular erscheint erst auf
+/// Wunsch: Wer nur nachsehen will, wie viele Stellen laufen, soll nicht an
+/// zwanzig Feldern vorbeiscrollen. Es ist immer höchstens eines offen.
 class BetriebJobsSection extends ConsumerStatefulWidget {
   final CompanyModel? company;
   final String? ownerId;
@@ -33,7 +34,24 @@ class BetriebJobsSection extends ConsumerStatefulWidget {
 class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
   bool _formOffen = false;
 
-  void _formSchliessen() => setState(() => _formOffen = false);
+  /// Stelle, die gerade bearbeitet wird. Ihr Formular steht an ihrem Platz in
+  /// der Liste, damit niemand danach suchen muss.
+  JobModel? _bearbeitet;
+
+  void _formSchliessen() => setState(() {
+        _formOffen = false;
+        _bearbeitet = null;
+      });
+
+  void _neuOeffnen() => setState(() {
+        _bearbeitet = null;
+        _formOffen = true;
+      });
+
+  void _bearbeiten(JobModel job) => setState(() {
+        _formOffen = false;
+        _bearbeitet = job;
+      });
 
   void _melden(String text) {
     if (!mounted) return;
@@ -48,8 +66,9 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
 
   /// Verwirft alles, was Stellen zeigt: die eigene Liste, das Band auf dem
   /// öffentlichen Profil und das Vorschlagsband der Suche.
-  void _stellenNeuLaden() {
+  void _stellenNeuLaden({String? jobId}) {
     ref.invalidate(myJobsProvider);
+    if (jobId != null) ref.invalidate(jobByIdProvider(jobId));
     ref.invalidate(jobSuggestionsProvider);
     final slug = widget.company?.slug;
     if (slug != null) ref.invalidate(companyJobsProvider(slug));
@@ -67,7 +86,7 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
             isActive: !job.isActive,
             ownerId: ownerId,
           );
-      _stellenNeuLaden();
+      _stellenNeuLaden(jobId: job.id);
       _melden(job.isActive
           ? 'Stelle zurückgezogen. Sie ist jetzt ein Entwurf.'
           : 'Stelle veröffentlicht.');
@@ -168,22 +187,40 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
                   'Veröffentliche deine erste Ausbildungsstelle. Sie erscheint '
                   'auf deinem Profil und in der Suche.',
               actionLabel: 'Stelle erstellen',
-              onAction: () => setState(() => _formOffen = true),
+              onAction: _neuOeffnen,
             )
           else ...[
             for (final job in liste) ...[
-              _JobRow(
-                job: job,
-                onToggle: () => _umschalten(job),
-                onDelete: () => _loeschen(job),
-              ),
+              if (_bearbeitet?.id == job.id)
+                _JobForm(
+                  key: ValueKey('bearbeiten-${job.id}'),
+                  company: company,
+                  ownerId: widget.ownerId,
+                  job: job,
+                  onCancel: _formSchliessen,
+                  onSaved: (veroeffentlicht) {
+                    _stellenNeuLaden(jobId: job.id);
+                    _formSchliessen();
+                    _melden(veroeffentlicht
+                        ? 'Änderungen gespeichert.'
+                        : 'Änderungen am Entwurf gespeichert.');
+                  },
+                  onError: _melden,
+                )
+              else
+                _JobRow(
+                  job: job,
+                  onEdit: () => _bearbeiten(job),
+                  onToggle: () => _umschalten(job),
+                  onDelete: () => _loeschen(job),
+                ),
               const SizedBox(height: AppLayout.s16),
             ],
-            if (!_formOffen)
+            if (!_formOffen && _bearbeitet == null)
               Align(
                 alignment: Alignment.centerLeft,
                 child: ElevatedButton.icon(
-                  onPressed: () => setState(() => _formOffen = true),
+                  onPressed: _neuOeffnen,
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Weitere Stelle erstellen'),
                 ),
@@ -192,10 +229,11 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
           if (_formOffen) ...[
             const SizedBox(height: AppLayout.s8),
             _JobForm(
+              key: const ValueKey('neu'),
               company: company,
               ownerId: widget.ownerId,
               onCancel: _formSchliessen,
-              onCreated: (veroeffentlicht) {
+              onSaved: (veroeffentlicht) {
                 _stellenNeuLaden();
                 _formSchliessen();
                 _melden(veroeffentlicht
@@ -216,11 +254,13 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
 
 class _JobRow extends StatelessWidget {
   final JobModel job;
+  final VoidCallback onEdit;
   final VoidCallback onToggle;
   final VoidCallback onDelete;
 
   const _JobRow({
     required this.job,
+    required this.onEdit,
     required this.onToggle,
     required this.onDelete,
   });
@@ -272,6 +312,12 @@ class _JobRow extends StatelessWidget {
                 style: TextButton.styleFrom(foregroundColor: AppColors.ink),
                 icon: const Icon(Icons.open_in_new, size: 16),
                 label: const Text('Ansehen'),
+              ),
+              TextButton.icon(
+                onPressed: onEdit,
+                style: TextButton.styleFrom(foregroundColor: AppColors.ink),
+                icon: const Icon(Icons.edit_outlined, size: 16),
+                label: const Text('Bearbeiten'),
               ),
               TextButton.icon(
                 onPressed: onToggle,
@@ -350,15 +396,23 @@ const _arten = [
 class _JobForm extends ConsumerStatefulWidget {
   final CompanyModel company;
   final String? ownerId;
+
+  /// Bestehende Stelle, die bearbeitet wird. Ohne sie legt das Formular eine
+  /// neue an.
+  final JobModel? job;
   final VoidCallback onCancel;
-  final ValueChanged<bool> onCreated;
+
+  /// Gespeichert; der Wert sagt, ob die Stelle jetzt veröffentlicht ist.
+  final ValueChanged<bool> onSaved;
   final ValueChanged<String> onError;
 
   const _JobForm({
+    super.key,
     required this.company,
     required this.ownerId,
+    this.job,
     required this.onCancel,
-    required this.onCreated,
+    required this.onSaved,
     required this.onError,
   });
 
@@ -385,13 +439,35 @@ class _JobFormState extends ConsumerState<_JobForm> {
   bool _veroeffentlichen = true;
   bool _speichert = false;
 
+  bool get _bearbeitet => widget.job != null;
+
   @override
   void initState() {
     super.initState();
-    // Standort und Beruf stehen im Unternehmensprofil – die Stelle erbt sie als
-    // Vorschlag, statt sie erneut abzufragen.
-    _ortCtrl.text = widget.company.location;
-    _berufCtrl.text = widget.company.industry ?? '';
+    final job = widget.job;
+    if (job == null) {
+      // Standort und Beruf stehen im Unternehmensprofil – die Stelle erbt sie
+      // als Vorschlag, statt sie erneut abzufragen.
+      _ortCtrl.text = widget.company.location;
+      _berufCtrl.text = widget.company.industry ?? '';
+      return;
+    }
+    _titelCtrl.text = job.title;
+    _berufCtrl.text = job.profession ?? '';
+    _ortCtrl.text = job.location;
+    _dauerCtrl.text = job.duration ?? '';
+    _verguetungCtrl.text = job.salary ?? '';
+    _beschreibungCtrl.text = job.description ?? '';
+    _aufgabenCtrl.text = job.tasks.join('\n');
+    _anforderungenCtrl.text = job.requirements.join('\n');
+    _angeboteCtrl.text = job.benefits.join('\n');
+    _mailCtrl.text = job.contactEmail ?? '';
+    _linkCtrl.text = job.applyUrl ?? '';
+    // Alle Stellen entstehen in diesem Formular, die Art steht also in der
+    // Auswahl. Fehlt sie, gilt wie beim Anlegen die erste.
+    if (_arten.contains(job.employmentType)) _art = job.employmentType!;
+    _beginn = job.startDate;
+    _veroeffentlichen = job.isActive;
   }
 
   @override
@@ -435,30 +511,58 @@ class _JobFormState extends ConsumerState<_JobForm> {
 
     setState(() => _speichert = true);
     try {
-      await ref.read(jobRepositoryProvider).createJob(
-            ownerId: ownerId,
-            companyId: widget.company.id,
-            companyName: widget.company.name,
-            companySlug: widget.company.slug,
-            companyLogoUrl: widget.company.logoUrl,
-            title: _titelCtrl.text,
-            location: _ortCtrl.text,
-            profession: _berufCtrl.text,
-            industry: widget.company.industry,
-            employmentType: _art,
-            description: _beschreibungCtrl.text,
-            tasks: _punkte(_aufgabenCtrl),
-            requirements: _punkte(_anforderungenCtrl),
-            benefits: _punkte(_angeboteCtrl),
-            startDate: _beginn,
-            duration: _dauerCtrl.text,
-            salary: _verguetungCtrl.text,
-            applyUrl: _linkCtrl.text,
-            contactEmail: _mailCtrl.text,
-            isActive: _veroeffentlichen,
-          );
+      final repo = ref.read(jobRepositoryProvider);
+      final job = widget.job;
+      if (job == null) {
+        await repo.createJob(
+          ownerId: ownerId,
+          companyId: widget.company.id,
+          companyName: widget.company.name,
+          companySlug: widget.company.slug,
+          companyLogoUrl: widget.company.logoUrl,
+          title: _titelCtrl.text,
+          location: _ortCtrl.text,
+          profession: _berufCtrl.text,
+          industry: widget.company.industry,
+          employmentType: _art,
+          description: _beschreibungCtrl.text,
+          tasks: _punkte(_aufgabenCtrl),
+          requirements: _punkte(_anforderungenCtrl),
+          benefits: _punkte(_angeboteCtrl),
+          startDate: _beginn,
+          duration: _dauerCtrl.text,
+          salary: _verguetungCtrl.text,
+          applyUrl: _linkCtrl.text,
+          contactEmail: _mailCtrl.text,
+          isActive: _veroeffentlichen,
+        );
+      } else {
+        await repo.updateJob(
+          jobId: job.id,
+          ownerId: ownerId,
+          companyId: widget.company.id,
+          companyName: widget.company.name,
+          companySlug: widget.company.slug,
+          companyLogoUrl: widget.company.logoUrl,
+          title: _titelCtrl.text,
+          location: _ortCtrl.text,
+          profession: _berufCtrl.text,
+          industry: widget.company.industry,
+          employmentType: _art,
+          description: _beschreibungCtrl.text,
+          tasks: _punkte(_aufgabenCtrl),
+          requirements: _punkte(_anforderungenCtrl),
+          benefits: _punkte(_angeboteCtrl),
+          startDate: _beginn,
+          duration: _dauerCtrl.text,
+          salary: _verguetungCtrl.text,
+          applyUrl: _linkCtrl.text,
+          contactEmail: _mailCtrl.text,
+          isActive: _veroeffentlichen,
+        );
+      }
       if (!mounted) return;
-      widget.onCreated(_veroeffentlichen);
+      widget.onSaved(_veroeffentlichen);
     } catch (_) {
       if (!mounted) return;
       setState(() => _speichert = false);
@@ -477,7 +581,7 @@ class _JobFormState extends ConsumerState<_JobForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Neue Ausbildungsstelle',
+            Text(_bearbeitet ? 'Stelle bearbeiten' : 'Neue Ausbildungsstelle',
                 style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: AppLayout.s8),
             Text(
@@ -641,7 +745,8 @@ class _JobFormState extends ConsumerState<_JobForm> {
               children: [
                 AppSwitchRow(
                   icon: Icons.public,
-                  title: 'Sofort veröffentlichen',
+                  title:
+                      _bearbeitet ? 'Veröffentlicht' : 'Sofort veröffentlichen',
                   subtitle: _veroeffentlichen
                       ? 'Erscheint im Profil und in der Suche'
                       : 'Wird als Entwurf gespeichert',
@@ -669,9 +774,11 @@ class _JobFormState extends ConsumerState<_JobForm> {
                     child: Text(
                       _speichert
                           ? 'Wird gespeichert …'
-                          : (_veroeffentlichen
-                              ? 'Veröffentlichen'
-                              : 'Als Entwurf speichern'),
+                          : _bearbeitet
+                              ? 'Änderungen speichern'
+                              : (_veroeffentlichen
+                                  ? 'Veröffentlichen'
+                                  : 'Als Entwurf speichern'),
                     ),
                   ),
                 ),
