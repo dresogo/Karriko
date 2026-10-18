@@ -141,6 +141,24 @@ void main() {
     );
   });
 
+  testWidgets('Merkliste führt aufs Dashboard und steht dort nicht',
+      (tester) async {
+    // E-30: Ohne Merken-Knopf bliebe die Liste immer leer (T-6.23).
+    await _open(tester, '/bookmarks', const Size(1440, 900));
+
+    expect(
+      _container
+          .read(routerProvider)
+          .routerDelegate
+          .currentConfiguration
+          .uri
+          .toString(),
+      '/dashboard',
+    );
+    expect(find.text('Merkliste'), findsNothing);
+    expect(find.text('Gemerkte Betriebe'), findsNothing);
+  });
+
   testWidgets('Profilmenue zeigt Kopfbereich und alle Ziele', (tester) async {
     await _open(tester, '/dashboard', const Size(1440, 900));
 

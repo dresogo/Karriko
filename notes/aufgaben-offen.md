@@ -178,8 +178,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.5 · P2 · Auth-Seiten auf Swiss Design umstellen und mit Kopfzeile versehen (todo E)
   Betrifft `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`.
 - [ ] T-6.6 · P2 · Restliche Betriebsseiten: Analytics, Abonnement, Team, Bewertungen, Meldungen (todo E)
-- [ ] T-6.7 · P2 · Restliche Azubi-Seiten: Lesezeichen, Benachrichtigungen (todo E)
-  Benachrichtigungen sind seit 18.10.2026 ausgeblendet (T-2.13); offen ist hier nur noch die Merkliste.
 - [ ] T-6.8 · P2 · Restliche öffentliche Seiten: Bewertungsdetail, Blogartikel, Kontakt, Über uns (todo E)
 - [ ] T-6.11 · P2 · Ladezeit auf dem Smartphone messen: LCP unter 2,5 s, CLS unter 0,1 (Referenz §5)
 
@@ -188,6 +186,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.19 · P2 · Bewertungsrichtlinien als öffentliche Seite, der Entwurf vom August liegt vor (Sitemap)
 
 - [ ] T-6.21 · P2 · Anmeldeschranke umsetzen: gesperrte Teile erst nach Anmeldung vom Server ausliefern, für Google als gesperrt kennzeichnen, Vergleich mit zwei Betrieben ohne Konto, Anonymitätsgrenzen gelten auch angemeldet (Konzept: Tab Anmeldeschranke)
+- [ ] T-6.23 · P2 · Merkliste zurückbringen: „Merken“-Knopf auf dem Betriebsprofil, Seite `/bookmarks` und Dashboard-Abschnitt im Swiss Design. Erst nach T-4.1, sonst wären fremde Merklisten lesbar. Repository und Tests stehen schon (`company_repository_test.dart`) (Chat)
+  Am 18.10.2026 nach E-30 ausgeblendet: `bookmarkCompany` wurde nirgends aufgerufen, die Liste blieb immer leer. Alte Seite in der Historie bis `a6e1595`.
 
 ## 7 · Tests
 

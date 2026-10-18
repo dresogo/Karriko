@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
-import '../../data/models/company_model.dart';
 import '../../data/models/review_draft.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/company_provider.dart';
 import '../../providers/questionnaire_provider.dart';
 import '../common/app_page.dart';
 
@@ -17,29 +15,25 @@ class AzubiDashboardScreen extends ConsumerWidget {
     final auth = ref.watch(authProvider);
     final userId = auth.user?.id ?? '';
     final myReviews = ref.watch(myDraftsProvider(userId));
-    final bookmarks = ref.watch(bookmarkedCompaniesProvider(userId));
 
     return AppPage(
       appBarTitle: 'Dashboard',
       eyebrow: 'DASHBOARD',
       title: 'Hallo, ${auth.user?.displayName ?? 'Azubi'}.',
-      lede: 'Deine Bewertungen, deine gemerkten Betriebe und der schnelle Weg '
-          'zu allem Weiteren.',
+      lede: 'Deine Bewertungen und der schnelle Weg zu allem Weiteren.',
       headerAction: FilledButton.icon(
         onPressed: () => context.go('/reviews/new'),
         icon: const Icon(Icons.add, size: 18),
         label: const Text('Bewertung schreiben'),
       ),
       children: [
-        _Stats(reviews: myReviews, bookmarks: bookmarks),
+        _Stats(reviews: myReviews),
         const SizedBox(height: AppLayout.s48),
         const SectionLabel('Schnellzugriff'),
         const SizedBox(height: AppLayout.s16),
         const _QuickActions(),
         const SizedBox(height: AppLayout.s48),
         _ReviewsSection(reviews: myReviews),
-        const SizedBox(height: AppLayout.s48),
-        _BookmarksSection(bookmarks: bookmarks),
       ],
     );
   }
@@ -49,9 +43,8 @@ class AzubiDashboardScreen extends ConsumerWidget {
 
 class _Stats extends StatelessWidget {
   final AsyncValue<List<ReviewDraft>> reviews;
-  final AsyncValue<List<CompanyModel>> bookmarks;
 
-  const _Stats({required this.reviews, required this.bookmarks});
+  const _Stats({required this.reviews});
 
   /// Zeigt Werte erst, wenn sie geladen sind – ein Strich ist ehrlicher als
   /// eine Null, die nach dem Laden auf etwas anderes springt.
@@ -84,11 +77,6 @@ class _Stats extends StatelessWidget {
               child: StatTile(
                   value: _offeneEntwuerfe, label: 'Angefangene Bewertungen'),
             ),
-            SizedBox(
-              width: width,
-              child: StatTile(
-                  value: _count(bookmarks), label: 'Gemerkte Betriebe'),
-            ),
           ],
         );
       },
@@ -105,7 +93,6 @@ class _QuickActions extends StatelessWidget {
     (Icons.quiz_outlined, 'Fragen bewerten', '/fragen-bewerten'),
     (Icons.search, 'Betrieb suchen', '/search'),
     (Icons.rate_review_outlined, 'Meine Bewertungen', '/my-reviews'),
-    (Icons.bookmark_border, 'Merkliste', '/bookmarks'),
     (Icons.person_outline, 'Mein Profil', '/profile'),
     (Icons.tune, 'Einstellungen', '/settings'),
   ];
@@ -263,57 +250,6 @@ class _ReviewsSection extends StatelessWidget {
           loading: () => const _SectionLoading(),
           error: (_, __) => const _SectionError(
             text: 'Deine Bewertungen konnten nicht geladen werden.',
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Merkliste ───────────────────────────────────────────────────────────────
-
-class _BookmarksSection extends StatelessWidget {
-  final AsyncValue<List<CompanyModel>> bookmarks;
-
-  const _BookmarksSection({required this.bookmarks});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _SectionHead(
-          label: 'Merkliste',
-          actionLabel: 'Alle anzeigen',
-          onAction: () => context.go('/bookmarks'),
-        ),
-        const SizedBox(height: AppLayout.s16),
-        bookmarks.when(
-          data: (list) => list.isEmpty
-              ? AppEmptyState(
-                  title: 'Keine Betriebe gemerkt',
-                  description:
-                      'Speichere Betriebe, die dich interessieren, um sie '
-                      'später wiederzufinden.',
-                  actionLabel: 'Betriebe entdecken',
-                  onAction: () => context.go('/search'),
-                )
-              : AppRowGroup(
-                  children: [
-                    for (final company in list.take(3))
-                      AppRow(
-                        icon: Icons.business_outlined,
-                        title: company.name,
-                        subtitle: company.location.isNotEmpty
-                            ? company.location
-                            : (company.industry ?? 'Ohne Angabe'),
-                        onTap: () => context.go('/company/${company.slug}'),
-                      ),
-                  ],
-                ),
-          loading: () => const _SectionLoading(),
-          error: (_, __) => const _SectionError(
-            text: 'Deine Merkliste konnte nicht geladen werden.',
           ),
         ),
       ],

@@ -163,8 +163,3 @@ final searchSuggestionsProvider =
   if (query.length < 2) return Future.value([]);
   return ref.watch(companyRepositoryProvider).getSearchSuggestions(query);
 });
-
-final bookmarkedCompaniesProvider =
-    FutureProvider.family<List<CompanyModel>, String>((ref, userId) {
-  return ref.watch(companyRepositoryProvider).getBookmarkedCompanies(userId);
-});

@@ -535,7 +535,6 @@ class KarrikoDrawer extends ConsumerWidget {
                     label: 'Fragen bewerten', route: '/fragen-bewerten'),
                 const _DrawerItem(
                     label: 'Meine Bewertungen', route: '/my-reviews'),
-                const _DrawerItem(label: 'Merkliste', route: '/bookmarks'),
                 const _DrawerItem(label: 'Einstellungen', route: '/settings'),
                 const Divider(color: AppColors.line),
                 ListTile(

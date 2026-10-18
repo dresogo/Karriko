@@ -36,12 +36,6 @@ class AppColors {
   static const error = Color(0xFFEF4444);
   static const warning = Color(0xFFF59E0B);
   static const success = Color(0xFF22C55E);
-
-  static const BoxShadow cardShadow = BoxShadow(
-    color: Color(0x12000000),
-    blurRadius: 18,
-    offset: Offset(0, 4),
-  );
 }
 
 /// Corner radii used across the app.
