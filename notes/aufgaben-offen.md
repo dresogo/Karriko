@@ -2,7 +2,7 @@
 
 **Stand:** 18. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-154 Aufgaben sind offen, 72 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+172 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -115,6 +115,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.6 · P1 · Salz für den Gerätehash zusätzlich im Passwortmanager ablegen (todo A)
   Liegt lokal in `appwrite/functions/submit_review/.env` (gitignored).
 - [ ] T-4.9 · P1 · Content-Security-Policy und Security-Header setzen, offen seit dem ZAP-Scan vom 1. Juni (S2, Referenz §4.3)
+  Entwurf für nginx mit Headern, CSP und Rate-Limits im Tab „Nginx-Konfiguration“ (18.10.2026); das Captcha darin ist offen (T-8.11).
   Voraussetzungen erledigt (T-4.7, T-4.8). `'wasm-unsafe-eval'` und der Appwrite-Endpunkt in `connect-src` sind Pflicht; die Noto-Ersatzschrift lädt noch von `fonts.gstatic.com` (T-5.26). Im Browser gegentesten, eine zu strenge CSP zeigt eine weiße Seite.
 - [ ] T-4.14 · P2 · Protokollierung kritischer Aktionen ohne personenbezogene Daten in Logs (Plan, Referenz §4.1)
 - [ ] T-4.15 · P2 · Verfügbarkeitsüberwachung für das Ziel 99,9 % (Referenz §5, neu)
@@ -216,6 +217,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 - [ ] T-8.9 · P2 · Anmeldeschranke festlegen: welche zwei Kategorien und wie viele Bewertungen ohne Konto sichtbar sind, was Betriebskonten bei anderen Betrieben sehen; danach als Entscheidung ins Factsheet (Konzept: Tab Anmeldeschranke)
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
+- [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 
@@ -243,6 +245,33 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-10.5 · P2 · Die Sperre schützt nur die Website. `public_reviews` und `company_scores` sind über die Appwrite-API weiter mit `read("any")` lesbar, also bis zum Launch keine echten Bewertungen veröffentlichen (Website-Umbau)
 - [ ] T-10.6 · P2 · Bestätigungsmail, Passwort-Reset, Magic Link und OAuth mit Testkonten durch die Sperre hindurch testen (Website-Umbau)
 - [ ] T-10.7 · P3 · Optional: E-Mail-Liste „Zum Start benachrichtigen“ mit Double-Opt-in und Hinweis in der Datenschutzerklärung (neu)
+
+## 11 · Fehler aus dem Website-Test
+
+Übernommen am 18.10.2026 aus dem Tab „Fehlerreport Website“ (Test vom 13.10.2026 auf karriko.dresogo.de bei 320 px). Priorität aus der Schwere im Report: kritisch und hoch → P1, mittel → P2, niedrig → P3. Inzwischen behoben und deshalb nicht übernommen: Kontaktformular (T-2.11), 404-Seite ohne Rahmen, widersprüchliche Antwortzeit (Kontakt nennt keine mehr).
+
+- [ ] T-11.1 · P1 · Appwrite lehnt alle Anfragen von `karriko.dresogo.de` ab (CORS): Web-Plattform mit diesem Hostnamen in der Console anlegen; `karriko.de` folgt mit T-3.7 (Fehlerreport Website)
+- [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-08), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
+- [ ] T-11.3 · P1 · Der Live-Build spricht den Passkey-Dienst unter `http://localhost:3000` an, Passkeys gehen für niemanden: mit `--dart-define=PASSKEY_SERVICE_URL=…` bauen, Dienst mit passender `RP_ID` betreiben (hängt an T-3.8, T-3.16) (Fehlerreport Website)
+- [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
+- [ ] T-11.5 · P1 · „2.400+ Bewertungen“ auf Startseite und „Für Betriebe“ ist erfunden: entfernen oder live zählen und erst ab echter Größe zeigen (Factsheet §2.5) (Fehlerreport Website)
+- [ ] T-11.6 · P1 · FAQ widerspricht dem Produkt: Name wählbar (es gibt keine namentlichen Bewertungen), Bearbeiten und Löschen unter „Meine Bewertungen“ (geht nicht, T-6.17), Moderation „innerhalb von 24 Stunden“ (Zurückstellung bis Ausbildungsende, E-26), „Work-Life-Balance“ statt Belastung. Anonymitätstext erst nach T-5.3 (Fehlerreport Website)
+- [ ] T-11.7 · P1 · „Für Betriebe“ verspricht Unentschiedenes: Antworten auf Bewertungen (T-8.1), Branchenvergleich (T-8.7), Bewerbermanagement (T-8.5), Premium für 49 €/Monat ohne netto/brutto (T-8.4). Nur Entschiedenes zeigen, Rest als geplant kennzeichnen (E-30) (Fehlerreport Website)
+- [ ] T-11.8 · P1 · Blog „Neu auf Karriko“ listet Versionen v1.2.1 bis v1.4 samt Fehlerbehebungen für Betriebe, die es noch nicht gibt: bis zum Launch ausblenden oder als Roadmap kennzeichnen (Fehlerreport Website)
+- [ ] T-11.9 · P1 · Registrierung: Checkbox „Ich stimme den AGB und der Datenschutzerklärung zu“ ohne Links; einer Datenschutzerklärung stimmt man nicht zu. Text und Links anpassen, Wortlaut juristisch prüfen; Mindestalter siehe T-5.18 (Fehlerreport Website)
+- [ ] T-11.10 · P1 · Standortfilter der Suche bietet nur Zürich, Genf, Basel und Bern: Orte aus den Betriebsdaten oder ein Ortsfeld (Fehlerreport Website)
+- [ ] T-11.11 · P1 · Startseite: Die Karte „Stellen“ trägt die Beschreibung des Admin-Bereichs („Moderation, Datenschutzprozesse und Plattformqualität zentral steuern“) (Fehlerreport Website)
+- [ ] T-11.12 · P1 · Startseite: „RLS-Policies, AVV-Anforderungen …“ ist Entwicklerjargon aus der Supabase-Zeit (E-01); in Alltagssprache sagen, was Nutzer davon haben (Fehlerreport Website)
+- [ ] T-11.13 · P2 · Betriebsprofil: Ein Netzwerkfehler erscheint als „Betrieb nicht gefunden“; beide Fälle trennen, beim Fehler „Erneut versuchen“ (Fehlerreport Website)
+- [ ] T-11.14 · P2 · Bei 320 px Wortumbrüche mitten im Wort („Bewertunge / n“, „Unternehmensp / rofil“) und abgeschnittene Texte („Passk…“, Fehlermeldungen); verwandt mit T-6.4 (Fehlerreport Website)
+- [ ] T-11.15 · P2 · Screenreader sehen nur „Enable accessibility“ (englisch), bis man es aktiviert; Menü- und Suchknopf ohne Beschriftung. `SemanticsBinding.instance.ensureSemantics()` prüfen, Beschriftungen setzen (Fehlerreport Website)
+- [ ] T-11.16 · P2 · Menü: „Für Azubis“ führt nur zur Startseite, „Suche“ fehlt im Menü (steht nur im Footer) (Fehlerreport Website)
+- [ ] T-11.17 · P2 · Suche: Der Suchbegriff steht inzwischen als `?q=` in der URL, Branche und Ort nicht; Suche lässt sich so nicht teilen oder per Zurück wiederherstellen (Fehlerreport Website)
+- [ ] T-11.18 · P2 · Registrierung: Der Google-Knopf heißt „Mit Google anmelden“ statt „registrieren“; fehlender Seitenrahmen siehe T-6.5 (Fehlerreport Website)
+- [ ] T-11.19 · P3 · Metadaten: „A new Flutter project.“, App-Name `karriko_flutter`, Flutter-Standardfarbe in `web/index.html` und `web/manifest.json` (Fehlerreport Website)
+- [ ] T-11.20 · P3 · Übergangsdomain ohne `noindex`: `X-Robots-Tag: noindex` im Server setzen (Fehlerreport Website)
+- [ ] T-11.21 · P3 · Blog „Top 10 Ausbildungsberufe 2026“: Teaser verspricht Übernahmequoten, die der Artikel nicht liefert; keine Quelle für die Rangliste (Fehlerreport Website)
+- [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-08), in der App `Link` aus `url_launcher` (Fehlerreport Website)
 
 ## Bewusst nicht geplant
 

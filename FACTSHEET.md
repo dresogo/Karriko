@@ -250,7 +250,7 @@ Jede Liste im Projekt hat einen eigenen Buchstaben. Ein Buchstabe steht nur für
 | Buchstabe | Liste | Wo | Stand |
 |---|---|---|---|
 | **E** | Entscheidungen | Abschnitt 4 | Altbestand E-01 bis E-53 behält seine Nummern; neue Einträge im Format `E-<Abschnitt>.<Nr.>` |
-| **T** | Aufgaben (To-do) | `notes/aufgaben-offen.md`, Erledigtes in `notes/aufgaben-erledigt.md`; der Tab „Offene Aufgaben“ spiegelt nur | eingeführt, T-1 bis T-10 |
+| **T** | Aufgaben (To-do) | `notes/aufgaben-offen.md`, Erledigtes in `notes/aufgaben-erledigt.md`; der Tab „Offene Aufgaben“ spiegelt nur | eingeführt, T-1 bis T-11 (T-11 = Fehler aus dem Tab „Fehlerreport Website“) |
 | **W** | Widersprüche zwischen Code, Doku und Entscheidungen | Abschnitt 9 | eingeführt |
 | **R** | Risiken | Tab „Website-Umbau SEO", `projekt-referenz.md` §7 | reserviert |
 | **J** | Fragen an den Anwalt (juristisch) | Tab „Fragen an den Anwalt" | reserviert |
