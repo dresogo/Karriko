@@ -48,7 +48,14 @@ String companySlug(String name) {
 }
 
 class CompanyRepository {
-  TablesDB get _db => TablesDB(AppwriteService.client);
+  /// [db] ersetzt in Tests den Zugriff auf Appwrite. Ohne ihn entsteht er
+  /// erst beim Aufruf, weil der Client beim Bau des Providers noch nicht
+  /// initialisiert sein muss.
+  CompanyRepository({TablesDB? db}) : _dbOverride = db;
+
+  final TablesDB? _dbOverride;
+
+  TablesDB get _db => _dbOverride ?? TablesDB(AppwriteService.client);
 
   Future<List<CompanyModel>> searchCompanies({
     String? query,
@@ -282,6 +289,11 @@ class CompanyRepository {
     );
   }
 
+  /// Gemerkte Unternehmen eines Kontos.
+  ///
+  /// Ein Eintrag, dessen Unternehmen es nicht mehr gibt, fällt weg, statt die
+  /// ganze Merkliste mit einem Fehler zu belegen. Andere Fehler (etwa keine
+  /// Verbindung) gehen weiter nach oben.
   Future<List<CompanyModel>> getBookmarkedCompanies(String userId) async {
     final bookmarks = await _db.listRows(
       databaseId: AppwriteConstants.databaseId,
@@ -289,9 +301,16 @@ class CompanyRepository {
       queries: [Query.equal('user_id', userId), Query.limit(100)],
     );
     final companies = await Future.wait(
-      bookmarks.rows.map((b) => getCompanyById(b.data['company_id'] as String)),
+      bookmarks.rows.map((b) async {
+        try {
+          return await getCompanyById(b.data['company_id'] as String);
+        } on AppwriteException catch (e) {
+          if (e.code == 404) return null;
+          rethrow;
+        }
+      }),
     );
-    return companies;
+    return companies.whereType<CompanyModel>().toList();
   }
 
   Map<String, dynamic> _toMap(aw.Row doc) => {
