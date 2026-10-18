@@ -211,7 +211,7 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-1 · Design**
 
 - **W-1.1 · Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
-- **W-1.2 · Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".
+- ~~**W-1.2 · Schatten:** `AppColors.cardShadow` existiert und wird in `bookmarks_screen.dart` benutzt. Widerspricht „keine Schatten".~~ Behoben am 18.10.2026: Merkliste ausgeblendet (E-30), Token entfernt (T-6.7, `803a15e`).
 - **W-1.3 · Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme (T-6.2).
 - **W-1.4 · Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
 - **W-1.5 · Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
