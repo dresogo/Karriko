@@ -992,7 +992,7 @@ ist. Zurückgestellt wird, wer in A3 darum bittet, und in Kleinbetrieben, wer
 | Ausführen darf | `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 600 s |
-| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read` |
+| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read`, `execution.write` |
 
 Rechnet alle Bewertungen mit den aktuellen Parametern neu. Gebraucht, wenn sich an
 der Definition etwas geändert hat, was die Auswertung betrifft: ein Punktwert, ein
@@ -1007,10 +1007,10 @@ durch ist:
 ```
 
 Danach mit dem zurückgegebenen `next_offset` erneut, bis `done: true`. Die Antwort
-nennt unter `companies` die betroffenen Betriebe; für die läuft
-`aggregate_company` nicht automatisch — sie werden erst neu gerechnet, wenn sich
-eine ihrer öffentlichen Zeilen ändert. Bei einer Parameteränderung also einmal
-selbst anstoßen.
+nennt unter `companies` die betroffenen Betriebe. Für jeden davon stößt sie am
+Ende des Stapels `aggregate_company` asynchron an (T-2.21, dafür
+`execution.write`); `aggregation_started` nennt, für welche das geklappt hat.
+Im Probelauf wird nichts angestoßen.
 
 Steht in der Antwort `unusable_versions`, ließ sich eine Fassung des Fragebogens
 nicht laden; siehe Abschnitt 14.
@@ -1442,7 +1442,7 @@ steht in Abschnitt 12.
 ### Danach
 
 * Die Aggregate der betroffenen Betriebe stehen noch auf den alten Zahlen.
-  `recompute_all`, dann `aggregate_company`.
+  `recompute_all` laufen lassen; es stößt `aggregate_company` selbst an (T-2.21).
 * In `review_reports` können Meldungen zu nun gelöschten Bewertungen
   übrigbleiben. Sie schaden nicht, zeigen in der Moderation aber ins Leere.
 * Der eindeutige Index auf `user_id` + `company_id`, den Appwrite wegen doppelter

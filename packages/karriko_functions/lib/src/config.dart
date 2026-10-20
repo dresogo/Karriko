@@ -40,6 +40,9 @@ class FunctionConfig {
   /// Wie viele Tage sich eine Kontolöschung zurücknehmen lässt (E-50).
   final int deletionGraceDays;
 
+  /// Die Function, die `recompute_all` je Betrieb anstößt (T-2.21).
+  final String aggregateFunction;
+
   final String questionnairesBucket;
   final String verificationBucket;
 
@@ -80,6 +83,7 @@ class FunctionConfig {
     this.profilesTable = 'profiles',
     this.bookmarksTable = 'bookmarks',
     this.deletionGraceDays = 14,
+    this.aggregateFunction = 'aggregate_company',
     required this.questionnairesBucket,
     required this.verificationBucket,
     required this.moderatorsTeam,
@@ -136,6 +140,7 @@ class FunctionConfig {
       profilesTable: mit('KARRIKO_TBL_PROFILES', 'profiles'),
       bookmarksTable: mit('KARRIKO_TBL_BOOKMARKS', 'bookmarks'),
       deletionGraceDays: zahl('KARRIKO_DELETION_GRACE_DAYS', 14),
+      aggregateFunction: mit('KARRIKO_FN_AGGREGATE', 'aggregate_company'),
       questionnairesBucket:
           mit('KARRIKO_BUCKET_QUESTIONNAIRES', 'questionnaires'),
       verificationBucket:

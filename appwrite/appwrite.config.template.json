@@ -596,7 +596,7 @@
       "execute": ["team:${TEAM_ADMINS}"],
       "events": [],
       "schedule": "",
-      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read", "execution.write"]
     },
     {
       "$id": "cleanup",

@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_appwrite/dart_appwrite.dart';
+import 'package:dart_appwrite/enums.dart' show ExecutionMethod;
 import 'package:karriko_functions/karriko_functions.dart';
 import 'package:questionnaire_core/questionnaire_core.dart';
 
@@ -17,6 +20,15 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 /// **In Etappen.** Der Lauf verarbeitet höchstens [_stapelGroesse] Bewertungen
 /// und gibt den nächsten Versatz zurück. Läuft die Function in ein Timeout, ruft
 /// man sie mit diesem Versatz wieder auf, statt von vorn anzufangen.
+///
+/// **Danach die Betriebe (T-2.21).** Am Ende jedes Stapels wird
+/// `aggregate_company` für jeden darin betroffenen Betrieb einmal angestoßen,
+/// asynchron, damit dieser Lauf nicht auf die Aggregation wartet. Über die
+/// Ereignisse an `public_reviews` liefe sie zwar oft ohnehin, aber nicht
+/// verlässlich: Ändert sich nur ein Parameter der Aggregation (etwa die
+/// Alterungsgrenze), ändern sich die Zeilen womöglich gar nicht. Ein Betrieb,
+/// dessen Bewertungen über zwei Stapel verteilt sind, wird zweimal angestoßen;
+/// die Aggregation ist idempotent, der zweite Lauf sieht den fertigen Stand.
 ///
 /// Abweichung vom Plan: Dort war vorgesehen, den Fortschritt in einer Zeile in
 /// `company_scores` zu merken. Der Versatz im Aufruf ist einfacher und hat
@@ -153,6 +165,28 @@ Future<dynamic> main(final context) async {
 
   final fertig = neuGerechnet + uebersprungen < _stapelGroesse;
 
+  // Im Probelauf wird nichts angestoßen: Er soll nur zählen.
+  final angestossen = <String>[];
+  if (!probelauf) {
+    final functions = Functions(client);
+    for (final betrieb in betriebe) {
+      try {
+        await functions.createExecution(
+          functionId: ctx.config.aggregateFunction,
+          body: jsonEncode({'company_id': betrieb}),
+          xasync: true,
+          method: ExecutionMethod.pOST,
+          path: '/',
+        );
+        angestossen.add(betrieb);
+      } catch (e) {
+        // Kein Abbruch: Die Bewertungen sind neu gerechnet. Der Betrieb steht
+        // in `companies` und lässt sich von Hand nachholen.
+        ctx.logError('aggregate_company für $betrieb nicht angestoßen: $e');
+      }
+    }
+  }
+
   ctx.log(
     '${probelauf ? 'Probelauf: ' : ''}$neuGerechnet neu gerechnet, '
     '$uebersprungen uebersprungen, ${betriebe.length} Betrieb(e) betroffen. '
@@ -175,9 +209,9 @@ Future<dynamic> main(final context) async {
       'done': fertig,
       if (!fertig) 'next_offset': versatz + neuGerechnet + uebersprungen,
       'dry_run': probelauf,
-      // Die Aggregate werden nicht hier neu gerechnet: Das macht
-      // aggregate_company je Betrieb, und diese Liste sagt, für welche.
-      'aggregate_next': betriebe.toList(),
+      // Für diese Betriebe läuft `aggregate_company` jetzt im Hintergrund.
+      // Fehlt einer aus `companies`, ließ er sich nicht anstoßen (siehe Log).
+      'aggregation_started': angestossen,
     }),
   );
 }
