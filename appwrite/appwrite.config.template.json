@@ -302,6 +302,27 @@
         }
       ]
     },
+    {
+      "$id": "account_deletions",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Account Deletions",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": [],
+      "columns": [
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "requested_at", "type": "datetime", "required": true },
+        { "key": "delete_after", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "delete_after",
+          "type": "key",
+          "columns": ["delete_after"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
 
     {
       "$id": "review_reports",
@@ -464,6 +485,28 @@
       "scopes": ["rows.read", "rows.write"]
     },
     {
+      "$id": "my_account",
+      "name": "my_account",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/my_account",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Rechte am eigenen Konto: Loeschung beantragen und zuruecknehmen",
+        "(T-2.8, E-50), eigene Bewertung loeschen (T-2.9), Export (T-2.10).",
+        "Nutzer immer aus dem JWT. users.read/users.write fuer Kontodaten und",
+        "die Pref mit dem Loeschtermin, files.write fuer Nachweise."
+      ],
+      "scopes": ["rows.read", "rows.write", "users.read", "users.write", "files.write"]
+    },
+    {
       "$id": "moderation_desk",
       "name": "moderation_desk",
       "enabled": true,
@@ -569,7 +612,7 @@
       "execute": [],
       "events": [],
       "interval": 1440,
-      "scopes": ["rows.read", "rows.write", "files.write"]
+      "scopes": ["rows.read", "rows.write", "files.write", "users.read", "users.write"]
     }
   ]
 }

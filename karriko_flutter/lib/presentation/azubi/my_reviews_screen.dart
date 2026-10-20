@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/own_review.dart';
 import '../../data/models/review_draft.dart';
+import '../../data/repositories/account_repository.dart';
+import '../../providers/account_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/questionnaire_provider.dart';
 import '../../providers/review_provider.dart';
@@ -194,10 +196,77 @@ class _NurDiesesGeraet extends StatelessWidget {
   }
 }
 
-class _AbgeschicktZeile extends StatelessWidget {
+class _AbgeschicktZeile extends ConsumerStatefulWidget {
   final OwnReview eintrag;
 
   const _AbgeschicktZeile({required this.eintrag});
+
+  @override
+  ConsumerState<_AbgeschicktZeile> createState() => _AbgeschicktZeileState();
+}
+
+class _AbgeschicktZeileState extends ConsumerState<_AbgeschicktZeile> {
+  OwnReview get eintrag => widget.eintrag;
+  bool _loescht = false;
+
+  /// Loescht die Bewertung vollstaendig, auch die oeffentliche Ansicht
+  /// (T-2.9). Der Score des Betriebs wird auf dem Server neu berechnet.
+  Future<void> _loeschen() async {
+    final bestaetigt = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.surface,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: AppColors.ink),
+          borderRadius: BorderRadius.zero,
+        ),
+        title: Text('Bewertung löschen?',
+            style: Theme.of(context).textTheme.headlineSmall),
+        content: Text(
+          'Deine Bewertung für ${eintrag.companyName ?? 'diesen Betrieb'} '
+          'wird endgültig gelöscht, auch wenn sie schon veröffentlicht ist. '
+          'Das lässt sich nicht rückgängig machen.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Abbrechen'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: AppColors.accentDark),
+            child: const Text('Löschen'),
+          ),
+        ],
+      ),
+    );
+    if (bestaetigt != true || !mounted) return;
+
+    setState(() => _loescht = true);
+    String? fehler;
+    try {
+      await ref.read(accountRepositoryProvider).deleteReview(eintrag.reviewId);
+      ref.invalidate(ownReviewsProvider);
+    } on AccountException catch (e) {
+      fehler = e.message;
+    } catch (_) {
+      fehler = 'Die Bewertung konnte nicht gelöscht werden.';
+    }
+    if (!mounted) return;
+    setState(() => _loescht = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.ink,
+        behavior: SnackBarBehavior.floating,
+        content: Text(
+          fehler ?? 'Bewertung gelöscht.',
+          style: const TextStyle(color: AppColors.paper),
+        ),
+      ),
+    );
+  }
 
   /// Was unter dem Betriebsnamen steht.
   ///
@@ -266,6 +335,21 @@ class _AbgeschicktZeile extends StatelessWidget {
                 style: const TextStyle(color: AppColors.muted, fontSize: 14),
               ),
             ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: AppLayout.s8,
+                bottom: AppLayout.s8,
+              ),
+              child: TextButton(
+                onPressed: _loescht ? null : _loeschen,
+                style:
+                    TextButton.styleFrom(foregroundColor: AppColors.accentDark),
+                child: Text(_loescht ? 'Wird gelöscht …' : 'Löschen'),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -53,6 +53,10 @@ class AuthState {
   bool get isBetrieb => user?.isBetrieb ?? false;
   bool get emailVerified => user?.emailVerified ?? false;
 
+  /// Eine Kontoloeschung ist beantragt (T-2.8). Bis sie greift, sieht das
+  /// Konto nur die Seite zum Zuruecknehmen.
+  bool get deletionPending => user?.deletionPendingUntil != null;
+
   AuthState copyWith({
     UserModel? user,
     bool? isLoading,

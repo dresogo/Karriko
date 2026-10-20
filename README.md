@@ -84,12 +84,13 @@ Client und Server rechnen mit **demselben Paket** [`questionnaire_core`](package
 | `my_reviews` | Aufruf | der einzige Weg zu den eigenen abgeschickten Bewertungen |
 | `company_profile` | Aufruf | der einzige Schreibweg nach `companies`: eigenes Firmenprofil anlegen oder ändern, nur freigegebene Felder |
 | `job_posting` | Aufruf | der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs, veröffentlichen erst mit Abzeichen |
+| `my_account` | Aufruf | Konto löschen (14 Tage zurücknehmbar), eigene Bewertung löschen, Datenexport |
 | `moderate_review` | Aufruf (`moderators`, `admins`) | freigeben oder ablehnen |
 | `moderation_desk` | Aufruf (`moderators`, `admins`) | Daten für den Admin-Bereich, ohne `user_id`, Gerätehash und Rohantworten |
 | `aggregate_company` | Änderung an `public_reviews` | rechnet `company_scores` neu |
 | `publish_scheduled` | stündlich | gibt zurückgestellte Bewertungen in die Moderation |
 | `recompute_all` | Aufruf (`admins`) | rechnet alles mit aktuellen Parametern neu |
-| `cleanup` | täglich | verwaiste Entwürfe und geprüfte Nachweise |
+| `cleanup` | täglich | verwaiste Entwürfe, geprüfte Nachweise, fällige Kontolöschungen |
 
 Mehr dazu in [`appwrite/functions/README.md`](appwrite/functions/README.md).
 
@@ -259,7 +260,7 @@ packages/
 └── karriko_functions/   Appwrite-Kleber und die entscheidenden Funktionen ohne Netzzugriff
 
 appwrite/
-├── functions/        zehn Functions, je ein eigenes Dart-Paket
+├── functions/        elf Functions, je ein eigenes Dart-Paket
 ├── questionnaires/   Fragendefinition für den Server
 └── appwrite.config.template.json
 

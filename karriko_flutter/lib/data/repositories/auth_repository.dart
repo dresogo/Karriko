@@ -875,12 +875,6 @@ class AuthRepository {
     return _fetchCurrentUser();
   }
 
-  Future<void> deleteAccount(String userId) async {
-    // Requires server-side function with API key in Appwrite.
-    throw UnimplementedError(
-        'Account deletion requires a server-side Appwrite Function.');
-  }
-
   Future<UserModel> _fetchCurrentUser() async {
     final models.User user;
     try {
@@ -912,6 +906,7 @@ class AuthRepository {
         emailVerified: user.emailVerification,
         mfaEnabled: user.mfa,
         createdAt: DateTime.parse(user.$createdAt),
+        deletionPendingUntil: _loeschtermin(user),
       );
     } catch (_) {
       final prefs = await _account.getPrefs();
@@ -926,7 +921,14 @@ class AuthRepository {
         emailVerified: user.emailVerification,
         mfaEnabled: user.mfa,
         createdAt: DateTime.parse(user.$createdAt),
+        deletionPendingUntil: _loeschtermin(user),
       );
     }
+  }
+
+  /// Der Loeschtermin aus den Prefs, den `my_account` setzt (T-2.8).
+  static DateTime? _loeschtermin(models.User user) {
+    final wert = user.prefs.data['deletion_pending_until'];
+    return wert is String ? DateTime.tryParse(wert) : null;
   }
 }

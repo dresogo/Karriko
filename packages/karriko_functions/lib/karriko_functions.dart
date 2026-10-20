@@ -11,6 +11,8 @@
 /// was gespeichert wuerde, ohne es zu speichern.
 library;
 
+export 'src/account_data.dart';
+export 'src/account_purge.dart';
 export 'src/aggregate_writer.dart';
 export 'src/company_profile.dart';
 export 'src/config.dart';

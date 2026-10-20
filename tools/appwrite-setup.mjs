@@ -518,6 +518,25 @@ const SCHEMA = [
       { key: 'moderator_id', type: 'key', columns: ['moderator_id'] },
     ],
   },
+  {
+    id: 'account_deletions',
+    name: 'Account Deletions',
+    // Beantragte Kontolöschungen (T-2.8, E-50). Für keinen Client lesbar oder
+    // schreibbar: Beantragt und zurückgenommen wird über `my_account`,
+    // ausgeführt von `cleanup`. Die Zeilenkennung ist die Nutzerkennung, damit
+    // es je Konto höchstens einen Antrag gibt; nach der Löschung verschwindet
+    // die Zeile mit.
+    permissions: [],
+    exactPermissions: true,
+    createIfMissing: true,
+    rowSecurity: false,
+    columns: [
+      str('user_id', 36, { required: true }),
+      when('requested_at', { required: true }),
+      when('delete_after', { required: true }),
+    ],
+    indexes: [{ key: 'delete_after', type: 'key', columns: ['delete_after'] }],
+  },
 
   {
     id: 'review_reports',

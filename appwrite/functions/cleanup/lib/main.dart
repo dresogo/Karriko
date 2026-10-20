@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:dart_appwrite/dart_appwrite.dart';
 import 'package:karriko_functions/karriko_functions.dart';
 
 /// Räumt weg, was seine Aufgabe erfüllt hat.
 ///
-/// Läuft täglich. Zwei Dinge, und beide aus demselben Grund: Daten, die
+/// Läuft täglich. Drei Dinge, und alle aus demselben Grund: Daten, die
 /// niemand mehr braucht, sind kein Bestand, sondern ein Risiko.
 ///
 /// * **Verwaiste Entwürfe.** Ein Entwurf, den seit Monaten niemand angefasst
@@ -14,6 +15,9 @@ import 'package:karriko_functions/karriko_functions.dart';
 ///   belegen, dass ein Ausbildungsverhältnis bestand. Sobald ein Moderator ihn
 ///   gesehen und die Bewertung entschieden hat, ist er erfüllt. Was bleibt, ist
 ///   die Kennzeichnung „nachgewiesen" an der Bewertung — nicht das Dokument.
+/// * **Konten, deren Löschung fällig ist.** Nach der Frist aus E-50 (14 Tage)
+///   löscht [purgeAccount] das Konto endgültig (T-2.8). Dafür braucht diese
+///   Function `users.read` und `users.write`.
 ///
 /// Die Fristen stehen in der Umgebung, nicht hier. Beide sind in
 /// notes/APPWRITE_SETUP.md als **juristisch zu prüfen** gekennzeichnet: Wie
@@ -98,8 +102,33 @@ Future<dynamic> main(final context) async {
     }
   }
 
+  // ── Konten ────────────────────────────────────────────────────────────────
+
+  var konten = 0;
+  for (final antrag in await tables.dueDeletionRequests(jetzt)) {
+    final userId = antrag.data['user_id'];
+    if (userId is! String) continue;
+    if (probelauf) {
+      konten++;
+      continue;
+    }
+    try {
+      final ergebnis = await purgeAccount(
+        tables: tables,
+        users: Users(client),
+        userId: userId,
+        log: ctx.log,
+      );
+      if (ergebnis == PurgeResult.deleted) konten++;
+    } catch (e) {
+      // Der Antrag bleibt stehen, der nächste Lauf versucht es erneut.
+      ctx.logError('Löschantrag ${antrag.$id} nicht ausgeführt: $e');
+    }
+  }
+
   ctx.log(
-    '${probelauf ? 'Probelauf: ' : ''}$entwuerfe Entwurf/Entwuerfe aelter als '
+    '${probelauf ? 'Probelauf: ' : ''}$konten Konto/Konten gelöscht, '
+    '$entwuerfe Entwurf/Entwuerfe aelter als '
     '${ctx.config.draftRetentionDays} Tage, $nachweise Nachweis(e) aelter als '
     '${ctx.config.verificationRetentionDays} Tage nach der Entscheidung.',
   );
@@ -108,6 +137,7 @@ Future<dynamic> main(final context) async {
     FunctionResponse.ok({
       'drafts_deleted': entwuerfe,
       'verifications_deleted': nachweise,
+      'accounts_deleted': konten,
       'dry_run': probelauf,
       'ran_at': jetzt.toIso8601String(),
     }).payload,

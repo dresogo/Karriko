@@ -72,6 +72,13 @@ class QuestionnaireConstants {
     defaultValue: 'job_posting',
   );
 
+  /// Konto loeschen, eigene Bewertung loeschen, Daten herunterladen
+  /// (T-2.8 bis T-2.10).
+  static const myAccountFunction = String.fromEnvironment(
+    'FN_MY_ACCOUNT',
+    defaultValue: 'my_account',
+  );
+
   /// Arbeitstisch des Admin-Bereichs: Warteschlange, Meldungen, Protokoll,
   /// Betriebe. Nur `team:moderators` und `team:admins`.
   static const moderationDeskFunction = String.fromEnvironment(

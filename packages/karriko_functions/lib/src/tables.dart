@@ -635,6 +635,96 @@ class Tables {
         data: {'is_verified': verified},
       );
 
+  // ── Daten eines Kontos (T-2.8, T-2.9, T-2.10) ──────────────────────────────
+
+  /// Alle Zeilen einer Tabelle mit `spalte == wert`, seitenweise gelesen.
+  Future<List<aw.Row>> _alleMit(String tableId, String spalte, String wert) =>
+      _pages(tableId: tableId, queries: [Query.equal(spalte, wert)]).toList();
+
+  Future<List<aw.Row>> allReviewsByUser(String userId) =>
+      _alleMit(config.reviewsTable, 'user_id', userId);
+
+  Future<List<aw.Row>> draftsByUser(String userId) =>
+      _alleMit(config.draftsTable, 'user_id', userId);
+
+  Future<List<aw.Row>> bookmarksByUser(String userId) =>
+      _alleMit(config.bookmarksTable, 'user_id', userId);
+
+  Future<List<aw.Row>> reportsByReporter(String userId) =>
+      _alleMit(config.reviewReportsTable, 'reporter_id', userId);
+
+  Future<List<aw.Row>> reportsForReview(String reviewId) =>
+      _alleMit(config.reviewReportsTable, 'review_id', reviewId);
+
+  Future<void> deleteRow(String tableId, String id) => db.deleteRow(
+        databaseId: config.databaseId,
+        tableId: tableId,
+        rowId: id,
+      );
+
+  Future<aw.Row> updateRowData(
+          String tableId, String id, Map<String, Object?> data) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: tableId,
+        rowId: id,
+        data: data,
+      );
+
+  /// Die Profilzeile, oder `null`.
+  Future<aw.Row?> getProfile(String userId) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.profilesTable,
+        rowId: userId,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  /// Der Löschantrag eines Kontos, oder `null`. Die Zeilenkennung ist die
+  /// Nutzerkennung, damit es je Konto höchstens einen gibt.
+  Future<aw.Row?> getDeletionRequest(String userId) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.accountDeletionsTable,
+        rowId: userId,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  Future<aw.Row> createDeletionRequest({
+    required String userId,
+    required DateTime requestedAt,
+    required DateTime deleteAfter,
+  }) =>
+      db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.accountDeletionsTable,
+        rowId: userId,
+        data: {
+          'user_id': userId,
+          'requested_at': requestedAt.toUtc().toIso8601String(),
+          'delete_after': deleteAfter.toUtc().toIso8601String(),
+        },
+        permissions: const [],
+      );
+
+  /// Löschanträge, deren Frist abgelaufen ist.
+  Future<List<aw.Row>> dueDeletionRequests(DateTime now) => _pages(
+        tableId: config.accountDeletionsTable,
+        queries: [
+          Query.lessThanEqual('delete_after', now.toUtc().toIso8601String()),
+        ],
+      ).toList();
+
   // ── Seitenweise lesen ─────────────────────────────────────────────────────
 
   /// Blättert über eine Tabelle, ohne alles in den Speicher zu holen.

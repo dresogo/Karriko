@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-165 Aufgaben sind offen, 74 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+163 Aufgaben sind offen, 71 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -49,10 +49,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.5 · P1 · API-Schlüssel nach der Abnahme löschen und in der Console widerrufen (todo A)
   Die Datei unter `karriko_local/` löschen und den Schlüssel widerrufen, nicht nur ablaufen lassen.
 - [ ] T-2.6 · P1 · Testzeilen in `companies` löschen, darunter die verwaiste „Test GmbH“ (Setup §11)
-- [ ] T-2.8 · P1 · Kontolöschung als Function nach Art. 17 DSGVO, Reihenfolge nach Referenz §3.3 (todo B3)
-- [ ] T-2.9 · P1 · Löschverlangen für einzelne Bewertungen, inklusive der Zeile in `public_reviews` (todo G, Setup §12)
-  Größte offene Lücke der Bewertungsstrecke: `public_reviews` trägt absichtlich keine `user_id`. Braucht wie T-2.8 eine Function, die mit Schlüssel löscht.
-- [ ] T-2.10 · P1 · Datenexport nach Art. 20 DSGVO als JSON (todo H)
 - [ ] T-2.12 · P2 · Betriebs-Dashboard und Analytics an `company_scores`, mit Erklärung unter drei Bewertungen (todo B5)
   `company_scores` trägt erst ab drei Bewertungen einen Wert, Zahlen erscheinen erst ab fünf und nur in Spannen. Ein leeres Dashboard ist dann richtig und muss das erklären.
 - [ ] T-2.13 · P2 · Benachrichtigungen über Repository und Provider, Stellen bauen, die sie erzeugen, Fehlerzustand statt `LateInitializationError` (todo B6)
@@ -63,6 +59,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.20 · P2 · Nachweise für die Moderation über eine Function anzeigen statt nur in der Console (Setup §12)
 - [ ] T-2.21 · P2 · Nach `recompute_all` die betroffenen Betriebe automatisch neu aggregieren (Setup §6)
 - [ ] T-2.23 · P2 · Löschmodell der Referenz (`deleted_at`, Nutzer-ID bleibt bei anonymen Bewertungen) mit Art. 17 und der neuen Strecke abgleichen (Referenz §2.5, neu)
+  Stand 20.10.2026: Für Kontolöschung und Löschen einer Bewertung gelten E-4.5 und E-4.6 (Nutzerbezug wird entfernt, wirklich gelöscht). Offen: `projekt-referenz.md` §2.5 und §3.3 daran angleichen und neu entscheiden, sobald es Betriebsantworten gibt.
 - [ ] T-2.24 · P3 · Betriebskonto löschen: Profil inaktiv, 30 Tage reaktivierbar, Antworten löschen (Referenz §3.4)
 - [ ] T-2.25 · P3 · Profilaufrufe zählen, ohne festzuhalten, wer zugesehen hat (Referenz §3.4)
 
@@ -163,6 +160,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 - [ ] T-5.25 · P2 · Barrierefreiheitserklärung: klären lassen, ob das BFSG für Karriko gilt oder die Ausnahme für Kleinstunternehmen greift (Sitemap)
 - [ ] T-5.26 · P2 · Die Noto-Ersatzschrift für Zeichen wie Emojis lädt weiter von `fonts.gstatic.com`; lokal einbinden oder abschalten (PR #13, Factsheet §9)
+- [ ] T-5.27 · P2 · Anwalt: Reicht für Auskunftsverlangen nach Art. 15 der Export aus `my_account` (E-4.7, nur selbst eingegebene Daten), oder gehören Qualitätsmarkierungen, Bearbeitungszeiten und Gerätehash dazu? Bis dahin Auskunft über den Support (Chat, 20.10.2026)
 
 ## 6 · Oberfläche und Barrierefreiheit
 

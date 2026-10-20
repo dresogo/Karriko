@@ -302,7 +302,10 @@ Zwei Dinge, die von Hand leicht untergehen:
 
 ## 3. Tabellen
 
-Sieben Tabellen. Sechs sind neu, `reviews` besteht.
+Acht Tabellen. Sieben sind neu, `reviews` besteht. Die achte, `account_deletions`
+(T-2.8), hält beantragte Kontolöschungen: keine Rechte, `rowSecurity` aus,
+Zeilenkennung gleich Nutzerkennung, Spalten `user_id`, `requested_at`,
+`delete_after`, Index auf `delete_after`.
 
 ### Warum es zwei Tabellen für Bewertungen gibt
 
@@ -703,7 +706,7 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Zehn Functions, alle in Dart.
+Elf Functions, alle in Dart.
 
 ### Gemeinsam für alle acht
 
@@ -842,6 +845,31 @@ Pflicht, der Bewerbungslink nur mit `http://` oder `https://`, die Kontakt-E-Mai
 muss wie eine Adresse aussehen (T-8.13: geprüft in der Function, die Spalten
 bleiben Text). **Veröffentlichen erst mit Abzeichen:** Solange `is_verified` des
 Betriebs falsch ist, sind nur Entwürfe möglich (403 mit Erklärung).
+
+#### `my_account`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write`, `users.read`, `users.write`, `files.write` |
+
+**Die Rechte eines Kontos an seinen eigenen Daten.** Die Nutzerkennung kommt
+aus dem JWT, nie aus dem Rumpf. Eine bestätigte Adresse ist nicht nötig:
+Löschen und Auskunft stehen jedem Konto zu.
+
+| `action` | Was passiert |
+|---|---|
+| `status` | Ob eine Löschung beantragt ist und ab wann sie greift |
+| `request_deletion` | Zeile in `account_deletions`, Termin in den Prefs (`deletion_pending_until`) für die App. Abgelehnt, wenn dem Konto eine Firma gehört (T-2.24) |
+| `cancel_deletion` | Antrag und Pref entfernen |
+| `delete_review` + `review_id` | Eigene Bewertung vollständig löschen (E-4.6); fremd oder unbekannt ergibt 404 |
+| `export` | JSON mit allem, was die Person eingegeben hat (E-4.7) |
+
+Maßgeblich für die Löschung ist allein die Tabelle, nicht die Pref: Wer sie von
+Hand entfernt, nimmt nichts zurück. In den 14 Tagen lehnt `submit_review` neue
+Bewertungen ab; die App zeigt nur `/konto-loeschung` (E-3.11).
 
 #### `moderation_desk`
 
@@ -994,10 +1022,16 @@ nicht laden; siehe Abschnitt 14.
 | Ausführen darf | niemand |
 | Auslöser | Intervall 1440 Minuten (täglich; die Uhrzeit wählt Appwrite) |
 | Timeout | 600 s |
-| Scopes | `rows.read`, `rows.write`, `files.write` |
+| Scopes | `rows.read`, `rows.write`, `files.write`, `users.read`, `users.write` |
 
 Löscht verwaiste Entwürfe und geprüfte Verifikationsnachweise. `files.write`
 braucht sie zum Löschen der Nachweisdateien; `files.read` braucht sie nicht.
+
+**Seit T-2.8 auch fällige Kontolöschungen** aus `account_deletions`, nach
+`purgeAccount` in `packages/karriko_functions/lib/src/account_purge.dart` (E-4.5).
+Dafür `users.read` und `users.write`. Der Antrag wird erst ganz am Ende
+entfernt; bricht ein Lauf ab, holt der nächste ihn nach. Konten mit Firma werden
+übersprungen (T-2.24). Frist `KARRIKO_DELETION_GRACE_DAYS`, Standard 14 (E-50).
 
 Ein Probelauf, der nur zählt:
 
@@ -1453,10 +1487,10 @@ namentlich aufgeführt.
 | ⚖️ | **Aufbewahrungsfrist für Entwürfe.** Standard 90 Tage ohne Änderung (`KARRIKO_DRAFT_RETENTION_DAYS`). Ein Entwurf enthält Antworten zu einem Betrieb, die nie abgeschickt wurden. |
 | ⚖️ | **Aufbewahrung der Rohantworten.** `answers_json` bleibt unbefristet stehen, weil `recompute_all` sie braucht. Ob das zulässig ist und ob es eine Obergrenze braucht, ist offen. Es gibt heute keine Frist dafür. |
 | ⚖️ | **Aufbewahrung des Exports aus Abschnitt 11.** Er enthält Rohantworten und Nutzerkennungen. Wie lange und wo. |
-| ⚖️ | **Löschverlangen eines Nutzers.** Es gibt keinen Weg dafür. Seit `my_reviews` ist die Bewertung dem Konto zuordenbar — aber nur lesend. Zu löschen hieße, auch die öffentliche Zeile zu entfernen, und dafür gibt es keine Function. **Das ist die größte offene Lücke dieser Einrichtung**, jetzt mit der Zuordnung, an der es vorher fehlte. |
+| ✅ | **Löschverlangen eines Nutzers.** Seit 20.10.2026 über `my_account`: eine eigene Bewertung vollständig löschen (E-4.6) oder das Konto (E-4.5, 14 Tage zurücknehmbar). |
 | ⚖️ | **Die Texte im Fragebogen.** Fünf Stellen tragen einen Platzhalter, siehe unten. |
 | ⚖️ | **Aufbewahrung des Gerätehashes.** Er hat heute keine Frist. |
-| ⚖️ | **Auskunftsverlangen.** `my_reviews` liefert dem Verfasser, was er über seine eigene Bewertung wissen soll — bewusst nicht alles, was gespeichert ist. Ein Auskunftsverlangen will genau das andere. |
+| ⚖️ | **Auskunftsverlangen.** Der Export aus `my_account` umfasst, was die Person selbst eingegeben hat (E-4.7); ob Art. 15 mehr verlangt, ist offen (T-5.27). `my_reviews` liefert dem Verfasser, was er über seine eigene Bewertung wissen soll — bewusst nicht alles, was gespeichert ist. Ein Auskunftsverlangen will genau das andere. |
 
 ### Die fünf Platzhalter im Fragebogen
 

@@ -25,6 +25,11 @@ class UserModel {
 
   final DateTime createdAt;
 
+  /// Ab wann eine beantragte Kontoloeschung endgueltig ist (E-50, T-2.8),
+  /// sonst `null`. Kommt aus den Prefs, die `my_account` setzt; massgeblich
+  /// ist die Zeile in `account_deletions` auf dem Server.
+  final DateTime? deletionPendingUntil;
+
   const UserModel({
     required this.id,
     required this.email,
@@ -37,6 +42,7 @@ class UserModel {
     required this.emailVerified,
     this.mfaEnabled = false,
     required this.createdAt,
+    this.deletionPendingUntil,
   });
 
   String get fullName =>
@@ -98,6 +104,7 @@ class UserModel {
       emailVerified: emailVerified ?? this.emailVerified,
       mfaEnabled: mfaEnabled ?? this.mfaEnabled,
       createdAt: createdAt,
+      deletionPendingUntil: deletionPendingUntil,
     );
   }
 }

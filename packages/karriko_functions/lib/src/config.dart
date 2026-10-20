@@ -32,6 +32,14 @@ class FunctionConfig {
   /// Stellenanzeigen. Geschrieben nur von `job_posting` (T-4.31).
   final String jobsTable;
 
+  /// Beantragte Kontolöschungen (T-2.8). Für keinen Client lesbar.
+  final String accountDeletionsTable;
+  final String profilesTable;
+  final String bookmarksTable;
+
+  /// Wie viele Tage sich eine Kontolöschung zurücknehmen lässt (E-50).
+  final int deletionGraceDays;
+
   final String questionnairesBucket;
   final String verificationBucket;
 
@@ -68,6 +76,10 @@ class FunctionConfig {
     required this.companiesTable,
     this.reviewReportsTable = 'review_reports',
     this.jobsTable = 'jobs',
+    this.accountDeletionsTable = 'account_deletions',
+    this.profilesTable = 'profiles',
+    this.bookmarksTable = 'bookmarks',
+    this.deletionGraceDays = 14,
     required this.questionnairesBucket,
     required this.verificationBucket,
     required this.moderatorsTeam,
@@ -119,6 +131,11 @@ class FunctionConfig {
       companiesTable: mit('KARRIKO_TBL_COMPANIES', 'companies'),
       reviewReportsTable: mit('KARRIKO_TBL_REVIEW_REPORTS', 'review_reports'),
       jobsTable: mit('KARRIKO_TBL_JOBS', 'jobs'),
+      accountDeletionsTable:
+          mit('KARRIKO_TBL_ACCOUNT_DELETIONS', 'account_deletions'),
+      profilesTable: mit('KARRIKO_TBL_PROFILES', 'profiles'),
+      bookmarksTable: mit('KARRIKO_TBL_BOOKMARKS', 'bookmarks'),
+      deletionGraceDays: zahl('KARRIKO_DELETION_GRACE_DAYS', 14),
       questionnairesBucket:
           mit('KARRIKO_BUCKET_QUESTIONNAIRES', 'questionnaires'),
       verificationBucket:

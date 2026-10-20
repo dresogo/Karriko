@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 20. Oktober 2026, abgeglichen mit `main` @ `78b4e94`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 20. Oktober 2026, abgeglichen mit `main` @ `78b4e94`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -80,7 +80,7 @@ Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erf
 | State | Riverpod |
 | Routing | GoRouter, ein zentraler Wächter |
 | Backend | Appwrite Cloud, **Region Frankfurt**, SDK 25.4 |
-| Serverlogik | Zehn Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
+| Serverlogik | Elf Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
 | Passkeys | Eigener WebAuthn-Dienst `services/passkey-rp` (Node 22, TypeScript, zwei Laufzeit-Abhängigkeiten) |
 | Hosting | Noch nicht gewählt; Favorit ist Hetzner (T-9.10) |
 | Öffentliche Seiten (geplant) | Serverseitiges HTML (Next.js), Flutter-App unter `/app` |
@@ -135,7 +135,6 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | Nr | Datum | Entscheidung | Grund |
 |---|---|---|---|
 | E-40 | 08/2026 | **Magic Link und Social Login nur für Azubis.** Wird ein Betriebskonto erkannt, sofort abmelden. | Betriebe durchlaufen eine menschliche Firmenprüfung. |
-| E-41 | 08/2026 | **Router-Wächter-Reihenfolge fest:** Laden → zweiter Faktor → E-Mail-Bestätigung → Rolle. Admin-Bereich außerhalb der Rollenregeln, prüft selbst die Teams. | Andere Reihenfolge erzeugt Weiterleitungsschleifen. |
 | E-42 | – | **Keine Konto-Erkundung:** falsches Passwort und unbekannte E-Mail geben dieselbe Meldung, „Passwort vergessen" antwortet immer gleich. Bekannte Ausnahme: Registrierung (erst mit serverseitiger Registrierung lösbar). | Schutz der Nutzer. |
 | E-43 | – | Passwort: min. 8 Zeichen, ein Großbuchstabe, eine Ziffer. Unbestätigte Konten dürfen lesen, nicht bewerten. | – |
 | E-44 | – | **Jede Berechtigung serverseitig.** Client-Weiterleitungen sind Bequemlichkeit, keine Sicherheit. Ein Betrieb sieht nie Daten eines anderen. | – |
@@ -144,6 +143,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-47 | 10/2026 | **Die Fehlerseite zeigt nur den Pfad, nie die Query.** | Die alte Fassung gab mögliche Einmal-Codes aus Mail-Links aus (PR #13). |
 | E-48 | 08/2026 | **Zugangsdaten nie ins Repo.** Fund im öffentlichen Repo → sofort rotieren, `git filter-repo --replace-text`, Force-Push, danach GitHub-Support um Purge unerreichbarer Objekte bitten. API-Schlüssel nach Gebrauch widerrufen, nicht ablaufen lassen. | Fall `notes/fehler.md`: 26 Tage öffentlich lesbar; alte Commits bleiben per SHA abrufbar. |
 | E-3.10 | 20.10.2026 | **Die Rolle (azubi/betrieb) steuert nur die Oberfläche.** Sie steht in `profiles` und in den Account-Prefs und ist vom Konto selbst änderbar; keine Function und keine Tabellenregel darf ihr vertrauen. Was ein Betrieb darf, hängt am Eigentum der Firma (`owner_id`, gesetzt von `company_profile`) und an den Teams. | Appwrite kennt keine Rechte je Spalte, Prefs sind immer vom Konto beschreibbar. Eine Rolle, die nur der Server setzen kann, wäre ein Appwrite-Label und erst nötig, wenn eine Regel daran hängen soll (T-4.30, W-3.2). |
+| E-3.11 | 20.10.2026 | **Router-Wächter-Reihenfolge fest:** Laden → zweiter Faktor → beantragte Kontolöschung → E-Mail-Bestätigung → Rolle. Mit beantragter Löschung führt jeder Kontobereich auf `/konto-loeschung`, öffentliche Seiten bleiben erreichbar. Admin-Bereich außerhalb der Rollenregeln, prüft selbst die Teams. | Andere Reihenfolge erzeugt Weiterleitungsschleifen; die Löschung steht vor der Bestätigung, weil auch ein nie bestätigtes Konto gelöscht werden darf (T-2.8). Ersetzt E-41. |
 
 ### Datenschutz und Löschkonzept
 
@@ -153,6 +153,9 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-51 | 10/2026 | Öffentliche Bewertungen ohne Höchstspeicherdauer. **Entwürfe 30 Tage, Verifikationsnachweise 14 Tage.** | Löschkonzept nach DIN 66398. Siehe Abschnitt 9: Code-Standard weicht noch ab. |
 | E-52 | 10/2026 | **Inaktive Konten** nach 3 Jahren löschen, vorher drei Warnungen (30 / 14 / 3 Tage). | Datensparsamkeit. |
 | E-53 | – | Kein Tracking ohne Einwilligung, AVV mit jedem Dienstleister, keine personenbezogenen Daten in Logs. | DSGVO. |
+| E-4.5 | 20.10.2026 | **Kontolöschung (T-2.8):** beantragt über `my_account`, 14 Tage nur Anmelden zum Zurücknehmen (E-3.11), danach löscht `cleanup` endgültig. Veröffentlichte Bewertungen bleiben mit `user_id = geloescht-<Zeile>` und ohne Gerätehash stehen; nicht veröffentlichte, Entwürfe, Merkliste, Profil, Nachweise und das Appwrite-Konto werden gelöscht, eigene Meldungen verlieren die Nutzerkennung. Betriebskonten vorerst über den Support (T-2.24). | Setzt E-50 um. Ersetzt die Regel aus `projekt-referenz.md` §3.3, nach der bei anonymen Bewertungen die Nutzer-ID bleibt (T-2.23). |
+| E-4.6 | 20.10.2026 | **Eine eigene Bewertung löschen heißt löschen (T-2.9):** Zeilen in `reviews` und `public_reviews`, Meldungen dazu und Nachweis werden entfernt, der Score neu berechnet. Kein `deleted_at`. Der Eintrag im `moderation_log` bleibt. | Art. 17; Betriebsantworten, für die `projekt-referenz.md` §2.5 den Zeitstempel wollte, gibt es noch nicht (T-2.23). |
+| E-4.7 | 20.10.2026 | **Datenexport (T-2.10) enthält, was die Person selbst eingegeben hat:** Konto, Profil, Antworten und Freitexte mit Status, Entwürfe, Merkliste, eigene Meldungen. Ohne interne Prüfmerkmale (Qualitätsmarkierungen, Bearbeitungszeiten, Gerätehash) und Rechenwerte. | Art. 20. Ob eine Auskunft nach Art. 15 mehr umfassen muss, ist juristisch zu prüfen (T-5.27). |
 
 ---
 
