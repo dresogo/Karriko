@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-173 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+176 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -102,6 +102,8 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend. Die Schritte in der Google Cloud Console (Redirect-URI aus der Appwrite Console kopieren, nicht abtippen) stehen in `archiv/status-report-2026-08-02.md` §9.9.
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
+- [ ] T-3.20 · P2 · Passwörter beim Registrieren und beim Reset gegen Datenlecks prüfen: SHA-1 im Client, nur die ersten 5 Zeichen über eine Appwrite Function an die Pwned-Passwords-API von Have I Been Pwned (k-Anonymität, Header `Add-Padding: true`), Vergleich auf dem Gerät. Über die Function, damit keine Nutzer-IP an einen weiteren Dienst geht (E-02, E-06). Ergänzt T-3.9; ob die Meldung übergangen werden darf, entscheidet T-8.12 (Chat)
+  Ohne serverseitige Registrierung ist die Prüfung umgehbar; sie schützt Nutzer vor Versehen, nicht vor Angreifern. Fällt die API aus, Registrierung nicht blockieren, sondern ohne Prüfung fortfahren und das protokollieren.
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
@@ -191,6 +193,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.21 · P2 · Anmeldeschranke umsetzen: gesperrte Teile erst nach Anmeldung vom Server ausliefern, für Google als gesperrt kennzeichnen, Vergleich mit zwei Betrieben ohne Konto, Anonymitätsgrenzen gelten auch angemeldet (Konzept: Tab Anmeldeschranke)
 - [ ] T-6.23 · P2 · Merkliste zurückbringen: „Merken“-Knopf auf dem Betriebsprofil, Seite `/bookmarks` und Dashboard-Abschnitt im Swiss Design. Erst nach T-4.1, sonst wären fremde Merklisten lesbar. Repository und Tests stehen schon (`company_repository_test.dart`) (Chat)
   Am 18.10.2026 nach E-30 ausgeblendet: `bookmarkCompany` wurde nirgends aufgerufen, die Liste blieb immer leer. Alte Seite in der Historie bis `a6e1595`.
+- [ ] T-6.24 · P2 · Passwortfeld mit Stärkeanzeige bei Registrierung, Reset und Passwortänderung: vier Segmente mit Text (sehr schwach, schwach, gut, stark), Hinweis bei aktiver Feststelltaste, Anzeigen/Verbergen, Leckmeldung aus T-3.20 direkt am Feld (Vorlage: Bild im Chat vom 20.10.2026) (Chat)
+  Bewertung nach Länge und bekannten Mustern statt nach Zeichenklassen, passend zu T-3.9; ein Paket wie zxcvbn nur mit Begründung (E-07). Farben nur aus `app_theme.dart`: Rot ist `accent`, Grün `green`, einen Gelbton gibt es dort nicht (W-1.4), also vorher festlegen. Stärke nie nur über Farbe zeigen, Text und Screenreader-Ansage gehören dazu (WCAG 2.1 AA).
 
 ## 7 · Tests
 
@@ -220,6 +224,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-8.9 · P2 · Anmeldeschranke festlegen: welche zwei Kategorien und wie viele Bewertungen ohne Konto sichtbar sind, was Betriebskonten bei anderen Betrieben sehen; danach als Entscheidung ins Factsheet (Konzept: Tab Anmeldeschranke)
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
+- [ ] T-8.12 · P2 · Festlegen, ob die Leckmeldung aus T-3.20 übergangen werden darf oder ein anderes Passwort erzwingt; Ergebnis als Entscheidung ins Factsheet (Chat)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 
