@@ -83,6 +83,8 @@ const JE_FUNCTION = {
   // Arbeitstisch des Admin-Bereichs. Liest und markiert Meldungen, hasht
   // nichts — also auch hier kein Salz.
   moderation_desk: ['KARRIKO_TBL_REVIEW_REPORTS'],
+  // Schreibt nur companies. Kein Salz, keine Fristen.
+  company_profile: [],
 };
 
 const fehlt = GEMEINSAM.filter(

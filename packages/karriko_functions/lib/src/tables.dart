@@ -525,6 +525,53 @@ class Tables {
     return ergebnis.total;
   }
 
+  /// Die Firma, die einem Konto gehört, oder `null`.
+  Future<aw.Row?> companyByOwner(String ownerId) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [Query.equal('owner_id', ownerId), Query.limit(1)],
+    );
+    return ergebnis.rows.isEmpty ? null : ergebnis.rows.first;
+  }
+
+  Future<bool> companySlugTaken(String slug) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [
+        Query.equal('slug', slug),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+    );
+    return ergebnis.rows.isNotEmpty;
+  }
+
+  /// Legt eine Firma an. Lesbar für alle, **kein** Änderungsrecht für den
+  /// Eigentümer: Geändert wird nur über `company_profile` (T-4.2). Auch kein
+  /// Löschrecht, ein Betriebsprofil wird beim Löschen des Kontos nur inaktiv
+  /// (Referenz §3.4).
+  Future<aw.Row> createCompany(Map<String, Object?> data) => db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: ID.unique(),
+        data: data,
+        permissions: [Permission.read(Role.any())],
+      );
+
+  /// Ändert eine Firma und setzt dabei die Zeilenrechte neu. Ältere Zeilen
+  /// tragen noch `update("user:…")` aus der Zeit, als der Client selbst
+  /// schrieb; das fällt mit der ersten Änderung weg.
+  Future<aw.Row> updateCompany(String companyId, Map<String, Object?> data) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: companyId,
+        data: data,
+        permissions: [Permission.read(Role.any())],
+      );
+
   Future<aw.Row> setCompanyVerified(String companyId, bool verified) =>
       db.updateRow(
         databaseId: config.databaseId,

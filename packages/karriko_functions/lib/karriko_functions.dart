@@ -12,6 +12,7 @@
 library;
 
 export 'src/aggregate_writer.dart';
+export 'src/company_profile.dart';
 export 'src/config.dart';
 export 'src/context.dart';
 export 'src/definition_loader.dart';

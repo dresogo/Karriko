@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-170 Aufgaben sind offen, 77 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+169 Aufgaben sind offen, 76 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -105,8 +105,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
-- [ ] T-4.2 · P1 · Profiländerungen von Betrieben über eine Function mit Feld-Whitelist, damit `is_verified`, `is_premium` und `average_rating` gesperrt sind (todo D, Setup §4a)
-  Appwrite kennt keine Rechte je Spalte. Das Abzeichen soll laut Referenz §3.2 ein Mensch vergeben.
 - [ ] T-4.3 · P1 · Betriebssperre serverseitig verankern (todo D)
 - [ ] T-4.5 · P1 · Je Function ein eigener Schlüssel mit minimalen Scopes, Liste aller Schlüssel mit Zweck und Ablaufdatum (Plan)
   Stand 20.10.2026: Es gibt nur noch `karriko_key_api` (alle 112 Rechte, kein Ablauf, zuletzt benutzt am 02.10.); `schema-setup` (abgelaufen) ist gelöscht. `karriko_key_api` bleibt bis nach der Abnahme (T-2.5), entschieden mit dem Nutzer.
@@ -131,7 +129,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
 - [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
   Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
-- [ ] T-4.30 · P1 · `profiles.role` ist für den Eigentümer änderbar: Mit Row Security (T-4.1) darf jedes Konto seine eigene Profilzeile ändern, auch die Rolle. Appwrite kennt keine Rechte je Spalte. Rolle aus `profiles` herausnehmen oder Profiländerungen über eine Function wie in T-4.2; hängt an T-2.16 (Chat, 20.10.2026)
+- [ ] T-4.31 · P1 · `jobs` wie `companies` über eine Function schreiben: Heute setzt der Client `company_id`, `company`, `company_slug` und `company_logo_url` selbst, ein bestätigtes Konto kann also eine Stelle im Namen eines fremden Betriebs anlegen. Die Function nimmt die Firma aus `owner_id` des Aufrufers wie `company_profile` (T-4.2); zusammen mit T-2.18, T-8.13 und T-4.26 (Chat, 20.10.2026)
 
 ## 5 · Datenschutz und Recht
 

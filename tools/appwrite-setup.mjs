@@ -199,24 +199,17 @@ const SCHEMA = [
     id: 'companies',
     name: 'Companies',
     // Unternehmensprofile sind der oeffentliche Teil der Plattform; ohne
-    // Leserecht fuer alle faende die Suche sie fuer Besucher nicht. Anlegen
-    // duerfen nur Konten mit bestaetigter Adresse (T-4.25). Der Versuch bei
-    // der Registrierung scheitert deshalb absichtlich; die Firma entsteht nach
-    // der Bestaetigung ueber `AuthRepository.ensureCompany`. So erzeugen
-    // Wegwerfkonten keine oeffentlichen Firmenprofile.
+    // Leserecht fuer alle faende die Suche sie fuer Besucher nicht.
     //
-    // **Kein `update("users")` auf Tabellenebene.** Das stand dort und hiess:
-    // Jeder Angemeldete darf jede Firma aendern, auch `is_verified`,
-    // `is_premium`, `average_rating` und `owner_id`. Der Client setzt beim
-    // Anlegen schon ein Aenderungsrecht fuer den Eigentuemer **pro Zeile** —
-    // das wirkt aber erst mit `rowSecurity`. Also beides: Recht weg, Schalter
-    // an. Ein Betrieb bearbeitet danach weiter sein eigenes Profil.
-    //
-    // Was damit **nicht** behoben ist: Der Eigentuemer kann auf seiner eigenen
-    // Zeile `is_verified` und `average_rating` setzen. Appwrite kennt keine
-    // Rechte je Spalte. Dagegen hilft nur, Profilaenderungen ueber eine
-    // Function zu fuehren — siehe notes/UMSETZUNG_BERICHT.md.
-    permissions: ['read("any")', 'create("users/verified")'],
+    // **Kein Anlege- und kein Aenderungsrecht fuer Clients (T-4.2).**
+    // Appwrite kennt keine Rechte je Spalte: Wer direkt schreibt, kann auch
+    // `is_verified`, `is_premium`, `average_rating`, `review_count` und
+    // `owner_id` setzen. Der einzige Schreibweg ist die Function
+    // `company_profile`; sie prueft die bestaetigte Adresse (vorher
+    // `create("users/verified")`, T-4.25), laesst eine Firma je Konto zu und
+    // nimmt nur freigegebene Felder. Ihre Zeilen tragen nur `read("any")`.
+    // Das Abzeichen setzt `moderation_desk`, die Bewertung `aggregate_company`.
+    permissions: ['read("any")'],
     exactPermissions: true,
     rowSecurity: true,
     createIfMissing: false,

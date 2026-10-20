@@ -703,7 +703,7 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Acht Functions, alle in Dart.
+Neun Functions, alle in Dart.
 
 ### Gemeinsam für alle acht
 
@@ -784,6 +784,37 @@ Die vollständige Liste mit je einem Grund steht als `withheldFromAuthor` in
 `packages/karriko_functions/lib/src/my_reviews.dart`, und ein Test geht sie
 durch: Jede dort genannte Spalte muss in der Antwort fehlen, und jeder Grund
 muss einer sein.
+
+#### `company_profile`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write` |
+
+**Der einzige Schreibweg nach `companies` (T-4.2).** Appwrite kennt keine Rechte
+je Spalte. Solange der Client direkt schrieb, konnte er beim Anlegen und als
+Eigentümer beim Ändern auch `is_verified`, `is_premium`, `average_rating`,
+`review_count` und `owner_id` setzen. Deshalb hat `companies` nur noch
+`read("any")`, und Firmenzeilen tragen kein Änderungsrecht.
+
+Rumpf `{"action": "create" | "update", "fields": {…}}`. Erlaubt sind nur
+`name`, `description`, `website`, `logo_url`, `city`, `country`, `industry`
+(`companyEditableFields` in `packages/karriko_functions/lib/src/company_profile.dart`).
+Jedes andere Feld lässt die Anfrage mit 400 scheitern. Ein leerer Text leert ein
+Feld. `website` und `logo_url` nur mit `http://` oder `https://`; ob die Website
+verlinkt wird, regelt weiter E-46.
+
+**Welche Firma, entscheidet der Server:** die mit `owner_id` gleich dem Aufrufer
+aus dem JWT. Der Rumpf trägt keine Kennung. Höchstens eine Firma je Konto; ein
+zweites `create` liefert die bestehende. Ohne bestätigte Adresse 403. Den Slug
+bildet die Function, eindeutig über `slug_unique`; bei einer Umbenennung bleibt
+er. Eine Änderung setzt die Zeilenrechte auf `read("any")` und entfernt so auch
+alte `update("user:…")`-Rechte.
+
+Die Rolle (azubi/betrieb) spielt hier keine Rolle (E-3.10).
 
 #### `moderation_desk`
 

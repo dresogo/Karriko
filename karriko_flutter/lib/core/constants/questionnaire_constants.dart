@@ -58,6 +58,13 @@ class QuestionnaireConstants {
     defaultValue: 'my_reviews',
   );
 
+  /// Der einzige Schreibweg nach `companies`: legt das eigene Firmenprofil an
+  /// oder aendert es, nur freigegebene Felder (T-4.2).
+  static const companyProfileFunction = String.fromEnvironment(
+    'FN_COMPANY_PROFILE',
+    defaultValue: 'company_profile',
+  );
+
   /// Arbeitstisch des Admin-Bereichs: Warteschlange, Meldungen, Protokoll,
   /// Betriebe. Nur `team:moderators` und `team:admins`.
   static const moderationDeskFunction = String.fromEnvironment(

@@ -5,6 +5,7 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../data/models/company_model.dart';
+import '../../data/repositories/company_repository.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
 import '../common/app_page.dart';
@@ -68,7 +69,6 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
     String? fehler;
     try {
       await ref.read(companyRepositoryProvider).updateCompanyProfile(
-            companyId: company.id,
             name: _nameCtrl.text.trim(),
             description: _descCtrl.text.trim(),
             website: _websiteCtrl.text.trim(),
@@ -79,6 +79,10 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
       // das Verwerfen zeigte die Seite nach dem Speichern weiter die alten
       // Werte – genau die Art stiller Abweichung, die hier vorher stand.
       ref.invalidate(myCompanyProvider);
+    } on CompanyProfileException catch (e) {
+      // Die Meldung kommt von `company_profile` und richtet sich an den
+      // Nutzer, etwa „Die Website muss mit http:// oder https:// beginnen.“
+      fehler = e.message;
     } catch (e) {
       fehler = 'Die Änderungen konnten nicht gespeichert werden.';
     }

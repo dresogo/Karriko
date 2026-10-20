@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 20. Oktober 2026, abgeglichen mit `main` @ `78b4e94`; Ersetzungsregel E-1.15, Moderation E-2.13 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 20. Oktober 2026, abgeglichen mit `main` @ `78b4e94`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -80,7 +80,7 @@ Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erf
 | State | Riverpod |
 | Routing | GoRouter, ein zentraler Wächter |
 | Backend | Appwrite Cloud, **Region Frankfurt**, SDK 25.4 |
-| Serverlogik | Acht Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
+| Serverlogik | Neun Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
 | Passkeys | Eigener WebAuthn-Dienst `services/passkey-rp` (Node 22, TypeScript, zwei Laufzeit-Abhängigkeiten) |
 | Hosting | Noch nicht gewählt; Favorit ist Hetzner (T-9.10) |
 | Öffentliche Seiten (geplant) | Serverseitiges HTML (Next.js), Flutter-App unter `/app` |
@@ -143,6 +143,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-46 | 10/2026 | **Von Betrieben eingegebene URLs werden nicht verlinkt** (Website, Bewerbungs-URL, Kontakt-Mail), bis eine Prüfung auf `http`/`https` existiert. | Sonst wird eine `javascript:`-URL zum Einfallstor (PR #11). |
 | E-47 | 10/2026 | **Die Fehlerseite zeigt nur den Pfad, nie die Query.** | Die alte Fassung gab mögliche Einmal-Codes aus Mail-Links aus (PR #13). |
 | E-48 | 08/2026 | **Zugangsdaten nie ins Repo.** Fund im öffentlichen Repo → sofort rotieren, `git filter-repo --replace-text`, Force-Push, danach GitHub-Support um Purge unerreichbarer Objekte bitten. API-Schlüssel nach Gebrauch widerrufen, nicht ablaufen lassen. | Fall `notes/fehler.md`: 26 Tage öffentlich lesbar; alte Commits bleiben per SHA abrufbar. |
+| E-3.10 | 20.10.2026 | **Die Rolle (azubi/betrieb) steuert nur die Oberfläche.** Sie steht in `profiles` und in den Account-Prefs und ist vom Konto selbst änderbar; keine Function und keine Tabellenregel darf ihr vertrauen. Was ein Betrieb darf, hängt am Eigentum der Firma (`owner_id`, gesetzt von `company_profile`) und an den Teams. | Appwrite kennt keine Rechte je Spalte, Prefs sind immer vom Konto beschreibbar. Eine Rolle, die nur der Server setzen kann, wäre ein Appwrite-Label und erst nötig, wenn eine Regel daran hängen soll (T-4.30, W-3.2). |
 
 ### Datenschutz und Löschkonzept
 
@@ -225,7 +226,6 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-3 · Daten und Recht**
 
 - **W-3.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
-- **W-3.2 · Rolle im Profil:** `profiles.role` ist mit Row Security für den Eigentümer änderbar (T-4.1), widerspricht E-44. Die App liest die Rolle für Weiterleitungen; Rechte prüfen Functions und Teams selbst. Lösung mit T-4.30.
 
 **Offene Produktentscheidungen** (Details in `notes/aufgaben-offen.md` Abschnitt 8): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 

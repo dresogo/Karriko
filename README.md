@@ -82,6 +82,7 @@ Client und Server rechnen mit **demselben Paket** [`questionnaire_core`](package
 |---|---|---|
 | `submit_review` | Aufruf | die einzige Stelle, an der eine Bewertung entsteht |
 | `my_reviews` | Aufruf | der einzige Weg zu den eigenen abgeschickten Bewertungen |
+| `company_profile` | Aufruf | der einzige Schreibweg nach `companies`: eigenes Firmenprofil anlegen oder ändern, nur freigegebene Felder |
 | `moderate_review` | Aufruf (`moderators`, `admins`) | freigeben oder ablehnen |
 | `moderation_desk` | Aufruf (`moderators`, `admins`) | Daten für den Admin-Bereich, ohne `user_id`, Gerätehash und Rohantworten |
 | `aggregate_company` | Änderung an `public_reviews` | rechnet `company_scores` neu |
@@ -257,7 +258,7 @@ packages/
 └── karriko_functions/   Appwrite-Kleber und die entscheidenden Funktionen ohne Netzzugriff
 
 appwrite/
-├── functions/        acht Functions, je ein eigenes Dart-Paket
+├── functions/        neun Functions, je ein eigenes Dart-Paket
 ├── questionnaires/   Fragendefinition für den Server
 └── appwrite.config.template.json
 

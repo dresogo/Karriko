@@ -224,12 +224,12 @@ class AuthRepository {
     // hinterliesse ein Konto, das die App als Fehlschlag meldet. [ensureCompany]
     // zieht die Verknuepfung beim naechsten Zugriff nach.
     //
-    // Seit T-4.25 ist das der Regelfall: `companies` und `profiles` nehmen
-    // nur Konten mit bestaetigter Adresse an, und hier ist sie es noch nicht.
+    // Seit T-4.25 ist das der Regelfall: `company_profile` und `profiles`
+    // nehmen nur Konten mit bestaetigter Adresse an, und hier ist sie es noch
+    // nicht.
     // Die Firma entsteht dann in [ensureCompany], Branche und Ort kommen aus
     // den Prefs.
     final companyId = await _createCompanyForOwner(
-      ownerId: created.$id,
       companyName: companyName,
       industry: industry,
       city: city,
@@ -273,14 +273,12 @@ class AuthRepository {
   /// Liefert `null`, wenn das Anlegen fehlschlaegt. Der Aufrufer darf daran
   /// nicht scheitern.
   Future<String?> _createCompanyForOwner({
-    required String ownerId,
     required String companyName,
     String? industry,
     String? city,
   }) async {
     try {
       final company = await _companies.createCompany(
-        ownerId: ownerId,
         name: companyName,
         industry: industry,
         city: city,
@@ -335,11 +333,10 @@ class AuthRepository {
       final vorhanden = await _companies.findCompanyByOwner(user.id);
       company = vorhanden ??
           await _companies.createCompany(
-            ownerId: user.id,
             name: user.companyName?.trim().isNotEmpty == true
                 ? user.companyName!
                 : user.displayName,
-            // Seit `companies` nur bestaetigte Konten anlegen laesst (T-4.25),
+            // Seit nur bestaetigte Konten eine Firma anlegen (T-4.25, T-4.2),
             // entsteht die Firma regulaer hier und nicht bei der
             // Registrierung. Branche und Ort von dort liegen in den Prefs.
             industry: await _prefString('industry'),

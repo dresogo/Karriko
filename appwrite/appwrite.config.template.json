@@ -418,6 +418,30 @@
       "scopes": ["rows.read"]
     },
     {
+      "$id": "company_profile",
+      "name": "company_profile",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/company_profile",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der einzige Schreibweg nach companies (T-4.2): legt das Profil des",
+        "Aufrufers an oder aendert es, nur die Felder aus",
+        "companyEditableFields. is_verified, is_premium, average_rating,",
+        "review_count und owner_id setzt der Server.",
+        "Kein users.read: Die bestaetigte Adresse wird mit dem JWT des",
+        "Aufrufers gelesen."
+      ],
+      "scopes": ["rows.read", "rows.write"]
+    },
+    {
       "$id": "moderation_desk",
       "name": "moderation_desk",
       "enabled": true,

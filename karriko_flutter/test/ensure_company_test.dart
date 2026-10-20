@@ -6,7 +6,7 @@ import 'package:karriko_flutter/data/models/user_model.dart';
 import 'package:karriko_flutter/data/repositories/auth_repository.dart';
 import 'package:karriko_flutter/data/repositories/company_repository.dart';
 
-/// `companies` nimmt seit T-4.25 nur Konten mit bestaetigter Adresse an. Die
+/// `company_profile` nimmt seit T-4.25 nur Konten mit bestaetigter Adresse an. Die
 /// Firma entsteht deshalb nicht mehr bei der Registrierung, sondern in
 /// [AuthRepository.ensureCompany]. Was bei der Registrierung eingegeben
 /// wurde, darf dabei nicht verloren gehen: Branche und Ort liegen in den
@@ -52,7 +52,6 @@ class _FakeCompanyRepository implements CompanyRepository {
 
   @override
   Future<CompanyModel> createCompany({
-    required String ownerId,
     required String name,
     String? industry,
     String? city,

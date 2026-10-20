@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart' as aw_enums;
 import 'package:appwrite/models.dart' as aw;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:karriko_flutter/core/constants/appwrite_constants.dart';
@@ -200,15 +203,92 @@ void main() {
   });
 
   group('Profil bearbeiten', () {
-    test('ändert nur übergebene Felder und nie den Slug', () async {
-      final db = _FakeTablesDB(firmen: {'c1': _firma('c1')});
-      await CompanyRepository(db: db)
-          .updateCompanyProfile(companyId: 'c1', name: 'Neu GmbH');
+    test('geht über company_profile, schickt nur übergebene Felder', () async {
+      final fn = _FakeFunctions(200, {'ok': true, 'company': _firmaJson()});
+      final firma = await CompanyRepository(db: _FakeTablesDB(), functions: fn)
+          .updateCompanyProfile(name: 'Neu GmbH', website: '');
 
-      final daten = db.von(#updateRow).single.namedArguments[#data];
-      expect(daten, {'name': 'Neu GmbH'});
+      final aufruf = fn.aufrufe.single;
+      expect(aufruf[#functionId], 'company_profile');
+      expect(jsonDecode(aufruf[#body] as String), {
+        'action': 'update',
+        'fields': {'name': 'Neu GmbH', 'website': ''},
+      });
+      expect(firma.id, 'c1');
+    });
+
+    test('schickt weder Firmen- noch Nutzerkennung mit', () async {
+      // Welche Firma, entscheidet der Server aus dem JWT (T-4.2).
+      final fn = _FakeFunctions(200, {'ok': true, 'company': _firmaJson()});
+      await CompanyRepository(db: _FakeTablesDB(), functions: fn)
+          .createCompany(name: 'Musterbau', city: 'Dortmund');
+
+      final body = jsonDecode(fn.aufrufe.single[#body] as String) as Map;
+      expect(body['action'], 'create');
+      expect(body['fields'], {'name': 'Musterbau', 'city': 'Dortmund'});
+      expect(body.toString(), isNot(contains('owner')));
+    });
+
+    test('reicht die Meldung der Function weiter', () async {
+      final fn = _FakeFunctions(400, {
+        'ok': false,
+        'code': 'validation',
+        'message': 'Die Website muss mit http:// oder https:// beginnen.',
+      });
+      expect(
+        CompanyRepository(db: _FakeTablesDB(), functions: fn)
+            .updateCompanyProfile(website: 'javascript:x'),
+        throwsA(isA<CompanyProfileException>().having(
+          (e) => e.message,
+          'message',
+          contains('http://'),
+        )),
+      );
     });
   });
+}
+
+Map<String, dynamic> _firmaJson() => {
+      'id': 'c1',
+      'created_at': '2026-09-01T10:00:00.000Z',
+      ..._firma('c1'),
+    };
+
+/// Antwortet auf `createExecution` mit [status] und [antwort] und merkt sich
+/// die Argumente.
+class _FakeFunctions implements Functions {
+  _FakeFunctions(this.status, this.antwort);
+
+  final int status;
+  final Map<String, Object?> antwort;
+  final aufrufe = <Map<Symbol, dynamic>>[];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.memberName == #createExecution) {
+      aufrufe.add(invocation.namedArguments);
+      return Future.value(aw.Execution(
+        $id: 'e1',
+        $createdAt: '',
+        $updatedAt: '',
+        $permissions: const [],
+        functionId: 'company_profile',
+        deploymentId: 'd1',
+        trigger: aw_enums.ExecutionTrigger.http,
+        status: aw_enums.ExecutionStatus.completed,
+        requestMethod: 'POST',
+        requestPath: '/',
+        requestHeaders: const [],
+        responseStatusCode: status,
+        responseBody: jsonEncode(antwort),
+        responseHeaders: const [],
+        logs: '',
+        errors: '',
+        duration: 0.1,
+      ));
+    }
+    return super.noSuchMethod(invocation);
+  }
 }
 
 /// Jeder Lesezugriff scheitert wie bei fehlender Verbindung.
