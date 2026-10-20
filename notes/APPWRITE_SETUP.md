@@ -237,7 +237,7 @@ wird und die andere nicht — und dann hängt es am Weg, welches Schema entsteht
 Aus dem Ordner `appwrite/`, nicht aus dem Wurzelverzeichnis: Die `path`-Angaben
 der Functions sind relativ zur Konfigurationsdatei.
 
-> **Warnung — `push table` löscht.** Die CLI (28.1.0) gleicht den Server an
+> **Warnung — `push table` löscht.** Die CLI (28.1.0, ebenso 28.4.0) gleicht den Server an
 > die Konfigurationsdatei an: Jede Tabelle, die **nicht** in der Datei steht,
 > wird gelöscht, mit `-f` ohne Rückfrage. Am 4. Oktober 2026 hat ein solcher
 > Lauf alle Tabellen außer `review_reports` gelöscht; Backups gab es keine.
@@ -886,7 +886,7 @@ veröffentlichen — eine Angabe mehr, die niemand gebraucht hätte.
 | | |
 |---|---|
 | Ausführen darf | niemand |
-| Auslöser | Cron `0 * * * *` (stündlich) |
+| Auslöser | Intervall 60 Minuten (stündlich; die Minute wählt Appwrite) |
 | Timeout | 300 s |
 | Scopes | `rows.read`, `rows.write`, `files.read` |
 
@@ -929,7 +929,7 @@ nicht laden; siehe Abschnitt 14.
 | | |
 |---|---|
 | Ausführen darf | niemand |
-| Auslöser | Cron `30 3 * * *` (täglich) |
+| Auslöser | Intervall 1440 Minuten (täglich; die Uhrzeit wählt Appwrite) |
 | Timeout | 600 s |
 | Scopes | `rows.read`, `rows.write`, `files.write` |
 
@@ -955,7 +955,7 @@ Console → Functions → Create function → Manual. Dann je Function:
 3. **Settings → Execute access** die Rolle aus der Tabelle. „niemand" heißt: das
    Feld leer lassen. Nicht `any`.
 4. **Settings → Events** nur bei `aggregate_company`.
-5. **Settings → Schedule** nur bei `publish_scheduled` und `cleanup`.
+5. **Settings → Schedule** nur bei `publish_scheduled` und `cleanup`, als Intervall (60 bzw. 1440 Minuten). Seit 19.10.2026 gibt es Cron auf Appwrite Cloud nur in bezahlten Plänen; ein Push mit Cron-Ausdruck scheitert im Gratis-Plan. Das Feld `interval` kennt die CLI ab 28.3.0.
 6. **Settings → Timeout** wie oben.
 7. **Settings → Scopes** wie oben. Findet sich ein Name dort nicht, gilt die
    Liste in der Console.

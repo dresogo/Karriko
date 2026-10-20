@@ -484,7 +484,7 @@
       "timeout": 300,
       "execute": [],
       "events": [],
-      "schedule": "0 * * * *",
+      "interval": 60,
       "scopes": ["rows.read", "rows.write", "files.read"]
     },
     {
@@ -514,7 +514,7 @@
       "timeout": 600,
       "execute": [],
       "events": [],
-      "schedule": "30 3 * * *",
+      "interval": 1440,
       "scopes": ["rows.read", "rows.write", "files.write"]
     }
   ]
