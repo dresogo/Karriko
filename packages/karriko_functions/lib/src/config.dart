@@ -29,6 +29,9 @@ class FunctionConfig {
   /// markiert von `moderation_desk`.
   final String reviewReportsTable;
 
+  /// Stellenanzeigen. Geschrieben nur von `job_posting` (T-4.31).
+  final String jobsTable;
+
   final String questionnairesBucket;
   final String verificationBucket;
 
@@ -64,6 +67,7 @@ class FunctionConfig {
     required this.releasesTable,
     required this.companiesTable,
     this.reviewReportsTable = 'review_reports',
+    this.jobsTable = 'jobs',
     required this.questionnairesBucket,
     required this.verificationBucket,
     required this.moderatorsTeam,
@@ -114,6 +118,7 @@ class FunctionConfig {
       releasesTable: mit('KARRIKO_TBL_RELEASES', 'questionnaire_releases'),
       companiesTable: mit('KARRIKO_TBL_COMPANIES', 'companies'),
       reviewReportsTable: mit('KARRIKO_TBL_REVIEW_REPORTS', 'review_reports'),
+      jobsTable: mit('KARRIKO_TBL_JOBS', 'jobs'),
       questionnairesBucket:
           mit('KARRIKO_BUCKET_QUESTIONNAIRES', 'questionnaires'),
       verificationBucket:

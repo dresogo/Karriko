@@ -18,6 +18,7 @@ export 'src/context.dart';
 export 'src/definition_loader.dart';
 export 'src/device_hash.dart';
 export 'src/email_verification.dart';
+export 'src/job_posting.dart';
 export 'src/moderation_desk.dart';
 export 'src/my_reviews.dart';
 export 'src/publish_decision.dart';

@@ -1,6 +1,6 @@
 # Die Appwrite Functions von Karriko
 
-Neun Functions in Dart. Jede ist ein eigenes Dart-Paket, weil Appwrite pro
+Zehn Functions in Dart. Jede ist ein eigenes Dart-Paket, weil Appwrite pro
 Deployment **nur ein Verzeichnis** hochlädt.
 
 | Function | Auslöser | Wer darf | Wofür |
@@ -8,6 +8,7 @@ Deployment **nur ein Verzeichnis** hochlädt.
 | `submit_review` | Aufruf | angemeldete Nutzer | Die einzige Stelle, an der eine Bewertung entsteht |
 | `my_reviews` | Aufruf | angemeldete Nutzer | Der einzige Weg zu den eigenen abgeschickten Bewertungen. Liest nur |
 | `company_profile` | Aufruf | angemeldete Nutzer mit bestätigter Adresse | Der einzige Schreibweg nach `companies`: eigenes Firmenprofil anlegen oder ändern, nur freigegebene Felder (T-4.2) |
+| `job_posting` | Aufruf | angemeldete Nutzer mit bestätigter Adresse | Der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs anlegen, ändern, veröffentlichen (erst mit Abzeichen), zurückziehen, löschen (T-4.31) |
 | `moderation_desk` | Aufruf | `moderators`, `admins` | Daten für den Admin-Bereich |
 | `moderate_review` | Aufruf | `moderators`, `admins` | Freigeben oder ablehnen; bei Freigabe entsteht die öffentliche Zeile |
 | `aggregate_company` | Änderung an `public_reviews` | — | Rechnet `company_scores` neu |

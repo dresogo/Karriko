@@ -442,6 +442,28 @@
       "scopes": ["rows.read", "rows.write"]
     },
     {
+      "$id": "job_posting",
+      "name": "job_posting",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/job_posting",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der einzige Schreibweg nach jobs (T-4.31): Stellen des eigenen",
+        "Betriebs anlegen, aendern, veroeffentlichen, zurueckziehen, loeschen.",
+        "Der Betrieb kommt aus owner_id des Aufrufers, nie aus der Anfrage.",
+        "Veroeffentlichen erst mit is_verified."
+      ],
+      "scopes": ["rows.read", "rows.write"]
+    },
+    {
       "$id": "moderation_desk",
       "name": "moderation_desk",
       "enabled": true,

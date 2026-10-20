@@ -48,6 +48,14 @@ class FunctionResponse {
         'message': message,
       });
 
+  /// Gibt es nicht, oder gehört nicht dem Aufrufer. Beides bekommt dieselbe
+  /// Antwort, damit sich fremde Kennungen nicht abfragen lassen.
+  static FunctionResponse notFound(String message) => FunctionResponse(404, {
+        'ok': false,
+        'code': 'not_found',
+        'message': message,
+      });
+
   static FunctionResponse forbidden(String message) => FunctionResponse(403, {
         'ok': false,
         'code': 'forbidden',

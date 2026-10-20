@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-169 Aufgaben sind offen, 76 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+167 Aufgaben sind offen, 75 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -62,6 +62,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Stand 20.10.2026: Seit T-4.1 und T-4.25 nehmen `profiles` und `companies` nur bestätigte Konten an. Bei der Registrierung entsteht deshalb keine Profilzeile mehr; die App liest Rolle und Namen aus den Prefs, eine Zeile entsteht erst mit der ersten Profiländerung.
 - [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
   Stand 20.10.2026: `jobs` ist leer, Umsetzung jederzeit möglich. Offen ist die Frage aus T-8.13, ob die Formatprüfung in Appwrite (URL- und E-Mail-Spalten) oder in der App liegt.
+  Teilweise erledigt am 20.10.2026: Formatprüfung in `job_posting` (T-8.13), Spec im Setup-Skript. Offen: `company_id`, `title`, `is_active` in der Console auf Pflicht stellen; die CLI 28.4.0 verlangt dafür einen Standardwert und kann es nicht.
 - [ ] T-2.20 · P2 · Nachweise für die Moderation über eine Function anzeigen statt nur in der Console (Setup §12)
 - [ ] T-2.21 · P2 · Nach `recompute_all` die betroffenen Betriebe automatisch neu aggregieren (Setup §6)
 - [ ] T-2.23 · P2 · Löschmodell der Referenz (`deleted_at`, Nutzer-ID bleibt bei anonymen Bewertungen) mit Art. 17 und der neuen Strecke abgleichen (Referenz §2.5, neu)
@@ -125,11 +126,11 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
+  Teilweise erledigt am 20.10.2026: `create` ist weg, Zeilenrechte setzt `job_posting`, `jobs` ist leer (keine alten Entwürfe). Offen: `read("any")` in der Console entfernen; die CLI 28.4.0 kann keine leere Rechteliste setzen.
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
 - [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
   Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
-- [ ] T-4.31 · P1 · `jobs` wie `companies` über eine Function schreiben: Heute setzt der Client `company_id`, `company`, `company_slug` und `company_logo_url` selbst, ein bestätigtes Konto kann also eine Stelle im Namen eines fremden Betriebs anlegen. Die Function nimmt die Firma aus `owner_id` des Aufrufers wie `company_profile` (T-4.2); zusammen mit T-2.18, T-8.13 und T-4.26 (Chat, 20.10.2026)
 
 ## 5 · Datenschutz und Recht
 
@@ -219,7 +220,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
 - [ ] T-8.12 · P2 · Festlegen, ob die Leckmeldung aus T-3.20 übergangen werden darf oder ein anderes Passwort erzwingt; Ergebnis als Entscheidung ins Factsheet (Chat)
-- [ ] T-8.13 · P2 · Festlegen, wo die Formatprüfung für `jobs.apply_url` und `jobs.contact_email` liegt: als URL- und E-Mail-Spalten in Appwrite (Spalten neu anlegen, solange `jobs` leer ist; dann weist Appwrite z. B. „www.firma.de“ ohne https:// ab, die App muss vorher prüfen) oder nur in der App zusammen mit der Prüfung aus E-46. Danach T-2.18 umsetzen (Chat, 20.10.2026)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 

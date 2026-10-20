@@ -80,7 +80,7 @@ Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erf
 | State | Riverpod |
 | Routing | GoRouter, ein zentraler Wächter |
 | Backend | Appwrite Cloud, **Region Frankfurt**, SDK 25.4 |
-| Serverlogik | Neun Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
+| Serverlogik | Zehn Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
 | Passkeys | Eigener WebAuthn-Dienst `services/passkey-rp` (Node 22, TypeScript, zwei Laufzeit-Abhängigkeiten) |
 | Hosting | Noch nicht gewählt; Favorit ist Hetzner (T-9.10) |
 | Öffentliche Seiten (geplant) | Serverseitiges HTML (Next.js), Flutter-App unter `/app` |

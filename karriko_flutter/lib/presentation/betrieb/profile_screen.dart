@@ -207,7 +207,7 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
           ),
         ],
         const SizedBox(height: AppLayout.s48),
-        BetriebJobsSection(company: geladen, ownerId: user?.id),
+        BetriebJobsSection(company: geladen),
         const SizedBox(height: AppLayout.s48),
         const SectionLabel('Ansprechpartner'),
         const SizedBox(height: AppLayout.s16),

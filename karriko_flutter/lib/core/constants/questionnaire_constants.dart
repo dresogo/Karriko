@@ -65,6 +65,13 @@ class QuestionnaireConstants {
     defaultValue: 'company_profile',
   );
 
+  /// Der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs anlegen,
+  /// aendern, veroeffentlichen, zurueckziehen, loeschen (T-4.31).
+  static const jobPostingFunction = String.fromEnvironment(
+    'FN_JOB_POSTING',
+    defaultValue: 'job_posting',
+  );
+
   /// Arbeitstisch des Admin-Bereichs: Warteschlange, Meldungen, Protokoll,
   /// Betriebe. Nur `team:moderators` und `team:admins`.
   static const moderationDeskFunction = String.fromEnvironment(

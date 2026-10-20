@@ -276,23 +276,25 @@ const SCHEMA = [
   {
     id: 'jobs',
     name: 'Jobs',
-    // **Kein `read("any")` auf Tabellenebene.** Es galt fuer jede Zeile, auch
-    // fuer Entwuerfe: Die oeffentliche Liste filterte nur nach `is_active`,
-    // ueber die API oder /stellen/<id> war ein Entwurf fuer jeden lesbar.
-    // Seit Oktober 2026 setzt die App das Leserecht pro Zeile
-    // (JobRepository.permissionsFor): veroeffentlicht `read("any")`, Entwurf
-    // nur der Eigentuemer. Erst die App ausliefern, dann mit
-    // `--fix-permissions` umstellen. Alte Entwuerfe tragen noch `read("any")`
-    // auf der Zeile, bis sie einmal veroeffentlicht und zurueckgezogen werden.
-    permissions: ['create("users/verified")'],
+    // **Keine Rechte auf Tabellenebene.** Geschrieben wird nur ueber die
+    // Function `job_posting` (T-4.31); vorher setzte der Client `company_id`
+    // selbst und konnte im Namen fremder Betriebe inserieren. Die Function
+    // setzt das Leserecht pro Zeile: veroeffentlicht `read("any")`, Entwurf
+    // nur der Eigentuemer. Ein `read("any")` hier galte auch fuer Entwuerfe
+    // (T-4.26). Die CLI kann keine leere Rechteliste setzen; dann mit
+    // `--fix-permissions` oder in der Console.
+    permissions: [],
     exactPermissions: true,
     createIfMissing: true,
     columns: [
-      str('company_id'),
+      // Pflicht seit T-2.18, als zweite Absicherung neben `job_posting`.
+      // Das Skript legt fehlende Spalten an, macht bestehende aber nicht zu
+      // Pflichtfeldern; das geschieht in der Console.
+      str('company_id', 255, { required: true }),
       str('company'),
       str('company_slug'),
       str('company_logo_url', 2048),
-      str('title'),
+      str('title', 255, { required: true }),
       str('location'),
       str('profession'),
       str('industry'),
@@ -306,7 +308,7 @@ const SCHEMA = [
       str('requirements', 1000, { array: true }),
       str('benefits', 1000, { array: true }),
       { kind: 'datetime', key: 'start_date', required: false },
-      { kind: 'boolean', key: 'is_active', required: false, default: true },
+      { kind: 'boolean', key: 'is_active', required: true },
     ],
     indexes: [
       { key: 'company_id', type: 'key', columns: ['company_id'] },

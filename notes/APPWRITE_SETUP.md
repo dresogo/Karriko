@@ -703,7 +703,7 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Neun Functions, alle in Dart.
+Zehn Functions, alle in Dart.
 
 ### Gemeinsam für alle acht
 
@@ -815,6 +815,33 @@ er. Eine Änderung setzt die Zeilenrechte auf `read("any")` und entfernt so auch
 alte `update("user:…")`-Rechte.
 
 Die Rolle (azubi/betrieb) spielt hier keine Rolle (E-3.10).
+
+#### `job_posting`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write` |
+
+**Der einzige Schreibweg nach `jobs` (T-4.31).** Vorher setzte der Client
+`company_id` und die Angaben zum Betrieb selbst; ein bestätigtes Konto konnte so
+im Namen eines fremden Betriebs inserieren. `jobs` hat deshalb keine
+Tabellenrechte, und die Zeilen tragen nur ein Leserecht: veröffentlicht
+`read("any")`, Entwurf `read("user:<Eigentümer>")`.
+
+Aktionen: `create` (`fields`), `update` (`job_id`, `fields`), `set_active`
+(`job_id`, `is_active`), `delete` (`job_id`). Der Betrieb ist der mit `owner_id`
+gleich dem Aufrufer; eine Stelle eines anderen Betriebs bekommt dieselbe Antwort
+wie eine, die es nicht gibt (404). `company_id`, `company`, `company_slug`,
+`company_logo_url` und `industry` kommen bei jedem Speichern aus der Firmenzeile.
+
+Das Formular schickt immer alle Felder; leere werden `null`. Titel und Ort sind
+Pflicht, der Bewerbungslink nur mit `http://` oder `https://`, die Kontakt-E-Mail
+muss wie eine Adresse aussehen (T-8.13: geprüft in der Function, die Spalten
+bleiben Text). **Veröffentlichen erst mit Abzeichen:** Solange `is_verified` des
+Betriebs falsch ist, sind nur Entwürfe möglich (403 mit Erklärung).
 
 #### `moderation_desk`
 

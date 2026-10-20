@@ -85,6 +85,8 @@ const JE_FUNCTION = {
   moderation_desk: ['KARRIKO_TBL_REVIEW_REPORTS'],
   // Schreibt nur companies. Kein Salz, keine Fristen.
   company_profile: [],
+  // Schreibt nur jobs und liest die eigene Firma.
+  job_posting: [],
 };
 
 const fehlt = GEMEINSAM.filter(

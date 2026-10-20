@@ -572,6 +572,61 @@ class Tables {
         permissions: [Permission.read(Role.any())],
       );
 
+  // ── jobs ──────────────────────────────────────────────────────────────────
+
+  /// Eine Stelle, oder `null`, wenn es sie nicht gibt.
+  Future<aw.Row?> getJob(String id) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  /// Zeilenrechte einer Stelle: Eine veröffentlichte lesen alle, einen
+  /// Entwurf nur der Eigentümer. Kein Ändern- und Löschrecht, das geht nur
+  /// über `job_posting` (T-4.31).
+  List<String> _jobRechte({required bool isActive, required String ownerId}) =>
+      [Permission.read(isActive ? Role.any() : Role.user(ownerId))];
+
+  Future<aw.Row> createJob(
+    Map<String, Object?> data, {
+    required String ownerId,
+  }) =>
+      db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: ID.unique(),
+        data: data,
+        permissions:
+            _jobRechte(isActive: data['is_active'] == true, ownerId: ownerId),
+      );
+
+  Future<aw.Row> updateJob(
+    String id,
+    Map<String, Object?> data, {
+    required bool isActive,
+    required String ownerId,
+  }) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+        data: data,
+        permissions: _jobRechte(isActive: isActive, ownerId: ownerId),
+      );
+
+  Future<void> deleteJob(String id) => db.deleteRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+      );
+
   Future<aw.Row> setCompanyVerified(String companyId, bool verified) =>
       db.updateRow(
         databaseId: config.databaseId,
