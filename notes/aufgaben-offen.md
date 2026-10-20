@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-171 Aufgaben sind offen, 78 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+170 Aufgaben sind offen, 77 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -108,7 +108,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.2 · P1 · Profiländerungen von Betrieben über eine Function mit Feld-Whitelist, damit `is_verified`, `is_premium` und `average_rating` gesperrt sind (todo D, Setup §4a)
   Appwrite kennt keine Rechte je Spalte. Das Abzeichen soll laut Referenz §3.2 ein Mensch vergeben.
 - [ ] T-4.3 · P1 · Betriebssperre serverseitig verankern (todo D)
-- [ ] T-4.4 · P1 · Rechte aller Tabellen in der Console gegen das Soll prüfen (todo D)
 - [ ] T-4.5 · P1 · Je Function ein eigener Schlüssel mit minimalen Scopes, Liste aller Schlüssel mit Zweck und Ablaufdatum (Plan)
   Stand 20.10.2026: Es gibt nur noch `karriko_key_api` (alle 112 Rechte, kein Ablauf, zuletzt benutzt am 02.10.); `schema-setup` (abgelaufen) ist gelöscht. `karriko_key_api` bleibt bis nach der Abnahme (T-2.5), entschieden mit dem Nutzer.
 - [ ] T-4.6 · P1 · Salz für den Gerätehash zusätzlich im Passwortmanager ablegen (todo A)
