@@ -1,6 +1,6 @@
 # Karriko – Erledigte Aufgaben
 
-**Stand:** 18. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
+**Stand:** 20. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
 
 Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, Nummer und Beleg. Neue Einträge kommen oben in die Tabelle, im selben Commit, der den Punkt aus der offenen Liste nimmt. Die Nummern bleiben vergeben und werden nie neu besetzt.
 
@@ -8,6 +8,10 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 20.10.2026 | T-11.1 | Appwrite lehnt Anfragen von `karriko.dresogo.de` ab (CORS) | Web-Plattform `karriko.dresogo.de` per CLI angelegt (`karriko-dev-web`). Gegenprobe: Anfrage mit `Origin: https://karriko.dresogo.de` bekommt 200 und den passenden `Access-Control-Allow-Origin`. `karriko.de` folgt mit T-3.7 | Console, kein Commit |
+| 20.10.2026 | T-4.1 | Row Security für `bookmarks` und `profiles` | Beide hatten weder Tabellenrechte noch Row Security, die App konnte dort also gar nichts anlegen. Jetzt Row Security an, Tabellenrecht nur `create("users/verified")` (auch T-4.25); Lesen, Ändern und Löschen setzt die App pro Zeile für den Eigentümer. `appwrite-setup.mjs` kennt beide Tabellen und prüft künftig auch den Schalter. Dabei gefunden: Die Rolle in `profiles` ist so für den Eigentümer änderbar (T-4.30, W-3.2). Entschieden mit dem Nutzer | dieser Commit |
+| 20.10.2026 | T-2.17 | Eindeutige Indizes auf `bookmarks` und `review_reports` | `user_company_unique` auf `bookmarks(user_id, company_id)` und `review_reporter_unique` auf `review_reports(review_id, reporter_id)`, beide angelegt und verfügbar. In Skript und Vorlage eingetragen | dieser Commit |
+| 20.10.2026 | T-2.7 | `profiles.last_name` von 10 auf 100 Zeichen | Spalte vergrößert. `appwrite-setup.mjs` vergrößert `varchar`-Spalten jetzt selbst, verkleinert aber nie. Nebenwirkung der CLI: Der Standardwert ist jetzt ein leerer Text statt keiner, weil sie ihn als Pflichtangabe verlangt; die App schreibt den Nachnamen bei der Registrierung immer mit | dieser Commit |
 | 18.10.2026 | T-6.7 | Restliche Azubi-Seiten: Lesezeichen, Benachrichtigungen | Hinfällig: Beide Seiten sind nach E-30 ausgeblendet, weil sie sich nicht füllen ließen (T-2.13, T-6.23). Damit entfällt auch der einzige Nutzer von `AppColors.cardShadow`; das Token ist entfernt und W-1.2 erledigt. Entschieden mit dem Nutzer | dieser Commit |
 | 18.10.2026 | T-6.22 | Datumsfeld im Stellenformular nutzt `InkWell` statt `TapTarget`, widerspricht E-10 | Hinfällig, der Befund war falsch: E-10 schließt `GestureDetector` aus, nicht `InkWell`. Die Welle ist im Theme global aus (`NoSplash.splashFactory`), und `TapTarget` ist laut eigenem Kommentar für Stellen gedacht, an denen ein `InkWell` nicht passt. Auf Wunsch des Nutzers mit Nummer festgehalten | – |
 | 18.10.2026 | T-6.14 | Verbleibende `IntrinsicHeight`-Konstruktionen durch `Table` ersetzen | Hinfällig: An den übrigen Stellen (Login-Gerüst, Profilkopf, Preiskarten) müssen beide Spalten die volle Höhe einnehmen (`Spacer`, `spaceBetween`, vertikal zentriert). `Table` kann das nicht, Fill-Zellen tragen nichts zur Zeilenhöhe bei. `IntrinsicHeight` bleibt dort; `Table` gilt weiter, wo Zellen nur Trennlinien teilen. Entschieden mit dem Nutzer | – |

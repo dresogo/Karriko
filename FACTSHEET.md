@@ -225,10 +225,11 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-3 · Daten und Recht**
 
 - **W-3.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
+- **W-3.2 · Rolle im Profil:** `profiles.role` ist mit Row Security für den Eigentümer änderbar (T-4.1), widerspricht E-44. Die App liest die Rolle für Weiterleitungen; Rechte prüfen Functions und Teams selbst. Lösung mit T-4.30.
 
 **Offene Produktentscheidungen** (Details in `notes/aufgaben-offen.md` Abschnitt 8): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 
-**Nächster Schlüsselschritt laut `notes/aufgaben-offen.md`:** `submit_review` deployen (T-2.31), eigenes Moderationskonto anlegen (T-2.3), dann Abnahmetest mit den vier Personas (T-2.4).
+**Nächster Schlüsselschritt laut `notes/aufgaben-offen.md`:** Functions sind seit 20.10.2026 deployt; Gegenprobe mit unbestätigtem Konto (T-2.31), Zeitplan für `publish_scheduled` und `cleanup` (T-2.32), eigenes Moderationskonto (T-2.3), dann Abnahmetest mit den vier Personas (T-2.4).
 
 ---
 

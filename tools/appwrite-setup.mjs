@@ -241,10 +241,41 @@ const SCHEMA = [
   {
     id: 'profiles',
     name: 'Profiles',
-    permissions: null, // Profile gehoeren einzelnen Nutzern – Rechte nicht anfassen.
+    // Profile gehoeren einzelnen Nutzern. Die App setzt beim Anlegen Lesen,
+    // Aendern und Loeschen fuer den Eigentuemer **pro Zeile**; das wirkt nur
+    // mit `rowSecurity`. Bis Oktober 2026 stand die Tabelle ohne jedes Recht
+    // und ohne den Schalter da, die App konnte also gar nichts anlegen
+    // (T-4.1). Anlegen nur mit bestaetigter Adresse (T-4.25).
+    //
+    // Offen: Der Eigentuemer kann auf seiner Zeile auch `role` aendern.
+    // Appwrite kennt keine Rechte je Spalte; siehe W-3.2 und T-4.30.
+    permissions: ['create("users/verified")'],
+    exactPermissions: true,
+    rowSecurity: true,
     createIfMissing: false,
-    columns: [str('company_id')],
+    columns: [
+      str('company_id'),
+      // Stand mit 10 Zeichen da, zu kurz fuer viele Nachnamen (T-2.7).
+      // `ensureColumns` vergroessert eine bestehende Spalte, verkleinert nie.
+      str('last_name', 100),
+    ],
     indexes: [],
+  },
+  {
+    id: 'bookmarks',
+    name: 'Bookmarks',
+    // Wie `profiles`: Rechte pro Zeile fuer den Eigentuemer, gesetzt von
+    // CompanyRepository.bookmarkCompany; ohne `rowSecurity` waeren sie wirkungslos.
+    permissions: ['create("users/verified")'],
+    exactPermissions: true,
+    rowSecurity: true,
+    createIfMissing: false,
+    columns: [],
+    indexes: [
+      // Doppelt merken soll nicht moeglich sein; der Client prueft vorher,
+      // verbindlich ist nur der Index (T-2.17).
+      { key: 'user_company_unique', type: 'unique', columns: ['user_id', 'company_id'], optional: true },
+    ],
   },
   {
     id: 'jobs',
@@ -510,6 +541,8 @@ const SCHEMA = [
     indexes: [
       { key: 'review_id', type: 'key', columns: ['review_id'] },
       { key: 'reporter_id', type: 'key', columns: ['reporter_id'] },
+      // Wer dieselbe Bewertung zweimal meldet, zaehlt einmal (T-2.17).
+      { key: 'review_reporter_unique', type: 'unique', columns: ['review_id', 'reporter_id'], optional: true },
     ],
   },
 ];
@@ -717,10 +750,14 @@ async function ensureTable(spec) {
 
 async function ensureColumns(spec) {
   const existing = await call('GET', `${p().columns(spec.id)}?queries[]=${encodeURIComponent(JSON.stringify({ method: 'limit', values: [100] }))}`);
-  const have = new Set((existing[p().listKey] ?? existing.columns ?? existing.attributes ?? []).map((c) => c.key));
+  const vorhanden = existing[p().listKey] ?? existing.columns ?? existing.attributes ?? [];
+  const have = new Set(vorhanden.map((c) => c.key));
 
   for (const col of spec.columns) {
-    if (have.has(col.key)) continue;
+    if (have.has(col.key)) {
+      await widenColumn(spec, col, vorhanden.find((c) => c.key === col.key));
+      continue;
+    }
     if (DRY_RUN) {
       log('·', `${spec.id}.${col.key}: wuerde angelegt (${col.kind})`);
       continue;
@@ -750,6 +787,27 @@ async function ensureColumns(spec) {
     await call('POST', p().column(spec.id, kind), body);
     log('+', `${spec.id}.${col.key} (${col.kind})`);
   }
+}
+
+// Vergroessert eine bestehende `varchar`-Spalte auf die gewuenschte Groesse.
+// Nur in diese Richtung: Verkleinern schneidet vorhandene Werte ab und ist
+// deshalb eine Entscheidung, keine Reparatur — es wird nur gemeldet.
+async function widenColumn(spec, col, ist) {
+  if (col.kind !== 'varchar' || ist?.size === undefined || ist.size === col.size) return;
+  if (ist.size > col.size) {
+    log('!', `${spec.id}.${col.key}: Groesse ${ist.size} statt ${col.size} – wird nicht verkleinert.`);
+    return;
+  }
+  if (DRY_RUN) {
+    log('·', `${spec.id}.${col.key}: wuerde von ${ist.size} auf ${col.size} Zeichen vergroessert`);
+    return;
+  }
+  await call('PATCH', `${p().column(spec.id, p().kinds.varchar)}/${col.key}`, {
+    required: ist.required ?? false,
+    default: ist.default ?? null,
+    size: col.size,
+  });
+  log('+', `${spec.id}.${col.key}: von ${ist.size} auf ${col.size} Zeichen vergroessert`);
 }
 
 // Appwrite legt Spalten im Hintergrund an. Ein Index auf eine Spalte, die noch
@@ -816,11 +874,15 @@ async function checkPermissions(spec, table) {
     ? [...spec.permissions]
     : [...new Set([...current, ...spec.permissions])];
 
-  if (missing.length === 0 && extra.length === 0) return;
+  const security = table.rowSecurity ?? table.documentSecurity;
+  const schalterFalsch = spec.rowSecurity !== undefined && security !== spec.rowSecurity;
+
+  if (missing.length === 0 && extra.length === 0 && !schalterFalsch) return;
 
   const befund = [
     missing.length > 0 ? `fehlen: ${missing.join(', ')}` : null,
     extra.length > 0 ? `zu viel: ${extra.join(', ')}` : null,
+    schalterFalsch ? `rowSecurity ${security} statt ${spec.rowSecurity}` : null,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -840,7 +902,6 @@ async function checkPermissions(spec, table) {
     return;
   }
 
-  const security = table.rowSecurity ?? table.documentSecurity;
   await call('PUT', p().table(spec.id), {
     name: table.name,
     permissions: gewuenscht,

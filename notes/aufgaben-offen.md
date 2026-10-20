@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-176 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+174 Aufgaben sind offen, 80 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -49,8 +49,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.5 · P1 · API-Schlüssel nach der Abnahme löschen und in der Console widerrufen (todo A)
   Die Datei unter `karriko_local/` löschen und den Schlüssel widerrufen, nicht nur ablaufen lassen.
 - [ ] T-2.6 · P1 · Testzeilen in `companies` löschen, darunter die verwaiste „Test GmbH“ (Setup §11)
-- [ ] T-2.7 · P1 · `profiles.last_name` von 10 auf 100 Zeichen erweitern (todo D)
-  Der einzige Befund des Datenbank-Abgleichs, der jemanden beim Registrieren kostet.
 - [ ] T-2.8 · P1 · Kontolöschung als Function nach Art. 17 DSGVO, Reihenfolge nach Referenz §3.3 (todo B3)
 - [ ] T-2.9 · P1 · Löschverlangen für einzelne Bewertungen, inklusive der Zeile in `public_reviews` (todo G, Setup §12)
   Größte offene Lücke der Bewertungsstrecke: `public_reviews` trägt absichtlich keine `user_id`. Braucht wie T-2.8 eine Function, die mit Schlüssel löscht.
@@ -61,7 +59,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Heute erzeugt keine Stelle Benachrichtigungen; ohne initialisierten Client kommt `LateInitializationError`.
   Am 18.10.2026 nach E-30 ausgeblendet: Die Tabelle `notifications` steht weder in der Vorlage noch in `appwrite.config.json`. Menüeintrag entfernt, `/notifications` führt aufs Dashboard, `notifications_screen.dart` gelöscht (in der Historie bis `3c90891`). Zum Bau gehören jetzt auch Tabelle, Seite und die Schalter aus T-2.14.
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
-- [ ] T-2.17 · P2 · Eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)` (todo D)
 - [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
 - [ ] T-2.19 · P2 · `companies.average_rating` und `review_count` mit Wertgrenzen neu anlegen, solange es nur Testdaten gibt (Setup §4a)
 - [ ] T-2.20 · P2 · Nachweise für die Moderation über eine Function anzeigen statt nur in der Console (Setup §12)
@@ -77,6 +74,8 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.29 · P2 · Admin-Bereich „Anfragen“: ein Eingang für Kontaktformular, Auskunfts- und Löschverlangen und Beanstandungen von Betrieben (Sitemap)
 - [ ] T-2.30 · P2 · Vollständige Berufsliste der BA mit `tools/import_berufe.dart` einspielen, heute stehen rund 40 Beispielberufe in der Suche (Plan Fragebogen A12)
 - [ ] T-2.31 · P1 · `submit_review` neu deployen (vorher `dart run tools/vendor_core.dart`): Erst dann gelten die Prüfung auf bestätigte Adresse (403) und das Limit von 3 Bewertungen je 24 h (429). Danach mit einem unbestätigten Testkonto gegenprüfen (Export 13.10.)
+  Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, bei `publish_scheduled` und `cleanup` nur der Code (T-2.32). Offen: die Gegenprobe mit einem unbestätigten Testkonto.
+- [ ] T-2.32 · P1 · Zeitplan für `publish_scheduled` und `cleanup`: Live haben beide keinen Zeitplan, ein Push mit Cron scheitert an „Your current plan doesn't support cron schedules“. Zurückgestellte Bewertungen gehen deshalb nie in die Moderation (E-26), Entwürfe und Nachweise werden nicht gelöscht (E-51). Entscheiden: Plan wechseln oder anderer Auslöser (Chat, 20.10.2026)
 
 ## 3 · Anmeldung und Konten
 
@@ -107,8 +106,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
-- [ ] T-4.1 · P1 · Row Security für `bookmarks` und `profiles`, Zeilenrechte nur für den Eigentümer (todo D)
-  `bookmarks` und `profiles` stehen auf `rowSecurity: false`. Je nach Tabellenrechten liest jeder angemeldete Nutzer Merklisten und Profile aller anderen. Das Setup-Skript fasst beide nicht an.
 - [ ] T-4.2 · P1 · Profiländerungen von Betrieben über eine Function mit Feld-Whitelist, damit `is_verified`, `is_premium` und `average_rating` gesperrt sind (todo D, Setup §4a)
   Appwrite kennt keine Rechte je Spalte. Das Abzeichen soll laut Referenz §3.2 ein Mensch vergeben.
 - [ ] T-4.3 · P1 · Betriebssperre serverseitig verankern (todo D)
@@ -131,11 +128,13 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
 - [ ] T-4.25 · P1 · `create("users")` auf `users/verified` umstellen, wo nur bestätigte Konten schreiben sollen: `review_reports`, `review_drafts`, `companies`, `bookmarks` u. a.; Vorlage, `appwrite-setup.mjs` und Console gemeinsam (Export 13.10.)
+  Teilweise erledigt am 20.10.2026: `profiles` und `bookmarks` (mit T-4.1). Offen: `review_reports`, `review_drafts`, `companies`, `jobs`.
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
 - [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
   Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
+- [ ] T-4.30 · P1 · `profiles.role` ist für den Eigentümer änderbar: Mit Row Security (T-4.1) darf jedes Konto seine eigene Profilzeile ändern, auch die Rolle. Appwrite kennt keine Rechte je Spalte. Rolle aus `profiles` herausnehmen oder Profiländerungen über eine Function wie in T-4.2; hängt an T-2.16 (Chat, 20.10.2026)
 
 ## 5 · Datenschutz und Recht
 
@@ -258,7 +257,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 Übernommen am 18.10.2026 aus dem Tab „Fehlerreport Website“ (Test vom 13.10.2026 auf karriko.dresogo.de bei 320 px). Priorität aus der Schwere im Report: kritisch und hoch → P1, mittel → P2, niedrig → P3. Inzwischen behoben und deshalb nicht übernommen: Kontaktformular (T-2.11), 404-Seite ohne Rahmen, widersprüchliche Antwortzeit (Kontakt nennt keine mehr).
 
-- [ ] T-11.1 · P1 · Appwrite lehnt alle Anfragen von `karriko.dresogo.de` ab (CORS): Web-Plattform mit diesem Hostnamen in der Console anlegen; `karriko.de` folgt mit T-3.7 (Fehlerreport Website)
 - [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-08), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
 - [ ] T-11.3 · P1 · Der Live-Build spricht den Passkey-Dienst unter `http://localhost:3000` an, Passkeys gehen für niemanden: mit `--dart-define=PASSKEY_SERVICE_URL=…` bauen, Dienst mit passender `RP_ID` betreiben (hängt an T-3.8, T-3.16) (Fehlerreport Website)
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)

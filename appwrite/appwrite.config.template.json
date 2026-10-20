@@ -331,6 +331,12 @@
           "type": "key",
           "columns": ["reporter_id"],
           "orders": ["ASC"]
+        },
+        {
+          "key": "review_reporter_unique",
+          "type": "unique",
+          "columns": ["review_id", "reporter_id"],
+          "orders": ["ASC", "ASC"]
         }
       ]
     }
