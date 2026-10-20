@@ -229,7 +229,7 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 
 **Offene Produktentscheidungen** (Details in `notes/aufgaben-offen.md` Abschnitt 8): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 
-**Nächster Schlüsselschritt laut `notes/aufgaben-offen.md`:** Functions sind seit 20.10.2026 deployt; Gegenprobe mit unbestätigtem Konto (T-2.31), Zeitplan für `publish_scheduled` und `cleanup` (T-2.32), eigenes Moderationskonto (T-2.3), dann Abnahmetest mit den vier Personas (T-2.4).
+**Nächster Schlüsselschritt laut `notes/aufgaben-offen.md`:** Functions sind seit 20.10.2026 deployt; Gegenprobe mit unbestätigtem Konto (T-2.31), eigenes Moderationskonto (T-2.3), dann Abnahmetest mit den vier Personas (T-2.4).
 
 ---
 

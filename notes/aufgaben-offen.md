@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-174 Aufgaben sind offen, 80 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+174 Aufgaben sind offen, 79 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -74,9 +74,9 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.29 · P2 · Admin-Bereich „Anfragen“: ein Eingang für Kontaktformular, Auskunfts- und Löschverlangen und Beanstandungen von Betrieben (Sitemap)
 - [ ] T-2.30 · P2 · Vollständige Berufsliste der BA mit `tools/import_berufe.dart` einspielen, heute stehen rund 40 Beispielberufe in der Suche (Plan Fragebogen A12)
 - [ ] T-2.31 · P1 · `submit_review` neu deployen (vorher `dart run tools/vendor_core.dart`): Erst dann gelten die Prüfung auf bestätigte Adresse (403) und das Limit von 3 Bewertungen je 24 h (429). Danach mit einem unbestätigten Testkonto gegenprüfen (Export 13.10.)
-  Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, bei `publish_scheduled` und `cleanup` nur der Code (T-2.32). Offen: die Gegenprobe mit einem unbestätigten Testkonto.
-- [ ] T-2.32 · P1 · Zeitplan für `publish_scheduled` und `cleanup`: Live haben beide keinen Zeitplan, ein Push mit Cron scheitert an „Your current plan doesn't support cron schedules“. Zurückgestellte Bewertungen gehen deshalb nie in die Moderation (E-26), Entwürfe und Nachweise werden nicht gelöscht (E-51). Entscheiden: Plan wechseln oder anderer Auslöser (Chat, 20.10.2026)
-  Geprüft am 20.10.2026: Seit 19.10.2026 gibt es Cron auf Appwrite Cloud nur noch in bezahlten Plänen. Der Gratis-Plan erlaubt Intervalle ab 60 Minuten, ohne frei wählbare Startzeit (Feld `interval` in Minuten, CLI ab 28.3.0 mit `--interval`, installiert ist 28.1.0). Für `publish_scheduled` (stündlich) ist 60 gleichwertig, für `cleanup` reicht 1440 (täglich, Uhrzeit legt Appwrite fest). Quelle: appwrite.io/blog/post/announcing-function-intervals
+  Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, bei `publish_scheduled` und `cleanup` nur der Code, weil der Push am Cron der Vorlage scheitert (T-2.32). Offen: die Gegenprobe mit einem unbestätigten Testkonto.
+- [ ] T-2.32 · P2 · Vorlage von Cron auf Intervall umstellen: Seit 19.10.2026 gibt es Cron auf Appwrite Cloud nur in bezahlten Plänen, `appwrite push function` scheitert deshalb bei `publish_scheduled` und `cleanup`. Live hat Appwrite beide schon umgewandelt (`interval` 60 und 1440 Minuten, laufen planmäßig). In `appwrite.config.template.json` `schedule` durch `interval` ersetzen; braucht CLI ab 28.3.0, installiert ist 28.1.0. Bis dahin bei diesen beiden nur den Code deployen (`appwrite functions create-deployment`) (Chat, 20.10.2026)
+  Quelle: appwrite.io/blog/post/announcing-function-intervals. Uhrzeit innerhalb des Intervalls legt Appwrite fest; für Freigabe und Aufräumen reicht das.
 
 ## 3 · Anmeldung und Konten
 
