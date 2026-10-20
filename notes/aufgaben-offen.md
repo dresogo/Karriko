@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 18. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-172 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+173 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -132,6 +132,8 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
+- [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
+  Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
 
 ## 5 · Datenschutz und Recht
 
@@ -232,6 +234,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-9.9 · P3 · Zugänge und Notfallunterlagen für eine Vertrauensperson hinterlegen, gegen das Risiko „Wissen in einem Kopf“ (Referenz §7)
 
 - [ ] T-9.10 · P1 · Hosting-Anbieter für die Web-App wählen: EU-Standort, AVV, ISO-27001-Zertifizierung, eigene Security-Header möglich (neu)
+  Favorit ist Hetzner, noch nicht entschieden (Chat, 20.10.2026).
 - [ ] T-9.11 · P1 · Anwalt für IT- und Datenschutzrecht finden und Ersttermin vereinbaren; Fragenliste steht im Tab Fragen an den Anwalt (neu)
 - [ ] T-9.12 · P2 · Vertretung für den Notfall benennen und in die Notbremsen einweisen (Notfallplan)
 - [ ] T-9.13 · P2 · Notfallplan vervollständigen: Telefon, Kontakte, Wartungsseite, Bremsen in Staging erprobt (Notfallplan)
