@@ -2,7 +2,7 @@
 
 **Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-173 Aufgaben sind offen, 79 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+171 Aufgaben sind offen, 78 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -59,11 +59,11 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Heute erzeugt keine Stelle Benachrichtigungen; ohne initialisierten Client kommt `LateInitializationError`.
   Am 18.10.2026 nach E-30 ausgeblendet: Die Tabelle `notifications` steht weder in der Vorlage noch in `appwrite.config.json`. Menüeintrag entfernt, `/notifications` führt aufs Dashboard, `notifications_screen.dart` gelöscht (in der Historie bis `3c90891`). Zum Bau gehören jetzt auch Tabelle, Seite und die Schalter aus T-2.14.
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
+  Stand 20.10.2026: Seit T-4.1 und T-4.25 nehmen `profiles` und `companies` nur bestätigte Konten an. Bei der Registrierung entsteht deshalb keine Profilzeile mehr; die App liest Rolle und Namen aus den Prefs, eine Zeile entsteht erst mit der ersten Profiländerung.
 - [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
-- [ ] T-2.19 · P2 · `companies.average_rating` und `review_count` mit Wertgrenzen neu anlegen, solange es nur Testdaten gibt (Setup §4a)
+  Stand 20.10.2026: `jobs` ist leer, Umsetzung jederzeit möglich. Offen ist die Frage aus T-8.13, ob die Formatprüfung in Appwrite (URL- und E-Mail-Spalten) oder in der App liegt.
 - [ ] T-2.20 · P2 · Nachweise für die Moderation über eine Function anzeigen statt nur in der Console (Setup §12)
 - [ ] T-2.21 · P2 · Nach `recompute_all` die betroffenen Betriebe automatisch neu aggregieren (Setup §6)
-- [ ] T-2.22 · P2 · Specification der Functions festlegen und in die Vorlage eintragen (Setup §6)
 - [ ] T-2.23 · P2 · Löschmodell der Referenz (`deleted_at`, Nutzer-ID bleibt bei anonymen Bewertungen) mit Art. 17 und der neuen Strecke abgleichen (Referenz §2.5, neu)
 - [ ] T-2.24 · P3 · Betriebskonto löschen: Profil inaktiv, 30 Tage reaktivierbar, Antworten löschen (Referenz §3.4)
 - [ ] T-2.25 · P3 · Profilaufrufe zählen, ohne festzuhalten, wer zugesehen hat (Referenz §3.4)
@@ -110,6 +110,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.3 · P1 · Betriebssperre serverseitig verankern (todo D)
 - [ ] T-4.4 · P1 · Rechte aller Tabellen in der Console gegen das Soll prüfen (todo D)
 - [ ] T-4.5 · P1 · Je Function ein eigener Schlüssel mit minimalen Scopes, Liste aller Schlüssel mit Zweck und Ablaufdatum (Plan)
+  Stand 20.10.2026: Es gibt nur noch `karriko_key_api` (alle 112 Rechte, kein Ablauf, zuletzt benutzt am 02.10.); `schema-setup` (abgelaufen) ist gelöscht. `karriko_key_api` bleibt bis nach der Abnahme (T-2.5), entschieden mit dem Nutzer.
 - [ ] T-4.6 · P1 · Salz für den Gerätehash zusätzlich im Passwortmanager ablegen (todo A)
   Liegt lokal in `appwrite/functions/submit_review/.env` (gitignored).
 - [ ] T-4.9 · P1 · Content-Security-Policy und Security-Header setzen, offen seit dem ZAP-Scan vom 1. Juni (S2, Referenz §4.3)
@@ -126,8 +127,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.23 · P3 · ISMS-Grundlagen: Risikoliste und Erklärung zur Anwendbarkeit (Plan)
 
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
-- [ ] T-4.25 · P1 · `create("users")` auf `users/verified` umstellen, wo nur bestätigte Konten schreiben sollen: `review_reports`, `review_drafts`, `companies`, `bookmarks` u. a.; Vorlage, `appwrite-setup.mjs` und Console gemeinsam (Export 13.10.)
-  Teilweise erledigt am 20.10.2026: `profiles` und `bookmarks` (mit T-4.1). Offen: `review_reports`, `review_drafts`, `companies`, `jobs`.
 - [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
@@ -223,6 +222,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
 - [ ] T-8.12 · P2 · Festlegen, ob die Leckmeldung aus T-3.20 übergangen werden darf oder ein anderes Passwort erzwingt; Ergebnis als Entscheidung ins Factsheet (Chat)
+- [ ] T-8.13 · P2 · Festlegen, wo die Formatprüfung für `jobs.apply_url` und `jobs.contact_email` liegt: als URL- und E-Mail-Spalten in Appwrite (Spalten neu anlegen, solange `jobs` leer ist; dann weist Appwrite z. B. „www.firma.de“ ohne https:// ab, die App muss vorher prüfen) oder nur in der App zusammen mit der Prüfung aus E-46. Danach T-2.18 umsetzen (Chat, 20.10.2026)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 

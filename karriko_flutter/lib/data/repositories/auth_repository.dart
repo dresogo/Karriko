@@ -40,11 +40,17 @@ Uri oauth2TokenUrl(String provider) {
 class AuthRepository {
   /// Zugriff auf den eigenen WebAuthn-Dienst.
   ///
-  /// Ueber den Konstruktor austauschbar, damit Tests ihn ersetzen koennen –
-  /// die Appwrite-Aufrufe daneben sind das bis heute nicht.
-  AuthRepository({PasskeyApi? passkeyApi, CompanyRepository? companyRepository})
-      : _passkeys = passkeyApi ?? PasskeyApi(),
-        _companies = companyRepository ?? CompanyRepository();
+  /// Ueber den Konstruktor austauschbar, damit Tests ihn ersetzen koennen,
+  /// ebenso [Account] und [TablesDB] (wie in `CompanyRepository`, T-7.6).
+  AuthRepository({
+    PasskeyApi? passkeyApi,
+    CompanyRepository? companyRepository,
+    Account? account,
+    TablesDB? db,
+  })  : _passkeys = passkeyApi ?? PasskeyApi(),
+        _companies = companyRepository ?? CompanyRepository(),
+        _accountOverride = account,
+        _dbOverride = db;
 
   final PasskeyApi _passkeys;
 
@@ -55,8 +61,11 @@ class AuthRepository {
   /// austauschbar, damit Tests sie ersetzen koennen.
   final CompanyRepository _companies;
 
-  Account get _account => AppwriteService.account;
-  TablesDB get _db => TablesDB(AppwriteService.client);
+  final Account? _accountOverride;
+  final TablesDB? _dbOverride;
+
+  Account get _account => _accountOverride ?? AppwriteService.account;
+  TablesDB get _db => _dbOverride ?? TablesDB(AppwriteService.client);
 
   /// Beendet eine noch offene Sitzung.
   ///
@@ -214,6 +223,11 @@ class AuthRepository {
     // durch – Konto und Sitzung bestehen an dieser Stelle bereits, ein Abbruch
     // hinterliesse ein Konto, das die App als Fehlschlag meldet. [ensureCompany]
     // zieht die Verknuepfung beim naechsten Zugriff nach.
+    //
+    // Seit T-4.25 ist das der Regelfall: `companies` und `profiles` nehmen
+    // nur Konten mit bestaetigter Adresse an, und hier ist sie es noch nicht.
+    // Die Firma entsteht dann in [ensureCompany], Branche und Ort kommen aus
+    // den Prefs.
     final companyId = await _createCompanyForOwner(
       ownerId: created.$id,
       companyName: companyName,
@@ -325,6 +339,11 @@ class AuthRepository {
             name: user.companyName?.trim().isNotEmpty == true
                 ? user.companyName!
                 : user.displayName,
+            // Seit `companies` nur bestaetigte Konten anlegen laesst (T-4.25),
+            // entsteht die Firma regulaer hier und nicht bei der
+            // Registrierung. Branche und Ort von dort liegen in den Prefs.
+            industry: await _prefString('industry'),
+            city: await _prefString('city'),
           );
     } catch (e) {
       // Scheitert hier etwas, meldet die Oberflaeche nur „Unternehmensdaten
@@ -340,6 +359,16 @@ class AuthRepository {
 
     await _linkCompany(userId: user.id, companyId: company.id);
     return company;
+  }
+
+  /// Ein nicht leerer Text aus den Account-Prefs, sonst `null`.
+  Future<String?> _prefString(String key) async {
+    try {
+      final value = (await _account.getPrefs()).data[key];
+      return value is String && value.trim().isNotEmpty ? value : null;
+    } on AppwriteException {
+      return null;
+    }
   }
 
   /// Schreibt die Verknuepfung an beide Orte, an denen sie gelesen wird.

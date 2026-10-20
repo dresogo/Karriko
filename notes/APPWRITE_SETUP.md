@@ -255,6 +255,12 @@ appwrite push function --with-variables
 
 **Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt.
 
+> **Warnung — `tables-db update-table` schaltet Row Security aus.** Ohne
+> `--row-security=true` setzt die CLI (28.4.0) den Schalter auf `false`, auch
+> wenn nur die Rechte geändert werden sollen. Am 20.10.2026 so bei `companies`,
+> `review_drafts`, `review_reports` und `jobs` passiert und sofort korrigiert.
+> Den Schalter deshalb bei jedem Aufruf ausdrücklich mitgeben.
+
 * Die Team-Kennungen müssen genau `moderators` und `admins` lauten — die
   Ausführungsrechte der Functions heißen `team:moderators` und `team:admins`.
   Kontrolle mit `appwrite teams list`.
@@ -707,13 +713,12 @@ Acht Functions, alle in Dart.
 | Entrypoint | `lib/main.dart` |
 | Build-Befehl | `dart pub get` |
 | Logging | ein |
-| Specification | **nicht gesetzt** — es gilt die Voreinstellung des Projekts |
+| Specification | `s-0.5vcpu-512mb` (seit 20.10.2026, T-2.22) |
 
-Die Specification steht absichtlich nicht in der Konfiguration: Welche Größen dein
-Tarif zulässt, weiß ich nicht, und ein erfundener Wert lässt den Push scheitern.
-Wenn eine Function ins Timeout läuft oder der Speicher nicht reicht, setzt du sie
-in der Console unter Settings → Runtime und trägst sie danach in die Vorlage
-nach.
+Die Specification steht seit 20.10.2026 ausdrücklich in der Vorlage, damit eine
+geänderte Projekt-Voreinstellung nichts unbemerkt verschiebt. Läuft eine Function
+ins Timeout oder reicht der Speicher nicht, zuerst die Vorlage ändern, dann
+`node tools/appwrite-config.mjs` und `appwrite push function --no-code`.
 
 Dass alle acht dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
 `questionnaire_core` ein wie der Client. Dass Server und Client zum selben

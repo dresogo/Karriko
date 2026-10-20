@@ -200,7 +200,10 @@ const SCHEMA = [
     name: 'Companies',
     // Unternehmensprofile sind der oeffentliche Teil der Plattform; ohne
     // Leserecht fuer alle faende die Suche sie fuer Besucher nicht. Anlegen
-    // duerfen angemeldete Nutzer – sonst scheitert die Betriebsregistrierung.
+    // duerfen nur Konten mit bestaetigter Adresse (T-4.25). Der Versuch bei
+    // der Registrierung scheitert deshalb absichtlich; die Firma entsteht nach
+    // der Bestaetigung ueber `AuthRepository.ensureCompany`. So erzeugen
+    // Wegwerfkonten keine oeffentlichen Firmenprofile.
     //
     // **Kein `update("users")` auf Tabellenebene.** Das stand dort und hiess:
     // Jeder Angemeldete darf jede Firma aendern, auch `is_verified`,
@@ -213,7 +216,7 @@ const SCHEMA = [
     // Zeile `is_verified` und `average_rating` setzen. Appwrite kennt keine
     // Rechte je Spalte. Dagegen hilft nur, Profilaenderungen ueber eine
     // Function zu fuehren — siehe notes/UMSETZUNG_BERICHT.md.
-    permissions: ['read("any")', 'create("users")'],
+    permissions: ['read("any")', 'create("users/verified")'],
     exactPermissions: true,
     rowSecurity: true,
     createIfMissing: false,
@@ -288,7 +291,7 @@ const SCHEMA = [
     // nur der Eigentuemer. Erst die App ausliefern, dann mit
     // `--fix-permissions` umstellen. Alte Entwuerfe tragen noch `read("any")`
     // auf der Zeile, bis sie einmal veroeffentlicht und zurueckgezogen werden.
-    permissions: ['create("users")'],
+    permissions: ['create("users/verified")'],
     exactPermissions: true,
     createIfMissing: true,
     columns: [
@@ -355,7 +358,7 @@ const SCHEMA = [
     // Anlegen darf jeder Angemeldete, lesen nur der Eigentuemer — und das steht
     // pro Zeile. Ohne rowSecurity waeren die Rechte, die der Client setzt,
     // wirkungslos.
-    permissions: ['create("users")'],
+    permissions: ['create("users/verified")'],
     exactPermissions: true,
     createIfMissing: true,
     rowSecurity: true,
@@ -526,7 +529,7 @@ const SCHEMA = [
     name: 'Review Reports',
     // Eine Meldung ist kein Urteil: Sie legt eine Zeile an, mehr passiert
     // nicht. Der Melder liest seine eigene, die Moderation alle.
-    permissions: ['create("users")', `read("team:${TEAM_MODERATORS}")`],
+    permissions: ['create("users/verified")', `read("team:${TEAM_MODERATORS}")`],
     createIfMissing: true,
     rowSecurity: true,
     columns: [
