@@ -8,3 +8,8 @@ Future<void> saveTextFile({
     'Das Herunterladen ist derzeit nur im Browser möglich.',
   );
 }
+
+/// Siehe `save_file.dart`.
+Future<void> openBytesInNewTab(List<int> bytes, {required String mimeType}) {
+  throw UnsupportedError('Das Öffnen ist derzeit nur im Browser möglich.');
+}

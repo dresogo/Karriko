@@ -105,6 +105,22 @@ class AdminRepository {
     ];
   }
 
+  /// Öffnet den Nachweis einer Bewertung (T-2.20).
+  ///
+  /// `moderation_desk` gibt dem angemeldeten Konto Leserecht an genau dieser
+  /// Datei und vermerkt das im Protokoll; danach lädt die App sie mit der
+  /// eigenen Sitzung. Die Entscheidung in `moderate_review` nimmt das Recht
+  /// wieder zurück.
+  Future<ProofFile> openProof(String reviewId) async {
+    final antwort = await _desk('open_proof', {'review_id': reviewId});
+    final bucket = antwort['bucket_id'] as String;
+    final datei = antwort['file_id'] as String;
+    final storage = Storage(AppwriteService.client);
+    final info = await storage.getFile(bucketId: bucket, fileId: datei);
+    final bytes = await storage.getFileView(bucketId: bucket, fileId: datei);
+    return ProofFile(bytes: bytes, mimeType: info.mimeType);
+  }
+
   Future<void> verifyCompany(String companyId, bool verified) =>
       _desk('verify_company', {'company_id': companyId, 'verified': verified});
 
@@ -167,4 +183,12 @@ class AdminException implements Exception {
 
   @override
   String toString() => message;
+}
+
+/// Ein geöffneter Nachweis.
+class ProofFile {
+  final List<int> bytes;
+  final String mimeType;
+
+  const ProofFile({required this.bytes, required this.mimeType});
 }

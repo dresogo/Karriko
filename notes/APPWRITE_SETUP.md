@@ -878,7 +878,7 @@ Bewertungen ab; die App zeigt nur `/konto-loeschung` (E-3.11).
 | Ausführen darf | `team:moderators`, `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 30 s |
-| Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read` |
+| Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read`, `files.read`, `files.write` |
 
 **Der Arbeitstisch des Admin-Bereichs** (`/#/admin`, ohne Verweis aus der
 Oberfläche). Liefert Übersicht, Warteschlange, Meldungen, Protokoll und
@@ -906,6 +906,14 @@ Aufruf mit `{"action": "…"}`: `overview`, `queue` (`status`), `reports`
 `node tools/appwrite-dev-admin.mjs` an und trägt es in beide Teams ein. Das
 Passwort wird einmal im Terminal ausgegeben; `--pruefen` zeigt nur den Stand.
 
+**Nachweis öffnen (T-2.20).** `{"action": "open_proof", "review_id": …}` gibt dem
+aufrufenden Moderationskonto Leserecht an genau diesem Nachweis
+(`read("user:<id>")`) und schreibt `proof_viewed` ins `moderation_log`. Die App
+lädt die Datei danach mit der eigenen Sitzung und zeigt sie in einem neuen Tab.
+Eine Function-Antwort wäre für Dateien bis 10 MB zu klein. `moderate_review`
+entfernt bei der Entscheidung alle Rechte wieder (dafür `files.write`); danach
+ist der Nachweis wie vorher für niemanden lesbar, bis `cleanup` ihn löscht.
+
 #### `moderate_review`
 
 | | |
@@ -913,7 +921,7 @@ Passwort wird einmal im Terminal ausgegeben; `--pruefen` zeigt nur den Stand.
 | Ausführen darf | `team:moderators`, `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 30 s |
-| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read` |
+| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read`, `files.write` |
 
 Gibt frei oder lehnt ab. **Bei der Freigabe entsteht die öffentliche Zeile** —
 erst hier, nicht beim Einreichen: Was in `public_reviews` steht, hat ein Mensch
@@ -1525,11 +1533,12 @@ Version.
   Appwrite kennt keine Rechte je Spalte, und die Profilbearbeitung läuft direkt
   gegen die Tabelle. Siehe Abschnitt 4a. Das Verifizierungs-Abzeichen soll ein
   Mensch vergeben; heute kann es sich jeder Betrieb selbst geben.
-* **Die Moderation sieht den Nachweis nur über die Console.** Es gibt keine
-  Function, die ihn ausliefert.
+* ~~**Die Moderation sieht den Nachweis nur über die Console.**~~ Seit
+  20.10.2026 über „Nachweis ansehen“ im Admin-Bereich (T-2.20, siehe
+  `moderation_desk`).
 * **Der Moderationsbildschirm ist der Admin-Bereich unter `/#/admin`.** Er
   braucht `moderation_desk` und die neuen Spalten in `review_reports`. Den
-  Verifikationsnachweis öffnet die Moderation weiter in der Console.
+  Verifikationsnachweis öffnet sie dort über „Nachweis ansehen“ (T-2.20).
 * **Die lokale Liste bleibt als Rückfall.** Antwortet `my_reviews` nicht, zeigt
   der Bildschirm, was dieser Browser weiß — und sagt dazu, dass es
   unvollständig sein kann und den Stand der Moderation nicht kennt.

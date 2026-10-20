@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:js_interop';
+import 'dart:typed_data';
 
 import 'package:web/web.dart' as web;
 
@@ -27,4 +28,21 @@ Future<void> saveTextFile({
   link.click();
   link.remove();
   web.URL.revokeObjectURL(adresse);
+}
+
+/// Zeigt [bytes] in einem neuen Tab an, etwa einen Nachweis als PDF oder Bild
+/// (T-2.20). Die Daten bleiben im Browser; die Objekt-Adresse wird nach einer
+/// Minute freigegeben, dann hat der Tab sie geladen.
+Future<void> openBytesInNewTab(List<int> bytes,
+    {required String mimeType}) async {
+  final blob = web.Blob(
+    [Uint8List.fromList(bytes).toJS].toJS,
+    web.BlobPropertyBag(type: mimeType),
+  );
+  final adresse = web.URL.createObjectURL(blob);
+  web.window.open(adresse, '_blank', 'noopener');
+  Future<void>.delayed(
+    const Duration(minutes: 1),
+    () => web.URL.revokeObjectURL(adresse),
+  );
 }

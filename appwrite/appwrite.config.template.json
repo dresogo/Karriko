@@ -528,7 +528,7 @@
         "users.read: nur fuer die Anzeigenamen im Moderationsprotokoll.",
         "teams.read: prueft die Mitgliedschaft des Aufrufers selbst nach."
       ],
-      "scopes": ["rows.read", "rows.write", "teams.read", "users.read"]
+      "scopes": ["rows.read", "rows.write", "teams.read", "users.read", "files.read", "files.write"]
     },
     {
       "$id": "moderate_review",
@@ -544,7 +544,7 @@
       "execute": ["team:${TEAM_MODERATORS}", "team:${TEAM_ADMINS}"],
       "events": [],
       "schedule": "",
-      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read", "files.write"]
     },
     {
       "$id": "aggregate_company",

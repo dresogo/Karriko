@@ -765,6 +765,34 @@ class Tables {
         bucketId: config.verificationBucket,
         fileId: fileId,
       );
+
+  /// Gibt [moderatorId] Leserecht an genau diesem Nachweis (T-2.20).
+  ///
+  /// Nachweise tragen sonst keine Rechte und sind für niemanden lesbar. Das
+  /// Recht gilt nur dieser Person und nur bis zur Entscheidung, dann nimmt
+  /// [revokeVerificationRead] es zurück. Bestehende Rechte anderer
+  /// Moderatoren bleiben, falls zwei dieselbe Bewertung prüfen.
+  Future<void> grantVerificationRead(String fileId, String moderatorId) async {
+    final storage = Storage(client);
+    final datei = await storage.getFile(
+        bucketId: config.verificationBucket, fileId: fileId);
+    final recht = Permission.read(Role.user(moderatorId));
+    if (datei.$permissions.contains(recht)) return;
+    await storage.updateFile(
+      bucketId: config.verificationBucket,
+      fileId: fileId,
+      permissions: [...datei.$permissions, recht],
+    );
+  }
+
+  /// Entfernt alle Rechte an einem Nachweis; er ist danach wieder für
+  /// niemanden lesbar.
+  Future<void> revokeVerificationRead(String fileId) =>
+      Storage(client).updateFile(
+        bucketId: config.verificationBucket,
+        fileId: fileId,
+        permissions: const [],
+      );
 }
 
 /// Liest eine JSON-Spalte. Ein kaputter Wert ergibt eine leere Zuordnung —

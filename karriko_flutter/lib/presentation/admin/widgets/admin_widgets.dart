@@ -750,7 +750,13 @@ String relativeAge(DateTime? d) {
   return 'vor ${diff.inDays} Tagen';
 }
 
-void showAdminSnack(BuildContext context, String text, {bool error = false}) {
+void showAdminSnack(
+  BuildContext context,
+  String text, {
+  bool error = false,
+  SnackBarAction? action,
+  Duration duration = const Duration(seconds: 4),
+}) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(
@@ -759,6 +765,8 @@ void showAdminSnack(BuildContext context, String text, {bool error = false}) {
         width: 480,
         backgroundColor: error ? AppColors.accentDark : AppColors.ink,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        action: action,
+        duration: duration,
         content: Row(
           children: [
             Icon(

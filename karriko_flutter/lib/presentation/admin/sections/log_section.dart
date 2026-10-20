@@ -69,13 +69,19 @@ class LogRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 128,
-            child: AdminBadge(
-              freigabe ? 'Freigegeben' : 'Abgelehnt',
-              icon: freigabe
-                  ? Icons.check_circle_outline_rounded
-                  : Icons.block_rounded,
-              tone: freigabe ? AdminTone.positive : AdminTone.danger,
-            ),
+            child: entry.isProofView
+                ? const AdminBadge(
+                    'Nachweis geöffnet',
+                    icon: Icons.visibility_outlined,
+                    tone: AdminTone.info,
+                  )
+                : AdminBadge(
+                    freigabe ? 'Freigegeben' : 'Abgelehnt',
+                    icon: freigabe
+                        ? Icons.check_circle_outline_rounded
+                        : Icons.block_rounded,
+                    tone: freigabe ? AdminTone.positive : AdminTone.danger,
+                  ),
           ),
           const SizedBox(width: AppLayout.s16),
           Expanded(
