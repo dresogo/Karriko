@@ -73,7 +73,11 @@ const JE_FUNCTION = {
     'KARRIKO_SMALL_BUSINESS_DELAY_MONTHS',
   ],
   publish_scheduled: ['KARRIKO_SMALL_BUSINESS_DELAY_MONTHS'],
-  cleanup: ['KARRIKO_DRAFT_RETENTION_DAYS', 'KARRIKO_VERIFICATION_RETENTION_DAYS'],
+  cleanup: [
+    'KARRIKO_DRAFT_RETENTION_DAYS',
+    'KARRIKO_VERIFICATION_RETENTION_DAYS',
+    'KARRIKO_DELETION_GRACE_DAYS',
+  ],
   moderate_review: [],
   aggregate_company: [],
   recompute_all: [],
@@ -83,6 +87,12 @@ const JE_FUNCTION = {
   // Arbeitstisch des Admin-Bereichs. Liest und markiert Meldungen, hasht
   // nichts — also auch hier kein Salz.
   moderation_desk: ['KARRIKO_TBL_REVIEW_REPORTS'],
+  // Schreibt nur companies. Kein Salz, keine Fristen.
+  company_profile: [],
+  // Schreibt nur jobs und liest die eigene Firma.
+  job_posting: [],
+  // Konto loeschen, Bewertung loeschen, Export. Frist wie cleanup.
+  my_account: ['KARRIKO_DELETION_GRACE_DAYS'],
 };
 
 const fehlt = GEMEINSAM.filter(

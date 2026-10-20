@@ -11,12 +11,16 @@
 /// was gespeichert wuerde, ohne es zu speichern.
 library;
 
+export 'src/account_data.dart';
+export 'src/account_purge.dart';
 export 'src/aggregate_writer.dart';
+export 'src/company_profile.dart';
 export 'src/config.dart';
 export 'src/context.dart';
 export 'src/definition_loader.dart';
 export 'src/device_hash.dart';
 export 'src/email_verification.dart';
+export 'src/job_posting.dart';
 export 'src/moderation_desk.dart';
 export 'src/my_reviews.dart';
 export 'src/publish_decision.dart';

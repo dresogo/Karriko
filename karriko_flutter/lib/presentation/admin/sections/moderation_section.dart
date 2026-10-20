@@ -6,6 +6,7 @@ import '../../../data/models/admin_models.dart';
 import '../../common/app_page.dart';
 import '../admin_providers.dart';
 import '../widgets/admin_widgets.dart';
+import '../../../data/services/save_file.dart';
 
 /// Die Status, nach denen sich die Warteschlange filtern lässt.
 const _filter = [
@@ -130,6 +131,41 @@ class _ReviewCardState extends ConsumerState<ReviewCard> {
     }
   }
 
+  /// Lädt den Nachweis und bietet ihn zum Öffnen an (T-2.20). Das Laden
+  /// steht im Protokoll; das Leserecht endet mit der Entscheidung.
+  ///
+  /// Zweistufig, weil Browser ein Fenster blockieren, das erst nach einem
+  /// Netzwerkabruf aufgeht: Der Klick auf „Öffnen“ in der Meldung ist wieder
+  /// eine direkte Handlung.
+  Future<void> _nachweisOeffnen() async {
+    setState(() => _laeuft = true);
+    try {
+      final datei =
+          await ref.read(adminRepositoryProvider).openProof(_i.reviewId);
+      if (!mounted) return;
+      showAdminSnack(
+        context,
+        'Nachweis geladen.',
+        duration: const Duration(seconds: 30),
+        action: SnackBarAction(
+          label: 'Öffnen',
+          textColor: AppColors.paper,
+          onPressed: () async {
+            try {
+              await openBytesInNewTab(datei.bytes, mimeType: datei.mimeType);
+            } on UnsupportedError catch (e) {
+              if (mounted) showAdminSnack(context, '${e.message}', error: true);
+            }
+          },
+        ),
+      );
+    } catch (e) {
+      if (mounted) showAdminSnack(context, '$e', error: true);
+    } finally {
+      if (mounted) setState(() => _laeuft = false);
+    }
+  }
+
   Future<void> _ablehnen() async {
     final grund = await showRejectDialog(context, subject: _i.companyName);
     if (grund == null || !mounted) return;
@@ -227,9 +263,6 @@ class _ReviewCardState extends ConsumerState<ReviewCard> {
                       _i.verified ? 'Nachweis bestätigt' : 'Nachweis liegt vor',
                       icon: Icons.verified_outlined,
                       tone: _i.verified ? AdminTone.positive : AdminTone.info,
-                      tooltip:
-                          'Den Nachweis öffnest du in der Appwrite-Console '
-                          '(Storage → verification_documents).',
                     ),
                   if (_i.invited)
                     const AdminBadge('Über Einladung',
@@ -348,6 +381,12 @@ class _ReviewCardState extends ConsumerState<ReviewCard> {
                     spacing: AppLayout.s8,
                     runSpacing: AppLayout.s8,
                     children: [
+                      if (_i.hasVerification)
+                        OutlinedButton.icon(
+                          onPressed: _laeuft ? null : _nachweisOeffnen,
+                          icon: const Icon(Icons.visibility_outlined, size: 18),
+                          label: const Text('Nachweis ansehen'),
+                        ),
                       if (_i.status != 'rejected')
                         OutlinedButton.icon(
                           onPressed: _laeuft ? null : _ablehnen,

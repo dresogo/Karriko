@@ -237,7 +237,7 @@ wird und die andere nicht — und dann hängt es am Weg, welches Schema entsteht
 Aus dem Ordner `appwrite/`, nicht aus dem Wurzelverzeichnis: Die `path`-Angaben
 der Functions sind relativ zur Konfigurationsdatei.
 
-> **Warnung — `push table` löscht.** Die CLI (28.1.0) gleicht den Server an
+> **Warnung — `push table` löscht.** Die CLI (28.1.0, ebenso 28.4.0) gleicht den Server an
 > die Konfigurationsdatei an: Jede Tabelle, die **nicht** in der Datei steht,
 > wird gelöscht, mit `-f` ohne Rückfrage. Am 4. Oktober 2026 hat ein solcher
 > Lauf alle Tabellen außer `review_reports` gelöscht; Backups gab es keine.
@@ -254,6 +254,12 @@ appwrite push function --with-variables
 ```
 
 **Ohne `-f`.** Die CLI zeigt dann, was sie ändern würde, und fragt.
+
+> **Warnung — `tables-db update-table` schaltet Row Security aus.** Ohne
+> `--row-security=true` setzt die CLI (28.4.0) den Schalter auf `false`, auch
+> wenn nur die Rechte geändert werden sollen. Am 20.10.2026 so bei `companies`,
+> `review_drafts`, `review_reports` und `jobs` passiert und sofort korrigiert.
+> Den Schalter deshalb bei jedem Aufruf ausdrücklich mitgeben.
 
 * Die Team-Kennungen müssen genau `moderators` und `admins` lauten — die
   Ausführungsrechte der Functions heißen `team:moderators` und `team:admins`.
@@ -296,7 +302,10 @@ Zwei Dinge, die von Hand leicht untergehen:
 
 ## 3. Tabellen
 
-Sieben Tabellen. Sechs sind neu, `reviews` besteht.
+Acht Tabellen. Sieben sind neu, `reviews` besteht. Die achte, `account_deletions`
+(T-2.8), hält beantragte Kontolöschungen: keine Rechte, `rowSecurity` aus,
+Zeilenkennung gleich Nutzerkennung, Spalten `user_id`, `requested_at`,
+`delete_after`, Index auf `delete_after`.
 
 ### Warum es zwei Tabellen für Bewertungen gibt
 
@@ -697,7 +706,7 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Acht Functions, alle in Dart.
+Elf Functions, alle in Dart.
 
 ### Gemeinsam für alle acht
 
@@ -707,13 +716,12 @@ Acht Functions, alle in Dart.
 | Entrypoint | `lib/main.dart` |
 | Build-Befehl | `dart pub get` |
 | Logging | ein |
-| Specification | **nicht gesetzt** — es gilt die Voreinstellung des Projekts |
+| Specification | `s-0.5vcpu-512mb` (seit 20.10.2026, T-2.22) |
 
-Die Specification steht absichtlich nicht in der Konfiguration: Welche Größen dein
-Tarif zulässt, weiß ich nicht, und ein erfundener Wert lässt den Push scheitern.
-Wenn eine Function ins Timeout läuft oder der Speicher nicht reicht, setzt du sie
-in der Console unter Settings → Runtime und trägst sie danach in die Vorlage
-nach.
+Die Specification steht seit 20.10.2026 ausdrücklich in der Vorlage, damit eine
+geänderte Projekt-Voreinstellung nichts unbemerkt verschiebt. Läuft eine Function
+ins Timeout oder reicht der Speicher nicht, zuerst die Vorlage ändern, dann
+`node tools/appwrite-config.mjs` und `appwrite push function --no-code`.
 
 Dass alle acht dieselbe Runtime haben, ist kein Zufall: Sie binden dasselbe
 `questionnaire_core` ein wie der Client. Dass Server und Client zum selben
@@ -780,6 +788,89 @@ Die vollständige Liste mit je einem Grund steht als `withheldFromAuthor` in
 durch: Jede dort genannte Spalte muss in der Antwort fehlen, und jeder Grund
 muss einer sein.
 
+#### `company_profile`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write` |
+
+**Der einzige Schreibweg nach `companies` (T-4.2).** Appwrite kennt keine Rechte
+je Spalte. Solange der Client direkt schrieb, konnte er beim Anlegen und als
+Eigentümer beim Ändern auch `is_verified`, `is_premium`, `average_rating`,
+`review_count` und `owner_id` setzen. Deshalb hat `companies` nur noch
+`read("any")`, und Firmenzeilen tragen kein Änderungsrecht.
+
+Rumpf `{"action": "create" | "update", "fields": {…}}`. Erlaubt sind nur
+`name`, `description`, `website`, `logo_url`, `city`, `country`, `industry`
+(`companyEditableFields` in `packages/karriko_functions/lib/src/company_profile.dart`).
+Jedes andere Feld lässt die Anfrage mit 400 scheitern. Ein leerer Text leert ein
+Feld. `website` und `logo_url` nur mit `http://` oder `https://`; ob die Website
+verlinkt wird, regelt weiter E-46.
+
+**Welche Firma, entscheidet der Server:** die mit `owner_id` gleich dem Aufrufer
+aus dem JWT. Der Rumpf trägt keine Kennung. Höchstens eine Firma je Konto; ein
+zweites `create` liefert die bestehende. Ohne bestätigte Adresse 403. Den Slug
+bildet die Function, eindeutig über `slug_unique`; bei einer Umbenennung bleibt
+er. Eine Änderung setzt die Zeilenrechte auf `read("any")` und entfernt so auch
+alte `update("user:…")`-Rechte.
+
+Die Rolle (azubi/betrieb) spielt hier keine Rolle (E-3.10).
+
+#### `job_posting`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write` |
+
+**Der einzige Schreibweg nach `jobs` (T-4.31).** Vorher setzte der Client
+`company_id` und die Angaben zum Betrieb selbst; ein bestätigtes Konto konnte so
+im Namen eines fremden Betriebs inserieren. `jobs` hat deshalb keine
+Tabellenrechte, und die Zeilen tragen nur ein Leserecht: veröffentlicht
+`read("any")`, Entwurf `read("user:<Eigentümer>")`.
+
+Aktionen: `create` (`fields`), `update` (`job_id`, `fields`), `set_active`
+(`job_id`, `is_active`), `delete` (`job_id`). Der Betrieb ist der mit `owner_id`
+gleich dem Aufrufer; eine Stelle eines anderen Betriebs bekommt dieselbe Antwort
+wie eine, die es nicht gibt (404). `company_id`, `company`, `company_slug`,
+`company_logo_url` und `industry` kommen bei jedem Speichern aus der Firmenzeile.
+
+Das Formular schickt immer alle Felder; leere werden `null`. Titel und Ort sind
+Pflicht, der Bewerbungslink nur mit `http://` oder `https://`, die Kontakt-E-Mail
+muss wie eine Adresse aussehen (T-8.13: geprüft in der Function, die Spalten
+bleiben Text). **Veröffentlichen erst mit Abzeichen:** Solange `is_verified` des
+Betriebs falsch ist, sind nur Entwürfe möglich (403 mit Erklärung).
+
+#### `my_account`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write`, `users.read`, `users.write`, `files.write` |
+
+**Die Rechte eines Kontos an seinen eigenen Daten.** Die Nutzerkennung kommt
+aus dem JWT, nie aus dem Rumpf. Eine bestätigte Adresse ist nicht nötig:
+Löschen und Auskunft stehen jedem Konto zu.
+
+| `action` | Was passiert |
+|---|---|
+| `status` | Ob eine Löschung beantragt ist und ab wann sie greift |
+| `request_deletion` | Zeile in `account_deletions`, Termin in den Prefs (`deletion_pending_until`) für die App. Abgelehnt, wenn dem Konto eine Firma gehört (T-2.24) |
+| `cancel_deletion` | Antrag und Pref entfernen |
+| `delete_review` + `review_id` | Eigene Bewertung vollständig löschen (E-4.6); fremd oder unbekannt ergibt 404 |
+| `export` | JSON mit allem, was die Person eingegeben hat (E-4.7) |
+
+Maßgeblich für die Löschung ist allein die Tabelle, nicht die Pref: Wer sie von
+Hand entfernt, nimmt nichts zurück. In den 14 Tagen lehnt `submit_review` neue
+Bewertungen ab; die App zeigt nur `/konto-loeschung` (E-3.11).
+
 #### `moderation_desk`
 
 | | |
@@ -787,7 +878,7 @@ muss einer sein.
 | Ausführen darf | `team:moderators`, `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 30 s |
-| Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read` |
+| Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read`, `files.read`, `files.write` |
 
 **Der Arbeitstisch des Admin-Bereichs** (`/#/admin`, ohne Verweis aus der
 Oberfläche). Liefert Übersicht, Warteschlange, Meldungen, Protokoll und
@@ -815,6 +906,14 @@ Aufruf mit `{"action": "…"}`: `overview`, `queue` (`status`), `reports`
 `node tools/appwrite-dev-admin.mjs` an und trägt es in beide Teams ein. Das
 Passwort wird einmal im Terminal ausgegeben; `--pruefen` zeigt nur den Stand.
 
+**Nachweis öffnen (T-2.20).** `{"action": "open_proof", "review_id": …}` gibt dem
+aufrufenden Moderationskonto Leserecht an genau diesem Nachweis
+(`read("user:<id>")`) und schreibt `proof_viewed` ins `moderation_log`. Die App
+lädt die Datei danach mit der eigenen Sitzung und zeigt sie in einem neuen Tab.
+Eine Function-Antwort wäre für Dateien bis 10 MB zu klein. `moderate_review`
+entfernt bei der Entscheidung alle Rechte wieder (dafür `files.write`); danach
+ist der Nachweis wie vorher für niemanden lesbar, bis `cleanup` ihn löscht.
+
 #### `moderate_review`
 
 | | |
@@ -822,7 +921,7 @@ Passwort wird einmal im Terminal ausgegeben; `--pruefen` zeigt nur den Stand.
 | Ausführen darf | `team:moderators`, `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 30 s |
-| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read` |
+| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read`, `files.write` |
 
 Gibt frei oder lehnt ab. **Bei der Freigabe entsteht die öffentliche Zeile** —
 erst hier, nicht beim Einreichen: Was in `public_reviews` steht, hat ein Mensch
@@ -886,7 +985,7 @@ veröffentlichen — eine Angabe mehr, die niemand gebraucht hätte.
 | | |
 |---|---|
 | Ausführen darf | niemand |
-| Auslöser | Cron `0 * * * *` (stündlich) |
+| Auslöser | Intervall 60 Minuten (stündlich; die Minute wählt Appwrite) |
 | Timeout | 300 s |
 | Scopes | `rows.read`, `rows.write`, `files.read` |
 
@@ -901,7 +1000,7 @@ ist. Zurückgestellt wird, wer in A3 darum bittet, und in Kleinbetrieben, wer
 | Ausführen darf | `team:admins` |
 | Auslöser | Aufruf |
 | Timeout | 600 s |
-| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read` |
+| Scopes | `rows.read`, `rows.write`, `files.read`, `teams.read`, `execution.write` |
 
 Rechnet alle Bewertungen mit den aktuellen Parametern neu. Gebraucht, wenn sich an
 der Definition etwas geändert hat, was die Auswertung betrifft: ein Punktwert, ein
@@ -916,10 +1015,10 @@ durch ist:
 ```
 
 Danach mit dem zurückgegebenen `next_offset` erneut, bis `done: true`. Die Antwort
-nennt unter `companies` die betroffenen Betriebe; für die läuft
-`aggregate_company` nicht automatisch — sie werden erst neu gerechnet, wenn sich
-eine ihrer öffentlichen Zeilen ändert. Bei einer Parameteränderung also einmal
-selbst anstoßen.
+nennt unter `companies` die betroffenen Betriebe. Für jeden davon stößt sie am
+Ende des Stapels `aggregate_company` asynchron an (T-2.21, dafür
+`execution.write`); `aggregation_started` nennt, für welche das geklappt hat.
+Im Probelauf wird nichts angestoßen.
 
 Steht in der Antwort `unusable_versions`, ließ sich eine Fassung des Fragebogens
 nicht laden; siehe Abschnitt 14.
@@ -929,12 +1028,18 @@ nicht laden; siehe Abschnitt 14.
 | | |
 |---|---|
 | Ausführen darf | niemand |
-| Auslöser | Cron `30 3 * * *` (täglich) |
+| Auslöser | Intervall 1440 Minuten (täglich; die Uhrzeit wählt Appwrite) |
 | Timeout | 600 s |
-| Scopes | `rows.read`, `rows.write`, `files.write` |
+| Scopes | `rows.read`, `rows.write`, `files.write`, `users.read`, `users.write` |
 
 Löscht verwaiste Entwürfe und geprüfte Verifikationsnachweise. `files.write`
 braucht sie zum Löschen der Nachweisdateien; `files.read` braucht sie nicht.
+
+**Seit T-2.8 auch fällige Kontolöschungen** aus `account_deletions`, nach
+`purgeAccount` in `packages/karriko_functions/lib/src/account_purge.dart` (E-4.5).
+Dafür `users.read` und `users.write`. Der Antrag wird erst ganz am Ende
+entfernt; bricht ein Lauf ab, holt der nächste ihn nach. Konten mit Firma werden
+übersprungen (T-2.24). Frist `KARRIKO_DELETION_GRACE_DAYS`, Standard 14 (E-50).
 
 Ein Probelauf, der nur zählt:
 
@@ -955,7 +1060,7 @@ Console → Functions → Create function → Manual. Dann je Function:
 3. **Settings → Execute access** die Rolle aus der Tabelle. „niemand" heißt: das
    Feld leer lassen. Nicht `any`.
 4. **Settings → Events** nur bei `aggregate_company`.
-5. **Settings → Schedule** nur bei `publish_scheduled` und `cleanup`.
+5. **Settings → Schedule** nur bei `publish_scheduled` und `cleanup`, als Intervall (60 bzw. 1440 Minuten). Seit 19.10.2026 gibt es Cron auf Appwrite Cloud nur in bezahlten Plänen; ein Push mit Cron-Ausdruck scheitert im Gratis-Plan. Das Feld `interval` kennt die CLI ab 28.3.0.
 6. **Settings → Timeout** wie oben.
 7. **Settings → Scopes** wie oben. Findet sich ein Name dort nicht, gilt die
    Liste in der Console.
@@ -1345,7 +1450,7 @@ steht in Abschnitt 12.
 ### Danach
 
 * Die Aggregate der betroffenen Betriebe stehen noch auf den alten Zahlen.
-  `recompute_all`, dann `aggregate_company`.
+  `recompute_all` laufen lassen; es stößt `aggregate_company` selbst an (T-2.21).
 * In `review_reports` können Meldungen zu nun gelöschten Bewertungen
   übrigbleiben. Sie schaden nicht, zeigen in der Moderation aber ins Leere.
 * Der eindeutige Index auf `user_id` + `company_id`, den Appwrite wegen doppelter
@@ -1390,10 +1495,10 @@ namentlich aufgeführt.
 | ⚖️ | **Aufbewahrungsfrist für Entwürfe.** Standard 90 Tage ohne Änderung (`KARRIKO_DRAFT_RETENTION_DAYS`). Ein Entwurf enthält Antworten zu einem Betrieb, die nie abgeschickt wurden. |
 | ⚖️ | **Aufbewahrung der Rohantworten.** `answers_json` bleibt unbefristet stehen, weil `recompute_all` sie braucht. Ob das zulässig ist und ob es eine Obergrenze braucht, ist offen. Es gibt heute keine Frist dafür. |
 | ⚖️ | **Aufbewahrung des Exports aus Abschnitt 11.** Er enthält Rohantworten und Nutzerkennungen. Wie lange und wo. |
-| ⚖️ | **Löschverlangen eines Nutzers.** Es gibt keinen Weg dafür. Seit `my_reviews` ist die Bewertung dem Konto zuordenbar — aber nur lesend. Zu löschen hieße, auch die öffentliche Zeile zu entfernen, und dafür gibt es keine Function. **Das ist die größte offene Lücke dieser Einrichtung**, jetzt mit der Zuordnung, an der es vorher fehlte. |
+| ✅ | **Löschverlangen eines Nutzers.** Seit 20.10.2026 über `my_account`: eine eigene Bewertung vollständig löschen (E-4.6) oder das Konto (E-4.5, 14 Tage zurücknehmbar). |
 | ⚖️ | **Die Texte im Fragebogen.** Fünf Stellen tragen einen Platzhalter, siehe unten. |
 | ⚖️ | **Aufbewahrung des Gerätehashes.** Er hat heute keine Frist. |
-| ⚖️ | **Auskunftsverlangen.** `my_reviews` liefert dem Verfasser, was er über seine eigene Bewertung wissen soll — bewusst nicht alles, was gespeichert ist. Ein Auskunftsverlangen will genau das andere. |
+| ⚖️ | **Auskunftsverlangen.** Der Export aus `my_account` umfasst, was die Person selbst eingegeben hat (E-4.7); ob Art. 15 mehr verlangt, ist offen (T-5.27). `my_reviews` liefert dem Verfasser, was er über seine eigene Bewertung wissen soll — bewusst nicht alles, was gespeichert ist. Ein Auskunftsverlangen will genau das andere. |
 
 ### Die fünf Platzhalter im Fragebogen
 
@@ -1428,11 +1533,12 @@ Version.
   Appwrite kennt keine Rechte je Spalte, und die Profilbearbeitung läuft direkt
   gegen die Tabelle. Siehe Abschnitt 4a. Das Verifizierungs-Abzeichen soll ein
   Mensch vergeben; heute kann es sich jeder Betrieb selbst geben.
-* **Die Moderation sieht den Nachweis nur über die Console.** Es gibt keine
-  Function, die ihn ausliefert.
+* ~~**Die Moderation sieht den Nachweis nur über die Console.**~~ Seit
+  20.10.2026 über „Nachweis ansehen“ im Admin-Bereich (T-2.20, siehe
+  `moderation_desk`).
 * **Der Moderationsbildschirm ist der Admin-Bereich unter `/#/admin`.** Er
   braucht `moderation_desk` und die neuen Spalten in `review_reports`. Den
-  Verifikationsnachweis öffnet die Moderation weiter in der Console.
+  Verifikationsnachweis öffnet sie dort über „Nachweis ansehen“ (T-2.20).
 * **Die lokale Liste bleibt als Rückfall.** Antwortet `my_reviews` nicht, zeigt
   der Bildschirm, was dieser Browser weiß — und sagt dazu, dass es
   unvollständig sein kann und den Stand der Moderation nicht kennt.

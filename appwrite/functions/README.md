@@ -1,19 +1,23 @@
 # Die Appwrite Functions von Karriko
 
-Sieben Functions in Dart. Jede ist ein eigenes Dart-Paket, weil Appwrite pro
+Elf Functions in Dart. Jede ist ein eigenes Dart-Paket, weil Appwrite pro
 Deployment **nur ein Verzeichnis** hochlädt.
 
 | Function | Auslöser | Wer darf | Wofür |
 |---|---|---|---|
 | `submit_review` | Aufruf | angemeldete Nutzer | Die einzige Stelle, an der eine Bewertung entsteht |
 | `my_reviews` | Aufruf | angemeldete Nutzer | Der einzige Weg zu den eigenen abgeschickten Bewertungen. Liest nur |
+| `company_profile` | Aufruf | angemeldete Nutzer mit bestätigter Adresse | Der einzige Schreibweg nach `companies`: eigenes Firmenprofil anlegen oder ändern, nur freigegebene Felder (T-4.2) |
+| `job_posting` | Aufruf | angemeldete Nutzer mit bestätigter Adresse | Der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs anlegen, ändern, veröffentlichen (erst mit Abzeichen), zurückziehen, löschen (T-4.31) |
+| `my_account` | Aufruf | angemeldete Nutzer | Konto löschen und zurücknehmen (T-2.8), eigene Bewertung löschen (T-2.9), Datenexport (T-2.10) |
+| `moderation_desk` | Aufruf | `moderators`, `admins` | Daten für den Admin-Bereich |
 | `moderate_review` | Aufruf | `moderators`, `admins` | Freigeben oder ablehnen; bei Freigabe entsteht die öffentliche Zeile |
 | `aggregate_company` | Änderung an `public_reviews` | — | Rechnet `company_scores` neu |
-| `publish_scheduled` | Cron, stündlich | — | Gibt zurückgestellte Bewertungen in die Moderation |
+| `publish_scheduled` | Intervall, stündlich | — | Gibt zurückgestellte Bewertungen in die Moderation |
 | `recompute_all` | Aufruf | `admins` | Rechnet alles mit den aktuellen Parametern neu, in Etappen |
-| `cleanup` | Cron, täglich | — | Verwaiste Entwürfe und geprüfte Nachweise |
+| `cleanup` | Intervall, täglich | — | Verwaiste Entwürfe, geprüfte Nachweise, fällige Kontolöschungen |
 
-Runtime, Entrypoint, Variablen, Scopes und Cron-Ausdrücke stehen in
+Runtime, Entrypoint, Variablen, Scopes und Intervalle stehen in
 [`appwrite.config.template.json`](../appwrite.config.template.json) und mit
 Erklärung in [`notes/APPWRITE_SETUP.md`](../../notes/APPWRITE_SETUP.md).
 

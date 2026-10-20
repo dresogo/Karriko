@@ -283,33 +283,6 @@ const plannedPages = <PlannedPageSpec>[
       PlannedSection('Freigabe', 'Prüfung durch die Moderation.'),
     ],
   ),
-  PlannedPageSpec(
-    path: '/settings/datenexport',
-    eyebrow: 'Einstellungen',
-    title: 'Daten herunterladen',
-    lede: 'Alle eigenen Daten als Datei, nach Art. 20 DSGVO.',
-    area: PlannedArea.app,
-    refs: ['T-2.10'],
-    sections: [
-      PlannedSection('Was enthalten ist',
-          'Profil, Bewertungen, Merkliste, Benachrichtigungen.'),
-      PlannedSection('Export anfordern', 'Als JSON-Datei.'),
-    ],
-  ),
-  PlannedPageSpec(
-    path: '/settings/konto-loeschen',
-    eyebrow: 'Einstellungen',
-    title: 'Konto löschen',
-    lede: 'Mit 14 Tagen, in denen sich die Löschung zurücknehmen lässt.',
-    area: PlannedArea.app,
-    refs: ['E-50', 'T-2.8'],
-    sections: [
-      PlannedSection('Deine Bewertungen',
-          'Bleiben ohne Verbindung zu dir oder werden mit gelöscht.'),
-      PlannedSection('Frist', '14 Tage deaktiviert, dann endgültig.'),
-      PlannedSection('Bestätigen', 'Mit Rückfrage.'),
-    ],
-  ),
 
   // ── Betriebsbereich ───────────────────────────────────────────────────────
   PlannedPageSpec(

@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart' as aw_enums;
+import 'package:appwrite/models.dart' as aw;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -97,32 +101,6 @@ void main() {
   });
 
   group('Entwurf ist nicht öffentlich', () {
-    test('ein Entwurf ist nur für den Eigentümer lesbar', () {
-      final rechte =
-          JobRepository.permissionsFor(ownerId: 'b1', isActive: false);
-      expect(rechte, contains(Permission.read(Role.user('b1'))));
-      expect(rechte, isNot(contains(Permission.read(Role.any()))));
-    });
-
-    test('eine veröffentlichte Stelle ist für alle lesbar', () {
-      final rechte =
-          JobRepository.permissionsFor(ownerId: 'b1', isActive: true);
-      expect(rechte, contains(Permission.read(Role.any())));
-    });
-
-    test('ändern und löschen darf in beiden Fällen nur der Eigentümer', () {
-      for (final aktiv in [true, false]) {
-        final rechte =
-            JobRepository.permissionsFor(ownerId: 'b1', isActive: aktiv);
-        expect(rechte, contains(Permission.update(Role.user('b1'))));
-        expect(rechte, contains(Permission.delete(Role.user('b1'))));
-        expect(
-            rechte
-                .where((r) => r.startsWith('update') || r.startsWith('delete')),
-            everyElement(contains('user:b1')));
-      }
-    });
-
     test('das öffentliche Profil fragt nur veröffentlichte Stellen an',
         () async {
       final repo = _FakeJobRepository();
@@ -157,35 +135,74 @@ void main() {
     });
   });
 
-  group('Daten einer Stelle', () {
-    Map<String, dynamic> payload({required bool leeren}) =>
-        JobRepository.payloadFor(
-          companyId: 'c1',
-          companyName: 'Musterbau GmbH',
-          companySlug: 'musterbau-gmbh',
-          title: '  Ausbildung  ',
-          location: 'Dortmund',
-          salary: '   ',
-          tasks: const [],
-          requirements: const [],
-          benefits: const [],
-          isActive: true,
-          leereFelderLeeren: leeren,
-        );
+  group('Schreiben über job_posting (T-4.31)', () {
+    test('Anlegen schickt nur Formularfelder, keinen Betrieb', () async {
+      final fn = _FakeFunctions(200, {'ok': true, 'job': _stelleJson});
+      await JobRepository(functions: fn).createJob(
+        title: 'Ausbildung',
+        location: 'Dortmund',
+        salary: '   ',
+        isActive: false,
+      );
 
-    test('beim Anlegen fallen leere Felder weg', () {
-      final daten = payload(leeren: false);
-      expect(daten['title'], 'Ausbildung');
-      expect(daten.containsKey('salary'), isFalse);
-      expect(daten.containsKey('start_date'), isFalse);
+      final body = jsonDecode(fn.aufrufe.single[#body] as String) as Map;
+      expect(fn.aufrufe.single[#functionId], 'job_posting');
+      expect(body['action'], 'create');
+      final felder = body['fields'] as Map;
+      expect(felder['title'], 'Ausbildung');
+      expect(felder['is_active'], isFalse);
+      for (final feld in [
+        'company_id',
+        'company',
+        'company_slug',
+        'company_logo_url',
+        'industry',
+      ]) {
+        expect(felder.containsKey(feld), isFalse, reason: feld);
+      }
     });
 
-    test('beim Bearbeiten werden geleerte Felder auf null gesetzt', () {
-      final daten = payload(leeren: true);
-      expect(daten.containsKey('salary'), isTrue);
-      expect(daten['salary'], isNull);
-      expect(daten.containsKey('start_date'), isTrue);
-      expect(daten['start_date'], isNull);
+    test('Bearbeiten schickt alle Felder, auch geleerte', () {
+      final felder = JobRepository.fieldsFor(
+        title: 'Ausbildung',
+        location: 'Dortmund',
+        tasks: const [],
+        requirements: const [],
+        benefits: const [],
+        isActive: true,
+      );
+      expect(felder['salary'], '');
+      expect(felder.containsKey('start_date'), isTrue);
+      expect(felder['start_date'], isNull);
+    });
+
+    test('Zurückziehen und Löschen nennen nur die Stelle', () async {
+      final fn = _FakeFunctions(200, {'ok': true, 'job': _stelleJson});
+      final repo = JobRepository(functions: fn);
+      await repo.setActive(jobId: 'j1', isActive: false);
+      await repo.deleteJob('j1');
+
+      expect(
+        [for (final a in fn.aufrufe) jsonDecode(a[#body] as String)],
+        [
+          {'action': 'set_active', 'job_id': 'j1', 'is_active': false},
+          {'action': 'delete', 'job_id': 'j1'},
+        ],
+      );
+    });
+
+    test('reicht die Meldung der Function weiter', () {
+      final fn = _FakeFunctions(403, {
+        'ok': false,
+        'code': 'forbidden',
+        'message': 'Veröffentlichen geht erst, wenn euer Betrieb verifiziert '
+            'ist.',
+      });
+      expect(
+        JobRepository(functions: fn).setActive(jobId: 'j1', isActive: true),
+        throwsA(isA<JobPostingException>()
+            .having((e) => e.message, 'message', contains('verifiziert'))),
+      );
     });
   });
 
@@ -206,7 +223,7 @@ void main() {
           theme: AppTheme.light,
           home: Scaffold(
             body: SingleChildScrollView(
-              child: BetriebJobsSection(company: _company, ownerId: 'b1'),
+              child: BetriebJobsSection(company: _company),
             ),
           ),
         ),
@@ -233,7 +250,6 @@ void main() {
 
     final aufruf = repo.aufrufeVon(#updateJob).single;
     expect(aufruf.namedArguments[#jobId], 'j1');
-    expect(aufruf.namedArguments[#ownerId], 'b1');
     expect(aufruf.namedArguments[#salary], '');
     // Ein Entwurf bleibt beim Speichern ein Entwurf.
     expect(aufruf.namedArguments[#isActive], isFalse);
@@ -257,7 +273,7 @@ void main() {
           theme: AppTheme.light,
           home: Scaffold(
             body: SingleChildScrollView(
-              child: BetriebJobsSection(company: _company, ownerId: 'b1'),
+              child: BetriebJobsSection(company: _company),
             ),
           ),
         ),
@@ -276,4 +292,52 @@ void main() {
     expect(find.text('Titel ist erforderlich'), findsOneWidget);
     expect(repo.aufrufeVon(#createJob), isEmpty);
   });
+}
+
+final _stelleJson = {
+  'id': 'j1',
+  'created_at': '2026-09-01T00:00:00.000Z',
+  'company_id': 'c1',
+  'company': 'Musterbau GmbH',
+  'company_slug': 'musterbau-gmbh',
+  'title': 'Ausbildung',
+  'location': 'Dortmund',
+  'is_active': false,
+};
+
+/// Antwortet auf `createExecution` mit [status] und [antwort] und merkt sich
+/// die Argumente.
+class _FakeFunctions implements Functions {
+  _FakeFunctions(this.status, this.antwort);
+
+  final int status;
+  final Map<String, Object?> antwort;
+  final aufrufe = <Map<Symbol, dynamic>>[];
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.memberName == #createExecution) {
+      aufrufe.add(invocation.namedArguments);
+      return Future.value(aw.Execution(
+        $id: 'e1',
+        $createdAt: '',
+        $updatedAt: '',
+        $permissions: const [],
+        functionId: 'job_posting',
+        deploymentId: 'd1',
+        trigger: aw_enums.ExecutionTrigger.http,
+        status: aw_enums.ExecutionStatus.completed,
+        requestMethod: 'POST',
+        requestPath: '/',
+        requestHeaders: const [],
+        responseStatusCode: status,
+        responseBody: jsonEncode(antwort),
+        responseHeaders: const [],
+        logs: '',
+        errors: '',
+        duration: 0.1,
+      ));
+    }
+    return super.noSuchMethod(invocation);
+  }
 }

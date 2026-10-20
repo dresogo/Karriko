@@ -1,61 +1,27 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart' as aw_enums;
 import 'package:appwrite/models.dart' as aw;
 import '../../core/constants/appwrite_constants.dart';
+import '../../core/constants/questionnaire_constants.dart';
 import '../models/company_model.dart';
 import '../services/appwrite_service.dart';
-
-/// Bildet aus einem Firmennamen den Teil der oeffentlichen Adresse.
-///
-/// Bewusst als freie Funktion und nicht als Methode: So laesst sich die Regel
-/// pruefen, ohne Appwrite zu brauchen – dasselbe Muster wie bei
-/// `oauth2TokenUrl` in der Auth-Schicht.
-///
-/// Umlaute werden ausgeschrieben statt entfernt: aus "Müller GmbH" wird
-/// `mueller-gmbh`, nicht `mller-gmbh`. Fuer den DACH-Markt ist das kein
-/// Randfall, sondern der Normalfall.
-String companySlug(String name) {
-  final ersetzt = name.toLowerCase().replaceAllMapped(
-        RegExp('[äöüßáàâéèêíìîóòôúùû]'),
-        (m) => const {
-          'ä': 'ae',
-          'ö': 'oe',
-          'ü': 'ue',
-          'ß': 'ss',
-          'á': 'a',
-          'à': 'a',
-          'â': 'a',
-          'é': 'e',
-          'è': 'e',
-          'ê': 'e',
-          'í': 'i',
-          'ì': 'i',
-          'î': 'i',
-          'ó': 'o',
-          'ò': 'o',
-          'ô': 'o',
-          'ú': 'u',
-          'ù': 'u',
-          'û': 'u',
-        }[m[0]]!,
-      );
-  final slug = ersetzt
-      .replaceAll(RegExp('[^a-z0-9]+'), '-')
-      .replaceAll(RegExp('^-+|-+\$'), '');
-  // Ein Name ganz ohne lateinische Buchstaben (etwa rein kyrillisch) ergaebe
-  // sonst eine leere Adresse. Lieber ein neutraler Platzhalter, den der
-  // Eindeutigkeits-Zusatz unterscheidbar macht.
-  return slug.isEmpty ? 'unternehmen' : slug;
-}
 
 class CompanyRepository {
   /// [db] ersetzt in Tests den Zugriff auf Appwrite. Ohne ihn entsteht er
   /// erst beim Aufruf, weil der Client beim Bau des Providers noch nicht
   /// initialisiert sein muss.
-  CompanyRepository({TablesDB? db}) : _dbOverride = db;
+  CompanyRepository({TablesDB? db, Functions? functions})
+      : _dbOverride = db,
+        _functionsOverride = functions;
 
   final TablesDB? _dbOverride;
+  final Functions? _functionsOverride;
 
   TablesDB get _db => _dbOverride ?? TablesDB(AppwriteService.client);
+  Functions get _functions =>
+      _functionsOverride ?? Functions(AppwriteService.client);
 
   Future<List<CompanyModel>> searchCompanies({
     String? query,
@@ -148,81 +114,37 @@ class CompanyRepository {
     return CompanyModel.fromJson(_toMap(result.rows.first));
   }
 
-  /// Legt das Unternehmen zu einem Betriebskonto an.
+  /// Legt das Unternehmen des angemeldeten Betriebskontos an.
   ///
-  /// Rechte an der Zeile:
-  /// - **Lesen fuer alle.** Unternehmensprofile sind der oeffentliche Teil der
-  ///   Plattform; ohne das faende die Suche sie fuer Besucher nicht.
-  /// - **Schreiben nur fuer den Eigentuemer.**
-  /// - **Kein Loeschrecht**, auch nicht fuer den Eigentuemer. Beim Loeschen
-  ///   eines Betriebskontos bleiben die Bewertungen erhalten und das Profil
-  ///   wird lediglich inaktiv (projekt-referenz.md Paragraf 3.4) – ein
-  ///   Loeschrecht an der Zeile wuerde genau das aushebeln.
-  ///
-  /// Das ersetzt keine serverseitige Regel: Zeilenrechte greifen erst,
-  /// nachdem der Client sie gesetzt hat. Die tragende Grenze sind die
-  /// Berechtigungen der Tabelle.
+  /// Ueber die Function `company_profile`, nicht direkt in die Tabelle
+  /// (T-4.2): Appwrite kennt keine Rechte je Spalte, und wer direkt anlegt,
+  /// koennte `is_verified`, `is_premium`, `average_rating` oder `owner_id`
+  /// gleich mitsetzen. Eigentuemer ist immer der Aufrufer, die Function nimmt
+  /// ihn aus dem JWT. Gibt es schon eine Firma zu diesem Konto, kommt diese
+  /// zurueck statt einer zweiten. Slug, Rechte an der Zeile und die gesperrten
+  /// Felder setzt der Server; die Zeile ist fuer alle lesbar, aenderbar nur
+  /// ueber die Function und nicht loeschbar (Referenz §3.4).
   Future<CompanyModel> createCompany({
-    required String ownerId,
     required String name,
     String? industry,
     String? city,
-  }) async {
-    final row = await _db.createRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesTable,
-      rowId: ID.unique(),
-      data: {
-        'slug': await _freierSlug(name),
+  }) =>
+      _companyProfile('create', {
         'name': name,
-        'owner_id': ownerId,
         if (industry != null) 'industry': industry,
         if (city != null) 'city': city,
-        'review_count': 0,
-        'is_premium': false,
-        // Das Verifizierungs-Abzeichen vergibt ein Mensch, nicht die
-        // Registrierung (projekt-referenz.md Paragraf 3.2).
-        'is_verified': false,
-      },
-      permissions: [
-        Permission.read(Role.any()),
-        Permission.update(Role.user(ownerId)),
-      ],
-    );
-    return CompanyModel.fromJson(_toMap(row));
-  }
+      });
 
-  /// Liefert einen Slug, der noch nicht vergeben ist.
+  /// Aendert die Stammdaten des eigenen Unternehmens, ueber `company_profile`.
   ///
-  /// Zwei Betriebe mit demselben Namen sind im DACH-Raum keine Ausnahme.
-  /// Kollidiert der Name, haengt ein kurzer Zusatz an. Das ist keine Garantie –
-  /// zwischen Pruefung und Anlegen kann ein zweiter Client dazwischenkommen –
-  /// aber gegen den realistischen Fall (gleicher Name, verschiedene Zeitpunkte)
-  /// wirksam. Verbindlich waere nur ein eindeutiger Index auf `slug`.
-  Future<String> _freierSlug(String name) async {
-    final basis = companySlug(name);
-    try {
-      final vergeben = await _db.listRows(
-        databaseId: AppwriteConstants.databaseId,
-        tableId: AppwriteConstants.companiesTable,
-        queries: [Query.equal('slug', basis), Query.limit(1)],
-      );
-      if (vergeben.rows.isEmpty) return basis;
-    } on AppwriteException {
-      // Laesst sich die Kollision nicht pruefen, ist der Zusatz die sichere
-      // Wahl: ein doppelter Slug waere schlimmer als ein haesslicher.
-    }
-    return '$basis-${ID.unique().substring(0, 6)}';
-  }
-
-  /// Aendert die Stammdaten eines Unternehmens.
+  /// Welche Firma, entscheidet der Server: die des angemeldeten Kontos. Nur
+  /// uebergebene Felder werden geaendert, ein leerer Text leert das Feld. Der
+  /// Slug bleibt **unberuehrt**, auch wenn sich der Name aendert: Er steht in
+  /// der oeffentlichen Adresse, und geteilte Links sollen nicht brechen.
   ///
-  /// Der Slug bleibt dabei **unberuehrt**, auch wenn sich der Name aendert:
-  /// Er steht in der oeffentlichen Adresse des Profils, und die soll nicht
-  /// unter geteilten Links wegbrechen. Eine Umbenennung aendert die Anzeige,
-  /// nicht die Adresse.
+  /// Wirft [CompanyProfileException] mit einer Meldung fuer den Nutzer, etwa
+  /// wenn die Website nicht mit http:// oder https:// beginnt.
   Future<CompanyModel> updateCompanyProfile({
-    required String companyId,
     String? name,
     String? description,
     String? website,
@@ -230,12 +152,8 @@ class CompanyRepository {
     String? city,
     String? country,
     String? industry,
-  }) async {
-    await _db.updateRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.companiesTable,
-      rowId: companyId,
-      data: {
+  }) =>
+      _companyProfile('update', {
         if (name != null) 'name': name,
         if (description != null) 'description': description,
         if (website != null) 'website': website,
@@ -243,9 +161,38 @@ class CompanyRepository {
         if (city != null) 'city': city,
         if (country != null) 'country': country,
         if (industry != null) 'industry': industry,
-      },
+      });
+
+  Future<CompanyModel> _companyProfile(
+    String action,
+    Map<String, String> fields,
+  ) async {
+    final execution = await _functions.createExecution(
+      functionId: QuestionnaireConstants.companyProfileFunction,
+      body: jsonEncode({'action': action, 'fields': fields}),
+      xasync: false,
+      method: aw_enums.ExecutionMethod.pOST,
+      path: '/',
     );
-    return getCompanyById(companyId);
+
+    Map<String, Object?> antwort = const {};
+    try {
+      final decoded = jsonDecode(execution.responseBody);
+      if (decoded is Map) antwort = decoded.cast<String, Object?>();
+    } on FormatException {
+      // bleibt leer, unten als Fehler behandelt
+    }
+
+    final firma = antwort['company'];
+    if (execution.responseStatusCode >= 400 ||
+        antwort['ok'] != true ||
+        firma is! Map) {
+      throw CompanyProfileException(
+        antwort['message'] as String? ??
+            'Das Unternehmensprofil konnte nicht gespeichert werden.',
+      );
+    }
+    return CompanyModel.fromJson(firma.cast<String, dynamic>());
   }
 
   Future<void> bookmarkCompany(String userId, String companyId) async {
@@ -318,4 +265,15 @@ class CompanyRepository {
         'created_at': doc.$createdAt,
         ...doc.data,
       };
+}
+
+/// Die Function `company_profile` hat abgelehnt oder ist nicht erreichbar.
+/// [message] richtet sich an den Nutzer.
+class CompanyProfileException implements Exception {
+  const CompanyProfileException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
 }

@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:questionnaire_core/questionnaire_core.dart';
 
 /// Status einer Bewertung in `reviews`.
+/// Der Eintrag im `moderation_log`, wenn jemand einen Nachweis geöffnet hat
+/// (T-2.20). Höchstens 16 Zeichen, so breit ist die Spalte `action`.
+const proofViewedAction = 'proof_viewed';
+
 class ReviewStatus {
   ReviewStatus._();
 

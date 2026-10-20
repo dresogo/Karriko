@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
 import '../common/app_page.dart';
 import 'widgets/jobs_section.dart';
@@ -17,7 +16,6 @@ class BetriebJobsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authProvider).user;
     final company = ref.watch(myCompanyProvider).valueOrNull;
 
     return AppPage(
@@ -34,7 +32,7 @@ class BetriebJobsScreen extends ConsumerWidget {
               label: const Text('Profil ansehen'),
             ),
       children: [
-        BetriebJobsSection(company: company, ownerId: user?.id),
+        BetriebJobsSection(company: company),
         const SizedBox(height: AppLayout.s48),
         const SectionLabel('Weiter zu'),
         const SizedBox(height: AppLayout.s16),

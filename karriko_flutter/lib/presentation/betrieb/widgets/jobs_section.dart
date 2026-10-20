@@ -7,6 +7,7 @@ import '../../../core/utils/list_field.dart';
 import '../../../core/utils/validators.dart';
 import '../../../data/models/company_model.dart';
 import '../../../data/models/job_model.dart';
+import '../../../data/repositories/job_repository.dart';
 import '../../../providers/company_provider.dart';
 import '../../../providers/job_provider.dart';
 import '../../common/app_page.dart';
@@ -19,12 +20,10 @@ import '../../common/app_page.dart';
 /// zwanzig Feldern vorbeiscrollen. Es ist immer höchstens eines offen.
 class BetriebJobsSection extends ConsumerStatefulWidget {
   final CompanyModel? company;
-  final String? ownerId;
 
   const BetriebJobsSection({
     super.key,
     required this.company,
-    required this.ownerId,
   });
 
   @override
@@ -75,21 +74,18 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
   }
 
   Future<void> _umschalten(JobModel job) async {
-    final ownerId = widget.ownerId;
-    if (ownerId == null) {
-      _melden('Das Konto ist nicht vollständig geladen.');
-      return;
-    }
     try {
       await ref.read(jobRepositoryProvider).setActive(
             jobId: job.id,
             isActive: !job.isActive,
-            ownerId: ownerId,
           );
       _stellenNeuLaden(jobId: job.id);
       _melden(job.isActive
           ? 'Stelle zurückgezogen. Sie ist jetzt ein Entwurf.'
           : 'Stelle veröffentlicht.');
+    } on JobPostingException catch (e) {
+      // Etwa: Veröffentlichen geht erst mit verifiziertem Betrieb.
+      _melden(e.message);
     } catch (_) {
       _melden('Die Stelle konnte nicht geändert werden.');
     }
@@ -195,7 +191,6 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
                 _JobForm(
                   key: ValueKey('bearbeiten-${job.id}'),
                   company: company,
-                  ownerId: widget.ownerId,
                   job: job,
                   onCancel: _formSchliessen,
                   onSaved: (veroeffentlicht) {
@@ -231,7 +226,6 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
             _JobForm(
               key: const ValueKey('neu'),
               company: company,
-              ownerId: widget.ownerId,
               onCancel: _formSchliessen,
               onSaved: (veroeffentlicht) {
                 _stellenNeuLaden();
@@ -395,7 +389,6 @@ const _arten = [
 
 class _JobForm extends ConsumerStatefulWidget {
   final CompanyModel company;
-  final String? ownerId;
 
   /// Bestehende Stelle, die bearbeitet wird. Ohne sie legt das Formular eine
   /// neue an.
@@ -409,7 +402,6 @@ class _JobForm extends ConsumerStatefulWidget {
   const _JobForm({
     super.key,
     required this.company,
-    required this.ownerId,
     this.job,
     required this.onCancel,
     required this.onSaved,
@@ -503,11 +495,6 @@ class _JobFormState extends ConsumerState<_JobForm> {
 
   Future<void> _speichern() async {
     if (!_formKey.currentState!.validate()) return;
-    final ownerId = widget.ownerId;
-    if (ownerId == null) {
-      widget.onError('Das Konto ist nicht vollständig geladen.');
-      return;
-    }
 
     setState(() => _speichert = true);
     try {
@@ -515,15 +502,9 @@ class _JobFormState extends ConsumerState<_JobForm> {
       final job = widget.job;
       if (job == null) {
         await repo.createJob(
-          ownerId: ownerId,
-          companyId: widget.company.id,
-          companyName: widget.company.name,
-          companySlug: widget.company.slug,
-          companyLogoUrl: widget.company.logoUrl,
           title: _titelCtrl.text,
           location: _ortCtrl.text,
           profession: _berufCtrl.text,
-          industry: widget.company.industry,
           employmentType: _art,
           description: _beschreibungCtrl.text,
           tasks: _punkte(_aufgabenCtrl),
@@ -539,15 +520,9 @@ class _JobFormState extends ConsumerState<_JobForm> {
       } else {
         await repo.updateJob(
           jobId: job.id,
-          ownerId: ownerId,
-          companyId: widget.company.id,
-          companyName: widget.company.name,
-          companySlug: widget.company.slug,
-          companyLogoUrl: widget.company.logoUrl,
           title: _titelCtrl.text,
           location: _ortCtrl.text,
           profession: _berufCtrl.text,
-          industry: widget.company.industry,
           employmentType: _art,
           description: _beschreibungCtrl.text,
           tasks: _punkte(_aufgabenCtrl),
@@ -563,6 +538,12 @@ class _JobFormState extends ConsumerState<_JobForm> {
       }
       if (!mounted) return;
       widget.onSaved(_veroeffentlichen);
+    } on JobPostingException catch (e) {
+      // Die Meldung kommt von `job_posting`, etwa zum Bewerbungslink oder
+      // weil Veröffentlichen erst mit verifiziertem Betrieb geht.
+      if (!mounted) return;
+      setState(() => _speichert = false);
+      widget.onError(e.message);
     } catch (_) {
       if (!mounted) return;
       setState(() => _speichert = false);

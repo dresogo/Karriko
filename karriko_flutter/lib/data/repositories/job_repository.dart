@@ -1,17 +1,35 @@
+import 'dart:convert';
+
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart' as aw_enums;
 import 'package:appwrite/models.dart' as aw;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import '../../core/constants/appwrite_constants.dart';
+import '../../core/constants/questionnaire_constants.dart';
 import '../models/job_model.dart';
 import '../services/appwrite_service.dart';
 
 /// Zugriff auf die Ausbildungsstellen.
 ///
-/// Die Sammlung `jobs` muss in der Appwrite-Console angelegt sein – wie bei den
-/// uebrigen Sammlungen auch (siehe [AppwriteConstants]). Die erwarteten Spalten
-/// stehen in [createJob].
+/// Gelesen wird direkt aus `jobs`, geschrieben nur ueber die Function
+/// `job_posting` (T-4.31): Frueher setzte der Client `company_id` und die
+/// Angaben zum Betrieb selbst, und ein bestaetigtes Konto konnte so eine
+/// Stelle im Namen eines fremden Betriebs anlegen. Jetzt nimmt der Server den
+/// Betrieb aus dem angemeldeten Konto, setzt die Zeilenrechte (veroeffentlicht
+/// fuer alle lesbar, Entwurf nur fuer den Eigentuemer) und laesst
+/// Veroeffentlichen erst mit Abzeichen zu.
 class JobRepository {
-  TablesDB get _db => TablesDB(AppwriteService.client);
+  /// [db] und [functions] ersetzen in Tests den Zugriff auf Appwrite.
+  JobRepository({TablesDB? db, Functions? functions})
+      : _dbOverride = db,
+        _functionsOverride = functions;
+
+  final TablesDB? _dbOverride;
+  final Functions? _functionsOverride;
+
+  TablesDB get _db => _dbOverride ?? TablesDB(AppwriteService.client);
+  Functions get _functions =>
+      _functionsOverride ?? Functions(AppwriteService.client);
 
   /// Oeffentliche Stellenliste eines Unternehmens.
   ///
@@ -58,31 +76,14 @@ class JobRepository {
     return JobModel.fromJson(_toMap(row));
   }
 
-  /// Legt eine Stelle an.
+  /// Legt eine Stelle des eigenen Betriebs an.
   ///
-  /// Rechte an der Zeile – dasselbe Muster wie beim Unternehmensprofil:
-  /// - **Lesen fuer alle**, sonst faende die Suche die Stelle nicht.
-  /// - **Aendern und Loeschen nur fuer den Eigentuemer** des Betriebskontos.
-  ///
-  /// Das ersetzt keine serverseitige Regel: Zeilenrechte greifen erst,
-  /// nachdem der Client sie gesetzt hat. Die tragende Grenze sind die
-  /// Berechtigungen der Sammlung.
-  ///
-  /// Erwartete Spalten der Sammlung `jobs`:
-  /// `company_id`, `company`, `company_slug`, `company_logo_url`, `title`,
-  /// `location`, `profession`, `industry`, `employment_type`, `description`,
-  /// `tasks[]`, `requirements[]`, `benefits[]`, `start_date`, `duration`,
-  /// `salary`, `apply_url`, `contact_email`, `is_active`.
+  /// Mit [isActive] wird sie gleich veroeffentlicht; das lehnt der Server ab,
+  /// solange der Betrieb nicht verifiziert ist ([JobPostingException]).
   Future<JobModel> createJob({
-    required String ownerId,
-    required String companyId,
-    required String companyName,
-    required String companySlug,
-    String? companyLogoUrl,
     required String title,
     required String location,
     String? profession,
-    String? industry,
     String? employmentType,
     String? description,
     List<String> tasks = const [],
@@ -94,55 +95,34 @@ class JobRepository {
     String? applyUrl,
     String? contactEmail,
     bool isActive = true,
-  }) async {
-    final row = await _db.createRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsTable,
-      rowId: ID.unique(),
-      data: payloadFor(
-        companyId: companyId,
-        companyName: companyName,
-        companySlug: companySlug,
-        companyLogoUrl: companyLogoUrl,
-        title: title,
-        location: location,
-        profession: profession,
-        industry: industry,
-        employmentType: employmentType,
-        description: description,
-        tasks: tasks,
-        requirements: requirements,
-        benefits: benefits,
-        startDate: startDate,
-        duration: duration,
-        salary: salary,
-        applyUrl: applyUrl,
-        contactEmail: contactEmail,
-        isActive: isActive,
-      ),
-      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
-    );
-    return JobModel.fromJson(_toMap(row));
-  }
+  }) =>
+      _stelle({
+        'action': 'create',
+        'fields': fieldsFor(
+          title: title,
+          location: location,
+          profession: profession,
+          employmentType: employmentType,
+          description: description,
+          tasks: tasks,
+          requirements: requirements,
+          benefits: benefits,
+          startDate: startDate,
+          duration: duration,
+          salary: salary,
+          applyUrl: applyUrl,
+          contactEmail: contactEmail,
+          isActive: isActive,
+        ),
+      });
 
-  /// Ueberschreibt eine bestehende Stelle mit dem Stand des Formulars.
-  ///
-  /// Anders als beim Anlegen gehen geleerte Felder als `null` mit: Sonst
-  /// bliebe ein geloeschter Text in der Zeile stehen, und die Stellenseite
-  /// zeigte ihn weiter. Die Rechte werden mit dem Zustand neu gesetzt, damit
-  /// ein Entwurf beim Speichern nicht versehentlich oeffentlich lesbar wird
-  /// (siehe [permissionsFor]).
+  /// Ueberschreibt eine Stelle mit dem Stand des Formulars. Geleerte Felder
+  /// werden auf dem Server `null`, sonst bliebe ein geloeschter Text stehen.
   Future<JobModel> updateJob({
     required String jobId,
-    required String ownerId,
-    required String companyId,
-    required String companyName,
-    required String companySlug,
-    String? companyLogoUrl,
     required String title,
     required String location,
     String? profession,
-    String? industry,
     String? employmentType,
     String? description,
     List<String> tasks = const [],
@@ -154,97 +134,47 @@ class JobRepository {
     String? applyUrl,
     String? contactEmail,
     required bool isActive,
-  }) async {
-    final row = await _db.updateRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsTable,
-      rowId: jobId,
-      data: payloadFor(
-        companyId: companyId,
-        companyName: companyName,
-        companySlug: companySlug,
-        companyLogoUrl: companyLogoUrl,
-        title: title,
-        location: location,
-        profession: profession,
-        industry: industry,
-        employmentType: employmentType,
-        description: description,
-        tasks: tasks,
-        requirements: requirements,
-        benefits: benefits,
-        startDate: startDate,
-        duration: duration,
-        salary: salary,
-        applyUrl: applyUrl,
-        contactEmail: contactEmail,
-        isActive: isActive,
-        leereFelderLeeren: true,
-      ),
-      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
-    );
-    return JobModel.fromJson(_toMap(row));
-  }
-
-  /// Zeilenrechte einer Stelle.
-  ///
-  /// Ein Entwurf ist nur fuer den Eigentuemer lesbar, eine veroeffentlichte
-  /// Stelle fuer alle. Frueher bekam jede Stelle `read("any")`, und die
-  /// oeffentliche Liste filterte nur nach `is_active` – ueber die API oder
-  /// die Adresse `/stellen/<id>` war ein Entwurf trotzdem fuer jeden lesbar.
-  ///
-  /// Wirkt erst vollstaendig, wenn die Tabelle `jobs` selbst kein
-  /// `read("any")` mehr traegt, siehe tools/appwrite-setup.mjs.
-  static List<String> permissionsFor({
-    required String ownerId,
-    required bool isActive,
   }) =>
-      [
-        Permission.read(isActive ? Role.any() : Role.user(ownerId)),
-        Permission.update(Role.user(ownerId)),
-        Permission.delete(Role.user(ownerId)),
-      ];
+      _stelle({
+        'action': 'update',
+        'job_id': jobId,
+        'fields': fieldsFor(
+          title: title,
+          location: location,
+          profession: profession,
+          employmentType: employmentType,
+          description: description,
+          tasks: tasks,
+          requirements: requirements,
+          benefits: benefits,
+          startDate: startDate,
+          duration: duration,
+          salary: salary,
+          applyUrl: applyUrl,
+          contactEmail: contactEmail,
+          isActive: isActive,
+        ),
+      });
 
-  /// Schaltet eine Stelle oeffentlich oder nimmt sie zurueck – samt
-  /// Leserecht, siehe [permissionsFor].
+  /// Veroeffentlicht eine Stelle oder nimmt sie zurueck; die Zeilenrechte
+  /// setzt der Server mit.
   Future<void> setActive({
     required String jobId,
     required bool isActive,
-    required String ownerId,
-  }) async {
-    await _db.updateRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsTable,
-      rowId: jobId,
-      data: {'is_active': isActive},
-      permissions: permissionsFor(ownerId: ownerId, isActive: isActive),
-    );
-  }
+  }) =>
+      _stelle({'action': 'set_active', 'job_id': jobId, 'is_active': isActive});
 
-  Future<void> deleteJob(String jobId) async {
-    await _db.deleteRow(
-      databaseId: AppwriteConstants.databaseId,
-      tableId: AppwriteConstants.jobsTable,
-      rowId: jobId,
-    );
-  }
+  Future<void> deleteJob(String jobId) =>
+      _aufruf({'action': 'delete', 'job_id': jobId});
 
-  /// Leere Freitextfelder werden weggelassen statt als leerer String
-  /// gespeichert: Die Stellenseite entscheidet an `null`, ob ein Abschnitt
-  /// ueberhaupt erscheint.
-  ///
-  /// Mit [leereFelderLeeren] gehen sie stattdessen als `null` mit – beim
-  /// Bearbeiten, wo Weglassen den alten Wert stehen liesse.
+  /// Die Felder, die das Formular schickt. Immer alle, auch leere: Der Server
+  /// ueberschreibt die Stelle und macht aus leeren Texten `null`. Betrieb,
+  /// Branche und Logo fehlen absichtlich, die setzt der Server.
   @visibleForTesting
-  static Map<String, dynamic> payloadFor({
-    required String companyId,
-    required String companyName,
-    required String companySlug,
-    String? companyLogoUrl,
+  static Map<String, Object?> fieldsFor({
     required String title,
     required String location,
     String? profession,
-    String? industry,
     String? employmentType,
     String? description,
     required List<String> tasks,
@@ -256,39 +186,56 @@ class JobRepository {
     String? applyUrl,
     String? contactEmail,
     required bool isActive,
-    bool leereFelderLeeren = false,
-  }) {
-    String? clean(String? value) {
-      final trimmed = value?.trim();
-      return (trimmed == null || trimmed.isEmpty) ? null : trimmed;
+  }) =>
+      {
+        'title': title,
+        'location': location,
+        'profession': profession ?? '',
+        'employment_type': employmentType ?? '',
+        'description': description ?? '',
+        'tasks': tasks,
+        'requirements': requirements,
+        'benefits': benefits,
+        'start_date': startDate?.toIso8601String(),
+        'duration': duration ?? '',
+        'salary': salary ?? '',
+        'apply_url': applyUrl ?? '',
+        'contact_email': contactEmail ?? '',
+        'is_active': isActive,
+      };
+
+  Future<JobModel> _stelle(Map<String, Object?> body) async {
+    final antwort = await _aufruf(body);
+    final stelle = antwort['job'];
+    if (stelle is! Map) {
+      throw const JobPostingException(
+          'Die Stelle konnte nicht gespeichert werden.');
     }
+    return JobModel.fromJson(stelle.cast<String, dynamic>());
+  }
 
-    final optional = <String, Object?>{
-      'company_logo_url': clean(companyLogoUrl),
-      'profession': clean(profession),
-      'industry': clean(industry),
-      'employment_type': clean(employmentType),
-      'description': clean(description),
-      'start_date': startDate?.toIso8601String(),
-      'duration': clean(duration),
-      'salary': clean(salary),
-      'apply_url': clean(applyUrl),
-      'contact_email': clean(contactEmail),
-    };
-
-    return {
-      'company_id': companyId,
-      'company': companyName,
-      'company_slug': companySlug,
-      'title': title.trim(),
-      'location': location.trim(),
-      'tasks': tasks,
-      'requirements': requirements,
-      'benefits': benefits,
-      'is_active': isActive,
-      for (final e in optional.entries)
-        if (e.value != null || leereFelderLeeren) e.key: e.value,
-    };
+  Future<Map<String, Object?>> _aufruf(Map<String, Object?> body) async {
+    final execution = await _functions.createExecution(
+      functionId: QuestionnaireConstants.jobPostingFunction,
+      body: jsonEncode(body),
+      xasync: false,
+      method: aw_enums.ExecutionMethod.pOST,
+      path: '/',
+    );
+    Map<String, Object?> antwort = const {};
+    try {
+      final decoded = jsonDecode(execution.responseBody);
+      if (decoded is Map) antwort = decoded.cast<String, Object?>();
+    } on FormatException {
+      // bleibt leer, unten als Fehler behandelt
+    }
+    if (execution.responseStatusCode >= 400 || antwort['ok'] != true) {
+      throw JobPostingException(
+        antwort['message'] as String? ??
+            'Die Stelle konnte nicht gespeichert werden.',
+      );
+    }
+    return antwort;
   }
 
   Map<String, dynamic> _toMap(aw.Row doc) => {
@@ -296,4 +243,15 @@ class JobRepository {
         'created_at': doc.$createdAt,
         ...doc.data,
       };
+}
+
+/// Die Function `job_posting` hat abgelehnt oder ist nicht erreichbar.
+/// [message] richtet sich an den Betrieb.
+class JobPostingException implements Exception {
+  const JobPostingException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
 }

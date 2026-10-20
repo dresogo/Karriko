@@ -58,6 +58,27 @@ class QuestionnaireConstants {
     defaultValue: 'my_reviews',
   );
 
+  /// Der einzige Schreibweg nach `companies`: legt das eigene Firmenprofil an
+  /// oder aendert es, nur freigegebene Felder (T-4.2).
+  static const companyProfileFunction = String.fromEnvironment(
+    'FN_COMPANY_PROFILE',
+    defaultValue: 'company_profile',
+  );
+
+  /// Der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs anlegen,
+  /// aendern, veroeffentlichen, zurueckziehen, loeschen (T-4.31).
+  static const jobPostingFunction = String.fromEnvironment(
+    'FN_JOB_POSTING',
+    defaultValue: 'job_posting',
+  );
+
+  /// Konto loeschen, eigene Bewertung loeschen, Daten herunterladen
+  /// (T-2.8 bis T-2.10).
+  static const myAccountFunction = String.fromEnvironment(
+    'FN_MY_ACCOUNT',
+    defaultValue: 'my_account',
+  );
+
   /// Arbeitstisch des Admin-Bereichs: Warteschlange, Meldungen, Protokoll,
   /// Betriebe. Nur `team:moderators` und `team:admins`.
   static const moderationDeskFunction = String.fromEnvironment(

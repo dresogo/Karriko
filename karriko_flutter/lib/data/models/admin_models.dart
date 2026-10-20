@@ -217,6 +217,9 @@ class ModerationLogItem {
 
   bool get isApproval => action == 'approve';
 
+  /// Jemand hat den Nachweis geöffnet (T-2.20); keine Entscheidung.
+  bool get isProofView => action == 'proof_viewed';
+
   factory ModerationLogItem.fromJson(Map<String, Object?> json) =>
       ModerationLogItem(
         logId: json['log_id'] as String? ?? '',

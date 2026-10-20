@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../data/repositories/account_repository.dart';
+import '../../data/services/save_file.dart';
+import '../../providers/account_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../common/app_page.dart';
 
@@ -14,6 +17,8 @@ class AzubiSettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
+  bool _exportiert = false;
+
   // Schalter für Sichtbarkeit und Benachrichtigungen stehen hier erst wieder,
   // wenn es ein öffentliches Profil und Benachrichtigungen gibt (E-30, T-2.13).
 
@@ -107,9 +112,17 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
         AppRowGroup(
           children: [
             AppRow(
+              icon: Icons.download_outlined,
+              title: 'Meine Daten herunterladen',
+              subtitle: _exportiert
+                  ? 'Wird vorbereitet …'
+                  : 'Alles, was du eingegeben hast, als JSON-Datei',
+              onTap: _exportiert ? null : _herunterladen,
+            ),
+            AppRow(
               icon: Icons.delete_outline,
               title: 'Konto löschen',
-              subtitle: 'Unwiderruflich, inklusive aller Bewertungen',
+              subtitle: '14 Tage lang zurücknehmbar, danach endgültig',
               destructive: true,
               onTap: _showDeleteAccountDialog,
             ),
@@ -131,8 +144,10 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
         title: Text('Konto löschen?',
             style: Theme.of(context).textTheme.headlineMedium),
         content: Text(
-          'Dein Konto und alle deine Bewertungen werden unwiderruflich gelöscht. '
-          'Diese Aktion kann nicht rückgängig gemacht werden.',
+          'Dein Konto wird in 14 Tagen gelöscht. Bis dahin kannst du die '
+          'Löschung nach der Anmeldung zurücknehmen. Veröffentlichte '
+          'Bewertungen bleiben ohne Verbindung zu dir stehen; alles andere '
+          'wird gelöscht.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         actionsPadding: const EdgeInsets.fromLTRB(
@@ -158,28 +173,47 @@ class _AzubiSettingsScreenState extends ConsumerState<AzubiSettingsScreen> {
 
     if (confirmed != true || !mounted) return;
 
-    // Die Löschung ist serverseitig noch nicht umgesetzt
-    // (AuthRepository.deleteAccount wirft UnimplementedError). Statt still
-    // abzumelden und Löschung vorzutäuschen, wird das hier offen gesagt.
-    _showDeletionUnavailableHint();
+    String? fehler;
+    try {
+      await ref.read(accountRepositoryProvider).requestDeletion();
+      // Der Termin kommt ueber die Prefs; der Router zeigt danach nur noch
+      // die Seite zum Zuruecknehmen.
+      await ref.read(authProvider.notifier).refresh();
+    } on AccountException catch (e) {
+      fehler = e.message;
+    } catch (_) {
+      fehler = 'Die Löschung konnte nicht beantragt werden.';
+    }
+    if (fehler != null && mounted) _melden(fehler);
   }
 
-  void _showDeletionUnavailableHint() {
+  /// Der Export nach Art. 20 (T-2.10): was das Konto selbst eingegeben hat.
+  Future<void> _herunterladen() async {
+    setState(() => _exportiert = true);
+    String? fehler;
+    try {
+      final json = await ref.read(accountRepositoryProvider).exportJson();
+      final tag = DateTime.now().toIso8601String().substring(0, 10);
+      await saveTextFile(name: 'karriko-daten-$tag.json', content: json);
+    } on AccountException catch (e) {
+      fehler = e.message;
+    } on UnsupportedError catch (e) {
+      fehler = e.message;
+    } catch (_) {
+      fehler = 'Deine Daten konnten nicht heruntergeladen werden.';
+    }
+    if (!mounted) return;
+    setState(() => _exportiert = false);
+    if (fehler != null) _melden(fehler);
+  }
+
+  void _melden(String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: AppColors.ink,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 6),
-        content: const Text(
-          'Die Löschung ist noch nicht freigeschaltet. Bitte wende dich an den '
-          'Support – dein Konto bleibt bis dahin bestehen.',
-          style: TextStyle(color: AppColors.paper),
-        ),
-        action: SnackBarAction(
-          label: 'Kontakt',
-          textColor: AppColors.paper,
-          onPressed: () => context.go('/kontakt'),
-        ),
+        content: Text(text, style: const TextStyle(color: AppColors.paper)),
       ),
     );
   }

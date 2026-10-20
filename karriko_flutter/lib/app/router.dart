@@ -24,6 +24,7 @@ import '../presentation/auth/forgot_password_screen.dart';
 import '../presentation/auth/reset_password_screen.dart';
 import '../presentation/auth/verify_email_screen.dart';
 import '../presentation/auth/mfa_challenge_screen.dart';
+import '../presentation/azubi/account_deletion_screen.dart';
 import '../presentation/auth/magic_link_screen.dart';
 import '../presentation/auth/magic_link_callback_screen.dart';
 import '../presentation/auth/oauth_callback_screen.dart';
@@ -103,8 +104,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       const callbackPaths = ['/auth/magic', '/auth/oauth'];
       if (callbackPaths.contains(path)) return null;
 
-      // Reihenfolge der Tore: Laden -> zweiter Faktor -> E-Mail-Bestaetigung
-      // -> Rolle. Wer sie umstellt, baut sich eine Weiterleitungsschleife: die
+      // Reihenfolge der Tore: Laden -> zweiter Faktor -> beantragte Loeschung
+      // -> E-Mail-Bestaetigung -> Rolle (E-3.11). Wer sie umstellt, baut sich eine Weiterleitungsschleife: die
       // spaeteren Tore setzen eine vollstaendige Sitzung voraus, die die
       // frueheren erst herstellen.
       if (auth.isLoading) return null;
@@ -138,6 +139,23 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
+      // Beantragte Loeschung (T-2.8, E-50): Bis sie greift, gibt es fuer das
+      // Konto nur die Seite zum Zuruecknehmen. Oeffentliche Seiten bleiben
+      // erreichbar. Steht vor der E-Mail-Bestaetigung, weil auch ein nie
+      // bestaetigtes Konto geloescht werden darf.
+      if (path == '/konto-loeschung') {
+        if (!auth.isAuthenticated) return '/login';
+        if (auth.deletionPending) return null;
+        return auth.isBetrieb ? '/betrieb-dashboard' : '/dashboard';
+      }
+      if (auth.deletionPending &&
+          (isAuthPath ||
+              isAzubiPath ||
+              isBetriebPath ||
+              path == '/verify-email')) {
+        return '/konto-loeschung';
+      }
+
       // Die Bestaetigungsseite ist erst erledigt, wenn die Adresse bestaetigt
       // ist. Als gewoehnlicher Auth-Pfad behandelt, schickte sie jeden
       // angemeldeten Nutzer aufs Dashboard – das ihn mangels Bestaetigung
@@ -167,6 +185,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
+      GoRoute(
+          path: '/konto-loeschung',
+          builder: (_, __) => const AccountDeletionScreen()),
       GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
       GoRoute(
           path: '/company/:slug',

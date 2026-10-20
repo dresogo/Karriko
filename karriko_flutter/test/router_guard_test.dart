@@ -19,7 +19,12 @@ class _FakeAuthRepository implements AuthRepository {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-UserModel _user({required String role, required bool verified}) => UserModel(
+UserModel _user({
+  required String role,
+  required bool verified,
+  DateTime? loeschung,
+}) =>
+    UserModel(
       id: 'u1',
       email: 'azubi@example.com',
       role: role,
@@ -27,6 +32,7 @@ UserModel _user({required String role, required bool verified}) => UserModel(
       lastName: 'Nutzer',
       emailVerified: verified,
       createdAt: DateTime(2026, 1, 1),
+      deletionPendingUntil: loeschung,
     );
 
 late ProviderContainer _container;
@@ -131,5 +137,55 @@ void main() {
       await _goTo(tester, '/betrieb-stellen'),
       '/login?next=%2Fbetrieb-stellen',
     );
+  });
+
+  group('Beantragte Kontolöschung (T-2.8, E-3.11)', () {
+    final termin = DateTime.utc(2026, 11, 3);
+
+    testWidgets('führt aus jedem Kontobereich auf die Rücknahme',
+        (tester) async {
+      await _pump(
+          tester, _user(role: 'azubi', verified: true, loeschung: termin));
+
+      for (final route in [
+        '/dashboard',
+        '/settings',
+        '/reviews/new',
+        '/my-reviews',
+        '/login',
+      ]) {
+        expect(await _goTo(tester, route), '/konto-loeschung',
+            reason: 'von $route');
+        expect(tester.takeException(), isNull);
+      }
+    });
+
+    testWidgets('gilt auch für ein unbestätigtes Konto', (tester) async {
+      await _pump(
+          tester, _user(role: 'azubi', verified: false, loeschung: termin));
+
+      expect(await _goTo(tester, '/verify-email'), '/konto-loeschung');
+      expect(await _goTo(tester, '/dashboard'), '/konto-loeschung');
+    });
+
+    testWidgets('öffentliche Seiten bleiben erreichbar', (tester) async {
+      await _pump(
+          tester, _user(role: 'azubi', verified: true, loeschung: termin));
+
+      expect(await _goTo(tester, '/impressum'), '/impressum');
+      expect(await _goTo(tester, '/datenschutz'), '/datenschutz');
+    });
+
+    testWidgets('ohne Antrag gibt es die Seite nicht', (tester) async {
+      await _pump(tester, _user(role: 'azubi', verified: true));
+
+      expect(await _goTo(tester, '/konto-loeschung'), '/dashboard');
+    });
+
+    testWidgets('abgemeldet führt sie zum Login', (tester) async {
+      await _pump(tester, null);
+
+      expect(await _goTo(tester, '/konto-loeschung'), '/login');
+    });
   });
 }

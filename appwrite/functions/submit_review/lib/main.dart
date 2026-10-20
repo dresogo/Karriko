@@ -73,6 +73,18 @@ Future<dynamic> main(final context) async {
 
   final client = ctx.adminClient();
   final tables = Tables(client: client, config: ctx.config);
+
+  // Während der 14 Tage bis zur Kontolöschung (E-50) entsteht nichts Neues.
+  // Die App zeigt in dieser Zeit nur die Rücknahme; das hier gilt auch ohne
+  // App.
+  if (await tables.getDeletionRequest(userId) != null) {
+    return _antwort(
+      context,
+      FunctionResponse.forbidden(
+        'Dein Konto wird gelöscht. Nimm die Löschung zurück, um zu bewerten.',
+      ),
+    );
+  }
   final loader = DefinitionLoader(client: client, config: ctx.config);
 
   final Questionnaire questionnaire;

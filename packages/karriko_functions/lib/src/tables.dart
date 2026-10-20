@@ -525,6 +525,108 @@ class Tables {
     return ergebnis.total;
   }
 
+  /// Die Firma, die einem Konto gehört, oder `null`.
+  Future<aw.Row?> companyByOwner(String ownerId) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [Query.equal('owner_id', ownerId), Query.limit(1)],
+    );
+    return ergebnis.rows.isEmpty ? null : ergebnis.rows.first;
+  }
+
+  Future<bool> companySlugTaken(String slug) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.companiesTable,
+      queries: [
+        Query.equal('slug', slug),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+    );
+    return ergebnis.rows.isNotEmpty;
+  }
+
+  /// Legt eine Firma an. Lesbar für alle, **kein** Änderungsrecht für den
+  /// Eigentümer: Geändert wird nur über `company_profile` (T-4.2). Auch kein
+  /// Löschrecht, ein Betriebsprofil wird beim Löschen des Kontos nur inaktiv
+  /// (Referenz §3.4).
+  Future<aw.Row> createCompany(Map<String, Object?> data) => db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: ID.unique(),
+        data: data,
+        permissions: [Permission.read(Role.any())],
+      );
+
+  /// Ändert eine Firma und setzt dabei die Zeilenrechte neu. Ältere Zeilen
+  /// tragen noch `update("user:…")` aus der Zeit, als der Client selbst
+  /// schrieb; das fällt mit der ersten Änderung weg.
+  Future<aw.Row> updateCompany(String companyId, Map<String, Object?> data) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.companiesTable,
+        rowId: companyId,
+        data: data,
+        permissions: [Permission.read(Role.any())],
+      );
+
+  // ── jobs ──────────────────────────────────────────────────────────────────
+
+  /// Eine Stelle, oder `null`, wenn es sie nicht gibt.
+  Future<aw.Row?> getJob(String id) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  /// Zeilenrechte einer Stelle: Eine veröffentlichte lesen alle, einen
+  /// Entwurf nur der Eigentümer. Kein Ändern- und Löschrecht, das geht nur
+  /// über `job_posting` (T-4.31).
+  List<String> _jobRechte({required bool isActive, required String ownerId}) =>
+      [Permission.read(isActive ? Role.any() : Role.user(ownerId))];
+
+  Future<aw.Row> createJob(
+    Map<String, Object?> data, {
+    required String ownerId,
+  }) =>
+      db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: ID.unique(),
+        data: data,
+        permissions:
+            _jobRechte(isActive: data['is_active'] == true, ownerId: ownerId),
+      );
+
+  Future<aw.Row> updateJob(
+    String id,
+    Map<String, Object?> data, {
+    required bool isActive,
+    required String ownerId,
+  }) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+        data: data,
+        permissions: _jobRechte(isActive: isActive, ownerId: ownerId),
+      );
+
+  Future<void> deleteJob(String id) => db.deleteRow(
+        databaseId: config.databaseId,
+        tableId: config.jobsTable,
+        rowId: id,
+      );
+
   Future<aw.Row> setCompanyVerified(String companyId, bool verified) =>
       db.updateRow(
         databaseId: config.databaseId,
@@ -532,6 +634,96 @@ class Tables {
         rowId: companyId,
         data: {'is_verified': verified},
       );
+
+  // ── Daten eines Kontos (T-2.8, T-2.9, T-2.10) ──────────────────────────────
+
+  /// Alle Zeilen einer Tabelle mit `spalte == wert`, seitenweise gelesen.
+  Future<List<aw.Row>> _alleMit(String tableId, String spalte, String wert) =>
+      _pages(tableId: tableId, queries: [Query.equal(spalte, wert)]).toList();
+
+  Future<List<aw.Row>> allReviewsByUser(String userId) =>
+      _alleMit(config.reviewsTable, 'user_id', userId);
+
+  Future<List<aw.Row>> draftsByUser(String userId) =>
+      _alleMit(config.draftsTable, 'user_id', userId);
+
+  Future<List<aw.Row>> bookmarksByUser(String userId) =>
+      _alleMit(config.bookmarksTable, 'user_id', userId);
+
+  Future<List<aw.Row>> reportsByReporter(String userId) =>
+      _alleMit(config.reviewReportsTable, 'reporter_id', userId);
+
+  Future<List<aw.Row>> reportsForReview(String reviewId) =>
+      _alleMit(config.reviewReportsTable, 'review_id', reviewId);
+
+  Future<void> deleteRow(String tableId, String id) => db.deleteRow(
+        databaseId: config.databaseId,
+        tableId: tableId,
+        rowId: id,
+      );
+
+  Future<aw.Row> updateRowData(
+          String tableId, String id, Map<String, Object?> data) =>
+      db.updateRow(
+        databaseId: config.databaseId,
+        tableId: tableId,
+        rowId: id,
+        data: data,
+      );
+
+  /// Die Profilzeile, oder `null`.
+  Future<aw.Row?> getProfile(String userId) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.profilesTable,
+        rowId: userId,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  /// Der Löschantrag eines Kontos, oder `null`. Die Zeilenkennung ist die
+  /// Nutzerkennung, damit es je Konto höchstens einen gibt.
+  Future<aw.Row?> getDeletionRequest(String userId) async {
+    try {
+      return await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.accountDeletionsTable,
+        rowId: userId,
+      );
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
+  Future<aw.Row> createDeletionRequest({
+    required String userId,
+    required DateTime requestedAt,
+    required DateTime deleteAfter,
+  }) =>
+      db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.accountDeletionsTable,
+        rowId: userId,
+        data: {
+          'user_id': userId,
+          'requested_at': requestedAt.toUtc().toIso8601String(),
+          'delete_after': deleteAfter.toUtc().toIso8601String(),
+        },
+        permissions: const [],
+      );
+
+  /// Löschanträge, deren Frist abgelaufen ist.
+  Future<List<aw.Row>> dueDeletionRequests(DateTime now) => _pages(
+        tableId: config.accountDeletionsTable,
+        queries: [
+          Query.lessThanEqual('delete_after', now.toUtc().toIso8601String()),
+        ],
+      ).toList();
 
   // ── Seitenweise lesen ─────────────────────────────────────────────────────
 
@@ -572,6 +764,34 @@ class Tables {
       Storage(client).deleteFile(
         bucketId: config.verificationBucket,
         fileId: fileId,
+      );
+
+  /// Gibt [moderatorId] Leserecht an genau diesem Nachweis (T-2.20).
+  ///
+  /// Nachweise tragen sonst keine Rechte und sind für niemanden lesbar. Das
+  /// Recht gilt nur dieser Person und nur bis zur Entscheidung, dann nimmt
+  /// [revokeVerificationRead] es zurück. Bestehende Rechte anderer
+  /// Moderatoren bleiben, falls zwei dieselbe Bewertung prüfen.
+  Future<void> grantVerificationRead(String fileId, String moderatorId) async {
+    final storage = Storage(client);
+    final datei = await storage.getFile(
+        bucketId: config.verificationBucket, fileId: fileId);
+    final recht = Permission.read(Role.user(moderatorId));
+    if (datei.$permissions.contains(recht)) return;
+    await storage.updateFile(
+      bucketId: config.verificationBucket,
+      fileId: fileId,
+      permissions: [...datei.$permissions, recht],
+    );
+  }
+
+  /// Entfernt alle Rechte an einem Nachweis; er ist danach wieder für
+  /// niemanden lesbar.
+  Future<void> revokeVerificationRead(String fileId) =>
+      Storage(client).updateFile(
+        bucketId: config.verificationBucket,
+        fileId: fileId,
+        permissions: const [],
       );
 }
 

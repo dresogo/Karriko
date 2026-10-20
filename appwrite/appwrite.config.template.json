@@ -58,7 +58,7 @@
       "name": "Review Drafts",
       "enabled": true,
       "rowSecurity": true,
-      "$permissions": ["create(\"users\")"],
+      "$permissions": ["create(\"users/verified\")"],
       "columns": [
         { "key": "user_id", "type": "varchar", "size": 36, "required": true },
         { "key": "company_id", "type": "varchar", "size": 36, "required": true },
@@ -302,6 +302,27 @@
         }
       ]
     },
+    {
+      "$id": "account_deletions",
+      "databaseId": "${DATABASE_ID}",
+      "name": "Account Deletions",
+      "enabled": true,
+      "rowSecurity": false,
+      "$permissions": [],
+      "columns": [
+        { "key": "user_id", "type": "varchar", "size": 36, "required": true },
+        { "key": "requested_at", "type": "datetime", "required": true },
+        { "key": "delete_after", "type": "datetime", "required": true }
+      ],
+      "indexes": [
+        {
+          "key": "delete_after",
+          "type": "key",
+          "columns": ["delete_after"],
+          "orders": ["ASC"]
+        }
+      ]
+    },
 
     {
       "$id": "review_reports",
@@ -309,7 +330,7 @@
       "name": "Review Reports",
       "enabled": true,
       "rowSecurity": true,
-      "$permissions": ["create(\"users\")", "read(\"team:${TEAM_MODERATORS}\")"],
+      "$permissions": ["create(\"users/verified\")", "read(\"team:${TEAM_MODERATORS}\")"],
       "columns": [
         { "key": "review_id", "type": "varchar", "size": 36, "required": true },
         { "key": "reporter_id", "type": "varchar", "size": 36, "required": true },
@@ -331,6 +352,12 @@
           "type": "key",
           "columns": ["reporter_id"],
           "orders": ["ASC"]
+        },
+        {
+          "key": "review_reporter_unique",
+          "type": "unique",
+          "columns": ["review_id", "reporter_id"],
+          "orders": ["ASC", "ASC"]
         }
       ]
     }
@@ -379,6 +406,7 @@
       "commands": "dart pub get",
       "path": "functions/submit_review",
       "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
       "execute": ["users"],
       "events": [],
       "schedule": "",
@@ -394,6 +422,7 @@
       "commands": "dart pub get",
       "path": "functions/my_reviews",
       "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
       "execute": ["users"],
       "events": [],
       "schedule": "",
@@ -410,6 +439,74 @@
       "scopes": ["rows.read"]
     },
     {
+      "$id": "company_profile",
+      "name": "company_profile",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/company_profile",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der einzige Schreibweg nach companies (T-4.2): legt das Profil des",
+        "Aufrufers an oder aendert es, nur die Felder aus",
+        "companyEditableFields. is_verified, is_premium, average_rating,",
+        "review_count und owner_id setzt der Server.",
+        "Kein users.read: Die bestaetigte Adresse wird mit dem JWT des",
+        "Aufrufers gelesen."
+      ],
+      "scopes": ["rows.read", "rows.write"]
+    },
+    {
+      "$id": "job_posting",
+      "name": "job_posting",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/job_posting",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der einzige Schreibweg nach jobs (T-4.31): Stellen des eigenen",
+        "Betriebs anlegen, aendern, veroeffentlichen, zurueckziehen, loeschen.",
+        "Der Betrieb kommt aus owner_id des Aufrufers, nie aus der Anfrage.",
+        "Veroeffentlichen erst mit is_verified."
+      ],
+      "scopes": ["rows.read", "rows.write"]
+    },
+    {
+      "$id": "my_account",
+      "name": "my_account",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/my_account",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Rechte am eigenen Konto: Loeschung beantragen und zuruecknehmen",
+        "(T-2.8, E-50), eigene Bewertung loeschen (T-2.9), Export (T-2.10).",
+        "Nutzer immer aus dem JWT. users.read/users.write fuer Kontodaten und",
+        "die Pref mit dem Loeschtermin, files.write fuer Nachweise."
+      ],
+      "scopes": ["rows.read", "rows.write", "users.read", "users.write", "files.write"]
+    },
+    {
       "$id": "moderation_desk",
       "name": "moderation_desk",
       "enabled": true,
@@ -419,6 +516,7 @@
       "commands": "dart pub get",
       "path": "functions/moderation_desk",
       "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
       "execute": ["team:${TEAM_MODERATORS}", "team:${TEAM_ADMINS}"],
       "events": [],
       "schedule": "",
@@ -430,7 +528,7 @@
         "users.read: nur fuer die Anzeigenamen im Moderationsprotokoll.",
         "teams.read: prueft die Mitgliedschaft des Aufrufers selbst nach."
       ],
-      "scopes": ["rows.read", "rows.write", "teams.read", "users.read"]
+      "scopes": ["rows.read", "rows.write", "teams.read", "users.read", "files.read", "files.write"]
     },
     {
       "$id": "moderate_review",
@@ -442,10 +540,11 @@
       "commands": "dart pub get",
       "path": "functions/moderate_review",
       "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
       "execute": ["team:${TEAM_MODERATORS}", "team:${TEAM_ADMINS}"],
       "events": [],
       "schedule": "",
-      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read", "files.write"]
     },
     {
       "$id": "aggregate_company",
@@ -457,6 +556,7 @@
       "commands": "dart pub get",
       "path": "functions/aggregate_company",
       "timeout": 120,
+      "specification": "s-0.5vcpu-512mb",
       "execute": [],
       "events": [
         "tablesdb.${DATABASE_ID}.tables.public_reviews.rows.*.create",
@@ -476,9 +576,10 @@
       "commands": "dart pub get",
       "path": "functions/publish_scheduled",
       "timeout": 300,
+      "specification": "s-0.5vcpu-512mb",
       "execute": [],
       "events": [],
-      "schedule": "0 * * * *",
+      "interval": 60,
       "scopes": ["rows.read", "rows.write", "files.read"]
     },
     {
@@ -491,10 +592,11 @@
       "commands": "dart pub get",
       "path": "functions/recompute_all",
       "timeout": 600,
+      "specification": "s-0.5vcpu-512mb",
       "execute": ["team:${TEAM_ADMINS}"],
       "events": [],
       "schedule": "",
-      "scopes": ["rows.read", "rows.write", "files.read", "teams.read"]
+      "scopes": ["rows.read", "rows.write", "files.read", "teams.read", "execution.write"]
     },
     {
       "$id": "cleanup",
@@ -506,10 +608,11 @@
       "commands": "dart pub get",
       "path": "functions/cleanup",
       "timeout": 600,
+      "specification": "s-0.5vcpu-512mb",
       "execute": [],
       "events": [],
-      "schedule": "30 3 * * *",
-      "scopes": ["rows.read", "rows.write", "files.write"]
+      "interval": 1440,
+      "scopes": ["rows.read", "rows.write", "files.write", "users.read", "users.write"]
     }
   ]
 }

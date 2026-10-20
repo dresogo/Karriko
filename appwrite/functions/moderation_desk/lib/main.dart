@@ -28,6 +28,12 @@ import 'package:karriko_functions/karriko_functions.dart';
 /// | `log`            | Moderation  | —                                        |
 /// | `companies`      | Moderation  | `search`                                 |
 /// | `verify_company` | nur Admins  | `company_id`, `verified`                 |
+/// | `open_proof`     | Moderation  | `review_id`                              |
+///
+/// `open_proof` (T-2.20) gibt dem Aufrufer Leserecht an genau dem Nachweis
+/// dieser Bewertung und vermerkt das im Protokoll. `moderate_review` nimmt das
+/// Recht bei der Entscheidung zurück. Die Datei selbst lädt der Client mit
+/// seiner Sitzung; eine Function-Antwort wäre für bis zu 10 MB zu klein.
 Future<dynamic> main(final context) async {
   final RunContext ctx;
   try {
@@ -68,6 +74,7 @@ Future<dynamic> main(final context) async {
       'resolve_report' => await _meldungErledigen(tables, ctx.body, userId),
       'log' => await _protokoll(tables, client),
       'companies' => await _betriebe(tables, ctx.body['search']),
+      'open_proof' => await _nachweisOeffnen(tables, ctx.body, userId),
       'verify_company' => await wache.isAdmin(userId)
           ? await _betriebVerifizieren(tables, ctx.body)
           : FunctionResponse.forbidden(
@@ -84,6 +91,32 @@ Future<dynamic> main(final context) async {
       ),
     );
   }
+}
+
+// ── Nachweis ────────────────────────────────────────────────────────────────
+
+Future<FunctionResponse> _nachweisOeffnen(
+    Tables tables, Map<String, Object?> body, String userId) async {
+  final reviewId = body['review_id'];
+  if (reviewId is! String || reviewId.isEmpty) {
+    return FunctionResponse.invalid('review_id fehlt.');
+  }
+  final zeile = await tables.getReview(reviewId);
+  final datei = zeile.data['verification_file_id'];
+  if (datei is! String || datei.isEmpty) {
+    return FunctionResponse.notFound(
+        'Zu dieser Bewertung liegt kein Nachweis vor.');
+  }
+  await tables.grantVerificationRead(datei, userId);
+  await tables.logModeration(
+    reviewId: reviewId,
+    moderatorId: userId,
+    action: proofViewedAction,
+  );
+  return FunctionResponse.ok({
+    'bucket_id': tables.config.verificationBucket,
+    'file_id': datei,
+  });
 }
 
 // ── Übersicht ───────────────────────────────────────────────────────────────

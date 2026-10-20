@@ -199,21 +199,17 @@ const SCHEMA = [
     id: 'companies',
     name: 'Companies',
     // Unternehmensprofile sind der oeffentliche Teil der Plattform; ohne
-    // Leserecht fuer alle faende die Suche sie fuer Besucher nicht. Anlegen
-    // duerfen angemeldete Nutzer – sonst scheitert die Betriebsregistrierung.
+    // Leserecht fuer alle faende die Suche sie fuer Besucher nicht.
     //
-    // **Kein `update("users")` auf Tabellenebene.** Das stand dort und hiess:
-    // Jeder Angemeldete darf jede Firma aendern, auch `is_verified`,
-    // `is_premium`, `average_rating` und `owner_id`. Der Client setzt beim
-    // Anlegen schon ein Aenderungsrecht fuer den Eigentuemer **pro Zeile** —
-    // das wirkt aber erst mit `rowSecurity`. Also beides: Recht weg, Schalter
-    // an. Ein Betrieb bearbeitet danach weiter sein eigenes Profil.
-    //
-    // Was damit **nicht** behoben ist: Der Eigentuemer kann auf seiner eigenen
-    // Zeile `is_verified` und `average_rating` setzen. Appwrite kennt keine
-    // Rechte je Spalte. Dagegen hilft nur, Profilaenderungen ueber eine
-    // Function zu fuehren — siehe notes/UMSETZUNG_BERICHT.md.
-    permissions: ['read("any")', 'create("users")'],
+    // **Kein Anlege- und kein Aenderungsrecht fuer Clients (T-4.2).**
+    // Appwrite kennt keine Rechte je Spalte: Wer direkt schreibt, kann auch
+    // `is_verified`, `is_premium`, `average_rating`, `review_count` und
+    // `owner_id` setzen. Der einzige Schreibweg ist die Function
+    // `company_profile`; sie prueft die bestaetigte Adresse (vorher
+    // `create("users/verified")`, T-4.25), laesst eine Firma je Konto zu und
+    // nimmt nur freigegebene Felder. Ihre Zeilen tragen nur `read("any")`.
+    // Das Abzeichen setzt `moderation_desk`, die Bewertung `aggregate_company`.
+    permissions: ['read("any")'],
     exactPermissions: true,
     rowSecurity: true,
     createIfMissing: false,
@@ -241,31 +237,64 @@ const SCHEMA = [
   {
     id: 'profiles',
     name: 'Profiles',
-    permissions: null, // Profile gehoeren einzelnen Nutzern – Rechte nicht anfassen.
+    // Profile gehoeren einzelnen Nutzern. Die App setzt beim Anlegen Lesen,
+    // Aendern und Loeschen fuer den Eigentuemer **pro Zeile**; das wirkt nur
+    // mit `rowSecurity`. Bis Oktober 2026 stand die Tabelle ohne jedes Recht
+    // und ohne den Schalter da, die App konnte also gar nichts anlegen
+    // (T-4.1). Anlegen nur mit bestaetigter Adresse (T-4.25).
+    //
+    // Offen: Der Eigentuemer kann auf seiner Zeile auch `role` aendern.
+    // Appwrite kennt keine Rechte je Spalte; siehe W-3.2 und T-4.30.
+    permissions: ['create("users/verified")'],
+    exactPermissions: true,
+    rowSecurity: true,
     createIfMissing: false,
-    columns: [str('company_id')],
+    columns: [
+      str('company_id'),
+      // Stand mit 10 Zeichen da, zu kurz fuer viele Nachnamen (T-2.7).
+      // `ensureColumns` vergroessert eine bestehende Spalte, verkleinert nie.
+      str('last_name', 100),
+    ],
     indexes: [],
+  },
+  {
+    id: 'bookmarks',
+    name: 'Bookmarks',
+    // Wie `profiles`: Rechte pro Zeile fuer den Eigentuemer, gesetzt von
+    // CompanyRepository.bookmarkCompany; ohne `rowSecurity` waeren sie wirkungslos.
+    permissions: ['create("users/verified")'],
+    exactPermissions: true,
+    rowSecurity: true,
+    createIfMissing: false,
+    columns: [],
+    indexes: [
+      // Doppelt merken soll nicht moeglich sein; der Client prueft vorher,
+      // verbindlich ist nur der Index (T-2.17).
+      { key: 'user_company_unique', type: 'unique', columns: ['user_id', 'company_id'], optional: true },
+    ],
   },
   {
     id: 'jobs',
     name: 'Jobs',
-    // **Kein `read("any")` auf Tabellenebene.** Es galt fuer jede Zeile, auch
-    // fuer Entwuerfe: Die oeffentliche Liste filterte nur nach `is_active`,
-    // ueber die API oder /stellen/<id> war ein Entwurf fuer jeden lesbar.
-    // Seit Oktober 2026 setzt die App das Leserecht pro Zeile
-    // (JobRepository.permissionsFor): veroeffentlicht `read("any")`, Entwurf
-    // nur der Eigentuemer. Erst die App ausliefern, dann mit
-    // `--fix-permissions` umstellen. Alte Entwuerfe tragen noch `read("any")`
-    // auf der Zeile, bis sie einmal veroeffentlicht und zurueckgezogen werden.
-    permissions: ['create("users")'],
+    // **Keine Rechte auf Tabellenebene.** Geschrieben wird nur ueber die
+    // Function `job_posting` (T-4.31); vorher setzte der Client `company_id`
+    // selbst und konnte im Namen fremder Betriebe inserieren. Die Function
+    // setzt das Leserecht pro Zeile: veroeffentlicht `read("any")`, Entwurf
+    // nur der Eigentuemer. Ein `read("any")` hier galte auch fuer Entwuerfe
+    // (T-4.26). Die CLI kann keine leere Rechteliste setzen; dann mit
+    // `--fix-permissions` oder in der Console.
+    permissions: [],
     exactPermissions: true,
     createIfMissing: true,
     columns: [
-      str('company_id'),
+      // Pflicht seit T-2.18, als zweite Absicherung neben `job_posting`.
+      // Das Skript legt fehlende Spalten an, macht bestehende aber nicht zu
+      // Pflichtfeldern; das geschieht in der Console.
+      str('company_id', 255, { required: true }),
       str('company'),
       str('company_slug'),
       str('company_logo_url', 2048),
-      str('title'),
+      str('title', 255, { required: true }),
       str('location'),
       str('profession'),
       str('industry'),
@@ -279,7 +308,7 @@ const SCHEMA = [
       str('requirements', 1000, { array: true }),
       str('benefits', 1000, { array: true }),
       { kind: 'datetime', key: 'start_date', required: false },
-      { kind: 'boolean', key: 'is_active', required: false, default: true },
+      { kind: 'boolean', key: 'is_active', required: true },
     ],
     indexes: [
       { key: 'company_id', type: 'key', columns: ['company_id'] },
@@ -324,7 +353,7 @@ const SCHEMA = [
     // Anlegen darf jeder Angemeldete, lesen nur der Eigentuemer — und das steht
     // pro Zeile. Ohne rowSecurity waeren die Rechte, die der Client setzt,
     // wirkungslos.
-    permissions: ['create("users")'],
+    permissions: ['create("users/verified")'],
     exactPermissions: true,
     createIfMissing: true,
     rowSecurity: true,
@@ -489,13 +518,32 @@ const SCHEMA = [
       { key: 'moderator_id', type: 'key', columns: ['moderator_id'] },
     ],
   },
+  {
+    id: 'account_deletions',
+    name: 'Account Deletions',
+    // Beantragte Kontolöschungen (T-2.8, E-50). Für keinen Client lesbar oder
+    // schreibbar: Beantragt und zurückgenommen wird über `my_account`,
+    // ausgeführt von `cleanup`. Die Zeilenkennung ist die Nutzerkennung, damit
+    // es je Konto höchstens einen Antrag gibt; nach der Löschung verschwindet
+    // die Zeile mit.
+    permissions: [],
+    exactPermissions: true,
+    createIfMissing: true,
+    rowSecurity: false,
+    columns: [
+      str('user_id', 36, { required: true }),
+      when('requested_at', { required: true }),
+      when('delete_after', { required: true }),
+    ],
+    indexes: [{ key: 'delete_after', type: 'key', columns: ['delete_after'] }],
+  },
 
   {
     id: 'review_reports',
     name: 'Review Reports',
     // Eine Meldung ist kein Urteil: Sie legt eine Zeile an, mehr passiert
     // nicht. Der Melder liest seine eigene, die Moderation alle.
-    permissions: ['create("users")', `read("team:${TEAM_MODERATORS}")`],
+    permissions: ['create("users/verified")', `read("team:${TEAM_MODERATORS}")`],
     createIfMissing: true,
     rowSecurity: true,
     columns: [
@@ -510,6 +558,8 @@ const SCHEMA = [
     indexes: [
       { key: 'review_id', type: 'key', columns: ['review_id'] },
       { key: 'reporter_id', type: 'key', columns: ['reporter_id'] },
+      // Wer dieselbe Bewertung zweimal meldet, zaehlt einmal (T-2.17).
+      { key: 'review_reporter_unique', type: 'unique', columns: ['review_id', 'reporter_id'], optional: true },
     ],
   },
 ];
@@ -717,10 +767,14 @@ async function ensureTable(spec) {
 
 async function ensureColumns(spec) {
   const existing = await call('GET', `${p().columns(spec.id)}?queries[]=${encodeURIComponent(JSON.stringify({ method: 'limit', values: [100] }))}`);
-  const have = new Set((existing[p().listKey] ?? existing.columns ?? existing.attributes ?? []).map((c) => c.key));
+  const vorhanden = existing[p().listKey] ?? existing.columns ?? existing.attributes ?? [];
+  const have = new Set(vorhanden.map((c) => c.key));
 
   for (const col of spec.columns) {
-    if (have.has(col.key)) continue;
+    if (have.has(col.key)) {
+      await widenColumn(spec, col, vorhanden.find((c) => c.key === col.key));
+      continue;
+    }
     if (DRY_RUN) {
       log('·', `${spec.id}.${col.key}: wuerde angelegt (${col.kind})`);
       continue;
@@ -750,6 +804,27 @@ async function ensureColumns(spec) {
     await call('POST', p().column(spec.id, kind), body);
     log('+', `${spec.id}.${col.key} (${col.kind})`);
   }
+}
+
+// Vergroessert eine bestehende `varchar`-Spalte auf die gewuenschte Groesse.
+// Nur in diese Richtung: Verkleinern schneidet vorhandene Werte ab und ist
+// deshalb eine Entscheidung, keine Reparatur — es wird nur gemeldet.
+async function widenColumn(spec, col, ist) {
+  if (col.kind !== 'varchar' || ist?.size === undefined || ist.size === col.size) return;
+  if (ist.size > col.size) {
+    log('!', `${spec.id}.${col.key}: Groesse ${ist.size} statt ${col.size} – wird nicht verkleinert.`);
+    return;
+  }
+  if (DRY_RUN) {
+    log('·', `${spec.id}.${col.key}: wuerde von ${ist.size} auf ${col.size} Zeichen vergroessert`);
+    return;
+  }
+  await call('PATCH', `${p().column(spec.id, p().kinds.varchar)}/${col.key}`, {
+    required: ist.required ?? false,
+    default: ist.default ?? null,
+    size: col.size,
+  });
+  log('+', `${spec.id}.${col.key}: von ${ist.size} auf ${col.size} Zeichen vergroessert`);
 }
 
 // Appwrite legt Spalten im Hintergrund an. Ein Index auf eine Spalte, die noch
@@ -816,11 +891,15 @@ async function checkPermissions(spec, table) {
     ? [...spec.permissions]
     : [...new Set([...current, ...spec.permissions])];
 
-  if (missing.length === 0 && extra.length === 0) return;
+  const security = table.rowSecurity ?? table.documentSecurity;
+  const schalterFalsch = spec.rowSecurity !== undefined && security !== spec.rowSecurity;
+
+  if (missing.length === 0 && extra.length === 0 && !schalterFalsch) return;
 
   const befund = [
     missing.length > 0 ? `fehlen: ${missing.join(', ')}` : null,
     extra.length > 0 ? `zu viel: ${extra.join(', ')}` : null,
+    schalterFalsch ? `rowSecurity ${security} statt ${spec.rowSecurity}` : null,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -840,7 +919,6 @@ async function checkPermissions(spec, table) {
     return;
   }
 
-  const security = table.rowSecurity ?? table.documentSecurity;
   await call('PUT', p().table(spec.id), {
     name: table.name,
     permissions: gewuenscht,
@@ -950,7 +1028,7 @@ async function main() {
     '\nFertig.\n\n' +
       'Was dieses Skript nicht tut, und was deshalb noch fehlt:\n' +
       '  · Teams `moderators` und `admins`\n' +
-      '  · die sieben Functions samt Variablen, Cron und Ereignissen\n' +
+      '  · die sieben Functions samt Variablen, Intervallen und Ereignissen\n' +
       '  · die Fragendefinition im Bucket und die Zeile in questionnaire_releases\n\n' +
       'Der Weg dahin steht Schritt fuer Schritt in notes/APPWRITE_SETUP.md.\n' +
       'Wer die CLI benutzt, nimmt statt dieses Skripts appwrite.config.json —\n' +

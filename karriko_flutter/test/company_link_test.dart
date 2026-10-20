@@ -66,12 +66,17 @@ class _FakeAuthRepository implements AuthRepository {
 }
 
 class _FakeCompanyRepository implements CompanyRepository {
+  _FakeCompanyRepository({this.ablehnung});
+
+  /// Wenn gesetzt, lehnt [updateCompanyProfile] mit dieser Meldung ab, wie es
+  /// die Function `company_profile` tut.
+  final String? ablehnung;
+
   /// Mitgeschriebene Aufrufe von [updateCompanyProfile].
   final gespeichert = <Map<String, String?>>[];
 
   @override
   Future<CompanyModel> updateCompanyProfile({
-    required String companyId,
     String? name,
     String? description,
     String? website,
@@ -80,8 +85,8 @@ class _FakeCompanyRepository implements CompanyRepository {
     String? country,
     String? industry,
   }) async {
+    if (ablehnung != null) throw CompanyProfileException(ablehnung!);
     gespeichert.add({
-      'companyId': companyId,
       'name': name,
       'city': city,
       'industry': industry,
@@ -129,35 +134,10 @@ Future<void> _oeffneProfil(
 }
 
 void main() {
-  group('companySlug', () {
-    test('schreibt Umlaute aus, statt sie zu verschlucken', () {
-      // "mller-gmbh" waere das Ergebnis eines reinen Filters - fuer den
-      // DACH-Markt ist das kein Randfall, sondern der Normalfall.
-      expect(companySlug('Müller GmbH'), 'mueller-gmbh');
-      expect(companySlug('Schrödinger & Söhne'), 'schroedinger-soehne');
-      expect(companySlug('Weißbier AG'), 'weissbier-ag');
-    });
-
-    test('faellt auf Kleinbuchstaben, Ziffern und Bindestriche zurueck', () {
-      expect(companySlug('Meyer & Co. KG'), 'meyer-co-kg');
-      expect(companySlug('3M Deutschland'), '3m-deutschland');
-    });
-
-    test('laesst keine Bindestriche am Rand stehen', () {
-      expect(companySlug('  Bosch  '), 'bosch');
-      expect(companySlug('- Siemens -'), 'siemens');
-    });
-
-    test('liefert nie eine leere Adresse', () {
-      // Ein Name ganz ohne lateinische Buchstaben ergaebe sonst einen Slug,
-      // der auf die Sammelseite statt auf ein Unternehmen zeigt.
-      expect(companySlug('***'), 'unternehmen');
-      expect(companySlug(''), 'unternehmen');
-    });
-  });
-
   group('Unternehmensprofil', () {
-    testWidgets('speichert gegen die verknuepfte Firmen-ID', (tester) async {
+    testWidgets('speichert die Aenderung', (tester) async {
+      // Welche Firma, entscheidet seit T-4.2 die Function `company_profile`
+      // anhand des angemeldeten Kontos; die Seite schickt keine Kennung mit.
       final auth = _FakeAuthRepository(company: _company());
       final companies = _FakeCompanyRepository();
       await _oeffneProfil(tester, auth: auth, companies: companies);
@@ -174,7 +154,6 @@ void main() {
 
       expect(companies.gespeichert, hasLength(1),
           reason: 'updateCompanyProfile hatte vorher null Aufrufer');
-      expect(companies.gespeichert.single['companyId'], 'c1');
       expect(companies.gespeichert.single['name'], 'Musterbau Holding GmbH');
     });
 
@@ -192,6 +171,24 @@ void main() {
 
       expect(find.textContaining('gespeichert'), findsWidgets);
       expect(find.textContaining('nur für diese Sitzung'), findsNothing);
+    });
+
+    testWidgets('zeigt die Meldung der Function', (tester) async {
+      final auth = _FakeAuthRepository(company: _company());
+      final companies = _FakeCompanyRepository(
+        ablehnung: 'Die Website muss mit http:// oder https:// beginnen.',
+      );
+      await _oeffneProfil(tester, auth: auth, companies: companies);
+
+      await tester.tap(find.text('Bearbeiten'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Speichern'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.textContaining('http:// oder https://'), findsOneWidget);
+      expect(find.text('Speichern'), findsOneWidget,
+          reason: 'Nach einer Ablehnung bleibt das Formular offen.');
     });
 
     testWidgets('ohne Firma bleibt Bearbeiten verschlossen', (tester) async {

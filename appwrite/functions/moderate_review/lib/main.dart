@@ -107,6 +107,7 @@ Future<dynamic> main(final context) async {
       ctx.log('Oeffentliche Zeile ${oeffentlich.$id} entfernt.');
     }
 
+    await _nachweisSperren(tables, zeile, ctx);
     await tables.logModeration(
       reviewId: reviewId,
       moderatorId: userId,
@@ -183,6 +184,7 @@ Future<dynamic> main(final context) async {
     'status': ReviewStatus.approved,
     if (nachgewiesen is bool) 'verified': nachgewiesen,
   });
+  await _nachweisSperren(tables, zeile, ctx);
   await tables.logModeration(
     reviewId: reviewId,
     moderatorId: userId,
@@ -203,3 +205,18 @@ Future<dynamic> main(final context) async {
 
 dynamic _antwort(final context, FunctionResponse antwort) =>
     context.res.json(antwort.payload, antwort.status);
+
+/// Nimmt das Leserecht am Nachweis zurück, das `moderation_desk` beim Öffnen
+/// vergeben hat (T-2.20). Nach der Entscheidung braucht ihn niemand mehr zu
+/// sehen; `cleanup` löscht ihn nach der Frist. Scheitert das, bricht die
+/// Entscheidung nicht ab: Sie ist gefallen, das Recht steht nur länger.
+Future<void> _nachweisSperren(
+    Tables tables, Map<String, Object?> zeile, RunContext ctx) async {
+  final datei = zeile['verification_file_id'];
+  if (datei is! String || datei.isEmpty) return;
+  try {
+    await tables.revokeVerificationRead(datei);
+  } catch (e) {
+    ctx.logError('Leserecht am Nachweis $datei nicht entfernt: $e');
+  }
+}

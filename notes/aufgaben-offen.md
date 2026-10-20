@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 18. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-172 Aufgaben sind offen, 81 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+161 Aufgaben sind offen, 71 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -49,25 +49,15 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.5 · P1 · API-Schlüssel nach der Abnahme löschen und in der Console widerrufen (todo A)
   Die Datei unter `karriko_local/` löschen und den Schlüssel widerrufen, nicht nur ablaufen lassen.
 - [ ] T-2.6 · P1 · Testzeilen in `companies` löschen, darunter die verwaiste „Test GmbH“ (Setup §11)
-- [ ] T-2.7 · P1 · `profiles.last_name` von 10 auf 100 Zeichen erweitern (todo D)
-  Der einzige Befund des Datenbank-Abgleichs, der jemanden beim Registrieren kostet.
-- [ ] T-2.8 · P1 · Kontolöschung als Function nach Art. 17 DSGVO, Reihenfolge nach Referenz §3.3 (todo B3)
-- [ ] T-2.9 · P1 · Löschverlangen für einzelne Bewertungen, inklusive der Zeile in `public_reviews` (todo G, Setup §12)
-  Größte offene Lücke der Bewertungsstrecke: `public_reviews` trägt absichtlich keine `user_id`. Braucht wie T-2.8 eine Function, die mit Schlüssel löscht.
-- [ ] T-2.10 · P1 · Datenexport nach Art. 20 DSGVO als JSON (todo H)
 - [ ] T-2.12 · P2 · Betriebs-Dashboard und Analytics an `company_scores`, mit Erklärung unter drei Bewertungen (todo B5)
   `company_scores` trägt erst ab drei Bewertungen einen Wert, Zahlen erscheinen erst ab fünf und nur in Spannen. Ein leeres Dashboard ist dann richtig und muss das erklären.
 - [ ] T-2.13 · P2 · Benachrichtigungen über Repository und Provider, Stellen bauen, die sie erzeugen, Fehlerzustand statt `LateInitializationError` (todo B6)
   Heute erzeugt keine Stelle Benachrichtigungen; ohne initialisierten Client kommt `LateInitializationError`.
   Am 18.10.2026 nach E-30 ausgeblendet: Die Tabelle `notifications` steht weder in der Vorlage noch in `appwrite.config.json`. Menüeintrag entfernt, `/notifications` führt aufs Dashboard, `notifications_screen.dart` gelöscht (in der Historie bis `3c90891`). Zum Bau gehören jetzt auch Tabelle, Seite und die Schalter aus T-2.14.
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
-- [ ] T-2.17 · P2 · Eindeutige Indizes auf `bookmarks(user_id, company_id)` und `review_reports(review_id, reporter_id)` (todo D)
-- [ ] T-2.18 · P2 · `jobs`: Pflichtfelder `company_id`, `title`, `is_active` und Formatprüfungen für E-Mail und URLs (todo D)
-- [ ] T-2.19 · P2 · `companies.average_rating` und `review_count` mit Wertgrenzen neu anlegen, solange es nur Testdaten gibt (Setup §4a)
-- [ ] T-2.20 · P2 · Nachweise für die Moderation über eine Function anzeigen statt nur in der Console (Setup §12)
-- [ ] T-2.21 · P2 · Nach `recompute_all` die betroffenen Betriebe automatisch neu aggregieren (Setup §6)
-- [ ] T-2.22 · P2 · Specification der Functions festlegen und in die Vorlage eintragen (Setup §6)
+  Stand 20.10.2026: Seit T-4.1 und T-4.25 nehmen `profiles` und `companies` nur bestätigte Konten an. Bei der Registrierung entsteht deshalb keine Profilzeile mehr; die App liest Rolle und Namen aus den Prefs, eine Zeile entsteht erst mit der ersten Profiländerung.
 - [ ] T-2.23 · P2 · Löschmodell der Referenz (`deleted_at`, Nutzer-ID bleibt bei anonymen Bewertungen) mit Art. 17 und der neuen Strecke abgleichen (Referenz §2.5, neu)
+  Stand 20.10.2026: Für Kontolöschung und Löschen einer Bewertung gelten E-4.5 und E-4.6 (Nutzerbezug wird entfernt, wirklich gelöscht). Offen: `projekt-referenz.md` §2.5 und §3.3 daran angleichen und neu entscheiden, sobald es Betriebsantworten gibt.
 - [ ] T-2.24 · P3 · Betriebskonto löschen: Profil inaktiv, 30 Tage reaktivierbar, Antworten löschen (Referenz §3.4)
 - [ ] T-2.25 · P3 · Profilaufrufe zählen, ohne festzuhalten, wer zugesehen hat (Referenz §3.4)
 
@@ -77,6 +67,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.29 · P2 · Admin-Bereich „Anfragen“: ein Eingang für Kontaktformular, Auskunfts- und Löschverlangen und Beanstandungen von Betrieben (Sitemap)
 - [ ] T-2.30 · P2 · Vollständige Berufsliste der BA mit `tools/import_berufe.dart` einspielen, heute stehen rund 40 Beispielberufe in der Suche (Plan Fragebogen A12)
 - [ ] T-2.31 · P1 · `submit_review` neu deployen (vorher `dart run tools/vendor_core.dart`): Erst dann gelten die Prüfung auf bestätigte Adresse (403) und das Limit von 3 Bewertungen je 24 h (429). Danach mit einem unbestätigten Testkonto gegenprüfen (Export 13.10.)
+  Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, `publish_scheduled` und `cleanup` nach T-2.32 erneut auf dem normalen Weg. Offen: die Gegenprobe mit einem unbestätigten Testkonto.
 
 ## 3 · Anmeldung und Konten
 
@@ -102,16 +93,14 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend. Die Schritte in der Google Cloud Console (Redirect-URI aus der Appwrite Console kopieren, nicht abtippen) stehen in `archiv/status-report-2026-08-02.md` §9.9.
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
+- [ ] T-3.20 · P2 · Passwörter beim Registrieren und beim Reset gegen Datenlecks prüfen: SHA-1 im Client, nur die ersten 5 Zeichen über eine Appwrite Function an die Pwned-Passwords-API von Have I Been Pwned (k-Anonymität, Header `Add-Padding: true`), Vergleich auf dem Gerät. Über die Function, damit keine Nutzer-IP an einen weiteren Dienst geht (E-02, E-06). Ergänzt T-3.9; ob die Meldung übergangen werden darf, entscheidet T-8.12 (Chat)
+  Ohne serverseitige Registrierung ist die Prüfung umgehbar; sie schützt Nutzer vor Versehen, nicht vor Angreifern. Fällt die API aus, Registrierung nicht blockieren, sondern ohne Prüfung fortfahren und das protokollieren.
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
-- [ ] T-4.1 · P1 · Row Security für `bookmarks` und `profiles`, Zeilenrechte nur für den Eigentümer (todo D)
-  `bookmarks` und `profiles` stehen auf `rowSecurity: false`. Je nach Tabellenrechten liest jeder angemeldete Nutzer Merklisten und Profile aller anderen. Das Setup-Skript fasst beide nicht an.
-- [ ] T-4.2 · P1 · Profiländerungen von Betrieben über eine Function mit Feld-Whitelist, damit `is_verified`, `is_premium` und `average_rating` gesperrt sind (todo D, Setup §4a)
-  Appwrite kennt keine Rechte je Spalte. Das Abzeichen soll laut Referenz §3.2 ein Mensch vergeben.
 - [ ] T-4.3 · P1 · Betriebssperre serverseitig verankern (todo D)
-- [ ] T-4.4 · P1 · Rechte aller Tabellen in der Console gegen das Soll prüfen (todo D)
 - [ ] T-4.5 · P1 · Je Function ein eigener Schlüssel mit minimalen Scopes, Liste aller Schlüssel mit Zweck und Ablaufdatum (Plan)
+  Stand 20.10.2026: Es gibt nur noch `karriko_key_api` (alle 112 Rechte, kein Ablauf, zuletzt benutzt am 02.10.); `schema-setup` (abgelaufen) ist gelöscht. `karriko_key_api` bleibt bis nach der Abnahme (T-2.5), entschieden mit dem Nutzer.
 - [ ] T-4.6 · P1 · Salz für den Gerätehash zusätzlich im Passwortmanager ablegen (todo A)
   Liegt lokal in `appwrite/functions/submit_review/.env` (gitignored).
 - [ ] T-4.9 · P1 · Content-Security-Policy und Security-Header setzen, offen seit dem ZAP-Scan vom 1. Juni (S2, Referenz §4.3)
@@ -128,10 +117,10 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.23 · P3 · ISMS-Grundlagen: Risikoliste und Erklärung zur Anwendbarkeit (Plan)
 
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
-- [ ] T-4.25 · P1 · `create("users")` auf `users/verified` umstellen, wo nur bestätigte Konten schreiben sollen: `review_reports`, `review_drafts`, `companies`, `bookmarks` u. a.; Vorlage, `appwrite-setup.mjs` und Console gemeinsam (Export 13.10.)
-- [ ] T-4.26 · P1 · Tabelle `jobs`: `read("any")` auf Tabellenebene entfernen (`node tools/appwrite-setup.mjs --fix-permissions`), erst nach Auslieferung der App; alte Entwürfe einmal veröffentlichen und zurückziehen (Export 13.10., Folge aus `679bf77`)
 - [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
+- [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
+  Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
 
 ## 5 · Datenschutz und Recht
 
@@ -169,6 +158,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 - [ ] T-5.25 · P2 · Barrierefreiheitserklärung: klären lassen, ob das BFSG für Karriko gilt oder die Ausnahme für Kleinstunternehmen greift (Sitemap)
 - [ ] T-5.26 · P2 · Die Noto-Ersatzschrift für Zeichen wie Emojis lädt weiter von `fonts.gstatic.com`; lokal einbinden oder abschalten (PR #13, Factsheet §9)
+- [ ] T-5.27 · P2 · Anwalt: Reicht für Auskunftsverlangen nach Art. 15 der Export aus `my_account` (E-4.7, nur selbst eingegebene Daten), oder gehören Qualitätsmarkierungen, Bearbeitungszeiten und Gerätehash dazu? Bis dahin Auskunft über den Support (Chat, 20.10.2026)
 
 ## 6 · Oberfläche und Barrierefreiheit
 
@@ -189,6 +179,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.21 · P2 · Anmeldeschranke umsetzen: gesperrte Teile erst nach Anmeldung vom Server ausliefern, für Google als gesperrt kennzeichnen, Vergleich mit zwei Betrieben ohne Konto, Anonymitätsgrenzen gelten auch angemeldet (Konzept: Tab Anmeldeschranke)
 - [ ] T-6.23 · P2 · Merkliste zurückbringen: „Merken“-Knopf auf dem Betriebsprofil, Seite `/bookmarks` und Dashboard-Abschnitt im Swiss Design. Erst nach T-4.1, sonst wären fremde Merklisten lesbar. Repository und Tests stehen schon (`company_repository_test.dart`) (Chat)
   Am 18.10.2026 nach E-30 ausgeblendet: `bookmarkCompany` wurde nirgends aufgerufen, die Liste blieb immer leer. Alte Seite in der Historie bis `a6e1595`.
+- [ ] T-6.24 · P2 · Passwortfeld mit Stärkeanzeige bei Registrierung, Reset und Passwortänderung: vier Segmente mit Text (sehr schwach, schwach, gut, stark), Hinweis bei aktiver Feststelltaste, Anzeigen/Verbergen, Leckmeldung aus T-3.20 direkt am Feld (Vorlage: Bild im Chat vom 20.10.2026) (Chat)
+  Bewertung nach Länge und bekannten Mustern statt nach Zeichenklassen, passend zu T-3.9; ein Paket wie zxcvbn nur mit Begründung (E-07). Farben nur aus `app_theme.dart`: Rot ist `accent`, Grün `green`, einen Gelbton gibt es dort nicht (W-1.4), also vorher festlegen. Stärke nie nur über Farbe zeigen, Text und Screenreader-Ansage gehören dazu (WCAG 2.1 AA).
 
 ## 7 · Tests
 
@@ -218,6 +210,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-8.9 · P2 · Anmeldeschranke festlegen: welche zwei Kategorien und wie viele Bewertungen ohne Konto sichtbar sind, was Betriebskonten bei anderen Betrieben sehen; danach als Entscheidung ins Factsheet (Konzept: Tab Anmeldeschranke)
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
+- [ ] T-8.12 · P2 · Festlegen, ob die Leckmeldung aus T-3.20 übergangen werden darf oder ein anderes Passwort erzwingt; Ergebnis als Entscheidung ins Factsheet (Chat)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 
@@ -232,6 +225,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-9.9 · P3 · Zugänge und Notfallunterlagen für eine Vertrauensperson hinterlegen, gegen das Risiko „Wissen in einem Kopf“ (Referenz §7)
 
 - [ ] T-9.10 · P1 · Hosting-Anbieter für die Web-App wählen: EU-Standort, AVV, ISO-27001-Zertifizierung, eigene Security-Header möglich (neu)
+  Favorit ist Hetzner, noch nicht entschieden (Chat, 20.10.2026).
 - [ ] T-9.11 · P1 · Anwalt für IT- und Datenschutzrecht finden und Ersttermin vereinbaren; Fragenliste steht im Tab Fragen an den Anwalt (neu)
 - [ ] T-9.12 · P2 · Vertretung für den Notfall benennen und in die Notbremsen einweisen (Notfallplan)
 - [ ] T-9.13 · P2 · Notfallplan vervollständigen: Telefon, Kontakte, Wartungsseite, Bremsen in Staging erprobt (Notfallplan)
@@ -250,7 +244,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 Übernommen am 18.10.2026 aus dem Tab „Fehlerreport Website“ (Test vom 13.10.2026 auf karriko.dresogo.de bei 320 px). Priorität aus der Schwere im Report: kritisch und hoch → P1, mittel → P2, niedrig → P3. Inzwischen behoben und deshalb nicht übernommen: Kontaktformular (T-2.11), 404-Seite ohne Rahmen, widersprüchliche Antwortzeit (Kontakt nennt keine mehr).
 
-- [ ] T-11.1 · P1 · Appwrite lehnt alle Anfragen von `karriko.dresogo.de` ab (CORS): Web-Plattform mit diesem Hostnamen in der Console anlegen; `karriko.de` folgt mit T-3.7 (Fehlerreport Website)
 - [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-08), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
 - [ ] T-11.3 · P1 · Der Live-Build spricht den Passkey-Dienst unter `http://localhost:3000` an, Passkeys gehen für niemanden: mit `--dart-define=PASSKEY_SERVICE_URL=…` bauen, Dienst mit passender `RP_ID` betreiben (hängt an T-3.8, T-3.16) (Fehlerreport Website)
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
