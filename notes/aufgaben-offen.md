@@ -76,6 +76,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.31 · P1 · `submit_review` neu deployen (vorher `dart run tools/vendor_core.dart`): Erst dann gelten die Prüfung auf bestätigte Adresse (403) und das Limit von 3 Bewertungen je 24 h (429). Danach mit einem unbestätigten Testkonto gegenprüfen (Export 13.10.)
   Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, bei `publish_scheduled` und `cleanup` nur der Code (T-2.32). Offen: die Gegenprobe mit einem unbestätigten Testkonto.
 - [ ] T-2.32 · P1 · Zeitplan für `publish_scheduled` und `cleanup`: Live haben beide keinen Zeitplan, ein Push mit Cron scheitert an „Your current plan doesn't support cron schedules“. Zurückgestellte Bewertungen gehen deshalb nie in die Moderation (E-26), Entwürfe und Nachweise werden nicht gelöscht (E-51). Entscheiden: Plan wechseln oder anderer Auslöser (Chat, 20.10.2026)
+  Geprüft am 20.10.2026: Seit 19.10.2026 gibt es Cron auf Appwrite Cloud nur noch in bezahlten Plänen. Der Gratis-Plan erlaubt Intervalle ab 60 Minuten, ohne frei wählbare Startzeit (Feld `interval` in Minuten, CLI ab 28.3.0 mit `--interval`, installiert ist 28.1.0). Für `publish_scheduled` (stündlich) ist 60 gleichwertig, für `cleanup` reicht 1440 (täglich, Uhrzeit legt Appwrite fest). Quelle: appwrite.io/blog/post/announcing-function-intervals
 
 ## 3 · Anmeldung und Konten
 
