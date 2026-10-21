@@ -56,9 +56,9 @@ Wer hier einsteigt, liest zuerst das Factsheet und dann die offenen Aufgaben.
 | **Anmeldung** | E-Mail/Passwort, Passkeys, Magic Links, Social Login, Zwei-Faktor über TOTP | eingebaut, gegen die echte Instanz ungetestet |
 | **Azubi-Bereich** | Dashboard, Profil, eigene Bewertungen, Lesezeichen, Benachrichtigungen, Einstellungen | eigene Bewertungen angebunden, Rest lückenhaft |
 | **Betriebs-Bereich** | Dashboard, Unternehmensprofil, Ausbildungsstellen, Bewertungen, Meldungen, Team, Analytics, Abonnement | Profil und Stellen angebunden, Analytics/Team/Abo als Attrappen ausgeblendet |
-| **Admin-Bereich** | Übersicht, Moderations-Warteschlange, Meldungen, Protokoll, Betriebe, System | unter `/#/admin`, prüft die Teams `admins` und `moderators` |
+| **Admin-Bereich** | Übersicht, Moderations-Warteschlange, Meldungen, Protokoll, Betriebe, System | unter `/admin`, prüft die Teams `admins` und `moderators` |
 
-**48 Routen** über GoRouter, mit rollenbasierten Weiterleitungen (Azubi ↔ Betrieb) und einem Wächter, dessen Reihenfolge festliegt: **Laden → zweiter Faktor → E-Mail-Bestätigung → Rolle.** Wer sie umstellt, baut sich eine Weiterleitungsschleife, weil die späteren Tore eine vollständige Sitzung voraussetzen, die die früheren erst herstellen. Der Admin-Bereich steht bewusst außerhalb der Rollenregeln: Er meldet selbst an und prüft selbst die Teams; vorher muss nur der zweite Faktor erledigt sein.
+**48 Routen** über GoRouter, mit rollenbasierten Weiterleitungen (Azubi ↔ Betrieb) und einem Wächter, dessen Reihenfolge festliegt: **Laden → zweiter Faktor → beantragte Kontolöschung → E-Mail-Bestätigung → Rolle** (E-3.11). Wer sie umstellt, baut sich eine Weiterleitungsschleife, weil die späteren Tore eine vollständige Sitzung voraussetzen, die die früheren erst herstellen. Der Admin-Bereich steht bewusst außerhalb der Rollenregeln: Er meldet selbst an und prüft selbst die Teams; vorher muss nur der zweite Faktor erledigt sein.
 
 ### Die Bewertungsstrecke
 

@@ -114,6 +114,16 @@ List<String> _pruefen() {
 
   fehler.addAll(_pruefeSecurityTxt());
 
+  // Ohne die Umleitung auf index.html endet jeder direkt aufgerufene Pfad,
+  // etwa der Link aus einer Bestaetigungsmail, auf einer 404 (T-11.2).
+  final htaccess = File('$_ausgabe/.htaccess');
+  if (!htaccess.existsSync() ||
+      !htaccess.readAsStringSync().contains('RewriteRule ^ index.html')) {
+    fehler.add(
+      '$_ausgabe/.htaccess fehlt oder leitet nicht auf index.html um.',
+    );
+  }
+
   final bootstrap = File('$_ausgabe/flutter_bootstrap.js');
   if (!bootstrap.existsSync()) {
     fehler.add('$_ausgabe/flutter_bootstrap.js fehlt.');

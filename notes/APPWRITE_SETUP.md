@@ -880,7 +880,7 @@ Bewertungen ab; die App zeigt nur `/konto-loeschung` (E-3.11).
 | Timeout | 30 s |
 | Scopes | `rows.read`, `rows.write`, `teams.read`, `users.read`, `files.read`, `files.write` |
 
-**Der Arbeitstisch des Admin-Bereichs** (`/#/admin`, ohne Verweis aus der
+**Der Arbeitstisch des Admin-Bereichs** (`/admin`, ohne Verweis aus der
 Oberfläche). Liefert Übersicht, Warteschlange, Meldungen, Protokoll und
 Betriebe. Auf `reviews` hat kein Client Zugriff, auch die Moderation nicht —
 deshalb geht es nur über eine Function.
@@ -1536,7 +1536,7 @@ Version.
 * ~~**Die Moderation sieht den Nachweis nur über die Console.**~~ Seit
   20.10.2026 über „Nachweis ansehen“ im Admin-Bereich (T-2.20, siehe
   `moderation_desk`).
-* **Der Moderationsbildschirm ist der Admin-Bereich unter `/#/admin`.** Er
+* **Der Moderationsbildschirm ist der Admin-Bereich unter `/admin`.** Er
   braucht `moderation_desk` und die neuen Spalten in `review_reports`. Den
   Verifikationsnachweis öffnet sie dort über „Nachweis ansehen“ (T-2.20).
 * **Die lokale Liste bleibt als Rückfall.** Antwortet `my_reviews` nicht, zeigt
@@ -1563,7 +1563,7 @@ Beide verlangen die Kennung eines **Projektkontos** (`ctx.userId`) und prüfen d
 Teams. `appwrite functions create-execution` läuft aber als Console-Konto und
 bricht deshalb mit 401 ab, egal wie die Teams besetzt sind.
 
-**Der einfachste Weg ist der Admin-Bereich unter `/#/admin`:** Mit dem
+**Der einfachste Weg ist der Admin-Bereich unter `/admin`:** Mit dem
 Moderationskonto in der App angemeldet, ruft `admin_repository.dart` beide
 Functions mit dieser Sitzung auf. Nur ohne App bleibt der Weg über ein JWT:
 
