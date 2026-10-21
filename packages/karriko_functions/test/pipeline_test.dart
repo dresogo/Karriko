@@ -413,6 +413,9 @@ void main() {
           'is_aged',
           'verified',
           'published_at',
+          // Vergröbert auf das Quartal, siehe den Test darunter (T-5.21).
+          publicCreatedAtField,
+          publicUpdatedAtField,
         },
       );
     });
@@ -446,6 +449,9 @@ void main() {
         publishedAt: DateTime.utc(2026, 11, 17, 14, 32, 5),
       );
       expect(row['published_at'], '2026-10-01T00:00:00.000Z');
+      // Auch die Systemspalten, die Appwrite sonst sekundengenau setzt.
+      expect(row[r'$createdAt'], '2026-10-01T00:00:00.000Z');
+      expect(row[r'$updatedAt'], '2026-10-01T00:00:00.000Z');
     });
 
     test('Quartalsgrenzen', () {

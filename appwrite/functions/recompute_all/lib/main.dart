@@ -152,6 +152,10 @@ Future<dynamic> main(final context) async {
         tableId: ctx.config.publicReviewsTable,
         rowId: oeffentlich.$id,
         data: {
+          // Der Änderungszeitpunkt bleibt so grob wie die Veröffentlichung
+          // (T-5.21); sonst stünde dort sekundengenau dieser Lauf.
+          if (oeffentlich.data['published_at'] case final String quartal)
+            publicUpdatedAtField: quartal,
           for (final eintrag in subscoreColumns.entries)
             eintrag.value: scores.subscores[eintrag.key],
           for (final eintrag in separateColumns.entries)

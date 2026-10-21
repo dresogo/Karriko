@@ -2,7 +2,7 @@
 
 **Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-153 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+152 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -45,6 +45,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.3 · P1 · Eigenes Moderations- und Admin-Konto anlegen, nicht eines der Testkonten (todo A)
 - [ ] T-2.4 · P1 · Abnahmetest mit den vier Personas, inklusive JWT-Weg für `moderate_review` und `recompute_all` (todo A, Setup §13)
   Die CLI läuft als Console-Konto und bekommt von `moderate_review` und `recompute_all` eine 401. Der einfachste Weg ist der Admin-Bereich unter `/#/admin` mit dem Moderationskonto, sonst ein JWT für dieses Konto (Setup §13).
+  Dabei prüfen (21.10.2026): Nach einer Freigabe tragen `$createdAt` und `$updatedAt` der Zeile in `public_reviews` nur den Quartalsbeginn (T-5.21). Scheitert die Freigabe an diesen Feldern, liegt es an den Timestamp Overrides.
 - [ ] T-2.5 · P1 · API-Schlüssel nach der Abnahme löschen und in der Console widerrufen (todo A)
   Die Datei unter `karriko_local/` löschen und den Schlüssel widerrufen, nicht nur ablaufen lassen.
 - [ ] T-2.6 · P1 · Testzeilen in `companies` löschen, darunter die verwaiste „Test GmbH“ (Setup §11)
@@ -148,8 +149,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.19 · P1 · IP-Adressen in Appwrite-Sitzungen in der Datenschutzerklärung richtig darstellen, Speicherung möglichst begrenzen (Verarbeitungsverzeichnis)
 - [ ] T-5.20 · P1 · Moderationsrichtlinie mit Regel für Namen von Privatpersonen in Freitexten (Verarbeitungsverzeichnis)
 
-- [ ] T-5.21 · P1 · `public_reviews.published_at` nur als Quartal speichern; der genaue Zeitstempel ist öffentlich lesbar, obwohl die Vorschau den Monat als unsichtbar ausweist (Fragebogen)
-  Teilweise erledigt am 18.10.2026: `published_at` ist der Quartalsbeginn in UTC, die Karte zeigt „Q4 2026“ statt des Monats (E-2.12). Wirkt erst nach neuem Deploy von `moderate_review` und `publish_scheduled` (vorher `dart run tools/vendor_core.dart`). Offen: `$createdAt` der Zeile in `public_reviews` ist weiter sekundengenau und für jeden lesbar; bestehende Zeilen tragen noch den genauen Zeitpunkt.
 - [ ] T-5.22 · P2 · Freitextlänge festlegen: Fragebogen erlaubt 4000 Zeichen, Referenz nennt 1000 (Fragebogen)
 - [ ] T-5.23 · P3 · Dateiformate für Nachweise in Fragebogen und Ablage angleichen (Fragebogen)
 

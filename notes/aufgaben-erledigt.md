@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 21.10.2026 | T-5.21 | `public_reviews.published_at` nur als Quartal | Seit 18.10. `published_at` als Quartalsbeginn (E-2.12); jetzt auch `$createdAt` und `$updatedAt` der Zeile, die Appwrite sonst sekundengenau setzt und die wie die Zeile für jeden lesbar sind (Timestamp Overrides, nur mit API-Schlüssel). `recompute_all` setzt `$updatedAt` beim Ändern wieder auf das Quartal. `moderate_review` und `recompute_all` deployt; live mit einer echten Freigabe noch nicht geprüft, steht bei T-2.4. Alte Zeilen gibt es keine | dieser Commit |
 | 21.10.2026 | T-11.12 | Startseite: Entwicklerjargon „RLS-Policies, AVV-Anforderungen“ | In Alltagssprache: Bewertung mit keinem Konto verknüpft, Daten in Frankfurt, Wert erst ab drei Bewertungen (E-21, E-02, E-22) | dieser Commit |
 | 21.10.2026 | T-11.11 | Startseite: Karte „Stellen“ mit Text des Admin-Bereichs | „Ausbildungsstellen direkt von den Betrieben, gleich neben ihren Bewertungen.“ | dieser Commit |
 | 21.10.2026 | T-11.10 | Standortfilter nur Zürich, Genf, Basel, Bern | Freies Ortsfeld statt fester Liste, sucht über den Volltext-Index auf `city`; gesucht wird nur, wenn sich der Ort ändert. Beide Volltext-Indizes standen live, fehlten aber im Setup-Skript und sind nachgetragen | dieser Commit |
