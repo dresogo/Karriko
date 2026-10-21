@@ -223,8 +223,10 @@ class _SearchPanel extends StatelessWidget {
 // ─── Metrics ─────────────────────────────────────────────────────────────────
 
 class _MetricsSection extends StatelessWidget {
+  // Nur, was stimmt (Factsheet §2.5). Eine Zahl der Bewertungen kommt erst,
+  // wenn sie live gezählt wird und echt ist (T-11.5).
   static const _metrics = [
-    ('2.400+', 'Bewertungen'),
+    ('Kostenlos', 'für Azubis'),
     ('DACH', 'Fokusmarkt'),
     ('DSGVO', 'von Beginn an'),
   ];
@@ -514,7 +516,8 @@ class _AudienceSection extends StatelessWidget {
     ),
     (
       'Stellen',
-      'Moderation, Datenschutzprozesse und Plattformqualität zentral steuern.',
+      'Ausbildungsstellen direkt von den Betrieben, gleich neben ihren '
+          'Bewertungen.',
       AppColors.green,
       true
     ),
@@ -744,7 +747,9 @@ class _PrivacyBody extends StatelessWidget {
     final fontSize =
         (MediaQuery.of(context).size.width * 0.018).clamp(17.0, 26.0);
     return Text(
-      'RLS-Policies, AVV-Anforderungen und eine DSGVO-konforme Architektur sind als Produktprinzipien angelegt. Die Gestaltung bleibt bewusst ruhig, damit Vertrauen, Nachvollziehbarkeit und Bewertungsqualität im Vordergrund stehen.',
+      'Deine Bewertung ist öffentlich mit keinem Konto verknüpft. Die Daten '
+      'liegen in Frankfurt, und einen Wert für einen Betrieb zeigen wir erst '
+      'ab drei Bewertungen – damit niemand erraten kann, von wem eine stammt.',
       style: TextStyle(
         color: AppColors.muted,
         fontSize: fontSize,

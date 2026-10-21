@@ -1,6 +1,6 @@
 # Karriko – Erledigte Aufgaben
 
-**Stand:** 20. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
+**Stand:** 21. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
 
 Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, Nummer und Beleg. Neue Einträge kommen oben in die Tabelle, im selben Commit, der den Punkt aus der offenen Liste nimmt. Die Nummern bleiben vergeben und werden nie neu besetzt.
 
@@ -8,6 +8,14 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 21.10.2026 | T-11.12 | Startseite: Entwicklerjargon „RLS-Policies, AVV-Anforderungen“ | In Alltagssprache: Bewertung mit keinem Konto verknüpft, Daten in Frankfurt, Wert erst ab drei Bewertungen (E-21, E-02, E-22) | dieser Commit |
+| 21.10.2026 | T-11.11 | Startseite: Karte „Stellen“ mit Text des Admin-Bereichs | „Ausbildungsstellen direkt von den Betrieben, gleich neben ihren Bewertungen.“ | dieser Commit |
+| 21.10.2026 | T-11.10 | Standortfilter nur Zürich, Genf, Basel, Bern | Freies Ortsfeld statt fester Liste, sucht über den Volltext-Index auf `city`; gesucht wird nur, wenn sich der Ort ändert. Beide Volltext-Indizes standen live, fehlten aber im Setup-Skript und sind nachgetragen | dieser Commit |
+| 21.10.2026 | T-11.8 | Blog listet erfundene Versionen v1.2.1 bis v1.4 | Die drei Produkt-Updates entfernt; die Rubrik zeigt ehrlich „Nichts gefunden“, bis es echte Versionen gibt. Tests angepasst | dieser Commit |
+| 21.10.2026 | T-11.7 | „Für Betriebe“ verspricht Unentschiedenes | Antworten, Analytics, Team, Bewerbermanagement und „49 €/Monat“ entfernt; stattdessen „Ausbildungsstellen anbieten“ (E-28) und ein Punkt „In Planung“. Premium heißt „In Planung“ mit dem, was nach E-29 feststeht, Schaltfläche „Kommt später“ ohne Ziel. Test „Keine unentschiedenen Versprechen“. Auch die Rollenwahl im Login nannte „auf Bewertungen antworten“ | dieser Commit |
+| 21.10.2026 | T-11.6 | FAQ widerspricht dem Produkt | Keine Namenswahl (E-21), Wert erst ab drei Bewertungen (E-22), Dimensionen aus E-23 ohne Vergütung (E-25) statt „Work-Life-Balance“, Löschen ja und Ändern noch nicht (T-6.17), keine Moderationsfrist (E-26), keine Antworten der Betriebe (T-8.1), keine Antwortzeit beim Kontakt. Anonymitätstext im Fragebogen bleibt bei T-5.3 | dieser Commit |
+| 21.10.2026 | T-11.5 | „2.400+ Bewertungen“ erfunden | Startseite: „Kostenlos – für Azubis“; „Für Betriebe“: „Frankfurt – Datenhaltung“ (dort heißt schon ein Tarif „Kostenlos“). Eine Zahl kommt erst live gezählt | dieser Commit |
+| 21.10.2026 | T-1.3 | Branch `fragebogen` mit PR #9 abschließen | War schon erledigt: PR #9 am 04.10.2026 gemergt. Bei der Durchsicht aufgefallen | – |
 | 20.10.2026 | T-2.20 | Nachweise für die Moderation über eine Function anzeigen | Freigabe auf Abruf (entschieden mit dem Nutzer): `moderation_desk` (`open_proof`) gibt der Moderatorin Leserecht an genau dieser Datei und vermerkt `proof_viewed` im Protokoll; der Admin-Bereich lädt sie und öffnet sie nach einem Klick auf „Öffnen“ im neuen Tab (zweistufig, sonst blockiert der Browser das Fenster). `moderate_review` entfernt das Recht bei der Entscheidung. Function-Antwort statt Datei verworfen: Grenze für Dateien bis 10 MB unsicher. Tests `admin_proof_test.dart`; mit echtem Nachweis noch nicht durchgespielt | dieser Commit |
 | 20.10.2026 | T-2.21 | Nach `recompute_all` die betroffenen Betriebe automatisch neu aggregieren | `recompute_all` stößt am Ende jedes Stapels `aggregate_company` je betroffenem Betrieb asynchron an (neuer Scope `execution.write`); die Antwort nennt sie unter `aggregation_started`. Nicht im Probelauf. Mit echten Bewertungen noch nicht durchgespielt, es gibt keine | dieser Commit |
 | 20.10.2026 | T-2.10 | Datenexport nach Art. 20 DSGVO als JSON | `my_account` (`export`) liefert Konto, Profil, eigene Bewertungen mit Antworten und Freitexten, Entwürfe, Merkliste und eigene Meldungen, JSON-Spalten entpackt, ohne interne Prüfmerkmale (E-4.7). In den Einstellungen „Meine Daten herunterladen“, im Browser als Datei. Art. 15 offen als T-5.27. Entschieden mit dem Nutzer | dieser Commit |

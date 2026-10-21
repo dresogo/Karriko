@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 20. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-161 Aufgaben sind offen, 71 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+153 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -29,7 +29,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 ## 1 · Repository und Projektorganisation
 
 - [ ] T-1.1 · P1 · Interne Notizen (Todo-Liste, Berichte) in ein privates Repo verschieben oder das Repo auf privat stellen (Chat)
-- [ ] T-1.3 · P1 · Branch `fragebogen` mit Pull Request #9 abschließen und mergen (todo)
 - [ ] T-1.4 · P2 · GitHub Student Developer Pack aktivieren, damit Branch Protection auch im privaten Repo greift (Chat)
 - [ ] T-1.5 · P2 · Unerreichbaren Commit `9d25f8d` beim GitHub-Support purgen lassen (todo A)
   GitHub hält den alten Commit per SHA weiter abrufbar. Hier verzichtbar, weil der Wert bedeutungslos war, aber beim nächsten echten Fund ist das der Schritt, der vergessen wird.
@@ -247,14 +246,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-08), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
 - [ ] T-11.3 · P1 · Der Live-Build spricht den Passkey-Dienst unter `http://localhost:3000` an, Passkeys gehen für niemanden: mit `--dart-define=PASSKEY_SERVICE_URL=…` bauen, Dienst mit passender `RP_ID` betreiben (hängt an T-3.8, T-3.16) (Fehlerreport Website)
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
-- [ ] T-11.5 · P1 · „2.400+ Bewertungen“ auf Startseite und „Für Betriebe“ ist erfunden: entfernen oder live zählen und erst ab echter Größe zeigen (Factsheet §2.5) (Fehlerreport Website)
-- [ ] T-11.6 · P1 · FAQ widerspricht dem Produkt: Name wählbar (es gibt keine namentlichen Bewertungen), Bearbeiten und Löschen unter „Meine Bewertungen“ (geht nicht, T-6.17), Moderation „innerhalb von 24 Stunden“ (Zurückstellung bis Ausbildungsende, E-26), „Work-Life-Balance“ statt Belastung. Anonymitätstext erst nach T-5.3 (Fehlerreport Website)
-- [ ] T-11.7 · P1 · „Für Betriebe“ verspricht Unentschiedenes: Antworten auf Bewertungen (T-8.1), Branchenvergleich (T-8.7), Bewerbermanagement (T-8.5), Premium für 49 €/Monat ohne netto/brutto (T-8.4). Nur Entschiedenes zeigen, Rest als geplant kennzeichnen (E-30) (Fehlerreport Website)
-- [ ] T-11.8 · P1 · Blog „Neu auf Karriko“ listet Versionen v1.2.1 bis v1.4 samt Fehlerbehebungen für Betriebe, die es noch nicht gibt: bis zum Launch ausblenden oder als Roadmap kennzeichnen (Fehlerreport Website)
+  Teilweise erledigt am 21.10.2026: Impressum nennt § 5 DDG. Offen: Impressum und Datenschutzerklärung sind weiter Platzhalter (T-5.1, T-10.3).
 - [ ] T-11.9 · P1 · Registrierung: Checkbox „Ich stimme den AGB und der Datenschutzerklärung zu“ ohne Links; einer Datenschutzerklärung stimmt man nicht zu. Text und Links anpassen, Wortlaut juristisch prüfen; Mindestalter siehe T-5.18 (Fehlerreport Website)
-- [ ] T-11.10 · P1 · Standortfilter der Suche bietet nur Zürich, Genf, Basel und Bern: Orte aus den Betriebsdaten oder ein Ortsfeld (Fehlerreport Website)
-- [ ] T-11.11 · P1 · Startseite: Die Karte „Stellen“ trägt die Beschreibung des Admin-Bereichs („Moderation, Datenschutzprozesse und Plattformqualität zentral steuern“) (Fehlerreport Website)
-- [ ] T-11.12 · P1 · Startseite: „RLS-Policies, AVV-Anforderungen …“ ist Entwicklerjargon aus der Supabase-Zeit (E-01); in Alltagssprache sagen, was Nutzer davon haben (Fehlerreport Website)
 - [ ] T-11.13 · P2 · Betriebsprofil: Ein Netzwerkfehler erscheint als „Betrieb nicht gefunden“; beide Fälle trennen, beim Fehler „Erneut versuchen“ (Fehlerreport Website)
 - [ ] T-11.14 · P2 · Bei 320 px Wortumbrüche mitten im Wort („Bewertunge / n“, „Unternehmensp / rofil“) und abgeschnittene Texte („Passk…“, Fehlermeldungen); verwandt mit T-6.4 (Fehlerreport Website)
 - [ ] T-11.15 · P2 · Screenreader sehen nur „Enable accessibility“ (englisch), bis man es aktiviert; Menü- und Suchknopf ohne Beschriftung. `SemanticsBinding.instance.ensureSemantics()` prüfen, Beschriftungen setzen (Fehlerreport Website)

@@ -232,6 +232,10 @@ const SCHEMA = [
       { key: 'average_rating', type: 'key', columns: ['average_rating'], orders: ['DESC'] },
       // `Query.equal('industry', …)` im Filter der Suche.
       { key: 'industry', type: 'key', columns: ['industry'] },
+      // `Query.search` auf Name und Ort in der Suche (T-11.10). Standen live
+      // schon, fehlten aber hier.
+      { key: 'idx_name_fulltext', type: 'fulltext', columns: ['name'] },
+      { key: 'idx_city_fulltext', type: 'fulltext', columns: ['city'] },
     ],
   },
   {

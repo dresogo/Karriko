@@ -10,7 +10,7 @@ class ImpressumScreen extends StatelessWidget {
       appBarTitle: 'Impressum',
       eyebrow: 'RECHTLICHES',
       title: 'Impressum',
-      subtitle: 'Angaben gemäß § 5 TMG',
+      subtitle: 'Angaben gemäß § 5 DDG',
       sections: [
         (
           'Verantwortlicher',

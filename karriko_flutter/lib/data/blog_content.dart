@@ -6,16 +6,10 @@ import 'models/blog_entry_model.dart';
 class BlogContent {
   BlogContent._();
 
+  // Produkt-Updates stehen hier erst wieder, wenn es Versionen gibt, die
+  // Nutzer tatsaechlich bekommen haben. Die Eintraege v1.2.1 bis v1.4
+  // beschrieben Fehlerbehebungen und Funktionen, die es so nie gab (T-11.8).
   static final entries = <BlogEntry>[
-    BlogEntry.update(
-      title: 'Fragebogen für Betriebsbewertungen',
-      teaser:
-          'Azubis beantworten jetzt strukturierte Fragen zu Ausbildungsqualität, '
-          'Betreuung und Übernahmechancen statt nur Freitext zu schreiben.',
-      date: DateTime(2026, 7, 24),
-      version: 'v1.4',
-      updateKind: UpdateKind.neu,
-    ),
     BlogEntry.article(
       title: 'Wie finde ich den richtigen Ausbildungsbetrieb?',
       teaser:
@@ -78,15 +72,6 @@ class BlogContent {
         ),
       ],
     ),
-    BlogEntry.update(
-      title: 'Schnellere Suche mit Branchenfiltern',
-      teaser:
-          'Die Betriebssuche filtert jetzt nach Branche, Ort und Mindestbewertung '
-          'und liefert Ergebnisse spürbar schneller.',
-      date: DateTime(2026, 6, 2),
-      version: 'v1.3',
-      updateKind: UpdateKind.verbessert,
-    ),
     BlogEntry.article(
       title: 'DSGVO und Ausbildungsbewertungen',
       teaser:
@@ -134,15 +119,6 @@ class BlogContent {
           'Rechtsberatung. Details stehen in unserer Datenschutzerklärung.',
         ),
       ],
-    ),
-    BlogEntry.update(
-      title: 'Benachrichtigungen kamen doppelt an',
-      teaser:
-          'Ein Fehler hat Betrieben dieselbe Bewertungsbenachrichtigung mehrfach '
-          'zugestellt. Das ist behoben.',
-      date: DateTime(2026, 5, 8),
-      version: 'v1.2.1',
-      updateKind: UpdateKind.behoben,
     ),
     BlogEntry.article(
       title: 'Warum Azubi-Feedback Betrieben hilft',
