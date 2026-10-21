@@ -453,7 +453,7 @@ class _FeatureRow extends StatelessWidget {
                   width: 72,
                   child: Text(number,
                       style: const TextStyle(
-                          color: AppColors.accent,
+                          color: AppColors.accentDark,
                           fontSize: 13,
                           fontWeight: FontWeight.w800)),
                 ),
@@ -479,7 +479,7 @@ class _FeatureRow extends StatelessWidget {
               children: [
                 Text(number,
                     style: const TextStyle(
-                        color: AppColors.accent,
+                        color: AppColors.accentDark,
                         fontSize: 13,
                         fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),

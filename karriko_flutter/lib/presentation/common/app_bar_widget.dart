@@ -413,7 +413,7 @@ class _MenuHeader extends StatelessWidget {
           Text(
             auth.isBetrieb ? 'BETRIEB' : 'AZUBI',
             style: const TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 11,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.88,

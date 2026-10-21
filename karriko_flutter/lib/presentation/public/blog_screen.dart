@@ -108,7 +108,7 @@ class _Header extends StatelessWidget {
     final headline = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const _Eyebrow(text: 'BLOG & NEUIGKEITEN', color: AppColors.accent),
+        const _Eyebrow(text: 'BLOG & NEUIGKEITEN', color: AppColors.accentDark),
         const SizedBox(height: AppLayout.s16),
         Text(
           'Was wir schreiben,\nwas wir bauen.',
@@ -539,7 +539,7 @@ class _FeaturedArticle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const _Eyebrow(text: 'AUFMACHER', color: AppColors.accent),
+              const _Eyebrow(text: 'AUFMACHER', color: AppColors.accentDark),
               const SizedBox(height: AppLayout.s16),
               Text(
                 entry.title,
@@ -729,7 +729,7 @@ class _ReadMore extends StatelessWidget {
         Text(
           'Weiterlesen',
           style: TextStyle(
-            color: active ? AppColors.accent : AppColors.ink,
+            color: active ? AppColors.accentDark : AppColors.ink,
             fontSize: 14,
             fontWeight: FontWeight.w800,
           ),

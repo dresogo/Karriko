@@ -180,7 +180,7 @@ class _CompanyIdentity extends StatelessWidget {
             if (company.industry != null && company.industry!.trim().isNotEmpty)
               company.industry!.toUpperCase(),
           ].join(' · '),
-          color: AppColors.accent,
+          color: AppColors.accentDark,
         ),
         const SizedBox(height: AppLayout.s24),
         Row(
@@ -593,7 +593,7 @@ class _JobsBand extends ConsumerWidget {
         // sich neben die Überschrift.
         _Eyebrow(
           text: isWide ? 'OFFENE STELLEN' : 'OFFENE STELLEN · $count',
-          color: AppColors.accent,
+          color: AppColors.accentDark,
         ),
         const SizedBox(height: AppLayout.s8),
         Text(
@@ -782,10 +782,11 @@ class _JobBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (background, foreground, border) = switch (job.badgeVariant) {
+      // Kleine weiße Schrift auf Rot braucht das dunklere Rot (T-6.2).
       JobBadgeVariant.isNew => (
-          AppColors.accent,
+          AppColors.accentDark,
           Colors.white,
-          AppColors.accent
+          AppColors.accentDark
         ),
       JobBadgeVariant.recent => (
           AppColors.audienceBeige,
@@ -1282,7 +1283,7 @@ class _NotFoundState extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _Eyebrow(text: 'BETRIEBSPROFIL', color: AppColors.accent),
+          const _Eyebrow(text: 'BETRIEBSPROFIL', color: AppColors.accentDark),
           const SizedBox(height: AppLayout.s16),
           Text(
             'Betrieb nicht\ngefunden.',

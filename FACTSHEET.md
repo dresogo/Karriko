@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 21. Oktober 2026, abgeglichen mit `main` @ `4f41589`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 21. Oktober 2026, abgeglichen mit `main` @ `4f41589`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, MFA E-3.13, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -144,6 +144,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-3.10 | 20.10.2026 | **Die Rolle (azubi/betrieb) steuert nur die Oberfläche.** Sie steht in `profiles` und in den Account-Prefs und ist vom Konto selbst änderbar; keine Function und keine Tabellenregel darf ihr vertrauen. Was ein Betrieb darf, hängt am Eigentum der Firma (`owner_id`, gesetzt von `company_profile`) und an den Teams. | Appwrite kennt keine Rechte je Spalte, Prefs sind immer vom Konto beschreibbar. Eine Rolle, die nur der Server setzen kann, wäre ein Appwrite-Label und erst nötig, wenn eine Regel daran hängen soll (T-4.30, W-3.2). |
 | E-3.11 | 20.10.2026 | **Router-Wächter-Reihenfolge fest:** Laden → zweiter Faktor → beantragte Kontolöschung → E-Mail-Bestätigung → Rolle. Mit beantragter Löschung führt jeder Kontobereich auf `/konto-loeschung`, öffentliche Seiten bleiben erreichbar. Admin-Bereich außerhalb der Rollenregeln, prüft selbst die Teams. | Andere Reihenfolge erzeugt Weiterleitungsschleifen; die Löschung steht vor der Bestätigung, weil auch ein nie bestätigtes Konto gelöscht werden darf (T-2.8). Ersetzt E-41. |
 | E-3.12 | 21.10.2026 | **Passwortregel nach Länge:** mindestens 12 Zeichen, keine Pflicht zu Großbuchstaben, Ziffern oder Sonderzeichen. Appwrite lehnt außerdem die 10.000 häufigsten Passwörter, Passwörter mit Name oder E-Mail und bekannt geleakte Passwörter ab (Have I Been Pwned, nicht übergehbar). Nach einer Passwortänderung enden alle anderen Sitzungen. Unbestätigte Konten dürfen lesen, nicht bewerten. | NIST SP 800-63B und BSI empfehlen Länge statt Zeichenklassen. Die Leckprüfung läuft auf dem Server: nicht umgehbar, keine Nutzer-IP an einen weiteren Dienst (T-3.9, T-3.12, T-3.20, T-8.12). Ersetzt E-43. |
+| E-3.13 | 21.10.2026 | **Moderation und Administration nur mit zweitem Faktor.** `moderate_review`, `moderation_desk` und `recompute_all` lehnen Konten ohne aktive Zwei-Faktor-Bestätigung ab (403), zusätzlich zur Team-Prüfung. Erlaubter Faktor im Projekt: TOTP. | Diese Konten sehen Rohdaten und Nachweise und entscheiden über Veröffentlichungen; ein Passwort allein reicht dafür nicht (T-3.5). |
 
 ### Datenschutz und Löschkonzept
 
@@ -216,7 +217,6 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-1 · Design**
 
 - **W-1.1 · Button-Ecken:** README sagt „keine abgerundeten Ecken", das Theme setzt 10 px, die alte `design.md` 25 px. Gilt heute: 10 px (Code).
-- **W-1.3 · Akzent-Kontrast:** `#E3342F` auf Weiß 4,47:1, verfehlt WCAG AA für kleinen Text. Umstellung auf `#B91F1A` gehört ins Theme (T-6.2).
 - **W-1.4 · Fehler-/Warnfarben** (`#EF4444`, `#F59E0B`, `#22C55E`) sind Tailwind-Standards und nicht ins Swiss-Design eingepasst.
 - **W-1.5 · Schriftschnitte:** Theme definiert 700/800, eingebettet ist nur Regular (bewusst, siehe Abschnitt 2.2). Offen: fette Schnitte aufnehmen oder Gewichte im Theme bereinigen.
 - **W-1.6 · Design-Referenz** `notes/karriko_design_swiss/styles.css` nutzt im Header `backdrop-filter: blur`, das Theme nicht.

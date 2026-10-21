@@ -2,9 +2,20 @@ class AppwriteConstants {
   // Regionaler Endpunkt des Projekts (Frankfurt). Der generische Host
   // cloud.appwrite.io antwortet zwar weiterhin, leitet die Aufrufe aber erst
   // ueber den globalen Router in die Region.
-  static const endpoint = 'https://fra.cloud.appwrite.io/v1';
+  //
+  // Endpunkt, Projekt und Datenbank lassen sich per `--dart-define`
+  // umschalten, etwa fuer ein Staging-Projekt (T-4.27, T-2.1). Die Standards
+  // sind das heutige Projekt; geheim sind die Kennungen nicht, sie stehen im
+  // ausgelieferten Web-Bundle ohnehin im Klartext.
+  static const endpoint = String.fromEnvironment(
+    'APPWRITE_ENDPOINT',
+    defaultValue: 'https://fra.cloud.appwrite.io/v1',
+  );
 
-  static const projectId = '6a3c45ef003356d7f16d';
+  static const projectId = String.fromEnvironment(
+    'APPWRITE_PROJECT_ID',
+    defaultValue: '6a3c45ef003356d7f16d',
+  );
 
   /// Basisadresse, unter der die App laeuft.
   ///
@@ -57,7 +68,10 @@ class AppwriteConstants {
   );
 
   // Datenbank und Tabellen, angelegt mit tools/appwrite-setup.mjs (E-05).
-  static const databaseId = '6a3ea0a4002b4cf10630';
+  static const databaseId = String.fromEnvironment(
+    'APPWRITE_DATABASE_ID',
+    defaultValue: '6a3ea0a4002b4cf10630',
+  );
   static const profilesTable = 'profiles';
   static const companiesTable = 'companies';
   static const bookmarksTable = 'bookmarks';

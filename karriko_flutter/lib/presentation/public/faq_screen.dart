@@ -108,7 +108,7 @@ class FaqScreen extends StatelessWidget {
                   const Text(
                     'HILFE & SUPPORT',
                     style: TextStyle(
-                      color: AppColors.accent,
+                      color: AppColors.accentDark,
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.32,

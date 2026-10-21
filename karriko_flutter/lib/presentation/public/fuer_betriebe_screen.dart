@@ -105,7 +105,7 @@ class _HeroCopy extends StatelessWidget {
           const Text(
             'FÜR AUSBILDUNGSBETRIEBE',
             style: TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.32,
@@ -247,7 +247,7 @@ class _RegisterPanel extends StatelessWidget {
           const Text(
             'KOSTENLOS STARTEN',
             style: TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.32,
@@ -488,7 +488,7 @@ class _FeatureRow extends StatelessWidget {
                   width: 72,
                   child: Text(number,
                       style: const TextStyle(
-                          color: AppColors.accent,
+                          color: AppColors.accentDark,
                           fontSize: 13,
                           fontWeight: FontWeight.w800)),
                 ),
@@ -514,7 +514,7 @@ class _FeatureRow extends StatelessWidget {
               children: [
                 Text(number,
                     style: const TextStyle(
-                        color: AppColors.accent,
+                        color: AppColors.accentDark,
                         fontSize: 13,
                         fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
@@ -651,7 +651,7 @@ class _PricingCard extends StatelessWidget {
           Text(
             isPrimary ? 'EMPFOHLEN' : name,
             style: TextStyle(
-              color: isPrimary ? AppColors.accent : mutedColor,
+              color: isPrimary ? AppColors.accentDark : mutedColor,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.96,

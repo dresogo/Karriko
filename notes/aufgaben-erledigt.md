@@ -8,6 +8,9 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 21.10.2026 | T-6.2 | Akzentfarbe für WCAG AA | Wie entschieden nur kleiner Text dunkler: Eyebrows, kleine rote Texte, TextButtons (Theme), Beschriftung der unteren Leiste und kleine Plaketten mit weißer Schrift auf Rot nutzen `accentDark` #B91F1A. Knopfflächen, große Schrift, Linien, Rahmen und Icons bleiben `accent`. W-1.3 entfernt | dieser Commit |
+| 21.10.2026 | T-3.5 | MFA verpflichtend für Admin- und Moderationskonten | `hasMfaEnabled` (mit dem JWT des Aufrufers, kein Scope) in `moderate_review`, `moderation_desk`, `recompute_all` nach der Team-Prüfung; ohne aktiven zweiten Faktor 403 mit Hinweis. Neue Entscheidung E-3.13. Test `mfa_check_test.dart`. Deployt | dieser Commit |
+| 21.10.2026 | T-4.27 | Projekt- und Datenbank-ID über `--dart-define` | `APPWRITE_ENDPOINT`, `APPWRITE_PROJECT_ID`, `APPWRITE_DATABASE_ID` mit dem heutigen Projekt als Standard; ein Staging-Build setzt sie um (T-2.1) | dieser Commit |
 | 21.10.2026 | T-11.21 | Blog „Top 10 Ausbildungsberufe 2026“ ohne Quelle | Artikel entfernt, bis es eine belegte Quelle gibt. Entschieden mit dem Nutzer | dieser Commit |
 | 21.10.2026 | T-11.20 | Übergangsdomain ohne `noindex` | `X-Robots-Tag: noindex, nofollow` in `web/.htaccess` (mod_headers); zum Launch entfernen (T-10.4) | dieser Commit |
 | 21.10.2026 | T-11.19 | Metadaten „A new Flutter project.“, Flutter-Farben | `index.html` und `manifest.json` mit Namen Karriko, Beschreibung und Farben aus `app_theme.dart` (paper, ink) | dieser Commit |

@@ -2,7 +2,7 @@
 
 **Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-137 Aufgaben sind offen, 58 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+134 Aufgaben sind offen, 56 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -41,6 +41,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.1 · P1 · Staging- und Produktionsprojekt in Appwrite trennen (Plan)
 - [ ] T-2.2 · P1 · Automatische Backups plus externer Export, Restore einmal testen (Plan, README zum 4. Oktober)
 - [ ] T-2.3 · P1 · Eigenes Moderations- und Admin-Konto anlegen, nicht eines der Testkonten (todo A)
+  Seit 21.10.2026 (E-3.13): Das Konto braucht eine eingerichtete Zwei-Faktor-Bestätigung (TOTP), sonst lehnen die Moderations-Functions ab.
 - [ ] T-2.4 · P1 · Abnahmetest mit den vier Personas, inklusive JWT-Weg für `moderate_review` und `recompute_all` (todo A, Setup §13)
   Die CLI läuft als Console-Konto und bekommt von `moderate_review` und `recompute_all` eine 401. Der einfachste Weg ist der Admin-Bereich unter `/#/admin` mit dem Moderationskonto, sonst ein JWT für dieses Konto (Setup §13).
   Dabei prüfen (21.10.2026): Nach einer Freigabe tragen `$createdAt` und `$updatedAt` der Zeile in `public_reviews` nur den Quartalsbeginn (T-5.21). Scheitert die Freigabe an diesen Feldern, liegt es an den Timestamp Overrides.
@@ -72,13 +73,13 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-3.1 · P1 · Rollen serverseitig über Teams oder Labels setzen, Prefs nur noch zur Anzeige (todo D)
 - [ ] T-3.3 · P1 · Anmeldung des Betriebs-Testkontos klären (`user_invalid_credentials`) (todo C)
   Prüfreihenfolge: Projekt-ID (`6a3c45ef003356d7f16d`, Frankfurt)? Hat das Konto überhaupt einen Passwort-Faktor oder entstand es über OAuth, Magic Link, Passkey? Schnellster Test: neues Passwort in der Console setzen.
-- [ ] T-3.5 · P1 · MFA verpflichtend für Admin- und Moderationskonten (Plan)
 - [ ] T-3.6 · P1 · SMTP mit EU-Standort, SPF, DKIM, DMARC und deutschen Vorlagen (todo C)
 - [ ] T-3.7 · P1 · `karriko.de` als Web-Plattform eintragen, `APP_ORIGIN` im Produktions-Build setzen (todo C, D)
 - [ ] T-3.8 · P1 · Passkey-`rpId` auf die Produktionsdomain festlegen, bevor echte Nutzer Passkeys anlegen; nachträglich nicht migrierbar (README)
 - [ ] T-3.10 · P1 · Ratenbegrenzungen aus der Referenz umsetzen oder nachweisen: 3 Bewertungen je 24 h, 5 Meldungen je Betrieb und 24 h, 5 Login-Versuche je IP und Minute (Referenz §2.4)
   Teilweise erledigt am 13.10.2026: 3 Bewertungen je 24 h in `submit_review` (`64c8973`, wirkt nach T-2.31). Offen: Meldungen je Betrieb (laufen direkt in die Tabelle, bräuchten eine Function) und Login-Versuche (Appwrite-Einstellung).
 - [ ] T-3.13 · P2 · E-Mail-Änderung nur mit erneuter Bestätigung (Referenz §3.3)
+  Stand 21.10.2026: Die App bietet keine E-Mail-Änderung an. Wenn sie kommt, muss danach die Bestätigung erneut verlangt werden (Wächter E-3.11 schickt unbestätigte Konten auf /verify-email).
 - [ ] T-3.15 · P2 · Gegen die echte Instanz durchspielen: Registrierungen, Bestätigungsmail, Reset, Realtime-Kanal, Magic Link doppelt öffnen, Social Login in Chrome, Safari und Firefox, Passkeys auf zwei Plattformen, alle TOTP-Pfade (todo C)
 - [ ] T-3.16 · P2 · Passkey-Dienst fertigstellen: Tabellen ohne Berechtigung, Schlüssel nur `users.read` und `users.write`, Ratenbegrenzung, abgelaufene Challenges aufräumen, als Function deployen (todo C)
   Tabellen `passkeys` und `webauthn_challenges` ohne jede Berechtigung, Felder und Indizes in `services/passkey-rp/README.md`. Als Appwrite Function, damit kein zweiter Auftragsverarbeiter entsteht.
@@ -108,7 +109,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-4.23 · P3 · ISMS-Grundlagen: Risikoliste und Erklärung zur Anwendbarkeit (Plan)
 
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
-- [ ] T-4.27 · P3 · Projekt- und Datenbank-ID aus `appwrite_constants.dart` über `--dart-define` beziehen wie die übrigen Kennungen. Kein Geheimnis, sie stehen ohnehin im ausgelieferten Web-Bundle, aber ein Staging-Projekt (T-2.1) braucht sie umschaltbar (`UMSETZUNG_BERICHT.md` §12)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
 - [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
   Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
@@ -141,7 +141,9 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.20 · P1 · Moderationsrichtlinie mit Regel für Namen von Privatpersonen in Freitexten (Verarbeitungsverzeichnis)
 
 - [ ] T-5.22 · P2 · Freitextlänge festlegen: Fragebogen erlaubt 4000 Zeichen, Referenz nennt 1000 (Fragebogen)
+  Entschieden am 21.10.2026: 1000 Zeichen wie im Factsheet. Umsetzung als neue Fragebogen-Version zusammen mit T-5.3 und T-5.23, damit nicht kurz hintereinander zwei Versionen ausgerollt werden.
 - [ ] T-5.23 · P3 · Dateiformate für Nachweise in Fragebogen und Ablage angleichen (Fragebogen)
+  Stand 21.10.2026: Fragebogen pdf/jpg/jpeg/png, Ablage zusätzlich webp. webp im Fragebogen ergänzen, mit der nächsten Version (siehe T-5.22).
 
 - [ ] T-5.24 · P1 · Zweck für die Antworten des Konfliktmoduls festlegen; sie fließen heute weder in Scores noch in die öffentliche Fassung, und ohne Zweck dürfen sie nicht gespeichert werden (Fragebogen)
 
@@ -151,8 +153,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 ## 6 · Oberfläche und Barrierefreiheit
 
-- [ ] T-6.2 · P1 · Akzentfarbe im Theme auf `accentDark` umstellen, WCAG AA (todo E)
-  `#E3342F` kommt auf 4,47:1, verlangt sind 4,5:1. Gehört ins Theme (`app_theme.dart`), nicht in einzelne Seiten; vorher am laufenden Build beurteilen.
 - [ ] T-6.4 · P2 · Die 24 Layout-Überläufe abarbeiten, zuerst `/subscription`, `/register/betrieb`, `/kontakt` bei 375 px (todo E)
   Teilweise erledigt am 13.10.2026: Kontakt und Registrierung Betrieb behoben, neuer Layout-Test für neun öffentliche Seiten (`7a02091`); `/subscription` ist ausgeblendet. Ursache durchgängig `Text` in einer `Row` ohne `Expanded`/`Flexible`.
 - [ ] T-6.5 · P2 · Auth-Seiten auf Swiss Design umstellen und mit Kopfzeile versehen (todo E)

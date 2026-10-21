@@ -36,7 +36,7 @@ class NotFoundScreen extends StatelessWidget {
                   const Text(
                     'FEHLER 404',
                     style: TextStyle(
-                      color: AppColors.accent,
+                      color: AppColors.accentDark,
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.32,

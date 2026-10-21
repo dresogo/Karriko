@@ -160,7 +160,7 @@ class _VerificationUploadState extends State<VerificationUpload> {
           const SizedBox(height: AppLayout.s16),
           Text(
             _fehler!,
-            style: const TextStyle(color: AppColors.accent, height: 1.5),
+            style: const TextStyle(color: AppColors.accentDark, height: 1.5),
           ),
         ],
       ],

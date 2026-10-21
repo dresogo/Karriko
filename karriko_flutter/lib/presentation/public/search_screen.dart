@@ -352,7 +352,7 @@ class _IndustryLink extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              color: selected ? AppColors.accent : AppColors.ink,
+              color: selected ? AppColors.accentDark : AppColors.ink,
               fontSize: 15,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
             ),
@@ -919,7 +919,7 @@ class _JobCard extends StatelessWidget {
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  color: AppColors.accent,
+                  color: AppColors.accentDark,
                   child: Text(
                     job.badge,
                     style: const TextStyle(

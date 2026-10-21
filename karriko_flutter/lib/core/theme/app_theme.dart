@@ -281,7 +281,8 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.accent,
+          // Textknöpfe sind kleiner Text: dunkleres Rot für WCAG AA (T-6.2).
+          foregroundColor: AppColors.accentDark,
           textStyle: const TextStyle(
             fontFamily: AppFonts.family,
             fontSize: 14,
@@ -344,7 +345,8 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.accent,
+        // Beschriftung der Leiste ist kleiner Text (T-6.2).
+        selectedItemColor: AppColors.accentDark,
         unselectedItemColor: AppColors.muted,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
