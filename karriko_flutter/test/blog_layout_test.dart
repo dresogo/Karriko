@@ -19,7 +19,6 @@ class _OfflineAuthRepository implements AuthRepository {
 }
 
 const _featuredArticle = 'Wie finde ich den richtigen Ausbildungsbetrieb?';
-const _updateTitle = 'Fragebogen für Betriebsbewertungen';
 
 late GoRouter _router;
 
@@ -90,28 +89,27 @@ void main() {
     });
   });
 
-  testWidgets('Ungefiltert erscheinen Artikel und Produkt-Updates',
-      (tester) async {
+  testWidgets('Ungefiltert erscheinen die Artikel', (tester) async {
     await _pumpAt(tester, '/blog', const Size(1440, 900));
 
     expect(find.text(_featuredArticle), findsOneWidget);
-    expect(find.text(_updateTitle), findsOneWidget);
   });
 
-  testWidgets('Filter „Artikel" blendet Produkt-Updates aus', (tester) async {
+  testWidgets('Filter „Artikel" zeigt den Aufmacher', (tester) async {
     await _pumpAt(tester, '/blog?typ=artikel', const Size(1440, 900));
 
     expect(find.text(_featuredArticle), findsOneWidget);
-    expect(find.text(_updateTitle), findsNothing);
   });
 
-  testWidgets('Filter „Produkt-Updates" blendet Artikel und Aufmacher aus',
-      (tester) async {
+  // Bis zum Launch gibt es keine Produkt-Updates (T-11.8). Die Rubrik sagt das,
+  // statt Versionen zu erfinden.
+  testWidgets('Filter „Produkt-Updates" ist ehrlich leer', (tester) async {
     await _pumpAt(tester, '/blog?typ=updates', const Size(1440, 900));
 
-    expect(find.text(_updateTitle), findsOneWidget);
+    expect(find.text('Nichts gefunden'), findsOneWidget);
     expect(find.text(_featuredArticle), findsNothing);
     expect(find.textContaining('AUFMACHER'), findsNothing);
+    expect(find.textContaining('v1.'), findsNothing);
   });
 
   testWidgets('Filterwechsel schreibt sich in die URL', (tester) async {

@@ -648,7 +648,7 @@ class _NavEintrag extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),
-                      color: AppColors.accent,
+                      color: AppColors.accentDark,
                       child: Text(
                         '$zaehler',
                         semanticsLabel: '$zaehler offen',

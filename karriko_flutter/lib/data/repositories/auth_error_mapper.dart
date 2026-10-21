@@ -80,6 +80,18 @@ AuthFailure mapAppwriteError(
         'Zu viele Versuche. Bitte warte einen Moment und versuche es erneut.'),
     'password_personal_data' => const AuthFailure(
         'Das Passwort darf keine persönlichen Daten enthalten.'),
+    // Passwortregeln des Projekts (E-3.12). Die Prüfung gegen bekannte
+    // Datenlecks macht Appwrite selbst (Have I Been Pwned, nur ein Teil des
+    // Hashs geht hinaus); übergehen lässt sie sich nicht (T-3.20, T-8.12).
+    'password_pwned' => const AuthFailure(
+        'Dieses Passwort ist aus einem bekannten Datenleck bekannt. Bitte wähle '
+        'ein anderes.'),
+    'general_pwned_passwords_unavailable' => const AuthFailure(
+        'Das Passwort lässt sich gerade nicht prüfen. Bitte versuch es gleich '
+        'noch einmal.'),
+    'password_recently_used' => const AuthFailure(
+        'Dieses Passwort hast du vor Kurzem schon verwendet. Bitte wähle ein '
+        'anderes.'),
 
     // Verbrauchtes, abgelaufenes oder falsches Einmal-Geheimnis.
     'user_invalid_token' => switch (context) {

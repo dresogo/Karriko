@@ -432,7 +432,7 @@ Ehrliche Liste.
   weiter die größte offene Lücke — aber sie ist jetzt kleiner: Die Zuordnung,
   an der es fehlte, ist gebaut.
 * ~~**Es gibt keinen Moderationsbildschirm.**~~ Inzwischen gibt es ihn: den
-  Admin-Bereich unter `/#/admin` mit der Function `moderation_desk`.
+  Admin-Bereich unter `/admin` mit der Function `moderation_desk`.
 * **Die Moderation sieht den Verifikationsnachweis nur über die Console.** Es gibt
   keine Function, die ihn ausliefert, und das ist gewollt vorsichtig — aber es
   bedeutet, dass die Moderation zwei Werkzeuge braucht.

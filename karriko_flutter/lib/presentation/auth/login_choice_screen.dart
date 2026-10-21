@@ -60,7 +60,7 @@ class LoginChoiceScreen extends StatelessWidget {
                     title: 'Ich bin Betrieb',
                     description:
                         'Unternehmensprofil pflegen, Feedback einsehen und '
-                        'auf Bewertungen antworten.',
+                        'Ausbildungsstellen anbieten.',
                     onTap: () => context.go(target('/login/betrieb')),
                   ),
                 ],

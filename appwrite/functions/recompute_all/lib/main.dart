@@ -62,6 +62,13 @@ Future<dynamic> main(final context) async {
     );
   }
 
+  // Ohne zweiten Faktor keine Moderation (T-3.5). Die Team-Prüfung oben sagt,
+  // wer darf; diese sagt, dass das Konto dafür ausreichend geschützt ist.
+  if (!await hasMfaEnabled(ctx)) {
+    ctx.logError('$userId hat keinen zweiten Faktor.');
+    return _antwort(context, FunctionResponse.forbidden(mfaRequiredMessage));
+  }
+
   final versatz = (ctx.body['offset'] as num?)?.round() ?? 0;
   final probelauf = ctx.body['dry_run'] == true;
 
@@ -152,6 +159,10 @@ Future<dynamic> main(final context) async {
         tableId: ctx.config.publicReviewsTable,
         rowId: oeffentlich.$id,
         data: {
+          // Der Änderungszeitpunkt bleibt so grob wie die Veröffentlichung
+          // (T-5.21); sonst stünde dort sekundengenau dieser Lauf.
+          if (oeffentlich.data['published_at'] case final String quartal)
+            publicUpdatedAtField: quartal,
           for (final eintrag in subscoreColumns.entries)
             eintrag.value: scores.subscores[eintrag.key],
           for (final eintrag in separateColumns.entries)

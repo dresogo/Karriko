@@ -32,22 +32,25 @@ class FaqScreen extends StatelessWidget {
       [
         (
           'Wie schreibe ich eine Bewertung?',
-          'Melde dich an, wähle deinen Betrieb aus und beantworte die Fragen zu '
-              'Ausbildungsqualität, Betreuung, Work-Life-Balance und Übernahmechancen.',
+          'Melde dich an, bestätige deine E-Mail-Adresse, wähle deinen Betrieb aus '
+              'und beantworte die Fragen zu fachlicher Ausbildung, Betreuung, '
+              'Umgang, Belastung und Perspektive.',
         ),
         (
           'Ist meine Bewertung anonym?',
-          'Ja. Du entscheidest bei jeder Bewertung selbst, ob dein Name angezeigt wird. '
-              'Standardmäßig veröffentlichen wir Bewertungen anonym.',
+          'Ja. Bewertungen erscheinen immer ohne Namen, und die veröffentlichte '
+              'Bewertung ist mit keinem Konto verknüpft.',
         ),
         (
           'Kann mein Betrieb sehen, wer bewertet hat?',
-          'Bei anonymen Bewertungen wird dem Betrieb weder Name noch E-Mail-Adresse '
-              'angezeigt.',
+          'Nein. Der Betrieb sieht weder Namen noch E-Mail-Adresse. Einen Wert '
+              'zeigen wir erst ab drei Bewertungen, damit sich eine einzelne nicht '
+              'zuordnen lässt.',
         ),
         (
           'Kann ich eine Bewertung nachträglich ändern?',
-          'Du kannst deine Bewertungen unter „Meine Bewertungen“ bearbeiten oder löschen.',
+          'Ändern lässt sich eine abgeschickte Bewertung noch nicht. Unter „Meine '
+              'Bewertungen“ kannst du sie löschen und danach eine neue schreiben.',
         ),
       ],
     ),
@@ -55,9 +58,11 @@ class FaqScreen extends StatelessWidget {
       'Für Betriebe',
       [
         (
-          'Wie beanspruche ich mein Unternehmensprofil?',
-          'Registriere dich als Betrieb. Nach der Verifizierung kannst du dein Profil '
-              'vervollständigen und auf Bewertungen antworten.',
+          'Wie bekomme ich ein Unternehmensprofil?',
+          'Registriere dich als Betrieb und bestätige deine E-Mail-Adresse; dabei '
+              'entsteht dein Profil. Danach prüfen wir deinen Betrieb. '
+              'Ausbildungsstellen veröffentlichen kannst du nach dieser Prüfung, '
+              'als Entwurf vorbereiten schon vorher.',
         ),
         (
           'Können wir Bewertungen löschen lassen?',
@@ -71,8 +76,9 @@ class FaqScreen extends StatelessWidget {
       [
         (
           'Wie werden Bewertungen geprüft?',
-          'Jede Bewertung durchläuft vor der Veröffentlichung eine Moderation, in der '
-              'Regel innerhalb von 24 Stunden.',
+          'Jede Bewertung geht vor der Veröffentlichung durch die Moderation. Auf '
+              'deinen Wunsch erscheint sie später, zum Beispiel erst nach deinem '
+              'Ausbildungsende.',
         ),
         (
           'Was passiert mit meinen Daten?',
@@ -102,7 +108,7 @@ class FaqScreen extends StatelessWidget {
                   const Text(
                     'HILFE & SUPPORT',
                     style: TextStyle(
-                      color: AppColors.accent,
+                      color: AppColors.accentDark,
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.32,
@@ -232,7 +238,7 @@ class _ContactBox extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppLayout.s8),
           Text(
-            'Schreib uns – wir melden uns in der Regel innerhalb von zwei Werktagen.',
+            'Schreib uns.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: AppLayout.s24),

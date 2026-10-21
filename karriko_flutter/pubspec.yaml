@@ -12,6 +12,10 @@ dependencies:
   # Deutsche Beschriftungen der eingebauten Material-Dialoge (Datumswaehler).
   flutter_localizations:
     sdk: flutter
+  # Pfad-URLs statt `#/` im Browser (T-11.2). Teil des Flutter-SDK, kein
+  # weiteres Paket von aussen (E-07).
+  flutter_web_plugins:
+    sdk: flutter
   go_router: ^14.2.0
   flutter_riverpod: ^2.5.1
   appwrite: ^25.4.0

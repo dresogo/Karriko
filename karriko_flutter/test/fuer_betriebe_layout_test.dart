@@ -98,12 +98,11 @@ void main() {
     expect(find.text('Profil verwalten'), findsOneWidget);
     // Je einmal als Merkmal, im Hero-Panel und im Basis-Tarif.
     expect(find.text('Bewertungen einsehen'), findsNWidgets(3));
-    expect(find.text('Auf Bewertungen antworten'), findsNWidgets(3));
-    expect(find.text('Analytics nutzen'), findsOneWidget);
+    expect(find.text('Ausbildungsstellen anbieten'), findsNWidgets(3));
     expect(find.text('PLÄNE & PREISE'), findsOneWidget);
     expect(find.text('Kostenlos'), findsOneWidget);
-    expect(find.text('49 €/Monat'), findsOneWidget);
-    expect(find.text('Prioritäts-Support'), findsOneWidget);
+    expect(find.text('In Planung'), findsNWidgets(2));
+    expect(find.text('Kommt später'), findsOneWidget);
     expect(find.text('Erstelle jetzt dein kostenloses Betriebsprofil.'),
         findsOneWidget);
   });
@@ -152,7 +151,7 @@ void main() {
     final basis = tester
         .getRect(find.widgetWithText(ElevatedButton, 'Kostenlos starten'));
     final premium =
-        tester.getRect(find.widgetWithText(ElevatedButton, 'Premium starten'));
+        tester.getRect(find.widgetWithText(ElevatedButton, 'Kommt später'));
 
     expect(basis.left, greaterThan(0));
     expect(premium.right, lessThan(size.width));
@@ -192,5 +191,20 @@ void main() {
 
     expect(tester.getTopLeft(find.byType(FooterWidget)).dy,
         greaterThan(size.height));
+  });
+
+  // T-11.7: Die Seite verspricht nichts, was nicht entschieden ist.
+  testWidgets('Keine unentschiedenen Versprechen', (tester) async {
+    await _pumpAt(tester, const Size(1440, 2400));
+
+    for (final text in [
+      'Auf Bewertungen antworten',
+      'Analytics nutzen',
+      'Bewerbermanagement',
+      'Team-Verwaltung',
+      '49 €/Monat',
+    ]) {
+      expect(find.text(text), findsNothing, reason: text);
+    }
   });
 }

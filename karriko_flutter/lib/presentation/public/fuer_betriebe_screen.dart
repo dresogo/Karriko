@@ -105,7 +105,7 @@ class _HeroCopy extends StatelessWidget {
           const Text(
             'FÜR AUSBILDUNGSBETRIEBE',
             style: TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.32,
@@ -150,8 +150,10 @@ class _HeroCopy extends StatelessWidget {
 class _TrustRow extends StatelessWidget {
   const _TrustRow();
 
+  // Nur, was stimmt (Factsheet §2.5, T-11.5). „Kostenlos“ heißt hier schon
+  // ein Tarif, deshalb der Standort der Daten (E-02).
   static const _facts = [
-    ('2.400+', 'Bewertungen'),
+    ('Frankfurt', 'Datenhaltung'),
     ('DACH', 'Fokusmarkt'),
     ('DSGVO', 'von Beginn an'),
   ];
@@ -221,10 +223,12 @@ class _RegisterPanel extends StatelessWidget {
 
   const _RegisterPanel({required this.isWide});
 
+  // Nur, was es gibt (E-30, T-11.7). Antworten auf Bewertungen sind noch
+  // nicht entschieden (T-8.1).
   static const _included = [
     'Öffentliches Profil',
     'Bewertungen einsehen',
-    'Auf Bewertungen antworten',
+    'Ausbildungsstellen anbieten',
   ];
 
   @override
@@ -243,7 +247,7 @@ class _RegisterPanel extends StatelessWidget {
           const Text(
             'KOSTENLOS STARTEN',
             style: TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 1.32,
@@ -348,7 +352,7 @@ class _FeaturesSection extends StatelessWidget {
     (
       '01',
       'Profil verwalten',
-      'Präsentiere deinen Betrieb mit Logo, Beschreibung und Ansprechpartnern.'
+      'Präsentiere deinen Betrieb mit Beschreibung, Website und Standort.'
     ),
     (
       '02',
@@ -357,13 +361,15 @@ class _FeaturesSection extends StatelessWidget {
     ),
     (
       '03',
-      'Auf Bewertungen antworten',
-      'Reagiere professionell auf Kritik und zeige, dass du Feedback ernst nimmst.'
+      'Ausbildungsstellen anbieten',
+      'Schreibe deine Ausbildungsstellen selbst aus. Sie stehen auf deinem '
+          'Profil und in der Suche.'
     ),
     (
       '04',
-      'Analytics nutzen',
-      'Verstehe Trends und vergleiche dich mit anderen Betrieben deiner Branche.'
+      'In Planung',
+      'Ob Betriebe auf Bewertungen antworten und Auswertungen sehen, legen wir '
+          'noch fest. Hier steht nur, was es schon gibt.'
     ),
   ];
 
@@ -482,7 +488,7 @@ class _FeatureRow extends StatelessWidget {
                   width: 72,
                   child: Text(number,
                       style: const TextStyle(
-                          color: AppColors.accent,
+                          color: AppColors.accentDark,
                           fontSize: 13,
                           fontWeight: FontWeight.w800)),
                 ),
@@ -508,7 +514,7 @@ class _FeatureRow extends StatelessWidget {
               children: [
                 Text(number,
                     style: const TextStyle(
-                        color: AppColors.accent,
+                        color: AppColors.accentDark,
                         fontSize: 13,
                         fontWeight: FontWeight.w800)),
                 const SizedBox(height: 8),
@@ -539,22 +545,24 @@ class _PricingSection extends StatelessWidget {
     features: [
       'Öffentliches Profil',
       'Bewertungen einsehen',
-      'Auf Bewertungen antworten',
+      'Ausbildungsstellen anbieten',
     ],
     isPrimary: false,
   );
 
   static const _premium = _PricingCard(
+    // Umfang und Preis sind offen (T-8.4); kein Preis ohne Angabe zu netto
+    // oder brutto, keine Funktionen, die es nicht gibt (E-30, T-11.7). Fest
+    // steht nur, was Premium nie sein darf (E-29).
     name: 'PREMIUM',
-    price: '49 €/Monat',
+    price: 'In Planung',
     features: [
-      'Alles aus Basis',
-      'Detaillierte Analytics',
-      'Team-Verwaltung',
-      'Bewerbermanagement',
-      'Prioritäts-Support',
+      'Mehr Möglichkeiten, den Betrieb darzustellen',
+      'Kein Einfluss auf Bewertungen oder ihre Reihenfolge',
+      'Umfang und Preis stehen noch nicht fest',
     ],
-    isPrimary: true,
+    isPrimary: false,
+    available: false,
   );
 
   @override
@@ -609,11 +617,15 @@ class _PricingCard extends StatelessWidget {
   final List<String> features;
   final bool isPrimary;
 
+  /// Lässt sich der Tarif schon buchen? Sonst ist die Schaltfläche aus.
+  final bool available;
+
   const _PricingCard({
     required this.name,
     required this.price,
     required this.features,
     required this.isPrimary,
+    this.available = true,
   });
 
   @override
@@ -639,7 +651,7 @@ class _PricingCard extends StatelessWidget {
           Text(
             isPrimary ? 'EMPFOHLEN' : name,
             style: TextStyle(
-              color: isPrimary ? AppColors.accent : mutedColor,
+              color: isPrimary ? AppColors.accentDark : mutedColor,
               fontSize: 12,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.96,
@@ -693,8 +705,13 @@ class _PricingCard extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () => context.go('/register/betrieb'),
-              child: Text(isPrimary ? 'Premium starten' : 'Kostenlos starten'),
+              onPressed:
+                  available ? () => context.go('/register/betrieb') : null,
+              child: Text(!available
+                  ? 'Kommt später'
+                  : isPrimary
+                      ? 'Premium starten'
+                      : 'Kostenlos starten'),
             ),
           ),
         ],

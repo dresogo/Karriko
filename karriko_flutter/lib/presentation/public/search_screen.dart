@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
@@ -19,6 +20,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
+  final _cityController = TextEditingController();
   String _query = '';
   String _industry = 'Alle Branchen';
   double? _minRating;
@@ -32,17 +34,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     'Gesundheit & Pflege',
     'Industrie',
   ];
-  static const _cities = ['Zürich', 'Genf', 'Basel', 'Bern'];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final q = GoRouterState.of(context).uri.queryParameters['q'] ?? '';
+      // Suchbegriff und Filter stehen in der Adresse (T-11.17), damit sich
+      // eine Suche teilen und nach dem Neuladen wiederherstellen lässt.
+      final params = GoRouterState.of(context).uri.queryParameters;
+      final q = params['q'] ?? '';
       if (q.isNotEmpty) {
         _query = q;
         _controller.text = q;
       }
+      final branche = params['branche'];
+      if (branche != null && _industries.contains(branche)) {
+        _industry = branche;
+      }
+      final ort = params['ort']?.trim() ?? '';
+      if (ort.isNotEmpty) {
+        _city = ort;
+        _cityController.text = ort;
+      }
+      final sterne = double.tryParse(params['sterne'] ?? '');
+      if (sterne != null && sterne >= 1 && sterne <= 5) _minRating = sterne;
+      setState(() {});
       _search();
     });
   }
@@ -50,10 +66,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
   void _search() {
+    _adresseAktualisieren();
     ref.read(searchProvider.notifier).search(
           SearchFilters(
             query: _query.isEmpty ? null : _query,
@@ -66,16 +84,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         );
   }
 
+  /// Schreibt Suchbegriff und Filter in die Adresszeile, ohne neu zu
+  /// navigieren: Der Bildschirm bleibt, wie er ist, nur die Adresse ändert
+  /// sich (`replace`, damit „Zurück“ nicht durch jeden Filterwechsel läuft).
+  void _adresseAktualisieren() {
+    final params = <String, String>{
+      if (_query.isNotEmpty) 'q': _query,
+      if (_industry != 'Alle Branchen') 'branche': _industry,
+      if (_city != null) 'ort': _city!,
+      if (_minRating != null && _minRating! > 1)
+        'sterne': _minRating!.toStringAsFixed(0),
+    };
+    SystemNavigator.routeInformationUpdated(
+      uri:
+          Uri(path: '/search', queryParameters: params.isEmpty ? null : params),
+      replace: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width >= 900;
 
     final filters = _FiltersSidebar(
       industries: _industries,
-      cities: _cities,
+      cityController: _cityController,
       selectedIndustry: _industry,
       minRating: _minRating ?? 1,
-      selectedCity: _city,
       onIndustry: (v) {
         setState(() => _industry = v);
         _search();
@@ -85,7 +120,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         _search();
       },
       onCity: (v) {
-        setState(() => _city = _city == v ? null : v);
+        final ort = v.trim().isEmpty ? null : v.trim();
+        // Jeder Klick neben das Feld meldet sich; gesucht wird nur, wenn sich
+        // der Ort geändert hat.
+        if (ort == _city) return;
+        setState(() => _city = ort);
         _search();
       },
     );
@@ -163,20 +202,18 @@ class _Header extends StatelessWidget {
 
 class _FiltersSidebar extends StatelessWidget {
   final List<String> industries;
-  final List<String> cities;
+  final TextEditingController cityController;
   final String selectedIndustry;
   final double minRating;
-  final String? selectedCity;
   final ValueChanged<String> onIndustry;
   final ValueChanged<double> onRating;
   final ValueChanged<String> onCity;
 
   const _FiltersSidebar({
     required this.industries,
-    required this.cities,
+    required this.cityController,
     required this.selectedIndustry,
     required this.minRating,
-    required this.selectedCity,
     required this.onIndustry,
     required this.onRating,
     required this.onCity,
@@ -244,16 +281,18 @@ class _FiltersSidebar extends StatelessWidget {
         const SizedBox(height: AppLayout.s32),
         _FilterSection(
           title: 'STANDORT',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final city in cities)
-                _CityCheckbox(
-                  label: city,
-                  selected: selectedCity == city,
-                  onTap: () => onCity(city),
-                ),
-            ],
+          // Ein freies Feld statt einer festen Liste: Die Orte stehen in den
+          // Betriebsdaten, und die Suche geht über den Volltext-Index auf
+          // `city` (T-11.10). Gesucht wird mit Enter oder beim Verlassen.
+          child: TextField(
+            controller: cityController,
+            onSubmitted: onCity,
+            onTapOutside: (_) => onCity(cityController.text),
+            textInputAction: TextInputAction.search,
+            decoration: const InputDecoration(
+              hintText: 'Ort, z. B. Dortmund',
+              isDense: true,
+            ),
           ),
         ),
       ],
@@ -313,50 +352,10 @@ class _IndustryLink extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              color: selected ? AppColors.accent : AppColors.ink,
+              color: selected ? AppColors.accentDark : AppColors.ink,
               fontSize: 15,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CityCheckbox extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _CityCheckbox(
-      {required this.label, required this.selected, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return SelectionContainer.disabled(
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 6),
-          child: Row(
-            children: [
-              Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(
-                  color: selected ? AppColors.ink : AppColors.surface,
-                  border: Border.all(
-                      color: selected ? AppColors.ink : AppColors.line),
-                ),
-                child: selected
-                    ? const Icon(Icons.check, size: 14, color: Colors.white)
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Text(label,
-                  style: const TextStyle(color: AppColors.ink, fontSize: 15)),
-            ],
           ),
         ),
       ),
@@ -411,6 +410,7 @@ class _MainColumn extends ConsumerWidget {
                 ),
               ),
               TapTarget(
+                semanticLabel: 'Suchen',
                 onTap: onSearch,
                 builder: (_, active) => Container(
                   width: 58,
@@ -920,7 +920,7 @@ class _JobCard extends StatelessWidget {
                 Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  color: AppColors.accent,
+                  color: AppColors.accentDark,
                   child: Text(
                     job.badge,
                     style: const TextStyle(

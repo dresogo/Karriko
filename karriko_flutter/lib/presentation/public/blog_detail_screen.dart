@@ -558,7 +558,7 @@ class _BodyHeading extends StatelessWidget {
             child: Text(
               number.toString().padLeft(2, '0'),
               style: const TextStyle(
-                color: AppColors.accent,
+                color: AppColors.accentDark,
                 fontSize: 13,
                 fontWeight: FontWeight.w800,
                 fontFeatures: [FontFeature.tabularFigures()],
@@ -855,7 +855,7 @@ class _TocItem extends StatelessWidget {
                       child: Text(
                         number.toString().padLeft(2, '0'),
                         style: const TextStyle(
-                          color: AppColors.accent,
+                          color: AppColors.accentDark,
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
                           height: 1.5,

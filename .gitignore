@@ -124,3 +124,9 @@ _legacy/
 # Claude Code: lokale, nutzerspezifische Einstellungen
 .claude/settings.local.json
 .claude/
+
+# Lokale Exporte aus dem Plan-Dokument und der Sitemap. Enthalten
+# Anwaltsfragen, Notfallplan und Geschaeftsinterna; das Repo ist oeffentlich
+# (T-1.15).
+notes/claude_plan/
+notes/Karriko Sitemap.html

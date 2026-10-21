@@ -8,14 +8,18 @@ class Validators {
     return null;
   }
 
+  /// Mindestlänge eines Passworts (E-3.12). Dieselbe Zahl steht in der
+  /// Passwortregel des Appwrite-Projekts; die Prüfung hier spart nur den Weg
+  /// zum Server.
+  static const passwordMinLength = 12;
+
+  /// Nur die Länge, keine Pflicht zu Großbuchstaben, Ziffern oder Zeichen
+  /// (E-3.12). Gängige und geleakte Passwörter und solche mit Name oder
+  /// E-Mail-Adresse lehnt der Server ab.
   static String? password(String? value) {
     if (value == null || value.isEmpty) return 'Passwort ist erforderlich';
-    if (value.length < 8) return 'Passwort muss mindestens 8 Zeichen lang sein';
-    if (!RegExp(r'[A-Z]').hasMatch(value)) {
-      return 'Passwort muss mindestens einen Großbuchstaben enthalten';
-    }
-    if (!RegExp(r'[0-9]').hasMatch(value)) {
-      return 'Passwort muss mindestens eine Ziffer enthalten';
+    if (value.length < passwordMinLength) {
+      return 'Passwort muss mindestens $passwordMinLength Zeichen lang sein';
     }
     return null;
   }

@@ -63,7 +63,7 @@ class CompanyRepository {
       tableId: AppwriteConstants.companiesTable,
       queries: [Query.equal('slug', slug), Query.limit(1)],
     );
-    if (result.rows.isEmpty) throw Exception('Unternehmen nicht gefunden');
+    if (result.rows.isEmpty) throw CompanyNotFound(slug);
     return CompanyModel.fromJson(_toMap(result.rows.first));
   }
 
@@ -276,4 +276,16 @@ class CompanyProfileException implements Exception {
 
   @override
   String toString() => message;
+}
+
+/// Zu dieser Adresse gibt es kein Unternehmen. Getrennt von Netz- und
+/// Serverfehlern, damit das Profil nicht „nicht gefunden“ meldet, wenn nur die
+/// Verbindung fehlte (T-11.13).
+class CompanyNotFound implements Exception {
+  const CompanyNotFound(this.slug);
+
+  final String slug;
+
+  @override
+  String toString() => 'Unternehmen „$slug“ nicht gefunden';
 }

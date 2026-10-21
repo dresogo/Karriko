@@ -6,16 +6,12 @@ import 'models/blog_entry_model.dart';
 class BlogContent {
   BlogContent._();
 
+  // Produkt-Updates stehen hier erst wieder, wenn es Versionen gibt, die
+  // Nutzer tatsaechlich bekommen haben. Die Eintraege v1.2.1 bis v1.4
+  // beschrieben Fehlerbehebungen und Funktionen, die es so nie gab (T-11.8).
+  // Der Artikel „Top 10 Ausbildungsberufe 2026“ ist entfernt: Rangliste ohne
+  // Quelle, versprochene Übernahmequoten fehlten (T-11.21).
   static final entries = <BlogEntry>[
-    BlogEntry.update(
-      title: 'Fragebogen für Betriebsbewertungen',
-      teaser:
-          'Azubis beantworten jetzt strukturierte Fragen zu Ausbildungsqualität, '
-          'Betreuung und Übernahmechancen statt nur Freitext zu schreiben.',
-      date: DateTime(2026, 7, 24),
-      version: 'v1.4',
-      updateKind: UpdateKind.neu,
-    ),
     BlogEntry.article(
       title: 'Wie finde ich den richtigen Ausbildungsbetrieb?',
       teaser:
@@ -78,15 +74,6 @@ class BlogContent {
         ),
       ],
     ),
-    BlogEntry.update(
-      title: 'Schnellere Suche mit Branchenfiltern',
-      teaser:
-          'Die Betriebssuche filtert jetzt nach Branche, Ort und Mindestbewertung '
-          'und liefert Ergebnisse spürbar schneller.',
-      date: DateTime(2026, 6, 2),
-      version: 'v1.3',
-      updateKind: UpdateKind.verbessert,
-    ),
     BlogEntry.article(
       title: 'DSGVO und Ausbildungsbewertungen',
       teaser:
@@ -135,15 +122,6 @@ class BlogContent {
         ),
       ],
     ),
-    BlogEntry.update(
-      title: 'Benachrichtigungen kamen doppelt an',
-      teaser:
-          'Ein Fehler hat Betrieben dieselbe Bewertungsbenachrichtigung mehrfach '
-          'zugestellt. Das ist behoben.',
-      date: DateTime(2026, 5, 8),
-      version: 'v1.2.1',
-      updateKind: UpdateKind.behoben,
-    ),
     BlogEntry.article(
       title: 'Warum Azubi-Feedback Betrieben hilft',
       teaser:
@@ -185,53 +163,6 @@ class BlogContent {
           'Alle drei Monate ein kurzes Feedbackgespräch einplanen.',
           'Lernzeit für die Berufsschule im Wochenplan blocken.',
         ], ordered: true),
-      ],
-    ),
-    BlogEntry.article(
-      title: 'Top 10 Ausbildungsberufe 2026',
-      teaser:
-          'Welche Ausbildungen aktuell am stärksten nachgefragt werden und wo die '
-          'Übernahmequoten am höchsten liegen.',
-      date: DateTime(2026, 3, 12),
-      category: 'Karriere',
-      readingMinutes: 3,
-      slug: 'top-ausbildungsberufe-2026',
-      body: const [
-        ArticleParagraph(
-          'Jedes Jahr beginnen Hunderttausende eine duale Ausbildung. Einige '
-          'Berufe sind dabei besonders gefragt – bei Bewerberinnen und '
-          'Bewerbern ebenso wie bei Betrieben, die händeringend Nachwuchs '
-          'suchen.',
-        ),
-        ArticleHeading('Die gefragtesten Berufe'),
-        ArticleParagraph(
-          'Diese Ausbildungen gehören seit Jahren zu den beliebtesten. Die '
-          'Reihenfolge schwankt je nach Jahr und Region.',
-        ),
-        ArticleList([
-          'Kaufmann/-frau für Büromanagement',
-          'Kraftfahrzeugmechatroniker/-in',
-          'Kaufmann/-frau im Einzelhandel',
-          'Medizinische/-r Fachangestellte/-r',
-          'Fachinformatiker/-in',
-          'Industriekaufmann/-frau',
-          'Elektroniker/-in',
-          'Verkäufer/-in',
-          'Anlagenmechaniker/-in für Sanitär-, Heizungs- und Klimatechnik',
-          'Zahnmedizinische/-r Fachangestellte/-r',
-        ], ordered: true),
-        ArticleHeading('Wo die Chancen besonders gut sind'),
-        ArticleParagraph(
-          'In Handwerk, Pflege und IT übersteigt die Zahl der offenen Stellen '
-          'vielerorts die der Bewerbungen. Das verbessert deine '
-          'Verhandlungsposition und die Aussicht auf eine Übernahme.',
-        ),
-        ArticleCallout(
-          title: 'Bewertungen vergleichen',
-          text: 'Wie es um Übernahme und Betreuung in einem konkreten Betrieb '
-              'steht, verraten die Bewertungen auf Karriko oft besser als '
-              'jede Statistik.',
-        ),
       ],
     ),
   ];

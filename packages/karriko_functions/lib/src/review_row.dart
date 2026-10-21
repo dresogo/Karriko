@@ -131,7 +131,14 @@ Map<String, Object?> buildPublicReviewRow({
   String? companyName,
   String? companySlug,
 }) {
+  final quartal = quarterStart(publishedAt ?? DateTime.now()).toIso8601String();
   return {
+    // Appwrite setzt sonst `$createdAt` und `$updatedAt` sekundengenau, und
+    // beide sind wie die ganze Zeile für jeden lesbar. Mit einem API-Schlüssel
+    // lassen sie sich überschreiben (Timestamp Overrides); hier auf denselben
+    // Quartalsbeginn wie `published_at` (T-5.21, E-2.12).
+    publicCreatedAtField: quartal,
+    publicUpdatedAtField: quartal,
     'review_id': reviewId,
     'company_id': reviewRow['company_id'],
     'company_name': companyName,
@@ -149,10 +156,15 @@ Map<String, Object?> buildPublicReviewRow({
     'freitext_schlecht': reviewRow['freitext_schlecht'],
     'is_aged': isAged,
     'verified': reviewRow['verified'] ?? false,
-    'published_at':
-        quarterStart(publishedAt ?? DateTime.now()).toIso8601String(),
+    'published_at': quartal,
   };
 }
+
+/// Die Systemspalten, die `buildPublicReviewRow` vergröbert. Wer eine Zeile in
+/// `public_reviews` später ändert, setzt [publicUpdatedAtField] wieder auf
+/// `published_at`, sonst verriete der Änderungszeitpunkt mehr als das Quartal.
+const publicCreatedAtField = r'$createdAt';
+const publicUpdatedAtField = r'$updatedAt';
 
 /// Beginn des Quartals, in dem [zeitpunkt] liegt, in UTC.
 ///

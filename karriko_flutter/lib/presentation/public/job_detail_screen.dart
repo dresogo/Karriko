@@ -97,7 +97,7 @@ class _JobHeroBand extends StatelessWidget {
                     if (job.industry != null && job.industry!.isNotEmpty)
                       job.industry!.toUpperCase(),
                   ].join(' · '),
-                  color: AppColors.accent,
+                  color: AppColors.accentDark,
                 ),
                 if (job.badge.isNotEmpty) _JobBadge(job: job),
               ],
@@ -246,7 +246,8 @@ class _JobBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (background, foreground) = switch (job.badgeVariant) {
-      JobBadgeVariant.isNew => (AppColors.accent, Colors.white),
+      // Kleine weiße Schrift auf Rot braucht das dunklere Rot (T-6.2).
+      JobBadgeVariant.isNew => (AppColors.accentDark, Colors.white),
       JobBadgeVariant.recent => (AppColors.audienceBeige, AppColors.ink),
       JobBadgeVariant.days => (AppColors.paper, AppColors.muted),
     };
@@ -257,7 +258,7 @@ class _JobBadge extends StatelessWidget {
         color: background,
         border: Border.all(
           color: job.badgeVariant == JobBadgeVariant.isNew
-              ? AppColors.accent
+              ? AppColors.accentDark
               : AppColors.line,
         ),
       ),
@@ -672,7 +673,7 @@ class _NumberedList extends StatelessWidget {
                   child: Text(
                     (i + 1).toString().padLeft(2, '0'),
                     style: const TextStyle(
-                      color: AppColors.accent,
+                      color: AppColors.accentDark,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
                     ),
@@ -812,7 +813,7 @@ class _NotFoundState extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _Eyebrow(text: 'STELLENANGEBOT', color: AppColors.accent),
+          const _Eyebrow(text: 'STELLENANGEBOT', color: AppColors.accentDark),
           const SizedBox(height: AppLayout.s16),
           Text(
             'Diese Stelle gibt\nes nicht mehr.',

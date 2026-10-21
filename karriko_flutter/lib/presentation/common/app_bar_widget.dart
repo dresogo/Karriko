@@ -81,7 +81,9 @@ class _WideHeader extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _navLink('Für Azubis', '/', context),
+                  // Statt „Für Azubis“, das nur zur Startseite führte
+                  // (T-11.16).
+                  _navLink('Suche', '/search', context),
                   const SizedBox(width: 34),
                   _navLink('Für Betriebe', '/fuer-betriebe', context),
                   const SizedBox(width: 34),
@@ -121,6 +123,7 @@ class _NarrowHeader extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TapTarget(
+              semanticLabel: 'Zurück',
               onTap: () => context.pop(),
               builder: (_, active) => _IconHover(
                 active: active,
@@ -148,6 +151,7 @@ class _NarrowHeader extends ConsumerWidget {
         const SizedBox(width: 12),
         Builder(
           builder: (ctx) => TapTarget(
+            semanticLabel: 'Menü öffnen',
             onTap: () => Scaffold.of(ctx).openDrawer(),
             builder: (_, active) => _IconHover(
               active: active,
@@ -411,7 +415,7 @@ class _MenuHeader extends StatelessWidget {
           Text(
             auth.isBetrieb ? 'BETRIEB' : 'AZUBI',
             style: const TextStyle(
-              color: AppColors.accent,
+              color: AppColors.accentDark,
               fontSize: 11,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.88,
@@ -512,7 +516,7 @@ class KarrikoDrawer extends ConsumerWidget {
                 child: _BrandMark(),
               ),
               const Divider(color: AppColors.line),
-              const _DrawerItem(label: 'Für Azubis', route: '/'),
+              const _DrawerItem(label: 'Suche', route: '/search'),
               const _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
               const _DrawerItem(label: 'Blog', route: '/blog'),
               const _DrawerItem(label: 'Über uns', route: '/ueber-uns'),

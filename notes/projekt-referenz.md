@@ -1,11 +1,13 @@
 # Karriko – Projektreferenz
 
-**Stand:** 4. August 2026
+**Stand:** 21. Oktober 2026 (an die Entscheidungen im Factsheet angeglichen, T-1.9)
 **Zweck:** Das fachliche Nachschlagewerk des Projekts. Was Karriko sein soll, welche Regeln gelten, welche Grenzwerte einzuhalten sind.
 
 Diese Datei fasst vierzehn ältere Notizen zusammen, die zwischen März und Juni 2026 entstanden sind. Alles Überholte ist entfernt, alles fachlich Gültige übernommen.
 
 **Wichtige Abgrenzung:** Dieses Dokument beschreibt **Anforderungen**, nicht den Umsetzungsstand. Was tatsächlich gebaut ist, steht in `notes/aufgaben-erledigt.md`, was offen ist, in `notes/aufgaben-offen.md`; die früheren Berichte liegen in `notes/archiv/`.
+
+**Zum Factsheet:** Bei Widersprüchen gilt `FACTSHEET.md`. Die Abschnitte zu Börse, Bewertungsaufbau, Gewichtung, Anonymität, Löschen und Export sind auf dessen Stand gebracht; wo eine Regel aus einer Entscheidung stammt, steht die Nummer dabei.
 
 **Zum Technologie-Wechsel:** Die Ursprungsdokumente beschrieben durchgehend einen Next.js-/Supabase-Stack mit tRPC, Prisma und Vercel. Davon ist nichts mehr gültig — die Anwendung ist eine **Flutter-App mit Appwrite als Backend**. Alle stack-spezifischen Vorgaben wurden beim Zusammenführen entfernt; die fachlichen Regeln dahinter gelten unverändert weiter, weil sie nichts mit der Technik zu tun haben.
 
@@ -37,9 +39,9 @@ Ein Betrieb darf **niemals** Daten eines anderen Betriebs sehen. Jeder Zugriff a
 
 ### 1.3 Was das Produkt ausdrücklich *nicht* ist
 
-Die Ausbildungsbörse mit Stellenanzeigen, Online-Bewerbung und Statusverfolgung war in der Ursprungsspezifikation ein Kernbestandteil. In der Flutter-App existiert sie **nicht**: Es gibt keine Jobs-Collection, keine Bewerbungen und keinen Datei-Upload. Die Stellenanzeigen auf der Oberfläche sind eine Behelfslösung, die aus Firmendaten abgeleitet wird.
+**Kein Ort für gekaufte Platzierungen.** Bewertungen und ihre Reihenfolge sind nicht käuflich, auch nicht über Premium (E-29).
 
-Das ist eine bewusst zu treffende Produktentscheidung, keine offene Aufgabe: Entweder die Börse kommt zurück auf die Roadmap, oder die Behelfslösung verschwindet aus der Oberfläche. Der derzeitige Zwischenzustand verspricht dem Nutzer etwas, das es nicht gibt.
+**Die Ausbildungsbörse ist entschieden (E-28):** Betriebe schreiben Ausbildungsstellen selbst aus; sie stehen auf dem Betriebsprofil, auf einer eigenen Stellenseite und in der Suche. Geschrieben wird nur über die Function `job_posting`, öffentlich wird eine Stelle erst, wenn der Betrieb verifiziert ist (T-4.31). Offen ist der Umfang: Online-Bewerbung, Datei-Upload und Statusverfolgung (T-8.5).
 
 ---
 
@@ -49,32 +51,31 @@ Der fachliche Kern der Plattform. Diese Regeln sind unabhängig von der Technik 
 
 ### 2.1 Aufbau einer Bewertung
 
-**Fünf Kategorien mit je fünf Fragen — 25 Fragen insgesamt:**
+Ein strukturierter Fragebogen in Phasen (Spezifikation: `notes/karriko-fragebogen.md`), keine freien Sternekategorien. Ausgewertet wird in **sechs Dimensionen** (E-23):
 
-1. Arbeitsumfeld & Atmosphäre
-2. Ausbildungsqualität
-3. Vergütung & Benefits
-4. Work-Life-Balance
-5. Karriere & Zukunftsperspektiven
+1. fachlich
+2. betreuung
+3. umgang
+4. belastung
+5. verguetung (per Feature-Flag aus, E-25; das Scoring normiert dann ohne sie)
+6. perspektive
 
-Pro Kategorie drei bis vier Sterne-Fragen (1–5) und ein bis zwei Freitextfragen (optional, max. 1000 Zeichen).
+Die Berufsschule wird getrennt ausgewiesen. Freitexte sind optional, höchstens 1000 Zeichen (Factsheet §5; der Fragebogen v1 erlaubt noch mehr, T-5.22).
 
 ### 2.2 Gewichtung
 
-```
-Durchschnitt = SUMME(gewicht × gesamtscore) / SUMME(gewicht)
+Gilt nach E-23 und ersetzt die alte Regel „namentlich 1,0, anonym 0,5“ (T-8.2): Namentliche Bewertungen gibt es nicht, jede Bewertung ist anonym.
 
-namentlich veröffentlicht → gewicht = 1.0
-anonym veröffentlicht     → gewicht = 0.5
-```
+- **Gewichte der Dimensionen** aus den Prioritäten, die die Azubis selbst angeben.
+- **Schrumpfung** gegen `priorMean 3.2` mit Stärke 5: Wenige Bewertungen ziehen den Wert zur Mitte, statt ihn ausschlagen zu lassen.
+- **Alterung:** Nach drei Jahren zählt eine Bewertung halb. Maßgeblich ist der Zeitpunkt des Einreichens.
+- **Sichtbarkeit (E-22):** Ein Score erst ab drei Bewertungen, Zahlenangaben nur in Bändern und erst ab fünf.
 
-Der `gesamtscore` einer Bewertung ist der Mittelwert **aller Sterne-Antworten**. Freitextantworten fließen nicht in die Berechnung ein.
-
-Der Gedanke dahinter: Wer mit Namen einsteht, wiegt schwerer — ohne dass anonyme Stimmen verstummen müssen.
+Gerechnet wird mit demselben Paket `questionnaire_core` in App und Functions (E-04).
 
 ### 2.3 Anonymität — technisch
 
-> Bei einer anonymen Bewertung wird die Nutzer-ID **immer** in der Datenbank gespeichert: für die Missbrauchsprüfung und die Eindeutigkeitskontrolle. Gesetzt wird zusätzlich das Kennzeichen `is_anonymous`. Weder API noch Oberfläche geben bei anonymen Bewertungen jemals Name, Avatar oder andere identifizierende Daten zurück. Die Nutzer-ID ist ausschließlich für die Moderation sichtbar.
+> Jede Bewertung ist anonym. Die Nutzer-ID steht nur in `reviews`, für die Eindeutigkeitskontrolle (eine Bewertung je Nutzer und Betrieb) und die Missbrauchsprüfung; diese Tabelle ist für keinen Client lesbar. Öffentlich ist allein `public_reviews`, ohne Nutzer-ID und mit dem Zeitpunkt nur als Quartal (E-21, E-2.12). Wird ein Konto gelöscht, verliert auch `reviews` den Bezug (E-4.5).
 
 **Die Regel, die daraus folgt:** Die Nutzer-ID wird serverseitig aus jeder Antwort entfernt, bevor sie das Backend verlässt — nicht erst im Client ausgeblendet. Ein ausgeblendetes Feld ist kein Datenschutz.
 
@@ -91,7 +92,7 @@ Der Gedanke dahinter: Wer mit Namen einsteht, wiegt schwerer — ohne dass anony
 
 ### 2.5 Löschen von Bewertungen
 
-Kein physisches Löschen, sondern ein `deleted_at`-Zeitstempel. Grund: Betriebsantworten sollen erhalten bleiben, und der Gesamtscore des Betriebs muss nachvollziehbar neu berechnet werden können. In der öffentlichen Ansicht verschwindet die Bewertung sofort.
+Wer eine eigene Bewertung löscht, löscht sie wirklich: die Zeile in `reviews`, die öffentliche Zeile, Meldungen dazu und den Nachweis; der Score des Betriebs wird neu berechnet (E-4.6). Kein `deleted_at`. Der frühere Grund für einen Zeitstempel, erhaltene Betriebsantworten, entfällt, solange es keine Antworten gibt (T-8.1); kommen sie, wird das neu entschieden (T-2.23).
 
 ---
 
@@ -134,23 +135,23 @@ Passwortregel: mindestens 8 Zeichen, ein Großbuchstabe, eine Ziffer.
 | Seite | Kern |
 |---|---|
 | Dashboard | Begrüßung, eigene Bewertungen, Merkliste, Benachrichtigungen |
-| Profil | Stammdaten; E-Mail-Änderung erfordert erneute Bestätigung |
-| Bewertung schreiben | mehrstufig: Betrieb suchen → Anonymität wählen → 5 Kategorien → Zusammenfassung |
-| Meine Bewertungen | bearbeiten (nur Freitext, keine Sterne) und löschen |
+| Profil | Stammdaten; eine E-Mail-Änderung muss erneut bestätigt werden (T-3.13) |
+| Bewertung schreiben | Betrieb suchen → Fragebogen in Phasen → Zusammenfassung; nur mit bestätigter Adresse (E-3.12) |
+| Meine Bewertungen | Status und Begründung einer Ablehnung, löschen (E-4.6); Bearbeiten des Freitexts offen (T-6.17) |
 | Merkliste | gemerkte Betriebe |
 | Benachrichtigungen | Antwort erhalten, Bewertung gemeldet, Bewertung entfernt, System |
 | Einstellungen | Konto, Datenschutz, Benachrichtigungen, Konto löschen |
 
-**Konto löschen (Art. 17 DSGVO)** — die Reihenfolge ist Teil der Anforderung:
+**Konto löschen (Art. 17 DSGVO, E-50, E-4.5):** Beantragt in den Einstellungen; 14 Tage lang lässt sich die Löschung nach der Anmeldung zurücknehmen, mehr zeigt das Konto in dieser Zeit nicht (E-3.11). Danach löscht der tägliche Lauf endgültig:
 
-1. E-Mail und Telefon auf `null`, Name auf „Gelöschter Nutzer"
-2. Profilbild aus dem Speicher entfernen
-3. namentliche Bewertungen: Anzeigename wird „Ehemaliger Azubi"
-4. anonyme Bewertungen: Nutzer-ID bleibt bestehen (Missbrauchsschutz)
-5. Auth-Konto löschen
-6. Datensatz mit `deleted_at` markieren
+1. Veröffentlichte Bewertungen bleiben stehen, ohne Nutzer-ID und Gerätehash.
+2. Nicht veröffentlichte Bewertungen, Entwürfe, Merkliste, Profil und Nachweise werden gelöscht.
+3. Eigene Meldungen bleiben für die Moderation, ohne Nutzer-ID.
+4. Das Konto selbst wird gelöscht; es bleibt keine Zeile, die es nennt.
 
-**Datenexport (Art. 20 DSGVO):** Profil, alle Bewertungen, Merkliste und Benachrichtigungen als JSON zum Herunterladen.
+Betriebskonten folgen eigenen Regeln (§3.4, T-2.24).
+
+**Datenexport (Art. 20 DSGVO, E-4.7):** Konto, Profil, eigene Bewertungen mit Antworten und Freitexten, Entwürfe, Merkliste und eigene Meldungen als JSON. Interne Prüfmerkmale gehören nicht dazu; ob eine Auskunft nach Art. 15 mehr umfassen muss, ist juristisch offen (T-5.27).
 
 ### 3.4 Betriebs-Bereich
 
@@ -225,7 +226,7 @@ Die beiden geringen Befunde (`X-Powered-By`, `X-Content-Type-Options`) betrafen 
 | Breakpoints | 375 / 768 / 1024 / 1440 px, Mobile-First |
 | Testabdeckung Geschäftslogik | > 80 % |
 
-Die Barrierefreiheit ist derzeit an zwei Stellen verfehlt: Die Akzentfarbe erreicht den Kontrastwert nicht, und die Kopfzeile bricht bei vergrößerter Systemschrift. Die Kopfzeile ist am 13.10.2026 behoben, die Akzentfarbe steht als T-6.2 offen.
+Die Barrierefreiheit ist derzeit an zwei Stellen verfehlt: Die Akzentfarbe erreicht den Kontrastwert nicht, und die Kopfzeile bricht bei vergrößerter Systemschrift. Die Kopfzeile ist am 13.10.2026 behoben; kleiner roter Text nutzt seit 21.10.2026 `accentDark` (T-6.2).
 
 ### Kritische Testfälle
 
@@ -233,11 +234,11 @@ Diese Fälle prüfen Regeln, die still brechen können, ohne dass es jemandem au
 
 | Fall | Erwartung |
 |---|---|
-| anonym vs. namentlich | Gewichtung 0,5 bzw. 1,0 wirkt korrekt im Durchschnitt |
+| Schrumpfung und Alterung | wenige Bewertungen liegen nahe `priorMean`, alte zählen halb (E-23) |
 | fremdes Profil bearbeiten | wird abgelehnt |
 | zweite Antwort auf dieselbe Bewertung | wird blockiert |
-| **Anonymität** | anonyme Bewertung gibt **keinerlei** Nutzerdaten preis — auch nicht in der API-Antwort |
-| Konto löschen | alle personenbezogenen Daten sind entfernt oder anonymisiert |
+| **Anonymität** | eine Bewertung gibt **keinerlei** Nutzerdaten preis — auch nicht in der API-Antwort |
+| Konto löschen | nach 14 Tagen sind alle personenbezogenen Daten entfernt; veröffentlichte Bewertungen tragen keine Nutzer-ID mehr |
 | Startseite bei 375 px | Inhalte stapeln sich, kein horizontaler Überlauf |
 
 ---
