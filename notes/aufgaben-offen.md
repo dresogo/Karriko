@@ -2,7 +2,7 @@
 
 **Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-152 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+147 Aufgaben sind offen, 59 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -72,7 +72,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 ## 3 · Anmeldung und Konten
 
 - [ ] T-3.1 · P1 · Rollen serverseitig über Teams oder Labels setzen, Prefs nur noch zur Anzeige (todo D)
-- [ ] T-3.2 · P1 · Ungenutzte Anmeldeverfahren abschalten, zuerst „Anonymous“ (todo D)
 - [ ] T-3.3 · P1 · Anmeldung des Betriebs-Testkontos klären (`user_invalid_credentials`) (todo C)
   Prüfreihenfolge: Projekt-ID (`6a3c45ef003356d7f16d`, Frankfurt)? Hat das Konto überhaupt einen Passwort-Faktor oder entstand es über OAuth, Magic Link, Passkey? Schnellster Test: neues Passwort in der Console setzen.
 - [ ] T-3.4 · P1 · MFA in der Console einschalten (Auth → Security) (todo C)
@@ -80,10 +79,8 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-3.6 · P1 · SMTP mit EU-Standort, SPF, DKIM, DMARC und deutschen Vorlagen (todo C)
 - [ ] T-3.7 · P1 · `karriko.de` als Web-Plattform eintragen, `APP_ORIGIN` im Produktions-Build setzen (todo C, D)
 - [ ] T-3.8 · P1 · Passkey-`rpId` auf die Produktionsdomain festlegen, bevor echte Nutzer Passkeys anlegen; nachträglich nicht migrierbar (README)
-- [ ] T-3.9 · P1 · Passwortregel auf Länge umstellen, Password Dictionary und Personal Data Check einschalten (Plan; Referenz nennt noch 8 Zeichen)
 - [ ] T-3.10 · P1 · Ratenbegrenzungen aus der Referenz umsetzen oder nachweisen: 3 Bewertungen je 24 h, 5 Meldungen je Betrieb und 24 h, 5 Login-Versuche je IP und Minute (Referenz §2.4)
   Teilweise erledigt am 13.10.2026: 3 Bewertungen je 24 h in `submit_review` (`64c8973`, wirkt nach T-2.31). Offen: Meldungen je Betrieb (laufen direkt in die Tabelle, bräuchten eine Function) und Login-Versuche (Appwrite-Einstellung).
-- [ ] T-3.12 · P1 · Nach Passwort-Reset alle Sitzungen beenden, Reset-Link nach 60 Minuten ungültig (Referenz §3.2)
 - [ ] T-3.13 · P2 · E-Mail-Änderung nur mit erneuter Bestätigung (Referenz §3.3)
 - [ ] T-3.14 · P2 · Sitzungsdauer und Zahl gleichzeitiger Sitzungen begrenzen (Plan)
 - [ ] T-3.15 · P2 · Gegen die echte Instanz durchspielen: Registrierungen, Bestätigungsmail, Reset, Realtime-Kanal, Magic Link doppelt öffnen, Social Login in Chrome, Safari und Firefox, Passkeys auf zwei Plattformen, alle TOTP-Pfade (todo C)
@@ -93,8 +90,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend. Die Schritte in der Google Cloud Console (Redirect-URI aus der Appwrite Console kopieren, nicht abtippen) stehen in `archiv/status-report-2026-08-02.md` §9.9.
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
-- [ ] T-3.20 · P2 · Passwörter beim Registrieren und beim Reset gegen Datenlecks prüfen: SHA-1 im Client, nur die ersten 5 Zeichen über eine Appwrite Function an die Pwned-Passwords-API von Have I Been Pwned (k-Anonymität, Header `Add-Padding: true`), Vergleich auf dem Gerät. Über die Function, damit keine Nutzer-IP an einen weiteren Dienst geht (E-02, E-06). Ergänzt T-3.9; ob die Meldung übergangen werden darf, entscheidet T-8.12 (Chat)
-  Ohne serverseitige Registrierung ist die Prüfung umgehbar; sie schützt Nutzer vor Versehen, nicht vor Angreifern. Fällt die API aus, Registrierung nicht blockieren, sondern ohne Prüfung fortfahren und das protokollieren.
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
@@ -179,6 +174,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Am 18.10.2026 nach E-30 ausgeblendet: `bookmarkCompany` wurde nirgends aufgerufen, die Liste blieb immer leer. Alte Seite in der Historie bis `a6e1595`.
 - [ ] T-6.24 · P2 · Passwortfeld mit Stärkeanzeige bei Registrierung, Reset und Passwortänderung: vier Segmente mit Text (sehr schwach, schwach, gut, stark), Hinweis bei aktiver Feststelltaste, Anzeigen/Verbergen, Leckmeldung aus T-3.20 direkt am Feld (Vorlage: Bild im Chat vom 20.10.2026) (Chat)
   Bewertung nach Länge und bekannten Mustern statt nach Zeichenklassen, passend zu T-3.9; ein Paket wie zxcvbn nur mit Begründung (E-07). Farben nur aus `app_theme.dart`: Rot ist `accent`, Grün `green`, einen Gelbton gibt es dort nicht (W-1.4), also vorher festlegen. Stärke nie nur über Farbe zeigen, Text und Screenreader-Ansage gehören dazu (WCAG 2.1 AA).
+  Stand 21.10.2026: Die Leckprüfung macht jetzt Appwrite (E-3.12); ihre Ablehnung kommt als `password_pwned` und soll direkt am Feld stehen. Die Stärkeanzeige richtet sich nach der Mindestlänge 12.
 
 ## 7 · Tests
 
@@ -208,7 +204,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-8.9 · P2 · Anmeldeschranke festlegen: welche zwei Kategorien und wie viele Bewertungen ohne Konto sichtbar sind, was Betriebskonten bei anderen Betrieben sehen; danach als Entscheidung ins Factsheet (Konzept: Tab Anmeldeschranke)
 - [ ] T-8.10 · P2 · Vergütung abfragen oder nicht: `module_verguetung` ist per Feature-Flag aus. Stärkster Vergleichsanreiz für Azubis, zugleich die Angabe, die Betriebe am ehesten zur Löschungsforderung bringt (`UMSETZUNG_BERICHT.md` §9, `karriko-fragebogen.md` §11)
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
-- [ ] T-8.12 · P2 · Festlegen, ob die Leckmeldung aus T-3.20 übergangen werden darf oder ein anderes Passwort erzwingt; Ergebnis als Entscheidung ins Factsheet (Chat)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 

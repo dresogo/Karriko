@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 20. Oktober 2026, abgeglichen mit `main` @ `78b4e94`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 21. Oktober 2026, abgeglichen mit `main` @ `4f41589`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -136,7 +136,6 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 |---|---|---|---|
 | E-40 | 08/2026 | **Magic Link und Social Login nur für Azubis.** Wird ein Betriebskonto erkannt, sofort abmelden. | Betriebe durchlaufen eine menschliche Firmenprüfung. |
 | E-42 | – | **Keine Konto-Erkundung:** falsches Passwort und unbekannte E-Mail geben dieselbe Meldung, „Passwort vergessen" antwortet immer gleich. Bekannte Ausnahme: Registrierung (erst mit serverseitiger Registrierung lösbar). | Schutz der Nutzer. |
-| E-43 | – | Passwort: min. 8 Zeichen, ein Großbuchstabe, eine Ziffer. Unbestätigte Konten dürfen lesen, nicht bewerten. | – |
 | E-44 | – | **Jede Berechtigung serverseitig.** Client-Weiterleitungen sind Bequemlichkeit, keine Sicherheit. Ein Betrieb sieht nie Daten eines anderen. | – |
 | E-45 | 10/2026 | **`companies` mit Row Security**: Tabellenrechte nur `read("any")`, `create("users")`; Änderungsrecht pro Zeile für den Eigentümer. | Vorher durfte jeder Angemeldete jede Firma ändern. |
 | E-46 | 10/2026 | **Von Betrieben eingegebene URLs werden nicht verlinkt** (Website, Bewerbungs-URL, Kontakt-Mail), bis eine Prüfung auf `http`/`https` existiert. | Sonst wird eine `javascript:`-URL zum Einfallstor (PR #11). |
@@ -144,6 +143,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-48 | 08/2026 | **Zugangsdaten nie ins Repo.** Fund im öffentlichen Repo → sofort rotieren, `git filter-repo --replace-text`, Force-Push, danach GitHub-Support um Purge unerreichbarer Objekte bitten. API-Schlüssel nach Gebrauch widerrufen, nicht ablaufen lassen. | Fall `notes/fehler.md`: 26 Tage öffentlich lesbar; alte Commits bleiben per SHA abrufbar. |
 | E-3.10 | 20.10.2026 | **Die Rolle (azubi/betrieb) steuert nur die Oberfläche.** Sie steht in `profiles` und in den Account-Prefs und ist vom Konto selbst änderbar; keine Function und keine Tabellenregel darf ihr vertrauen. Was ein Betrieb darf, hängt am Eigentum der Firma (`owner_id`, gesetzt von `company_profile`) und an den Teams. | Appwrite kennt keine Rechte je Spalte, Prefs sind immer vom Konto beschreibbar. Eine Rolle, die nur der Server setzen kann, wäre ein Appwrite-Label und erst nötig, wenn eine Regel daran hängen soll (T-4.30, W-3.2). |
 | E-3.11 | 20.10.2026 | **Router-Wächter-Reihenfolge fest:** Laden → zweiter Faktor → beantragte Kontolöschung → E-Mail-Bestätigung → Rolle. Mit beantragter Löschung führt jeder Kontobereich auf `/konto-loeschung`, öffentliche Seiten bleiben erreichbar. Admin-Bereich außerhalb der Rollenregeln, prüft selbst die Teams. | Andere Reihenfolge erzeugt Weiterleitungsschleifen; die Löschung steht vor der Bestätigung, weil auch ein nie bestätigtes Konto gelöscht werden darf (T-2.8). Ersetzt E-41. |
+| E-3.12 | 21.10.2026 | **Passwortregel nach Länge:** mindestens 12 Zeichen, keine Pflicht zu Großbuchstaben, Ziffern oder Sonderzeichen. Appwrite lehnt außerdem die 10.000 häufigsten Passwörter, Passwörter mit Name oder E-Mail und bekannt geleakte Passwörter ab (Have I Been Pwned, nicht übergehbar). Nach einer Passwortänderung enden alle anderen Sitzungen. Unbestätigte Konten dürfen lesen, nicht bewerten. | NIST SP 800-63B und BSI empfehlen Länge statt Zeichenklassen. Die Leckprüfung läuft auf dem Server: nicht umgehbar, keine Nutzer-IP an einen weiteren Dienst (T-3.9, T-3.12, T-3.20, T-8.12). Ersetzt E-43. |
 
 ### Datenschutz und Löschkonzept
 
