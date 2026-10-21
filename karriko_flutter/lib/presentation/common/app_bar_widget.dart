@@ -123,6 +123,7 @@ class _NarrowHeader extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TapTarget(
+              semanticLabel: 'Zurück',
               onTap: () => context.pop(),
               builder: (_, active) => _IconHover(
                 active: active,
@@ -150,6 +151,7 @@ class _NarrowHeader extends ConsumerWidget {
         const SizedBox(width: 12),
         Builder(
           builder: (ctx) => TapTarget(
+            semanticLabel: 'Menü öffnen',
             onTap: () => Scaffold.of(ctx).openDrawer(),
             builder: (_, active) => _IconHover(
               active: active,

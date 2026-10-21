@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'app/app.dart';
@@ -11,6 +13,10 @@ void main() async {
   // als index.html aus (web/.htaccess). Ausserhalb des Browsers ohne Wirkung.
   usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
+  // Im Browser baut Flutter den Baum fuer Screenreader sonst erst, wenn
+  // jemand einen unsichtbaren, englisch beschrifteten Knopf „Enable
+  // accessibility“ findet und drueckt (T-11.15). So steht er von Anfang an.
+  if (kIsWeb) SemanticsBinding.instance.ensureSemantics();
   await AppwriteService.initialize();
   runApp(const ProviderScope(child: KarrikoApp()));
 }

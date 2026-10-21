@@ -410,6 +410,7 @@ class _MainColumn extends ConsumerWidget {
                 ),
               ),
               TapTarget(
+                semanticLabel: 'Suchen',
                 onTap: onSearch,
                 builder: (_, active) => Container(
                   width: 58,

@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 21.10.2026 | T-11.15 | Screenreader sehen nur „Enable accessibility“, Menü- und Suchknopf ohne Beschriftung | Im Browser `SemanticsBinding.instance.ensureSemantics()` beim Start; `TapTarget(semanticLabel:)` mit „Menü öffnen“, „Zurück“ und „Suchen“. Test `tap_target_semantics_test.dart`. Mit echtem Screenreader noch nicht durchgespielt | dieser Commit |
 | 21.10.2026 | T-8.2 | Gewichtung „namentlich 1,0, anonym 0,5“ aus der Referenz streichen | Referenz §2.2 beschreibt jetzt E-23 (Prioritätsgewichte, Schrumpfung, Alterung) und E-22; namentliche Bewertungen gibt es nicht | dieser Commit |
 | 21.10.2026 | T-2.23 | Löschmodell der Referenz mit Art. 17 und der neuen Strecke abgleichen | Referenz §2.3, §2.5 und §3.3 folgen E-4.5 und E-4.6 (Nutzerbezug wird entfernt, wirklich gelöscht). Neu zu entscheiden, falls Betriebsantworten kommen (T-8.1) | dieser Commit |
 | 21.10.2026 | T-1.9 | `projekt-referenz.md` auf den aktuellen Stand bringen | Börse (E-28, T-4.31), Bewertungsaufbau und Gewichtung (E-23, E-25), Anonymität (E-21, E-2.12), Löschen und Export (E-4.5 bis E-4.7), Azubi-Bereich, kritische Testfälle. Kopf verweist auf das Factsheet als vorrangig | dieser Commit |

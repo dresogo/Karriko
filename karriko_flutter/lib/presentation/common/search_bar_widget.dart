@@ -325,6 +325,7 @@ class _SearchFieldState extends State<_SearchField> {
           ),
           // Roter Such-Button
           TapTarget(
+            semanticLabel: 'Suchen',
             onTap: () => widget.onSubmit(widget.controller.text),
             builder: (_, active) => Container(
               width: 58,

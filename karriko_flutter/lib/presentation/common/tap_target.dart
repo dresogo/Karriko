@@ -19,11 +19,16 @@ class TapTarget extends StatefulWidget {
 
   final HitTestBehavior? behavior;
 
+  /// Name für Screenreader, wenn der Inhalt nur ein Icon ist (T-11.15).
+  /// Ohne ihn liest ein Screenreader nur „Schaltfläche“ vor.
+  final String? semanticLabel;
+
   const TapTarget({
     super.key,
     required this.onTap,
     required this.builder,
     this.behavior,
+    this.semanticLabel,
   });
 
   @override
@@ -69,6 +74,7 @@ class _TapTargetState extends State<TapTarget> {
         child: Semantics(
           button: true,
           enabled: enabled,
+          label: widget.semanticLabel,
           child: GestureDetector(
             onTap: widget.onTap,
             behavior: widget.behavior,
