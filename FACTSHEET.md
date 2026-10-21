@@ -198,7 +198,7 @@ Vor jedem PR: `dart format`, `flutter analyze` (0 Hinweise), alle Tests grün. B
 | Datei | Inhalt |
 |---|---|
 | `FACTSHEET.md` | Was gilt und warum (diese Datei); Nummernsystem in Abschnitt 10 |
-| `notes/projekt-referenz.md` | Fachliche Anforderungen (Teile durch E-23 überholt) |
+| `notes/projekt-referenz.md` | Fachliche Anforderungen, am 21.10.2026 an dieses Factsheet angeglichen (T-1.9) |
 | `notes/aufgaben-offen.md` | Offene Aufgaben T-x.y, priorisiert |
 | `notes/aufgaben-erledigt.md` | Erledigte Aufgaben mit Datum und Commit |
 | `notes/APPWRITE_SETUP.md` | Tabellen, Rechte, Functions, Fristen; Einspielen und Abnahmetest |
