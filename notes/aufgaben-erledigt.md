@@ -8,6 +8,16 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 21.10.2026 | T-11.21 | Blog „Top 10 Ausbildungsberufe 2026“ ohne Quelle | Artikel entfernt, bis es eine belegte Quelle gibt. Entschieden mit dem Nutzer | dieser Commit |
+| 21.10.2026 | T-11.20 | Übergangsdomain ohne `noindex` | `X-Robots-Tag: noindex, nofollow` in `web/.htaccess` (mod_headers); zum Launch entfernen (T-10.4) | dieser Commit |
+| 21.10.2026 | T-11.19 | Metadaten „A new Flutter project.“, Flutter-Farben | `index.html` und `manifest.json` mit Namen Karriko, Beschreibung und Farben aus `app_theme.dart` (paper, ink) | dieser Commit |
+| 21.10.2026 | T-11.18 | Google-Knopf heißt bei der Registrierung „anmelden“ | `SocialSignInButtons(registering: true)` sagt „Mit Google registrieren“ bzw. „Mit Apple registrieren“ | dieser Commit |
+| 21.10.2026 | T-11.17 | Branche und Ort stehen nicht in der Adresse | `/search?q=…&branche=…&ort=…&sterne=…`: beim Öffnen gelesen, bei jeder Suche ohne Navigation in die Adresse geschrieben (`replace`). Test `search_url_test.dart` | dieser Commit |
+| 21.10.2026 | T-11.16 | Menü: „Für Azubis“ führt zur Startseite, „Suche“ fehlt | „Suche“ statt „Für Azubis“ in Kopfzeile und Seitenmenü. Entschieden mit dem Nutzer | dieser Commit |
+| 21.10.2026 | T-11.13 | Netzwerkfehler erscheint als „Betrieb nicht gefunden“ | `CompanyNotFound` nur bei unbekannter Adresse; sonst „Das Profil ließ sich nicht laden“ mit „Erneut versuchen“. Test `company_detail_error_test.dart` | dieser Commit |
+| 21.10.2026 | T-3.14 | Sitzungsdauer und Zahl gleichzeitiger Sitzungen begrenzen | 30 Tage, höchstens 10 Sitzungen je Konto (Projekteinstellung). Entschieden mit dem Nutzer | Projekteinstellung |
+| 21.10.2026 | T-3.4 | MFA in der Console einschalten | Faktor TOTP erlaubt, E-Mail, Telefon und eigener Faktor aus (die App richtet nur TOTP ein) | Projekteinstellung |
+| 21.10.2026 | T-1.15 | Lokale Exporte `notes/claude_plan/` und `notes/Karriko Sitemap.html` | In `.gitignore`, bleiben lokal. Entschieden mit dem Nutzer | dieser Commit |
 | 21.10.2026 | T-8.12 | Darf die Leckmeldung übergangen werden? | Nein: Appwrite lehnt bekannt geleakte Passwörter ab, nicht übergehbar (E-3.12). Entschieden mit dem Nutzer | dieser Commit |
 | 21.10.2026 | T-3.20 | Passwörter gegen Datenlecks prüfen | Statt eigener Function die eingebaute Prüfung von Appwrite (Have I Been Pwned, k-Anonymität, aus Frankfurt): Ablehnung bei Registrierung, Reset und Änderung, nicht umgehbar, keine Nutzer-IP an einen weiteren Dienst. Anmeldung mit altem geleaktem Passwort wird nicht gesperrt (`sessions` aus). Meldungen für `password_pwned` und `general_pwned_passwords_unavailable` in der App. Entschieden mit dem Nutzer | dieser Commit |
 | 21.10.2026 | T-3.12 | Nach Passwort-Reset alle Sitzungen beenden, Reset-Link 60 Minuten | Session-Invalidation im Projekt an: Eine Passwortänderung beendet alle Sitzungen. Der Reset-Link gilt in Appwrite eine Stunde | Projekteinstellung, dieser Commit |

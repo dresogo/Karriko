@@ -1,11 +1,11 @@
 {
-    "name": "karriko_flutter",
-    "short_name": "karriko_flutter",
+    "name": "Karriko",
+    "short_name": "Karriko",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F7F2",
+    "theme_color": "#111111",
+    "description": "Azubis bewerten ihren Ausbildungsbetrieb, anonym und strukturiert.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

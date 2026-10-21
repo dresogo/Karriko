@@ -8,6 +8,7 @@ import '../../providers/company_provider.dart';
 import '../../providers/job_provider.dart';
 import '../../providers/review_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../data/repositories/company_repository.dart';
 import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../../data/models/company_scores.dart';
@@ -40,7 +41,14 @@ class CompanyDetailScreen extends ConsumerWidget {
       body: company.when(
         data: (c) => _CompanyDetailBody(company: c),
         loading: () => const _LoadingState(),
-        error: (_, __) => const _NotFoundState(),
+        // Nur wenn es das Profil wirklich nicht gibt, heißt es „nicht
+        // gefunden“. Alles andere ist ein Ladefehler mit neuem Versuch
+        // (T-11.13).
+        error: (fehler, _) => fehler is CompanyNotFound
+            ? const _NotFoundState()
+            : _LoadErrorState(
+                onRetry: () => ref.invalidate(companyBySlugProvider(slug)),
+              ),
       ),
     );
   }
@@ -1294,6 +1302,45 @@ class _NotFoundState extends StatelessWidget {
             onPressed: () => context.go('/search'),
             icon: const Icon(Icons.arrow_back, size: 18),
             label: const Text('Zur Suche'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadErrorState extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _LoadErrorState({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return ContentBand(
+      padding: const EdgeInsets.symmetric(vertical: AppLayout.s64),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _Eyebrow(text: 'BETRIEBSPROFIL', color: AppColors.accentDark),
+          const SizedBox(height: AppLayout.s16),
+          Text(
+            'Das Profil ließ sich\nnicht laden.',
+            style: Theme.of(context).textTheme.displaySmall,
+          ),
+          const SizedBox(height: AppLayout.s16),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Text(
+              'Vermutlich fehlt gerade die Verbindung. Versuch es gleich noch '
+              'einmal.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(height: AppLayout.s24),
+          OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Erneut versuchen'),
           ),
         ],
       ),

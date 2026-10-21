@@ -2,7 +2,7 @@
 
 **Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-147 Aufgaben sind offen, 59 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+137 Aufgaben sind offen, 58 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -35,8 +35,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-1.7 · P2 · SonarCloud Automatic Analysis abschalten (todo H)
 - [ ] T-1.9 · P2 · `projekt-referenz.md` auf den aktuellen Stand bringen: Die Börse ist entschieden, Löschmodell und Gewichtung stammen noch aus der alten Strecke (neu)
 - [ ] T-1.10 · P3 · Lizenz festlegen oder bewusst ohne Lizenz bleiben (README)
-- [ ] T-1.15 · P2 · Entscheiden, was mit den lokalen Exporten `notes/claude_plan/` und `notes/Karriko Sitemap.html` passiert: committen (dann öffentlich, darunter Anwaltsfragen, Notfallplan, CEO-Routinen und eine Geschäftsidee), per `.gitignore` lokal halten oder nach git-crypt in `notes/intern/` (Chat)
-  Bis dahin nicht eingecheckt; sie erscheinen deshalb als ungespeicherte Änderung. Hängt mit T-1.1 zusammen.
 
 ## 2 · Datenschicht und Funktionen
 
@@ -74,7 +72,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-3.1 · P1 · Rollen serverseitig über Teams oder Labels setzen, Prefs nur noch zur Anzeige (todo D)
 - [ ] T-3.3 · P1 · Anmeldung des Betriebs-Testkontos klären (`user_invalid_credentials`) (todo C)
   Prüfreihenfolge: Projekt-ID (`6a3c45ef003356d7f16d`, Frankfurt)? Hat das Konto überhaupt einen Passwort-Faktor oder entstand es über OAuth, Magic Link, Passkey? Schnellster Test: neues Passwort in der Console setzen.
-- [ ] T-3.4 · P1 · MFA in der Console einschalten (Auth → Security) (todo C)
 - [ ] T-3.5 · P1 · MFA verpflichtend für Admin- und Moderationskonten (Plan)
 - [ ] T-3.6 · P1 · SMTP mit EU-Standort, SPF, DKIM, DMARC und deutschen Vorlagen (todo C)
 - [ ] T-3.7 · P1 · `karriko.de` als Web-Plattform eintragen, `APP_ORIGIN` im Produktions-Build setzen (todo C, D)
@@ -82,7 +79,6 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-3.10 · P1 · Ratenbegrenzungen aus der Referenz umsetzen oder nachweisen: 3 Bewertungen je 24 h, 5 Meldungen je Betrieb und 24 h, 5 Login-Versuche je IP und Minute (Referenz §2.4)
   Teilweise erledigt am 13.10.2026: 3 Bewertungen je 24 h in `submit_review` (`64c8973`, wirkt nach T-2.31). Offen: Meldungen je Betrieb (laufen direkt in die Tabelle, bräuchten eine Function) und Login-Versuche (Appwrite-Einstellung).
 - [ ] T-3.13 · P2 · E-Mail-Änderung nur mit erneuter Bestätigung (Referenz §3.3)
-- [ ] T-3.14 · P2 · Sitzungsdauer und Zahl gleichzeitiger Sitzungen begrenzen (Plan)
 - [ ] T-3.15 · P2 · Gegen die echte Instanz durchspielen: Registrierungen, Bestätigungsmail, Reset, Realtime-Kanal, Magic Link doppelt öffnen, Social Login in Chrome, Safari und Firefox, Passkeys auf zwei Plattformen, alle TOTP-Pfade (todo C)
 - [ ] T-3.16 · P2 · Passkey-Dienst fertigstellen: Tabellen ohne Berechtigung, Schlüssel nur `users.read` und `users.write`, Ratenbegrenzung, abgelaufene Challenges aufräumen, als Function deployen (todo C)
   Tabellen `passkeys` und `webauthn_challenges` ohne jede Berechtigung, Felder und Indizes in `services/passkey-rp/README.md`. Als Appwrite Function, damit kein zweiter Auftragsverarbeiter entsteht.
@@ -243,15 +239,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
   Teilweise erledigt am 21.10.2026: Impressum nennt § 5 DDG. Offen: Impressum und Datenschutzerklärung sind weiter Platzhalter (T-5.1, T-10.3).
 - [ ] T-11.9 · P1 · Registrierung: Checkbox „Ich stimme den AGB und der Datenschutzerklärung zu“ ohne Links; einer Datenschutzerklärung stimmt man nicht zu. Text und Links anpassen, Wortlaut juristisch prüfen; Mindestalter siehe T-5.18 (Fehlerreport Website)
-- [ ] T-11.13 · P2 · Betriebsprofil: Ein Netzwerkfehler erscheint als „Betrieb nicht gefunden“; beide Fälle trennen, beim Fehler „Erneut versuchen“ (Fehlerreport Website)
 - [ ] T-11.14 · P2 · Bei 320 px Wortumbrüche mitten im Wort („Bewertunge / n“, „Unternehmensp / rofil“) und abgeschnittene Texte („Passk…“, Fehlermeldungen); verwandt mit T-6.4 (Fehlerreport Website)
 - [ ] T-11.15 · P2 · Screenreader sehen nur „Enable accessibility“ (englisch), bis man es aktiviert; Menü- und Suchknopf ohne Beschriftung. `SemanticsBinding.instance.ensureSemantics()` prüfen, Beschriftungen setzen (Fehlerreport Website)
-- [ ] T-11.16 · P2 · Menü: „Für Azubis“ führt nur zur Startseite, „Suche“ fehlt im Menü (steht nur im Footer) (Fehlerreport Website)
-- [ ] T-11.17 · P2 · Suche: Der Suchbegriff steht inzwischen als `?q=` in der URL, Branche und Ort nicht; Suche lässt sich so nicht teilen oder per Zurück wiederherstellen (Fehlerreport Website)
-- [ ] T-11.18 · P2 · Registrierung: Der Google-Knopf heißt „Mit Google anmelden“ statt „registrieren“; fehlender Seitenrahmen siehe T-6.5 (Fehlerreport Website)
-- [ ] T-11.19 · P3 · Metadaten: „A new Flutter project.“, App-Name `karriko_flutter`, Flutter-Standardfarbe in `web/index.html` und `web/manifest.json` (Fehlerreport Website)
-- [ ] T-11.20 · P3 · Übergangsdomain ohne `noindex`: `X-Robots-Tag: noindex` im Server setzen (Fehlerreport Website)
-- [ ] T-11.21 · P3 · Blog „Top 10 Ausbildungsberufe 2026“: Teaser verspricht Übernahmequoten, die der Artikel nicht liefert; keine Quelle für die Rangliste (Fehlerreport Website)
 - [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-08), in der App `Link` aus `url_launcher` (Fehlerreport Website)
 
 ## Bewusst nicht geplant

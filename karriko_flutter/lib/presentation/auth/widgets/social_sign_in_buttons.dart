@@ -13,7 +13,12 @@ import '../../../providers/auth_provider.dart';
 /// Skripte — sonst entstünde allein durch das Anzeigen der Anmeldeseite eine
 /// Datenübermittlung an Google, die einwilligungspflichtig wäre.
 class SocialSignInButtons extends ConsumerStatefulWidget {
-  const SocialSignInButtons({super.key});
+  const SocialSignInButtons({super.key, this.registering = false});
+
+  /// Auf der Registrierung heißt es „registrieren“, nicht „anmelden“
+  /// (T-11.18). Der Weg ist derselbe: Appwrite legt das Konto beim ersten
+  /// Mal an.
+  final bool registering;
 
   @override
   ConsumerState<SocialSignInButtons> createState() =>
@@ -71,7 +76,9 @@ class _SocialSignInButtonsState extends ConsumerState<SocialSignInButtons> {
             Expanded(
               child: _ProviderButton(
                 label: 'Google',
-                semanticLabel: 'Mit Google anmelden',
+                semanticLabel: widget.registering
+                    ? 'Mit Google registrieren'
+                    : 'Mit Google anmelden',
                 mark: const _GoogleMark(),
                 onPressed: () => _anmelden('google'),
               ),
@@ -80,7 +87,9 @@ class _SocialSignInButtonsState extends ConsumerState<SocialSignInButtons> {
             Expanded(
               child: _ProviderButton(
                 label: 'Apple',
-                semanticLabel: 'Mit Apple anmelden',
+                semanticLabel: widget.registering
+                    ? 'Mit Apple registrieren'
+                    : 'Mit Apple anmelden',
                 // Das Apple-Zeichen liegt in den Material Icons, die mit
                 // Flutter ausgeliefert werden – kein Asset noetig.
                 mark: const Icon(Icons.apple, size: 20, color: AppColors.ink),

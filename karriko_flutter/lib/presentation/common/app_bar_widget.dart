@@ -81,7 +81,9 @@ class _WideHeader extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _navLink('Für Azubis', '/', context),
+                  // Statt „Für Azubis“, das nur zur Startseite führte
+                  // (T-11.16).
+                  _navLink('Suche', '/search', context),
                   const SizedBox(width: 34),
                   _navLink('Für Betriebe', '/fuer-betriebe', context),
                   const SizedBox(width: 34),
@@ -512,7 +514,7 @@ class KarrikoDrawer extends ConsumerWidget {
                 child: _BrandMark(),
               ),
               const Divider(color: AppColors.line),
-              const _DrawerItem(label: 'Für Azubis', route: '/'),
+              const _DrawerItem(label: 'Suche', route: '/search'),
               const _DrawerItem(label: 'Für Betriebe', route: '/fuer-betriebe'),
               const _DrawerItem(label: 'Blog', route: '/blog'),
               const _DrawerItem(label: 'Über uns', route: '/ueber-uns'),

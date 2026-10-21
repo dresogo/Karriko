@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
@@ -38,11 +39,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final q = GoRouterState.of(context).uri.queryParameters['q'] ?? '';
+      // Suchbegriff und Filter stehen in der Adresse (T-11.17), damit sich
+      // eine Suche teilen und nach dem Neuladen wiederherstellen lässt.
+      final params = GoRouterState.of(context).uri.queryParameters;
+      final q = params['q'] ?? '';
       if (q.isNotEmpty) {
         _query = q;
         _controller.text = q;
       }
+      final branche = params['branche'];
+      if (branche != null && _industries.contains(branche)) {
+        _industry = branche;
+      }
+      final ort = params['ort']?.trim() ?? '';
+      if (ort.isNotEmpty) {
+        _city = ort;
+        _cityController.text = ort;
+      }
+      final sterne = double.tryParse(params['sterne'] ?? '');
+      if (sterne != null && sterne >= 1 && sterne <= 5) _minRating = sterne;
+      setState(() {});
       _search();
     });
   }
@@ -55,6 +71,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _search() {
+    _adresseAktualisieren();
     ref.read(searchProvider.notifier).search(
           SearchFilters(
             query: _query.isEmpty ? null : _query,
@@ -65,6 +82,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 (_minRating != null && _minRating! > 1) ? _minRating : null,
           ),
         );
+  }
+
+  /// Schreibt Suchbegriff und Filter in die Adresszeile, ohne neu zu
+  /// navigieren: Der Bildschirm bleibt, wie er ist, nur die Adresse ändert
+  /// sich (`replace`, damit „Zurück“ nicht durch jeden Filterwechsel läuft).
+  void _adresseAktualisieren() {
+    final params = <String, String>{
+      if (_query.isNotEmpty) 'q': _query,
+      if (_industry != 'Alle Branchen') 'branche': _industry,
+      if (_city != null) 'ort': _city!,
+      if (_minRating != null && _minRating! > 1)
+        'sterne': _minRating!.toStringAsFixed(0),
+    };
+    SystemNavigator.routeInformationUpdated(
+      uri:
+          Uri(path: '/search', queryParameters: params.isEmpty ? null : params),
+      replace: true,
+    );
   }
 
   @override

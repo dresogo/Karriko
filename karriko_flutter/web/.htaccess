@@ -18,3 +18,9 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
 RewriteRule ^ index.html [L]
+
+# Bis zum Launch nicht in Suchmaschinen (T-11.20). Gilt fuer jede Antwort,
+# auch fuer index.html aus der Umleitung oben. Zum Launch entfernen (T-10.4).
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow"
+</IfModule>

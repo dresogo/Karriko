@@ -353,7 +353,7 @@ class _StepZugang extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const SocialSignInButtons(),
+          const SocialSignInButtons(registering: true),
           const SizedBox(height: 16),
           Text(
             'Einen Passkey richtest du nach der Registrierung in den '
