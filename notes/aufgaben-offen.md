@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 21. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 22. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-150 Aufgaben sind offen, 59 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+162 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -13,7 +13,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - **Teilweise erledigt:** Der Punkt bleibt hier, darunter eine Zeile „Teilweise erledigt am …“ mit dem, was noch fehlt.
 - **Hinfällig:** Wie erledigt behandeln, im Ergebnis steht „hinfällig“ und der Grund.
 - **Prioritäten:** P1 blockiert den Launch, P2 gehört in die ersten drei Monate nach dem Start, P3 kommt später.
-- **Herkunft** in der Klammer am Ende: todo = ehemals `notes/todo.md` mit Abschnitt, Referenz = `projekt-referenz.md`, Setup = `APPWRITE_SETUP.md`, Plan = Tab Sicherheitsplan, andere Tabnamen = der jeweilige Tab im Plan-Dokument, Chat = Gespräch mit Claude, neu = eigene Recherche.
+- **Herkunft** in der Klammer am Ende: todo = ehemals `notes/todo.md` mit Abschnitt, Referenz = `projekt-referenz.md`, Setup = `APPWRITE_SETUP.md`, Plan = Tab Sicherheitsplan, andere Tabnamen = der jeweilige Tab im Plan-Dokument, Sites = Seitenplanung im Artefakt „Karriko: Sites“ mit Tabnummer, Chat = Gespräch mit Claude, neu = eigene Recherche.
 
 ## Vorgeschlagene Reihenfolge für die P1-Punkte
 
@@ -91,6 +91,11 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
   Die von Google gelieferte Datei nach `assets/icons/`, nicht zur Laufzeit nachladen. Vor dem Start zwingend. Die Schritte in der Google Cloud Console (Redirect-URI aus der Appwrite Console kopieren, nicht abtippen) stehen in `archiv/status-report-2026-08-02.md` §9.9.
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
+
+- [ ] T-3.21 · P1 · „Passwort vergessen“ bestätigt indirekt, dass es das Konto gibt („Wir haben einen Reset-Link an {Adresse} gesendet“). Wortlaut wie beim Magic Link: „Falls für {Adresse} ein Konto existiert, ist ein Link unterwegs.“ (E-42) (Sites, Tab 40)
+- [ ] T-3.22 · P2 · Betriebsregistrierung prüft nicht, ob der Betrieb schon ein Profil hat, und erzeugt so Dubletten. Erster Schritt: Suche nach dem Betrieb, bei Treffer weiter zu „Profil beanspruchen“ (T-2.27) (Sites, Tab 36)
+- [ ] T-3.23 · P2 · Azubi-Registrierung umbauen nach der Entscheidung vom 22.10.2026: zwei Schritte, nur Vorname (kein Nachname, kein Wohnort), Beruf optional zum Vorausfüllen im Fragebogen, ein Passwortfeld mit Anzeigen statt zwei Feldern, auch beim Zurücksetzen. Den Satz „hilft bei personalisierten Empfehlungen“ streichen, die Funktion gibt es nicht. Haken und Links siehe T-11.9, Mindestalter T-5.18 (Sites, Tab 35, 41)
+- [ ] T-3.24 · P1 · Magic Link sowie Google und Apple legen für unbekannte Adressen neue Konten an, ohne Zustimmung zu den Nutzungsbedingungen und ohne Mindestalter. Klären: Schritt „Konto vervollständigen“ beim ersten Login oder Magic Link nur für bestehende Konten (Sites, Tab 33, 45)
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
@@ -183,6 +188,15 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Bewertung nach Länge und bekannten Mustern statt nach Zeichenklassen, passend zu T-3.9; ein Paket wie zxcvbn nur mit Begründung (E-07). Farben nur aus `app_theme.dart`: Rot ist `accent`, Grün `green`, einen Gelbton gibt es dort nicht (W-1.4), also vorher festlegen. Stärke nie nur über Farbe zeigen, Text und Screenreader-Ansage gehören dazu (WCAG 2.1 AA).
   Stand 21.10.2026: Die Leckprüfung macht jetzt Appwrite (E-3.12); ihre Ablehnung kommt als `password_pwned` und soll direkt am Feld stehen. Die Stärkeanzeige richtet sich nach der Mindestlänge 12.
 - [ ] T-6.25 · P1 · Öffentliche Seite „So prüfen wir Bewertungen“: wie die Echtheit geprüft wird (UWG § 5b Abs. 3), später auf der Website (Moderation)
+
+- [ ] T-6.26 · P1 · Texte zur Prüfung an E-2.13 anpassen; sie versprechen eine Vollprüfung: FAQ „Jede Bewertung geht vor der Veröffentlichung durch die Moderation“, Startseite „Moderierte Rezensionen …“, Über uns „Alle Bewertungen werden moderiert und auf Authentizität geprüft“ (Sites, Tab 01, 19, 22)
+- [ ] T-6.27 · P2 · Texte versprechen Antworten der Betriebe, die nicht entschieden sind (T-8.1): Lead im Login Betrieb (`login_screen.dart`) und Werbekasten im Blogartikel (`blog_detail_screen.dart`). Bis zur Entscheidung entfernen (Sites, Tab 18, 34)
+- [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten mit `?zugang=betrieb`. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
+- [ ] T-6.29 · P2 · „Premium starten“ auf „Für Betriebe“ führt nur zur Registrierung. Bis T-8.4 durch „Interesse melden“ ersetzen oder ausblenden (Sites, Tab 13)
+- [ ] T-6.30 · P2 · Suchfilter „Ab X Sternen“ auf Zahlen umstellen (ab 3 · ab 3,5 · ab 4); Bewertungen überall als Zahl mit Balken, keine Sterne (Entscheidung vom 22.10.2026) (Sites, Tab 02)
+- [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
+- [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
+- [ ] T-6.33 · P3 · Grobgerüst `/konto-wiederherstellen` aus `planned_catalog.dart` entfernen und die Adresse auf die Anmeldung umleiten; Lösch- und Warnmails verlinken auf die Anmeldung mit `?next=` zur Kontolöschung (Entscheidung vom 22.10.2026) (Sites, Tab 38)
 
 ## 7 · Tests
 
