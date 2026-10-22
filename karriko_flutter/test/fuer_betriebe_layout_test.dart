@@ -32,8 +32,12 @@ Widget _app() {
         builder: (_, __) => const Scaffold(body: Text('Registrierung')),
       ),
       GoRoute(
-        path: '/login',
+        path: '/login/betrieb',
         builder: (_, __) => const Scaffold(body: Text('Anmeldung')),
+      ),
+      GoRoute(
+        path: '/search',
+        builder: (_, __) => const Scaffold(body: Text('Suche')),
       ),
     ],
   );
@@ -91,25 +95,25 @@ void main() {
     });
   });
 
-  testWidgets('Bestehende Inhalte bleiben erhalten', (tester) async {
-    await _pumpAt(tester, const Size(1440, 2400));
+  testWidgets('Inhalte nach Seiten-Tab 13 sind da', (tester) async {
+    await _pumpAt(tester, const Size(1440, 4000));
 
     expect(find.text('FÜR AUSBILDUNGSBETRIEBE'), findsOneWidget);
-    expect(find.text('Profil verwalten'), findsOneWidget);
-    // Je einmal als Merkmal, im Hero-Panel und im Basis-Tarif.
-    expect(find.text('Bewertungen einsehen'), findsNWidgets(3));
-    expect(find.text('Ausbildungsstellen anbieten'), findsNWidgets(3));
+    expect(find.text('Ist Ihr Betrieb schon auf Karriko?'), findsOneWidget);
+    expect(find.text('Was Karriko\nfür Betriebe\nbietet.'), findsOneWidget);
+    expect(find.text('In drei Schritten zum Profil.'), findsOneWidget);
+    expect(find.text('Was Geld\nnicht kauft.'), findsOneWidget);
     expect(find.text('PLÄNE & PREISE'), findsOneWidget);
     expect(find.text('Kostenlos'), findsOneWidget);
-    expect(find.text('In Planung'), findsNWidgets(2));
-    expect(find.text('Kommt später'), findsOneWidget);
-    expect(find.text('Erstelle jetzt dein kostenloses Betriebsprofil.'),
-        findsOneWidget);
+    expect(find.text('In Planung'), findsOneWidget);
+    expect(find.text('Gespeichert in Frankfurt.'), findsOneWidget);
+    expect(find.text('Was Betriebe uns fragen.'), findsOneWidget);
+    expect(find.text('Bereit\nloszulegen?'), findsOneWidget);
   });
 
-  testWidgets('Merkmale sind wie auf der Startseite nummeriert',
+  testWidgets('Leistungen sind wie auf der Startseite nummeriert',
       (tester) async {
-    await _pumpAt(tester, const Size(1440, 2400));
+    await _pumpAt(tester, const Size(1440, 4000));
 
     for (final number in ['01', '02', '03', '04']) {
       expect(find.text(number), findsOneWidget);
@@ -120,10 +124,11 @@ void main() {
     await _pumpAt(tester, const Size(1440, 900));
 
     final kicker = tester.getRect(find.text('FÜR AUSBILDUNGSBETRIEBE'));
-    final panel = tester.getRect(find.text('Betriebsprofil\nanlegen.'));
+    final check =
+        tester.getRect(find.text('Ist Ihr Betrieb schon auf Karriko?'));
 
-    // Aktionsfläche liegt rechts neben der Textspalte, nicht darunter.
-    expect(panel.left, greaterThan(kicker.right));
+    // Der Profil-Check liegt rechts neben der Textspalte, nicht darunter.
+    expect(check.left, greaterThan(kicker.right));
   });
 
   testWidgets('Hero-Höhe folgt dem Inhalt, nicht der Bildschirmhöhe',
@@ -139,50 +144,69 @@ void main() {
     final kurz = await heroEnd(const Size(1440, 900));
     final lang = await heroEnd(const Size(1440, 1400));
 
-    // Gleiche Breite, doppelt so hohes Fenster: der Hero wächst nicht mit.
+    // Gleiche Breite, deutlich höheres Fenster: der Hero wächst nicht mit.
     expect(kurz, lang);
   });
 
-  testWidgets('Tarifkarten halten Abstand zu den Rändern und zueinander',
+  testWidgets('Tarifkacheln halten Abstand zu den Rändern und zueinander',
       (tester) async {
-    const size = Size(1440, 2400);
+    const size = Size(1440, 4000);
     await _pumpAt(tester, size);
 
     final basis = tester
         .getRect(find.widgetWithText(ElevatedButton, 'Kostenlos starten'));
     final premium =
-        tester.getRect(find.widgetWithText(ElevatedButton, 'Kommt später'));
+        tester.getRect(find.widgetWithText(OutlinedButton, 'Interesse melden'));
 
     expect(basis.left, greaterThan(0));
     expect(premium.right, lessThan(size.width));
-    // Gasse zwischen den Karten.
-    expect(premium.left, greaterThan(basis.right + 24));
-  });
-
-  testWidgets('Aktionspanel zeigt Kicker, Leistungen und beide Wege',
-      (tester) async {
-    await _pumpAt(tester, const Size(1440, 900));
-
-    expect(find.text('KOSTENLOS STARTEN'), findsOneWidget);
-    expect(find.text('Öffentliches Profil'), findsNWidgets(2));
-    // Einmal im Hero-Panel, einmal in der Abschluss-Sektion.
-    expect(find.widgetWithText(ElevatedButton, 'Jetzt registrieren'),
-        findsNWidgets(2));
-
-    // Sekundärer Weg für bereits registrierte Betriebe. Der Filter auf
-    // TextButton grenzt gegen die gleichnamige Schaltfläche der Kopfzeile ab.
-    await tester.tap(find.widgetWithText(TextButton, 'Anmelden'));
-    await tester.pumpAndSettle();
-    expect(_currentUri, '/login');
+    // Gasse zwischen den Kacheln.
+    expect(premium.left, greaterThan(basis.right + 16));
   });
 
   testWidgets('Registrierung ist aus dem Hero erreichbar', (tester) async {
     await _pumpAt(tester, const Size(1440, 900));
 
-    await tester.tap(find.text('Jetzt registrieren').first);
+    await tester.tap(
+        find.widgetWithText(ElevatedButton, 'Betriebsprofil anlegen').first);
     await tester.pumpAndSettle();
 
     expect(find.text('Registrierung'), findsOneWidget);
+  });
+
+  testWidgets('Anmelden führt zum Betriebszugang', (tester) async {
+    await _pumpAt(tester, const Size(1440, 900));
+
+    // Der Filter auf OutlinedButton grenzt gegen die gleichnamige
+    // Schaltfläche der Kopfzeile ab.
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Anmelden').first);
+    await tester.pumpAndSettle();
+    expect(_currentUri, '/login/betrieb');
+  });
+
+  testWidgets('Profil-Check sucht den Betrieb über die Suche', (tester) async {
+    await _pumpAt(tester, const Size(1440, 900));
+
+    await tester.enterText(find.byType(TextField), 'Müller GmbH');
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Betrieb suchen'));
+    await tester.pumpAndSettle();
+
+    expect(Uri.parse(_currentUri).path, '/search');
+    expect(Uri.parse(_currentUri).queryParameters['q'], 'Müller GmbH');
+  });
+
+  testWidgets('Fragen klappen auf', (tester) async {
+    await _pumpAt(tester, const Size(1440, 4000));
+
+    const answerStart = 'Bewertungen werden nicht auf Wunsch entfernt. '
+        'Verstößt ein Beitrag';
+    expect(find.textContaining(answerStart), findsNothing);
+
+    final question = find.text('Können wir Bewertungen löschen lassen?');
+    await tester.ensureVisible(question);
+    await tester.tap(question);
+    await tester.pump();
+    expect(find.textContaining(answerStart), findsOneWidget);
   });
 
   testWidgets('Footer schließt die Seite ab', (tester) async {
@@ -195,7 +219,7 @@ void main() {
 
   // T-11.7: Die Seite verspricht nichts, was nicht entschieden ist.
   testWidgets('Keine unentschiedenen Versprechen', (tester) async {
-    await _pumpAt(tester, const Size(1440, 2400));
+    await _pumpAt(tester, const Size(1440, 4000));
 
     for (final text in [
       'Auf Bewertungen antworten',
@@ -203,6 +227,9 @@ void main() {
       'Bewerbermanagement',
       'Team-Verwaltung',
       '49 €/Monat',
+      'EMPFOHLEN',
+      'Premium starten',
+      'Auswertung',
     ]) {
       expect(find.text(text), findsNothing, reason: text);
     }
