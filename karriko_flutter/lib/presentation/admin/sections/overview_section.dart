@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_models.dart';
 import '../../common/app_page.dart';
+import '../../common/tap_target.dart';
 import '../admin_providers.dart';
 import '../admin_sections.dart';
 import '../widgets/admin_widgets.dart';
@@ -175,10 +176,10 @@ class _Aufgabe extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'ALS NÄCHSTES',
                   style: TextStyle(
-                    color: Color(0xFFFF8A86),
+                    color: AdminOnInk.secondary,
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.32,
@@ -229,76 +230,68 @@ class _Kachel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inhalt = Container(
-      padding: const EdgeInsets.all(AppLayout.s24),
-      // Keine Füllfarbe: Die Fläche kommt vom Material darunter, sonst
-      // verdeckte sie den Hover-Zustand.
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(
-              color: dringend ? AppColors.accent : AppColors.ink, width: 3),
-          left: const BorderSide(color: AppColors.line),
-          right: const BorderSide(color: AppColors.line),
-          bottom: const BorderSide(color: AppColors.line),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon,
-                  size: 20,
-                  color: dringend ? AppColors.accentDark : AppColors.muted),
-              const Spacer(),
-              if (onTap != null)
-                const Icon(Icons.arrow_outward_rounded,
-                    size: 18, color: AppColors.muted),
-            ],
+    Widget inhalt(bool hover) => Container(
+          padding: const EdgeInsets.all(AppLayout.s24),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            border: Border(
+              top: BorderSide(
+                  color: dringend ? AppColors.accent : AppColors.ink, width: 3),
+              left: BorderSide(color: hover ? AppColors.ink : AppColors.line),
+              right: BorderSide(color: hover ? AppColors.ink : AppColors.line),
+              bottom: BorderSide(color: hover ? AppColors.ink : AppColors.line),
+            ),
           ),
-          const SizedBox(height: AppLayout.s16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '$wert',
-                style: TextStyle(
-                  color: dringend ? AppColors.accentDark : AppColors.ink,
-                  fontSize: 44,
-                  fontWeight: FontWeight.w800,
-                  height: 1,
-                  fontFeatures: const [FontFeature.tabularFigures()],
-                ),
+              Row(
+                children: [
+                  Icon(icon,
+                      size: 20,
+                      color: dringend ? AppColors.accentDark : AppColors.muted),
+                  const Spacer(),
+                  if (onTap != null)
+                    Icon(Icons.arrow_outward_rounded,
+                        size: 18,
+                        color: hover ? AppColors.accentDark : AppColors.muted),
+                ],
               ),
-              if (hinweis != null) ...[
-                const SizedBox(width: AppLayout.s8),
-                Text(hinweis!, style: Theme.of(context).textTheme.bodySmall),
-              ],
+              const SizedBox(height: AppLayout.s24),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    '$wert',
+                    style: TextStyle(
+                      color: dringend ? AppColors.accentDark : AppColors.ink,
+                      fontSize: 48,
+                      fontWeight: FontWeight.w800,
+                      height: 1,
+                      letterSpacing: -1,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                  if (hinweis != null) ...[
+                    const SizedBox(width: AppLayout.s8),
+                    Text(hinweis!,
+                        style: Theme.of(context).textTheme.bodySmall),
+                  ],
+                ],
+              ),
+              const SizedBox(height: AppLayout.s8),
+              SectionLabel(label),
             ],
           ),
-          const SizedBox(height: AppLayout.s8),
-          SectionLabel(label),
-        ],
-      ),
-    );
+        );
 
-    if (onTap == null) {
-      return Material(color: AppColors.surface, child: inhalt);
-    }
-    return Semantics(
-      button: true,
-      label: '$label: $wert',
-      child: Material(
-        color: AppColors.surface,
-        child: SelectionContainer.disabled(
-          child: InkWell(
-            onTap: onTap,
-            hoverColor: AppColors.paper,
-            child: inhalt,
-          ),
-        ),
-      ),
+    if (onTap == null) return inhalt(false);
+    // TapTarget statt InkWell (E-10): Hover färbt den Rahmen.
+    return TapTarget(
+      onTap: onTap,
+      semanticLabel: '$label: $wert',
+      builder: (context, hover) => inhalt(hover),
     );
   }
 }
