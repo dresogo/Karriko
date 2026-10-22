@@ -2,7 +2,7 @@
 
 **Stand:** 22. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-166 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+172 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie) und den Tab „Offene Aufgaben“ im Plan-Dokument, der seitdem nur noch diese Datei spiegelt. Neue Aufgaben kommen hierher, nicht in Berichte oder neue Todo-Dateien.
 
@@ -55,6 +55,7 @@ Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projek
 - [ ] T-2.16 · P2 · Eine Quelle für Profildaten festlegen: `profiles` oder Account-Prefs (todo D)
   Stand 20.10.2026: Seit T-4.1 und T-4.25 nehmen `profiles` und `companies` nur bestätigte Konten an. Bei der Registrierung entsteht deshalb keine Profilzeile mehr; die App liest Rolle und Namen aus den Prefs, eine Zeile entsteht erst mit der ersten Profiländerung.
 - [ ] T-2.24 · P3 · Betriebskonto löschen: Profil inaktiv, 30 Tage reaktivierbar, Antworten löschen (Referenz §3.4)
+  Stand 22.10.2026: Frist 14 Tage wie E-50, nicht 30 (Entscheidung). Profil und Bewertungen bleiben ohne Eigentümer stehen und sind wieder beanspruchbar; gelöscht werden Zugang, Ansprechperson und Stellen (Sites, Tab 75).
 - [ ] T-2.25 · P3 · Profilaufrufe zählen, ohne festzuhalten, wer zugesehen hat (Referenz §3.4)
 
 - [ ] T-2.26 · P1 · Betrieb vorschlagen, wenn er im Fragebogen nicht gefunden wird: Formular, Dublettenprüfung, Freigabe durch die Moderation. Heute endet die Suche mit „dann lässt er sich hier noch nicht bewerten“ (Sitemap)
@@ -197,12 +198,19 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.30 · P2 · Suchfilter „Ab X Sternen“ auf Zahlen umstellen (ab 3 · ab 3,5 · ab 4); Bewertungen überall als Zahl mit Balken, keine Sterne (Entscheidung vom 22.10.2026) (Sites, Tab 02)
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
   Stand 22.10.2026: Pfade des Azubi-Bereichs entschieden: `/app` (Übersicht), `/app/bewerten`, `/app/bewertungen`, `/app/bewertungen/:id`, `/app/merkliste`, `/app/benachrichtigungen`, `/app/einstellungen` (Sites, App · Azubi-Bereich).
+  Stand 22.10.2026: Pfade des Betriebsbereichs entschieden: `/app/betrieb` (Übersicht), `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/stellen/:id`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen` und Unterseiten (Sites, App · Betriebsbereich).
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
 - [ ] T-6.33 · P3 · Grobgerüst `/konto-wiederherstellen` aus `planned_catalog.dart` entfernen und die Adresse auf die Anmeldung umleiten; Lösch- und Warnmails verlinken auf die Anmeldung mit `?next=` zur Kontolöschung (Entscheidung vom 22.10.2026) (Sites, Tab 38)
 - [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
 - [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
 - [ ] T-6.36 · P2 · Fragebogen im Fokusmodus (Entscheidung vom 22.10.2026): ohne Website-Kopf- und Fußzeile, eigene Kopfleiste mit Betriebsname, Phasenleiste und „Pause“, Weiter/Zurück mobil fest am unteren Rand (Sites, Tab 47)
 - [ ] T-6.37 · P3 · Artefakt „Karriko Sitemap“ nachziehen: Datenexport und Kontolöschung sind fertig (T-2.8, T-2.10), die Grobgerüste dafür gibt es nicht mehr; dazu die Entscheidungen vom 22.10.2026 (Sites, Tab 57, 58)
+- [ ] T-6.38 · P2 · Betriebs-Dashboard: „auf Feedback antworten“ im Lead und „Feedback lesen und beantworten“ entfernen (T-8.1), Kachel „Profilaufrufe“ ohne Daten entfernen (E-30), Band mit Prüfstatus und Erinnerung an den zweiten Faktor (freiwillig, Entscheidung vom 22.10.2026), Sie-Ansprache (Sites, Tab 59, 73)
+- [ ] T-6.39 · P2 · Attrappen Auswertung, Team und Abonnement enthalten erfundene Zahlen (4.2, 1.2k, 87 %), Namen („Max Mustermann“) und einen Preis (49 €/Monat). Bis zur echten Umsetzung aus dem Code nehmen, nicht nur ausblenden (E-30, Factsheet §2.5) (Sites, Tab 67–69)
+- [ ] T-6.40 · P1 · Meldungen im Betriebsbereich: Gründe wie im öffentlichen Meldeformular (T-6.18), Begründung als Pflichtfeld, Liste der eigenen Meldungen mit Status und Entscheidung, Prüfverlangen „Nachweis des Ausbildungsverhältnisses anfordern“ (die Moderation fragt die verfassende Person anonym an), Grenzwert 5 je 24 h über eine Function statt direktem Tabellenzugriff (T-3.10) (Sites, Tab 66)
+- [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload (das Modell kennt `logoUrl`, die Oberfläche nicht) und Ausbildungsberufe am Profil pflegen, damit Betriebe ohne Bewertungen auf Berufsseiten erscheinen (Sites, Tab 60)
+- [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), in `job_posting` prüfen; abgelaufene Stellen verschwinden von der Website, im Betriebsbereich Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
+- [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt (Bearbeiten in der Liste). Entfernen oder als eigene Formularseite mit Vorschau umsetzen, je nach Entscheidung zu Tab 62 (Sites, Tab 62)
 
 ## 7 · Tests
 
