@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 21. Oktober 2026, abgeglichen mit `main` @ `4f41589`; Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, MFA E-3.13, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 23. Oktober 2026, abgeglichen mit `main` @ `3b15760`; Aufgabenliste mit Eingang E-1.16, Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, MFA E-3.13, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -110,8 +110,8 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-11 | 10/2026 | **Major-Updates von Abhängigkeiten nie über einen Dependabot-Sammel-PR**, sondern als eigene Migration mit Tests. Anstehend: `flutter_riverpod` 2→3, `go_router` 14→18, `cached_network_image` 3→4, `flutter_lints` 4→6 (PR #16 deshalb geschlossen). | Brechende Änderungen brauchen eigene Prüfung. |
 | E-12 | 10/2026 | **Passkey-Dienst läuft ohne Build-Schritt** über Nodes Type-Stripping. `tsconfig` mit `erasableSyntaxOnly`: keine Parameter-Properties, Enums o. ä. (PR #17). | `npm start` brach an nicht entfernbarer TS-Syntax ab; die Tests (vitest) merkten es nicht. |
 | E-13 | 10/2026 | **Squash-Merge**, wenn Zwischenstände eines PRs Ballast enthalten (z. B. große Binärdateien). | Was nie nach `main` kommt, muss nicht aus der Historie entfernt werden. |
-| E-1.14 | 10/2026 | **Eine Aufgabenliste in zwei Dateien:** `notes/aufgaben-offen.md` und `notes/aufgaben-erledigt.md`. Erledigtes wandert mit Datum, Nummer und Commit in die zweite Datei, im selben Commit. Abgeschlossene Berichte und Pläne kommen mit `git mv` nach `notes/archiv/`, mit Grund und Nachfolger in `archiv/README.md`. Die Tabs im Artefakt „Karriko: Plan“ spiegeln die Dateien nur. | Vorher lagen offene Punkte in `todo.md`, im Tab und in mehreren Berichten und liefen auseinander (T-1.13, T-1.14). |
 | E-1.15 | 20.10.2026 | **Im Factsheet wird ersetzt statt doppelt geführt.** Eine überholte Entscheidung wird durch die neue ersetzt, aufgelöste Widersprüche werden entfernt. Nummern werden nie neu vergeben; die alte Fassung steht in der Git-Historie. Gilt auch für den Tab „Factsheet“ im Plan-Dokument. | Das Factsheet soll zeigen, was gilt. Doppelte Einträge kosten Lesezeit und führen zu Verwechslungen. |
+| E-1.16 | 23.10.2026 | **Eine Aufgabenliste in zwei Dateien, mit Eingang im Plan-Dokument.** Offene Aufgaben in `notes/aufgaben-offen.md`, Erledigtes mit Datum, Nummer und Commit in `notes/aufgaben-erledigt.md`, im selben Commit; abgearbeitet wird nur dort. Neue Aufgaben dürfen auch im Plan-Dokument entstehen, aber nur im Abschnitt „Eingang“ des Tabs „Offene Aufgaben“ und ohne Nummer. Jede Sitzung mit Repo-Zugriff übernimmt den Eingang zu Beginn in die Datei und vergibt die Nummern; nach dem Commit schreibt sie den Tab aus der Datei neu. Abgeschlossene Berichte und Pläne kommen mit `git mv` nach `notes/archiv/`, mit Grund und Nachfolger in `archiv/README.md`. | Am 22.10.2026 entstanden 46 Aufgaben nur im Dokument, weil die Sitzung keinen Repo-Zugriff hatte; die Liste lief auseinander. Nummern an einer Stelle verhindern Doppelvergaben. Ersetzt E-1.14. |
 
 ### Bewertungen und Daten
 
@@ -189,7 +189,7 @@ Vor jedem PR: `dart format`, `flutter analyze` (0 Hinweise), alle Tests grün. B
 4. **Farben, Schrift, Abstände** nur aus `app_theme.dart` bzw. Abschnitt 2. Keine neuen Farbwerte ohne Eintrag hier.
 5. **Rechtliche Aussagen, Kontaktdaten, Zahlen** nie erfinden. Platzhalter `PLATZHALTER — juristisch zu prüfen` verwenden.
 6. **Nichts Destruktives** an Appwrite-Daten ohne Probelauf und ausdrückliche Freigabe.
-7. Erledigtes aus `notes/aufgaben-offen.md` nehmen und mit Datum, Nummer und Commit in `notes/aufgaben-erledigt.md` eintragen, im selben Commit (E-1.14). Neue Aufgaben nur dort, nicht in Berichte oder eigene Todo-Dateien.
+7. Erledigtes aus `notes/aufgaben-offen.md` nehmen und mit Datum, Nummer und Commit in `notes/aufgaben-erledigt.md` eintragen, im selben Commit (E-1.16). Neue Aufgaben nur dort oder im Eingang des Plan-Dokuments, nicht in Berichte oder eigene Todo-Dateien. Mit Repo-Zugriff zu Beginn den Eingang übernehmen, am Ende den Tab neu schreiben.
 
 ---
 
@@ -244,7 +244,7 @@ Jede Liste im Projekt hat einen eigenen Buchstaben. Ein Buchstabe steht nur für
 
 **Regeln:**
 
-1. Eine vergebene Nummer wird nie umnummeriert oder neu besetzt, auch wenn ihr Eintrag ersetzt oder entfernt wurde. Erledigte Aufgaben wandern nach `notes/aufgaben-erledigt.md` (E-1.14). Im Factsheet werden ersetzte Entscheidungen und aufgelöste Widersprüche entfernt (E-1.15); in anderen Listen wird Erledigtes durchgestrichen.
+1. Eine vergebene Nummer wird nie umnummeriert oder neu besetzt, auch wenn ihr Eintrag ersetzt oder entfernt wurde. Erledigte Aufgaben wandern nach `notes/aufgaben-erledigt.md` (E-1.16). Im Factsheet werden ersetzte Entscheidungen und aufgelöste Widersprüche entfernt (E-1.15); in anderen Listen wird Erledigtes durchgestrichen.
 2. Neues bekommt die nächste freie Nummer seines Abschnitts, auch wenn es inhaltlich weiter oben stünde.
 3. Ein neuer Abschnitt bekommt die nächste freie Abschnittsnummer, auch wenn er inhaltlich zwischen zwei bestehenden steht.
 4. Verweise immer mit voller Nummer und Buchstabe, auch über Dokumente hinweg („siehe T-6.17", „widerspricht E-06").
@@ -252,7 +252,7 @@ Jede Liste im Projekt hat einen eigenen Buchstaben. Ein Buchstabe steht nur für
 | Buchstabe | Liste | Wo | Stand |
 |---|---|---|---|
 | **E** | Entscheidungen | Abschnitt 4 | Altbestand E-01 bis E-53 behält seine Nummern (E-24 ist durch E-2.13 ersetzt); neue Einträge im Format `E-<Abschnitt>.<Nr.>` |
-| **T** | Aufgaben (To-do) | `notes/aufgaben-offen.md`, Erledigtes in `notes/aufgaben-erledigt.md`; der Tab „Offene Aufgaben“ spiegelt nur | eingeführt, T-1 bis T-11 (T-11 = Fehler aus dem Tab „Fehlerreport Website“) |
+| **T** | Aufgaben (To-do) | `notes/aufgaben-offen.md`, Erledigtes in `notes/aufgaben-erledigt.md`; der Tab „Offene Aufgaben“ zeigt die Datei, Neues ohne Nummer in seinem Eingang (E-1.16) | eingeführt, T-1 bis T-12 (T-11 = Fehler aus dem Tab „Fehlerreport Website“, T-12 = öffentliche Website) |
 | **W** | Widersprüche zwischen Code, Doku und Entscheidungen | Abschnitt 9 | eingeführt |
 | **R** | Risiken | Tab „Website-Umbau SEO", `projekt-referenz.md` §7 | reserviert |
 | **J** | Fragen an den Anwalt (juristisch) | Tab „Fragen an den Anwalt" | reserviert |

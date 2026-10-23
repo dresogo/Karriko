@@ -7,3 +7,4 @@ Lies vor jeder Entscheidung zu Design, Architektur, Daten, Rechten oder Abhängi
 - Farben, Schrift und Abstände nur aus `karriko_flutter/lib/core/theme/app_theme.dart` bzw. Factsheet Abschnitt 2.
 - Rechtstexte, Kontaktdaten und Zahlen nie erfinden.
 - Listen folgen dem Nummernsystem in Abschnitt 10 des Factsheets (`T-2.3`, `W-1.1`). Vergebene Nummern nie ändern, Neues hinten anhängen.
+- Aufgaben: Abgearbeitet wird nur in `notes/aufgaben-offen.md` und `notes/aufgaben-erledigt.md` (E-1.16). Zu Beginn einer Sitzung den Abschnitt „Eingang“ im Tab „Offene Aufgaben“ des Plan-Dokuments in die Datei übernehmen (nächste freie Nummer, im Eingang löschen); nach dem Commit den Tab aus der Datei neu schreiben, den Eingang stehen lassen. Ohne Repo-Zugriff neue Aufgaben nur in den Eingang, ohne Nummer.
