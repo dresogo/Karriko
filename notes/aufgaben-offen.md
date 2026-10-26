@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 23. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-176 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+194 Aufgaben sind offen, 67 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -45,6 +45,8 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
   GitHub hält den alten Commit per SHA weiter abrufbar. Hier verzichtbar, weil der Wert bedeutungslos war, aber beim nächsten echten Fund ist das der Schritt, der vergessen wird.
 - [ ] T-1.7 · P2 · SonarCloud Automatic Analysis abschalten (todo H)
 - [ ] T-1.10 · P3 · Lizenz festlegen oder bewusst ohne Lizenz bleiben (README)
+- [ ] T-1.16 · P2 · „Vorgeschlagene Reihenfolge für die P1-Punkte“ aktualisieren: gitleaks (T-1.2), Row Security (T-4.1), Feld-Whitelist (T-4.2), „Anonymous“ aus (T-3.2) und Punkt 5 (T-2.8 bis T-2.10) sind erledigt, „Rollen serverseitig“ ist hinfällig (T-3.1) (Chat)
+- [ ] T-1.17 · P2 · Factsheet E-45 an T-4.2 und T-4.25 angleichen: `companies` hat nur noch `read("any")`, geschrieben wird über `company_profile`, angelegt nur von bestätigten Konten (Chat)
 
 ## 2 · Datenschicht und Funktionen
 
@@ -81,6 +83,7 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 - [ ] T-2.37 · P2 · Vorsortierung nach E-2.13, Stufe „Regeln“: Spalten `risk_level`, `risk_flags`, `sample`, `screened_at`, `screen_version` über `appwrite-setup.mjs` (E-05); Vorprüfung als reine Funktion in `packages/karriko_functions` (Häufung, Kontoalter, gleicher Gerätehash, Textduplikate, vorhandene `quality_flags`); Freigabe-Logik mit `moderate_review` teilen, damit es bei einem Weg in `public_reviews` bleibt. Schließt T-4.18 ein (Moderation)
 - [ ] T-2.38 · P2 · KI-Vorprüfung im Schattenbetrieb: Anbieter mit EU-Verarbeitung und AVV (E-02, T-5.8), Prompt und Ausgabeschema versioniert im Paket, die KI sieht nur Freitexte und Sterne; Ergebnis nur speichern, nach 200 Bewertungen Abweichungen zwischen KI und Mensch auswerten (Moderation)
 - [ ] T-2.39 · P2 · Automatische Freigabe scharf schalten, nur wenn in T-2.38 kein roter Fall als grün durchging: Grün gibt frei, Stichprobe 20 %, ab 500 Bewertungen 5 %; `moderation_log` mit Aktion `auto_approve` und Systemkennung; `moderation_desk` sortiert nach Risiko und zeigt Flags und Stichprobe; E-2.13 mit den endgültigen Schwellen abgleichen (Moderation)
+- [ ] T-2.40 · P1 · Löschfristen an E-51 angleichen: `config.dart` hat als Standard Entwürfe 90 statt 30 Tage und Nachweise 30 statt 14 Tage; Standard, Umgebung der Function `cleanup` und `APPWRITE_SETUP.md` anpassen, löst W-3.1 (Chat)
 
 ## 3 · Anmeldung und Konten
 
@@ -105,6 +108,7 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 - [ ] T-3.22 · P2 · Betriebsregistrierung prüft nicht, ob der Betrieb schon ein Profil hat, und erzeugt so Dubletten. Erster Schritt: Suche nach dem Betrieb, bei Treffer weiter zu „Profil beanspruchen“ (T-2.27) (Sites, Tab 36)
 - [ ] T-3.23 · P2 · Azubi-Registrierung umbauen nach der Entscheidung vom 22.10.2026: zwei Schritte, nur Vorname (kein Nachname, kein Wohnort), Beruf optional zum Vorausfüllen im Fragebogen, ein Passwortfeld mit Anzeigen statt zwei Feldern, auch beim Zurücksetzen. Den Satz „hilft bei personalisierten Empfehlungen“ streichen, die Funktion gibt es nicht. Haken und Links siehe T-11.9, Mindestalter T-5.18 (Sites, Tab 35, 41)
 - [ ] T-3.24 · P1 · Magic Link sowie Google und Apple legen für unbekannte Adressen neue Konten an, ohne Zustimmung zu den Nutzungsbedingungen und ohne Mindestalter. Klären: Schritt „Konto vervollständigen“ beim ersten Login oder Magic Link nur für bestehende Konten (Sites, Tab 33, 45)
+- [ ] T-3.25 · P2 · Ergänzt T-3.17: Der Google-Knopf zeigt heute ein Text-„G“, nichts wird zur Laufzeit geladen; offen bleibt das offizielle Logo als Asset (Chat)
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
@@ -135,6 +139,10 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 - [ ] T-4.34 · P2 · Apache- und PHP-Version des Hetzner-Webhostings ablesen und in der Komponentenliste eintragen (D-1.8, D-1.9); prüfen, ob PHP für die Subdomain abschaltbar ist, Karriko nutzt es nicht (Komponenten und Versionen)
 - [ ] T-4.35 · P3 · Dart-Version klären: Factsheet §3 nennt 3.11, das Lockfile der App verlangt mindestens 3.12 (Komponenten und Versionen)
 - [ ] T-4.36 · P2 · `dart_appwrite` in den Functions angleichen: 29.0.0 und 29.4.0 gemischt; Dependabot prüft die Lockfiles der Functions nicht (Komponenten und Versionen)
+- [ ] T-4.37 · P2 · Ergänzt T-4.19: Logos werden heute nicht hochgeladen, sondern als URL über `company_profile` gespeichert; die Aufgabe greift erst mit dem Logo-Upload aus T-6.41 (Chat)
+- [ ] T-4.38 · P2 · Passkey-Dienst vor dem Deploy (T-3.16) auf gepatchtes Node festlegen: Brotli-Lücke CVE-2026-111497 („Node2Shell“/„HTTP2Shell“, mögliche Codeausführung). `engines` in `services/passkey-rp/package.json` von ≥ 22.6 auf ≥ 22.23.4 (oder 24.22.1) anheben, ebenso `passkey-rp.yml`; D-1.5 und D-4.1 in „Komponenten und Versionen“ nachziehen (Chat)
+- [ ] T-4.39 · P2 · Node 20 ablösen: bekommt keinen Fix für CVE-2026-111497 mehr, nur 22.x, 24.x und 26.x wurden gepatcht. `tools/*.mjs` und `dart.yml` auf Node 22 oder 24 umstellen, `notes/APPWRITE_SETUP.md` und D-1.6, D-5.3 anpassen (Chat)
+- [ ] T-4.40 · P2 · Node auf dem eigenen Rechner auf 22.23.4 oder 24.22.1 aktualisieren; dort läuft die Appwrite CLI mit Admin-Zugang (D-1.7), CVE-2026-111497 (Chat)
 
 ## 5 · Datenschutz und Recht
 
@@ -175,6 +183,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.29 · P3 · Siegel „Top-Ausbildungsbetrieb“ als Lizenz und Reports für Kammern anwaltlich prüfen lassen; die Frage fehlt noch im Tab „Fragen an den Anwalt“ (Finanzierung und Erlöse)
 - [ ] T-5.30 · P2 · Klären, ob die Auffindbarkeit von Bewertungen über Google zum Löschkonzept passt; als Frage in den Tab „Fragen an den Anwalt“ aufnehmen (Website-Umbau SEO)
 - [ ] T-5.31 · P2 · Anwalt: Gilt die Ausnahme für Kleinunternehmen im Digital Services Act für Karriko? Die Frage fehlt noch im Tab „Fragen an den Anwalt“ (Moderation)
+- [ ] T-5.32 · P2 · Ergänzt T-5.22: Neben dem Feld mit 4000 Zeichen erlaubt das Freitextfeld im Abbruch-Modul 2000 Zeichen; beide auf 1000 (Chat)
 
 ## 6 · Oberfläche und Barrierefreiheit
 
@@ -222,6 +231,8 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 - [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt (Bearbeiten in der Liste). Entfernen oder als eigene Formularseite mit Vorschau umsetzen, je nach Entscheidung zu Tab 62 (Sites, Tab 62)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
+- [ ] T-6.44 · P1 · Ergänzt T-6.26: Auch der Admin-Bereich verspricht eine Vollprüfung („Jeder Freitext geht durch die Moderation“, `admin_widgets.dart`) (Chat)
+- [ ] T-6.45 · P2 · Ergänzt T-6.6: auf Bewertungen und Meldungen beschränken; Analytics, Abonnement und Team kommen nach T-6.39 aus dem Code, statt umgestaltet zu werden (Chat)
 
 ## 7 · Tests
 
@@ -234,6 +245,9 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-7.7 · P3 · Layout-Durchlauf als dauerhaften Test (todo F)
 - [ ] T-7.8 · P3 · Testabdeckung der Geschäftslogik messen, Ziel über 80 % (Referenz §5)
 - [ ] T-7.9 · P2 · Klickwege auf einem echten Telefon durchspielen; bisher nur in der Mobil-Emulation angesehen, dort blieben Klicks hängen (Statusbericht 13.7, im Archiv)
+- [ ] T-7.10 · P2 · Layout-Tests um 320 px ergänzen; die schmalste Testbreite ist 360 px, die Fehler aus T-11.14 stammen von 320 px (Chat)
+- [ ] T-7.11 · P1 · Ergänzt T-7.1: „Konto löschen“ ist inzwischen gebaut und getestet (`account_deletion_flow_test.dart`, `account_data_test.dart`); „fremdes Profil“ gehört zu T-7.2, „zweite Betriebsantwort“ hängt an T-8.1. Als teilweise erledigt vermerken (Chat)
+- [ ] T-7.12 · P3 · T-7.7 als erledigt prüfen: Layout-Tests für öffentliche, Azubi-, Betriebs- und geplante Seiten laufen in sechs Breiten und mit vergrößerter Schrift in der CI (Chat)
 
 ## 8 · Produktentscheidungen
 
@@ -252,6 +266,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-8.11 · P2 · Captcha festlegen: ob überhaupt und mit welchem Anbieter. Der Nginx-Entwurf (Tab „Nginx-Konfiguration“, 18.10.2026) setzt Cloudflare Turnstile voraus und gibt `challenges.cloudflare.com` in `script-src` und `frame-src` frei. Das wäre ein neuer Drittanbieter mit Übermittlung der IP (E-02, E-06, E-07); Ergebnis als Entscheidung ins Factsheet (Nginx-Konfiguration)
 - [ ] T-8.14 · P2 · Offene Fragen zum Website-Umbau: Einzelbewertung als eigene Seite ohne Index oder nur als Abschnitt im Profil; Betriebe ohne Bewertungen indexieren oder erst ab einer Mindestzahl; Login-Status im Header (bräuchte Appwrite unter einer eigenen Domain wie api.karriko.de) (Website-Umbau SEO)
 - [ ] T-8.15 · P2 · Offene Fragen zur Moderation: wer in den ersten Monaten moderiert und welche Antwortzeit die Prüfseite (T-6.25) verspricht; ob eine Bewertung während der Stellungnahme sichtbar bleibt (Vorschlag: ja, außer sie ist rot) (Moderation)
+- [ ] T-8.16 · P2 · E-46 neu entscheiden: Die Prüfung auf `http`/`https` gibt es inzwischen in `company_profile` und `job_posting`. Sollen Website, Bewerbungslink und Kontakt-Mail der Betriebe jetzt verlinkt werden? (Chat)
 
 ## 9 · Unternehmen und Betrieb (CEO)
 
@@ -271,6 +286,8 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
   Unterlagen zum Mitschicken laut Tab: Verarbeitungsverzeichnis, Löschkonzept und Fragebogen als PDF; es fehlen noch Screenshots der Registrierung und der Anonymitätshinweise.
 - [ ] T-9.12 · P2 · Vertretung für den Notfall benennen und in die Notbremsen einweisen (Notfallplan)
 - [ ] T-9.13 · P2 · Notfallplan vervollständigen: Telefon, Kontakte, Wartungsseite, Bremsen in Staging erprobt (Notfallplan)
+- [ ] T-9.14 · P1 · Ergänzt T-9.10: Die Übergangsseite läuft auf Hetzner-Webhosting mit Apache und `.htaccess`. T-4.9, T-4.33, T-10.1 und T-10.2 setzen nginx oder Caddy voraus, der Passkey-Dienst braucht Node. Festlegen, ob die Produktion auf Webhosting oder einem eigenen Server läuft (Chat)
+- [ ] T-9.15 · P2 · Ergänzt T-9.13: Grobgerüst für die Wartungsseite `web/wartung.html` liegt seit `114fe83` im Repo (Chat)
 
 ## 10 · Vorschaltseite bis zum Launch
 
@@ -281,6 +298,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-10.5 · P2 · Die Sperre schützt nur die Website. `public_reviews` und `company_scores` sind über die Appwrite-API weiter mit `read("any")` lesbar, also bis zum Launch keine echten Bewertungen veröffentlichen (Website-Umbau)
 - [ ] T-10.6 · P2 · Bestätigungsmail, Passwort-Reset, Magic Link und OAuth mit Testkonten durch die Sperre hindurch testen (Website-Umbau)
 - [ ] T-10.7 · P3 · Optional: E-Mail-Liste „Zum Start benachrichtigen“ mit Double-Opt-in und Hinweis in der Datenschutzerklärung (neu)
+- [ ] T-10.8 · P1 · Ergänzt T-10.1: Grobgerüst `web/bald.html` liegt seit `114fe83` im Repo, als teilweise erledigt vermerken (Chat)
 
 ## 11 · Fehler aus dem Website-Test
 
