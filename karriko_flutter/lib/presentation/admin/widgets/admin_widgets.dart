@@ -3,6 +3,23 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/date_format.dart';
 import '../../common/app_page.dart';
+import '../../common/tap_target.dart';
+
+// ── Farben auf Tinte ────────────────────────────────────────────────────────
+
+/// Abstufungen von `paper` auf der Tintenfläche (Seitenleiste, Anmeldung,
+/// „Als Nächstes“). Keine neuen Farbwerte, nur Deckkraft (Factsheet §2.1).
+/// Nebentext erreicht so auf `ink` noch gut 5:1.
+class AdminOnInk {
+  AdminOnInk._();
+
+  static Color get text => AppColors.paper;
+  static Color get secondary => AppColors.paper.withValues(alpha: 0.72);
+  static Color get tertiary => AppColors.paper.withValues(alpha: 0.55);
+  static Color get rule => AppColors.paper.withValues(alpha: 0.16);
+  static Color get hover => AppColors.paper.withValues(alpha: 0.06);
+  static Color get selected => AppColors.paper.withValues(alpha: 0.1);
+}
 
 // ── Töne ────────────────────────────────────────────────────────────────────
 
@@ -14,22 +31,24 @@ class _ToneColors {
   final Color background;
   final Color foreground;
   final Color border;
+  final Color icon;
 
-  const _ToneColors(this.background, this.foreground, this.border);
+  const _ToneColors(this.background, this.foreground, this.border, this.icon);
 }
 
-/// Alle Paare erreichen mindestens 4,5:1 Kontrast für kleine Schrift.
+/// Nur Farben aus `app_theme.dart`. Der Text steht in Tinte oder `accentDark`
+/// und erreicht damit überall 4,5:1; der Ton liegt in Rahmen und Icon.
 _ToneColors _farben(AdminTone tone) => switch (tone) {
-      AdminTone.neutral =>
-        const _ToneColors(AppColors.paper, AppColors.ink, AppColors.line),
+      AdminTone.neutral => const _ToneColors(
+          AppColors.surface, AppColors.ink, AppColors.line, AppColors.muted),
       AdminTone.positive => const _ToneColors(
-          Color(0xFFEDF2EE), Color(0xFF3B5241), Color(0xFFB9C9BD)),
-      AdminTone.warning => const _ToneColors(
-          Color(0xFFFFF4DB), Color(0xFF7A4B00), Color(0xFFF0D49A)),
-      AdminTone.danger => const _ToneColors(
-          AppColors.primaryLight, AppColors.accentDark, Color(0xFFF5B5B2)),
-      AdminTone.info => const _ToneColors(
-          AppColors.audienceBeige, AppColors.ink, AppColors.line),
+          AppColors.surface, AppColors.ink, AppColors.green, AppColors.green),
+      AdminTone.warning => const _ToneColors(AppColors.audienceBeige,
+          AppColors.ink, AppColors.ink, AppColors.accentDark),
+      AdminTone.danger => const _ToneColors(AppColors.surface,
+          AppColors.accentDark, AppColors.accent, AppColors.accentDark),
+      AdminTone.info => const _ToneColors(AppColors.audienceBeige,
+          AppColors.ink, AppColors.line, AppColors.ink),
     };
 
 // ── Abzeichen ───────────────────────────────────────────────────────────────
@@ -61,7 +80,7 @@ class AdminBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 14, color: f.foreground),
+            Icon(icon, size: 14, color: f.icon),
             const SizedBox(width: 4),
           ],
           Flexible(
@@ -250,6 +269,7 @@ class AdminSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final breit = MediaQuery.sizeOf(context).width >= 720;
+    final sehrBreit = MediaQuery.sizeOf(context).width >= 1280;
     final text = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -262,16 +282,16 @@ class AdminSectionHeader extends StatelessWidget {
             letterSpacing: 1.32,
           ),
         ),
-        const SizedBox(height: AppLayout.s8),
+        const SizedBox(height: AppLayout.s16),
         Semantics(
           header: true,
           child: Text(
             title,
             style: TextStyle(
               color: AppColors.ink,
-              fontSize: breit ? 40 : 30,
+              fontSize: sehrBreit ? 48 : (breit ? 40 : 30),
               fontWeight: FontWeight.w800,
-              height: 1,
+              height: 0.98,
               letterSpacing: -0.5,
             ),
           ),
@@ -280,26 +300,43 @@ class AdminSectionHeader extends StatelessWidget {
           const SizedBox(height: AppLayout.s16),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(lede!, style: Theme.of(context).textTheme.bodyMedium),
+            child: Text(
+              lede!,
+              style: const TextStyle(
+                  color: AppColors.muted, fontSize: 17, height: 1.55),
+            ),
           ),
         ],
       ],
     );
 
-    if (action == null) return text;
-    if (!breit) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [text, const SizedBox(height: AppLayout.s16), action!],
-      );
-    }
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(child: text),
-        const SizedBox(width: AppLayout.s24),
-        action!,
-      ],
+    final kopf = action == null
+        ? text
+        : !breit
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  text,
+                  const SizedBox(height: AppLayout.s16),
+                  action!
+                ],
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(child: text),
+                  const SizedBox(width: AppLayout.s24),
+                  action!,
+                ],
+              );
+
+    // Haarlinie unter dem Kopf trennt ihn wie auf der Website vom Inhalt.
+    return Container(
+      padding: const EdgeInsets.only(bottom: AppLayout.s32),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppColors.line)),
+      ),
+      child: kopf,
     );
   }
 }
@@ -453,20 +490,24 @@ class AdminEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Linksbündig wie der Rest (Factsheet §2): Icon, Titel, Satz.
     return AppCard(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppLayout.s24, vertical: AppLayout.s48),
-      child: Column(
+      padding: const EdgeInsets.all(AppLayout.s32),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 32, color: AppColors.green),
-          const SizedBox(height: AppLayout.s16),
-          Text(title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall),
-          const SizedBox(height: AppLayout.s8),
-          Text(text,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium),
+          Icon(icon, size: 28, color: AppColors.green),
+          const SizedBox(width: AppLayout.s24),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: Theme.of(context).textTheme.headlineSmall),
+                const SizedBox(height: AppLayout.s8),
+                Text(text, style: Theme.of(context).textTheme.bodyMedium),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -515,36 +556,32 @@ class _Segment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TapTarget statt InkWell (E-10): Hover färbt den Rahmen, keine Welle.
     return Semantics(
       selected: active,
-      button: true,
-      child: Material(
-        color: active ? AppColors.ink : AppColors.surface,
-        child: SelectionContainer.disabled(
-          child: InkWell(
-            onTap: onTap,
-            hoverColor: active ? null : AppColors.paper,
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 44),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                border:
-                    Border.all(color: active ? AppColors.ink : AppColors.line),
-              ),
-              // Kein `alignment`: Ein ausgerichteter Container dehnt sich auf
-              // die volle Breite, die Segmente stünden dann untereinander.
-              child: Center(
-                widthFactor: 1,
-                heightFactor: 1,
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: active ? AppColors.paper : AppColors.ink,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
+      child: TapTarget(
+        onTap: onTap,
+        builder: (context, hover) => Container(
+          constraints: const BoxConstraints(minHeight: 44),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: active ? AppColors.ink : AppColors.surface,
+            border: Border.all(
+              color: active || hover ? AppColors.ink : AppColors.line,
+            ),
+          ),
+          // Kein `alignment`: Ein ausgerichteter Container dehnt sich auf
+          // die volle Breite, die Segmente stünden dann untereinander.
+          child: Center(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Text(
+              label,
+              style: TextStyle(
+                color: active ? AppColors.paper : AppColors.ink,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                fontFeatures: const [FontFeature.tabularFigures()],
               ),
             ),
           ),

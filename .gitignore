@@ -125,8 +125,9 @@ _legacy/
 .claude/settings.local.json
 .claude/
 
-# Lokale Exporte aus dem Plan-Dokument und der Sitemap. Enthalten
-# Anwaltsfragen, Notfallplan und Geschaeftsinterna; das Repo ist oeffentlich
-# (T-1.15).
+# Lokale Exporte aus dem Plan-Dokument, dem Sites-Dokument und der Sitemap.
+# Enthalten Anwaltsfragen, Notfallplan und Geschaeftsinterna; das Repo ist
+# oeffentlich (T-1.15).
 notes/claude_plan/
+notes/claude_sites/
 notes/Karriko Sitemap.html

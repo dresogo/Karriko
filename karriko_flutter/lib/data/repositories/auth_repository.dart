@@ -17,7 +17,7 @@ import 'company_repository.dart';
 
 // AuthFailure liegt beim Mapper, wird hier aber weitergereicht: Aufrufer
 // beziehen Repository und Fehlertyp seit jeher aus derselben Datei.
-export 'auth_error_mapper.dart' show AuthFailure, MfaRequired;
+export 'auth_error_mapper.dart' show AuthFailure, AuthLinkInvalid, MfaRequired;
 
 /// Adresse, an die der Browser fuer die Anbieter-Anmeldung geht.
 ///
@@ -456,11 +456,17 @@ class AuthRepository {
   /// Andernfalls koennte man an der Fehlermeldung ablesen, welche Adressen
   /// registriert sind – notes/projekt-referenz.md Paragraf 3.2 verlangt in
   /// beiden Faellen dieselbe Antwort.
-  Future<void> resetPassword(String email) async {
+  ///
+  /// [betrieb] hängt `?zugang=betrieb` an den Link; die Seite zum Setzen des
+  /// Passworts spricht dann mit Sie an und führt zum Betriebs-Login. Appwrite
+  /// ergänzt `userId` und `secret` zu den vorhandenen Parametern.
+  Future<void> resetPassword(String email, {bool betrieb = false}) async {
     try {
       await _account.createRecovery(
         email: email,
-        url: AppwriteConstants.recoveryUrl,
+        url: betrieb
+            ? '${AppwriteConstants.recoveryUrl}?zugang=betrieb'
+            : AppwriteConstants.recoveryUrl,
       );
     } on AppwriteException catch (e) {
       if (e.type == 'user_not_found') {
@@ -473,9 +479,52 @@ class AuthRepository {
     }
   }
 
-  Future<void> updatePassword(String newPassword) async {
-    await _account.updatePassword(password: newPassword);
+  /// Setzt das neue Passwort mit dem Geheimnis aus dem Reset-Link. Braucht
+  /// keine Sitzung; danach enden alle anderen Sitzungen (E-3.12).
+  ///
+  /// Ein abgelaufener, benutzter oder verstümmelter Link wird zu
+  /// [AuthLinkInvalid]; Ablehnungen des Passworts (zu kurz, häufig, geleakt)
+  /// kommen als [AuthFailure] mit dem Text für das Feld.
+  Future<void> completeRecovery({
+    required String userId,
+    required String secret,
+    required String password,
+  }) async {
+    try {
+      await _account.updateRecovery(
+          userId: userId, secret: secret, password: password);
+    } on AppwriteException catch (e) {
+      if (_isLinkInvalid(e)) throw const AuthLinkInvalid();
+      throw _mapError(e, 'Das Passwort ließ sich nicht speichern.');
+    }
   }
+
+  /// Bestätigt die E-Mail-Adresse mit dem Geheimnis aus der Bestätigungsmail.
+  Future<void> confirmEmail({
+    required String userId,
+    required String secret,
+  }) async {
+    try {
+      await _account.updateEmailVerification(userId: userId, secret: secret);
+    } on AppwriteException catch (e) {
+      if (_isLinkInvalid(e)) throw const AuthLinkInvalid();
+      // Öffnet jemand den Link in einem Browser ohne Sitzung und Appwrite
+      // verlangt eine, hilft nur Anmelden und den Link erneut öffnen.
+      if (e.code == 401) {
+        throw const AuthFailure(
+            'Melde dich an und öffne den Link danach noch einmal.');
+      }
+      throw _mapError(e, 'Die Adresse ließ sich nicht bestätigen.');
+    }
+  }
+
+  /// Fehler, hinter denen ein unbrauchbarer Link steckt. `user_not_found`
+  /// gehört dazu: die `userId` kommt aus der Adresse und kann verstümmelt sein.
+  static bool _isLinkInvalid(AppwriteException e) => const {
+        'user_invalid_token',
+        'user_not_found',
+        'general_argument_invalid',
+      }.contains(e.type);
 
   Future<void> resendVerificationEmail() async {
     await _account.createEmailVerification(

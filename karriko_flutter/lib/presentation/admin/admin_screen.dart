@@ -8,6 +8,8 @@ import '../../core/utils/validators.dart';
 import '../../data/repositories/admin_repository.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_shell.dart';
+import '../common/tap_target.dart';
+import 'widgets/admin_widgets.dart';
 import 'admin_providers.dart';
 import 'admin_sections.dart';
 import 'sections/companies_section.dart';
@@ -118,15 +120,7 @@ class _AdminLoginState extends ConsumerState<_AdminLogin> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'INTERN',
-                style: TextStyle(
-                  color: Color(0xFFFF8A86),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.32,
-                ),
-              ),
+              const _InternKicker('INTERN'),
               const SizedBox(height: AppLayout.s16),
               Text(
                 'Admin-\nBereich.',
@@ -141,11 +135,12 @@ class _AdminLoginState extends ConsumerState<_AdminLogin> {
               const SizedBox(height: AppLayout.s24),
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 420),
-                child: const Text(
+                child: Text(
                   'Moderation, Meldungen und Betriebe. Zugang nur für '
-                  'Mitglieder der Teams Administration und Moderation.',
+                  'Mitglieder der Teams Administration und Moderation, mit '
+                  'zweitem Faktor.',
                   style: TextStyle(
-                    color: Color(0xFFC9C9C2),
+                    color: AdminOnInk.secondary,
                     fontSize: 16,
                     height: 1.55,
                   ),
@@ -155,9 +150,15 @@ class _AdminLoginState extends ConsumerState<_AdminLogin> {
           ),
           if (breit) ...[
             const SizedBox(height: AppLayout.s64),
-            const Text(
-              'Jede Entscheidung wird mit Namen protokolliert.',
-              style: TextStyle(color: Color(0xFF9A9A93), fontSize: 13),
+            Container(
+              padding: const EdgeInsets.only(top: AppLayout.s16),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: AdminOnInk.rule)),
+              ),
+              child: Text(
+                'Jede Entscheidung wird mit Namen protokolliert.',
+                style: TextStyle(color: AdminOnInk.tertiary, fontSize: 13),
+              ),
             ),
           ],
         ],
@@ -252,8 +253,7 @@ class _AdminLoginState extends ConsumerState<_AdminLogin> {
                   ),
                 ),
                 const SizedBox(height: AppLayout.s16),
-                const LoginTrustNote(
-                    'Geschützt durch Appwrite Auth · SSL-verschlüsselt'),
+                const LoginTrustNote(loginTrustText),
               ],
             ),
           ),
@@ -500,6 +500,24 @@ class _Seitenleiste extends ConsumerWidget {
           _ => null,
         };
 
+    // Zwei Gruppen: was täglich anfällt, und was nur die Administration
+    // braucht. So steht die Arbeit oben und die Verwaltung abgesetzt darunter.
+    final arbeit = [
+      for (final s in AdminSection.values)
+        if (!s.adminOnly) s,
+    ];
+    final verwaltung = [
+      for (final s in AdminSection.values)
+        if (s.adminOnly && rollen.isAdmin) s,
+    ];
+
+    Widget eintrag(AdminSection s) => _NavEintrag(
+          section: s,
+          aktiv: s == aktiv,
+          zaehler: zaehler(s),
+          onTap: () => onSelect(s),
+        );
+
     return Container(
       color: AppColors.ink,
       child: SafeArea(
@@ -512,24 +530,16 @@ class _Seitenleiste extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'KARRIKO',
+                    'Karriko',
                     style: TextStyle(
                       color: AppColors.paper,
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 2,
+                      letterSpacing: -0.3,
                     ),
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    'ADMIN-BEREICH',
-                    style: TextStyle(
-                      color: Color(0xFFFF8A86),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.32,
-                    ),
-                  ),
+                  SizedBox(height: AppLayout.s8),
+                  _InternKicker('ADMIN-BEREICH'),
                 ],
               ),
             ),
@@ -537,18 +547,17 @@ class _Seitenleiste extends ConsumerWidget {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  for (final s in AdminSection.values)
-                    if (!s.adminOnly || rollen.isAdmin)
-                      _NavEintrag(
-                        section: s,
-                        aktiv: s == aktiv,
-                        zaehler: zaehler(s),
-                        onTap: () => onSelect(s),
-                      ),
+                  const _GruppenTitel('TAGESGESCHÄFT'),
+                  for (final s in arbeit) eintrag(s),
+                  if (verwaltung.isNotEmpty) ...[
+                    const SizedBox(height: AppLayout.s24),
+                    const _GruppenTitel('ADMINISTRATION'),
+                    for (final s in verwaltung) eintrag(s),
+                  ],
                 ],
               ),
             ),
-            const Divider(color: Color(0xFF2E2E2C), height: 1),
+            Divider(color: AdminOnInk.rule, height: 1),
             Padding(
               padding: const EdgeInsets.all(AppLayout.s24),
               child: Column(
@@ -567,8 +576,7 @@ class _Seitenleiste extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     rollen.isAdmin ? 'Administration' : 'Moderation',
-                    style:
-                        const TextStyle(color: Color(0xFF9A9A93), fontSize: 12),
+                    style: TextStyle(color: AdminOnInk.tertiary, fontSize: 12),
                   ),
                   const SizedBox(height: AppLayout.s16),
                   // Untereinander: Nebeneinander passte „Abmelden" bei
@@ -609,63 +617,113 @@ class _NavEintrag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final farbe = aktiv ? AppColors.paper : const Color(0xFFBDBDB6);
+    // TapTarget statt InkWell (E-10): Hover hellt die Fläche nur leicht auf.
     return Semantics(
       selected: aktiv,
-      button: true,
-      child: Material(
-        color: aktiv ? const Color(0xFF242422) : Colors.transparent,
-        child: SelectionContainer.disabled(
-          child: InkWell(
-            onTap: onTap,
-            hoverColor: const Color(0xFF1C1C1B),
-            child: Container(
-              constraints: const BoxConstraints(minHeight: 48),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(
-                    color: aktiv ? AppColors.accent : Colors.transparent,
-                    width: 3,
-                  ),
+      child: TapTarget(
+        onTap: onTap,
+        builder: (context, hover) {
+          final farbe = aktiv || hover ? AdminOnInk.text : AdminOnInk.secondary;
+          return Container(
+            constraints: const BoxConstraints(minHeight: 48),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            decoration: BoxDecoration(
+              color: aktiv
+                  ? AdminOnInk.selected
+                  : (hover ? AdminOnInk.hover : Colors.transparent),
+              border: Border(
+                left: BorderSide(
+                  color: aktiv ? AppColors.accent : Colors.transparent,
+                  width: 3,
                 ),
               ),
-              child: Row(
-                children: [
-                  Icon(section.icon, size: 20, color: farbe),
-                  const SizedBox(width: AppLayout.s16),
-                  Expanded(
+            ),
+            child: Row(
+              children: [
+                Icon(section.icon, size: 20, color: farbe),
+                const SizedBox(width: AppLayout.s16),
+                Expanded(
+                  child: Text(
+                    section.label,
+                    style: TextStyle(
+                      color: farbe,
+                      fontSize: 15,
+                      fontWeight: aktiv ? FontWeight.w800 : FontWeight.w600,
+                    ),
+                  ),
+                ),
+                if (zaehler != null && zaehler! > 0)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    color: AppColors.accentDark,
                     child: Text(
-                      section.label,
-                      style: TextStyle(
-                        color: farbe,
-                        fontSize: 15,
-                        fontWeight: aktiv ? FontWeight.w800 : FontWeight.w600,
+                      '$zaehler',
+                      semanticsLabel: '$zaehler offen',
+                      style: const TextStyle(
+                        color: AppColors.surface,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        fontFeatures: [FontFeature.tabularFigures()],
                       ),
                     ),
                   ),
-                  if (zaehler != null && zaehler! > 0)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      color: AppColors.accentDark,
-                      child: Text(
-                        '$zaehler',
-                        semanticsLabel: '$zaehler offen',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          fontFeatures: [FontFeature.tabularFigures()],
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
-          ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Gruppenüberschrift in der Seitenleiste.
+class _GruppenTitel extends StatelessWidget {
+  final String text;
+
+  const _GruppenTitel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(27, 0, 24, AppLayout.s8),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: AdminOnInk.tertiary,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.32,
         ),
       ),
+    );
+  }
+}
+
+/// Kicker auf der Tintenfläche: ein rotes Quadrat als Markenakzent, der Text
+/// in gedämpftem Papier. Rot als Schrift erreichte auf Tinte keine 4,5:1.
+class _InternKicker extends StatelessWidget {
+  final String text;
+
+  const _InternKicker(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(width: 8, height: 8, color: AppColors.accent),
+        const SizedBox(width: AppLayout.s8),
+        Text(
+          text,
+          style: TextStyle(
+            color: AdminOnInk.secondary,
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.32,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -684,7 +742,7 @@ class _LeisteKnopf extends StatelessWidget {
       onPressed: onTap,
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.paper,
-        side: const BorderSide(color: Color(0xFF4A4A47)),
+        side: BorderSide(color: AdminOnInk.rule),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         minimumSize: const Size(double.infinity, 44),
         alignment: Alignment.centerLeft,
