@@ -2,7 +2,7 @@
 
 **Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-194 Aufgaben sind offen, 67 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+193 Aufgaben sind offen, 66 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -104,7 +104,6 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 - [ ] T-3.18 · P3 · Apple freischalten (kostenpflichtiges Developer-Programm, Domain-Verifikation) (todo C)
 - [ ] T-3.19 · P3 · Nach der Freischaltung mit `OAUTH_ENABLED=true` bauen (todo C)
 
-- [ ] T-3.21 · P1 · „Passwort vergessen“ bestätigt indirekt, dass es das Konto gibt („Wir haben einen Reset-Link an {Adresse} gesendet“). Wortlaut wie beim Magic Link: „Falls für {Adresse} ein Konto existiert, ist ein Link unterwegs.“ (E-42) (Sites, Tab 40)
 - [ ] T-3.22 · P2 · Betriebsregistrierung prüft nicht, ob der Betrieb schon ein Profil hat, und erzeugt so Dubletten. Erster Schritt: Suche nach dem Betrieb, bei Treffer weiter zu „Profil beanspruchen“ (T-2.27) (Sites, Tab 36)
 - [ ] T-3.23 · P2 · Azubi-Registrierung umbauen nach der Entscheidung vom 22.10.2026: zwei Schritte, nur Vorname (kein Nachname, kein Wohnort), Beruf optional zum Vorausfüllen im Fragebogen, ein Passwortfeld mit Anzeigen statt zwei Feldern, auch beim Zurücksetzen. Den Satz „hilft bei personalisierten Empfehlungen“ streichen, die Funktion gibt es nicht. Haken und Links siehe T-11.9, Mindestalter T-5.18 (Sites, Tab 35, 41)
 - [ ] T-3.24 · P1 · Magic Link sowie Google und Apple legen für unbekannte Adressen neue Konten an, ohne Zustimmung zu den Nutzungsbedingungen und ohne Mindestalter. Klären: Schritt „Konto vervollständigen“ beim ersten Login oder Magic Link nur für bestehende Konten (Sites, Tab 33, 45)
@@ -231,6 +230,7 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 - [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt (Bearbeiten in der Liste). Entfernen oder als eigene Formularseite mit Vorschau umsetzen, je nach Entscheidung zu Tab 62 (Sites, Tab 62)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
+
 - [ ] T-6.44 · P1 · Ergänzt T-6.26: Auch der Admin-Bereich verspricht eine Vollprüfung („Jeder Freitext geht durch die Moderation“, `admin_widgets.dart`) (Chat)
 - [ ] T-6.45 · P2 · Ergänzt T-6.6: auf Bewertungen und Meldungen beschränken; Analytics, Abonnement und Team kommen nach T-6.39 aus dem Code, statt umgestaltet zu werden (Chat)
 

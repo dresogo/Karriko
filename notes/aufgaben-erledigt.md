@@ -1,6 +1,6 @@
 # Karriko – Erledigte Aufgaben
 
-**Stand:** 23. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
+**Stand:** 26. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
 
 Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, Nummer und Beleg. Neue Einträge kommen oben in die Tabelle, im selben Commit, der den Punkt aus der offenen Liste nimmt. Die Nummern bleiben vergeben und werden nie neu besetzt.
 
@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 26.10.2026 | T-3.21 | „Passwort vergessen“ bestätigt indirekt, dass es das Konto gibt | Postfach-Zustand im Konjunktiv: „Falls für {Adresse} ein Konto existiert, ist ein Link unterwegs. Er gilt 60 Minuten.“ (E-42), Test `mail_links_test.dart` | `a6567ee` |
 | 22.10.2026 | T-3.1 | Rollen serverseitig über Teams oder Labels setzen, Prefs nur noch zur Anzeige | Hinfällig, ersetzt durch E-3.10: Die Rolle steuert nur die Oberfläche, kein Server vertraut ihr. Am Code geprüft: Keine Function liest die Rolle; Moderation und Administration prüfen die Teams serverseitig (`karriko_functions`, `teams.dart`), Betriebsrechte hängen an `owner_id`. Siehe T-4.30. Im Plan-Dokument am 22.10. eingetragen, am 23.10. übernommen | Code-Prüfung `main` @ `3b15760` |
 | 21.10.2026 | T-11.15 | Screenreader sehen nur „Enable accessibility“, Menü- und Suchknopf ohne Beschriftung | Im Browser `SemanticsBinding.instance.ensureSemantics()` beim Start; `TapTarget(semanticLabel:)` mit „Menü öffnen“, „Zurück“ und „Suchen“. Test `tap_target_semantics_test.dart`. Mit echtem Screenreader noch nicht durchgespielt | dieser Commit |
 | 21.10.2026 | T-8.2 | Gewichtung „namentlich 1,0, anonym 0,5“ aus der Referenz streichen | Referenz §2.2 beschreibt jetzt E-23 (Prioritätsgewichte, Schrumpfung, Alterung) und E-22; namentliche Bewertungen gibt es nicht | dieser Commit |
