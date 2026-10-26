@@ -139,8 +139,8 @@ AdminBadge reviewStatusBadge(String? status) => switch (status) {
         ),
       'text_needs_review' => (
           'Freitext prüfen',
-          'Jeder Freitext geht durch die Moderation — kein Hinweis auf ein '
-              'Problem.'
+          // Kein Versprechen einer Vollprüfung (E-2.13, T-6.44).
+          'Enthält einen Freitext. Allein kein Hinweis auf ein Problem.'
         ),
       _ => (code, 'Unbekannte Markierung.'),
     };

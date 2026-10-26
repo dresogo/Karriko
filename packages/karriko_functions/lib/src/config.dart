@@ -150,9 +150,10 @@ class FunctionConfig {
       deviceHashSalt: env['KARRIKO_DEVICE_HASH_SALT']?.trim().isEmpty ?? true
           ? null
           : env['KARRIKO_DEVICE_HASH_SALT']!.trim(),
-      draftRetentionDays: zahl('KARRIKO_DRAFT_RETENTION_DAYS', 90),
+      // Fristen aus dem Löschkonzept (E-51): Entwürfe 30, Nachweise 14 Tage.
+      draftRetentionDays: zahl('KARRIKO_DRAFT_RETENTION_DAYS', 30),
       verificationRetentionDays:
-          zahl('KARRIKO_VERIFICATION_RETENTION_DAYS', 30),
+          zahl('KARRIKO_VERIFICATION_RETENTION_DAYS', 14),
       delayDays: zahl('KARRIKO_DELAY_DAYS', 3),
       smallBusinessDelayMonths: zahl('KARRIKO_SMALL_BUSINESS_DELAY_MONTHS', 6),
     );

@@ -2,7 +2,7 @@
 
 **Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-193 Aufgaben sind offen, 66 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+183 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -28,14 +28,15 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 
 ## Vorgeschlagene Reihenfolge für die P1-Punkte
 
-1. Notizen privat stellen, gitleaks einrichten
+1. Notizen privat stellen (gitleaks ist erledigt)
 2. Staging und Produktion trennen, Backups mit Restore-Test
-3. `submit_review` deployen, Moderationskonto anlegen und Abnahmetest mit den vier Personas
-4. Rollen serverseitig, Row Security, Feld-Whitelist für Betriebe, „Anonymous“ aus
-5. Kontolöschung, Löschverlangen für Bewertungen, Datenexport
-6. Unternehmensform, Steuerberater, Versicherung, Marke
-7. Anwalt: Rechtstexte, acht Punkte der Bewertungsstrecke, DSFA, Datenschutzbeauftragter, DSA-Verfahren
-8. Auslieferung: Domain, SMTP, `rpId`, CSP (CDN aus und Schriften lokal sind erledigt)
+3. Gegenprobe von `submit_review` mit einem unbestätigten Konto, Moderationskonto anlegen und Abnahmetest mit den vier Personas
+4. Betriebssperre serverseitig (Row Security, Feld-Whitelist und „Anonymous“ aus sind erledigt, „Rollen serverseitig“ ist hinfällig)
+5. Unternehmensform, Steuerberater, Versicherung, Marke
+6. Anwalt: Rechtstexte, acht Punkte der Bewertungsstrecke, DSFA, Datenschutzbeauftragter, DSA-Verfahren
+7. Auslieferung: Domain, SMTP, `rpId`, CSP (CDN aus und Schriften lokal sind erledigt)
+
+Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.2026 erledigt (T-2.8 bis T-2.10).
 
 ## 1 · Repository und Projektorganisation
 
@@ -45,8 +46,6 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
   GitHub hält den alten Commit per SHA weiter abrufbar. Hier verzichtbar, weil der Wert bedeutungslos war, aber beim nächsten echten Fund ist das der Schritt, der vergessen wird.
 - [ ] T-1.7 · P2 · SonarCloud Automatic Analysis abschalten (todo H)
 - [ ] T-1.10 · P3 · Lizenz festlegen oder bewusst ohne Lizenz bleiben (README)
-- [ ] T-1.16 · P2 · „Vorgeschlagene Reihenfolge für die P1-Punkte“ aktualisieren: gitleaks (T-1.2), Row Security (T-4.1), Feld-Whitelist (T-4.2), „Anonymous“ aus (T-3.2) und Punkt 5 (T-2.8 bis T-2.10) sind erledigt, „Rollen serverseitig“ ist hinfällig (T-3.1) (Chat)
-- [ ] T-1.17 · P2 · Factsheet E-45 an T-4.2 und T-4.25 angleichen: `companies` hat nur noch `read("any")`, geschrieben wird über `company_profile`, angelegt nur von bestätigten Konten (Chat)
 
 ## 2 · Datenschicht und Funktionen
 
@@ -83,7 +82,6 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 - [ ] T-2.37 · P2 · Vorsortierung nach E-2.13, Stufe „Regeln“: Spalten `risk_level`, `risk_flags`, `sample`, `screened_at`, `screen_version` über `appwrite-setup.mjs` (E-05); Vorprüfung als reine Funktion in `packages/karriko_functions` (Häufung, Kontoalter, gleicher Gerätehash, Textduplikate, vorhandene `quality_flags`); Freigabe-Logik mit `moderate_review` teilen, damit es bei einem Weg in `public_reviews` bleibt. Schließt T-4.18 ein (Moderation)
 - [ ] T-2.38 · P2 · KI-Vorprüfung im Schattenbetrieb: Anbieter mit EU-Verarbeitung und AVV (E-02, T-5.8), Prompt und Ausgabeschema versioniert im Paket, die KI sieht nur Freitexte und Sterne; Ergebnis nur speichern, nach 200 Bewertungen Abweichungen zwischen KI und Mensch auswerten (Moderation)
 - [ ] T-2.39 · P2 · Automatische Freigabe scharf schalten, nur wenn in T-2.38 kein roter Fall als grün durchging: Grün gibt frei, Stichprobe 20 %, ab 500 Bewertungen 5 %; `moderation_log` mit Aktion `auto_approve` und Systemkennung; `moderation_desk` sortiert nach Risiko und zeigt Flags und Stichprobe; E-2.13 mit den endgültigen Schwellen abgleichen (Moderation)
-- [ ] T-2.40 · P1 · Löschfristen an E-51 angleichen: `config.dart` hat als Standard Entwürfe 90 statt 30 Tage und Nachweise 30 statt 14 Tage; Standard, Umgebung der Function `cleanup` und `APPWRITE_SETUP.md` anpassen, löst W-3.1 (Chat)
 
 ## 3 · Anmeldung und Konten
 
@@ -206,13 +204,13 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Stand 21.10.2026: Die Leckprüfung macht jetzt Appwrite (E-3.12); ihre Ablehnung kommt als `password_pwned` und soll direkt am Feld stehen. Die Stärkeanzeige richtet sich nach der Mindestlänge 12.
 - [ ] T-6.25 · P1 · Öffentliche Seite „So prüfen wir Bewertungen“: wie die Echtheit geprüft wird (UWG § 5b Abs. 3), später auf der Website (Moderation)
 
-- [ ] T-6.26 · P1 · Texte zur Prüfung an E-2.13 anpassen; sie versprechen eine Vollprüfung: FAQ „Jede Bewertung geht vor der Veröffentlichung durch die Moderation“, Startseite „Moderierte Rezensionen …“, Über uns „Alle Bewertungen werden moderiert und auf Authentizität geprüft“ (Sites, Tab 01, 19, 22)
 - [ ] T-6.27 · P2 · Texte versprechen Antworten der Betriebe, die nicht entschieden sind (T-8.1): Lead im Login Betrieb (`login_screen.dart`) und Werbekasten im Blogartikel (`blog_detail_screen.dart`). Bis zur Entscheidung entfernen (Sites, Tab 18, 34)
 - [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten mit `?zugang=betrieb`. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
 - [ ] T-6.29 · P2 · „Premium starten“ auf „Für Betriebe“ führt nur zur Registrierung. Bis T-8.4 durch „Interesse melden“ ersetzen oder ausblenden (Sites, Tab 13)
 - [ ] T-6.30 · P2 · Suchfilter „Ab X Sternen“ auf Zahlen umstellen (ab 3 · ab 3,5 · ab 4); Bewertungen überall als Zahl mit Balken, keine Sterne (Entscheidung vom 22.10.2026) (Sites, Tab 02)
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
+  Teilweise erledigt am 26.10.2026: Spalte heißt „Plattform“. Offen: die Links, sobald die Seiten stehen.
 - [ ] T-6.33 · P3 · Grobgerüst `/konto-wiederherstellen` aus `planned_catalog.dart` entfernen und die Adresse auf die Anmeldung umleiten; Lösch- und Warnmails verlinken auf die Anmeldung mit `?next=` zur Kontolöschung (Entscheidung vom 22.10.2026) (Sites, Tab 38)
 
 - [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
@@ -231,23 +229,20 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
-- [ ] T-6.44 · P1 · Ergänzt T-6.26: Auch der Admin-Bereich verspricht eine Vollprüfung („Jeder Freitext geht durch die Moderation“, `admin_widgets.dart`) (Chat)
 - [ ] T-6.45 · P2 · Ergänzt T-6.6: auf Bewertungen und Meldungen beschränken; Analytics, Abonnement und Team kommen nach T-6.39 aus dem Code, statt umgestaltet zu werden (Chat)
 
 ## 7 · Tests
 
 - [ ] T-7.1 · P1 · Kritische Testfälle aus Referenz §5 absichern: Anonymität auch in der API-Antwort, fremdes Profil bearbeiten, zweite Betriebsantwort, Konto löschen (todo F)
   Teilweise erledigt am 13.10.2026: Anonymität abschließend getestet (`dc4e5d2`), Startseite 375 px durch Layout-Test. Offen: fremdes Profil (nur gegen Appwrite prüfbar), zweite Betriebsantwort und Konto löschen (noch nicht gebaut).
+  Teilweise erledigt am 20.10.2026: Konto löschen gebaut und getestet (`account_deletion_flow_test.dart`, `account_data_test.dart`, T-2.8). Offen: fremdes Profil gehört zu T-7.2, die zweite Betriebsantwort hängt an T-8.1.
 - [ ] T-7.2 · P1 · Rechtetests mit zwei echten Konten gegen Staging: fremde Merkliste, fremdes Profil, fremde Firma (Plan, neu)
 - [ ] T-7.3 · P2 · Mindestens ein Integrationstest, der eine echte Appwrite-Antwort sieht; heute arbeiten alle Tests gegen Fakes (README)
 - [ ] T-7.6 · P2 · Nicht abgedeckte Bereiche: Repositories, Lesezeichen, Suche, Unternehmensdetail, Betriebsseiten (todo F)
   Teilweise erledigt am 18.10.2026: `CompanyRepository` nimmt ein `TablesDB` entgegen und ist damit ohne Appwrite testbar; `company_repository_test.dart` prüft Merkliste, Suchabfragen und Profiländerung. Dabei behoben: ein gemerkter, inzwischen gelöschter Betrieb ließ die ganze Merkliste scheitern. Offen: übrige Repositories nach demselben Muster, Widget-Tests für Merkliste, Suche, Unternehmensdetail und Betriebsseiten.
-- [ ] T-7.7 · P3 · Layout-Durchlauf als dauerhaften Test (todo F)
 - [ ] T-7.8 · P3 · Testabdeckung der Geschäftslogik messen, Ziel über 80 % (Referenz §5)
 - [ ] T-7.9 · P2 · Klickwege auf einem echten Telefon durchspielen; bisher nur in der Mobil-Emulation angesehen, dort blieben Klicks hängen (Statusbericht 13.7, im Archiv)
 - [ ] T-7.10 · P2 · Layout-Tests um 320 px ergänzen; die schmalste Testbreite ist 360 px, die Fehler aus T-11.14 stammen von 320 px (Chat)
-- [ ] T-7.11 · P1 · Ergänzt T-7.1: „Konto löschen“ ist inzwischen gebaut und getestet (`account_deletion_flow_test.dart`, `account_data_test.dart`); „fremdes Profil“ gehört zu T-7.2, „zweite Betriebsantwort“ hängt an T-8.1. Als teilweise erledigt vermerken (Chat)
-- [ ] T-7.12 · P3 · T-7.7 als erledigt prüfen: Layout-Tests für öffentliche, Azubi-, Betriebs- und geplante Seiten laufen in sechs Breiten und mit vergrößerter Schrift in der CI (Chat)
 
 ## 8 · Produktentscheidungen
 
@@ -286,19 +281,19 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
   Unterlagen zum Mitschicken laut Tab: Verarbeitungsverzeichnis, Löschkonzept und Fragebogen als PDF; es fehlen noch Screenshots der Registrierung und der Anonymitätshinweise.
 - [ ] T-9.12 · P2 · Vertretung für den Notfall benennen und in die Notbremsen einweisen (Notfallplan)
 - [ ] T-9.13 · P2 · Notfallplan vervollständigen: Telefon, Kontakte, Wartungsseite, Bremsen in Staging erprobt (Notfallplan)
+  Stand 26.10.2026: Grobgerüst der Wartungsseite `web/wartung.html` liegt seit `114fe83` im Repo.
 - [ ] T-9.14 · P1 · Ergänzt T-9.10: Die Übergangsseite läuft auf Hetzner-Webhosting mit Apache und `.htaccess`. T-4.9, T-4.33, T-10.1 und T-10.2 setzen nginx oder Caddy voraus, der Passkey-Dienst braucht Node. Festlegen, ob die Produktion auf Webhosting oder einem eigenen Server läuft (Chat)
-- [ ] T-9.15 · P2 · Ergänzt T-9.13: Grobgerüst für die Wartungsseite `web/wartung.html` liegt seit `114fe83` im Repo (Chat)
 
 ## 10 · Vorschaltseite bis zum Launch
 
 - [ ] T-10.1 · P1 · „Kommt bald“-Seite auf karriko.de. Die Sperre sitzt im Reverse Proxy (Caddy oder nginx), nicht in der App, und deckt alle Pfade ab: Website, `/app/` und den Passkey-Dienst (Website-Umbau)
+  Teilweise erledigt: Grobgerüst `web/bald.html` liegt seit `114fe83` im Repo. Offen: Inhalt und die Sperre im Proxy (hängt an T-9.14).
 - [ ] T-10.2 · P1 · Zugang per Passwortformular, das ein HttpOnly-Cookie setzt (Caddy `forward_auth` oder Next.js-Middleware), mit Rate-Limit gegen Durchprobieren. Einfachste Übergangslösung: HTTP Basic Auth im Proxy (Website-Umbau)
 - [ ] T-10.3 · P1 · Impressum und Datenschutzerklärung auf der Vorschaltseite öffentlich verlinken, sie müssen auch vor dem Launch erreichbar sein (neu)
 - [ ] T-10.4 · P1 · Launch-Schritt festlegen: Sperre entfernen, `noindex` abschalten, Sitemap in der Search Console einreichen (Website-Umbau)
 - [ ] T-10.5 · P2 · Die Sperre schützt nur die Website. `public_reviews` und `company_scores` sind über die Appwrite-API weiter mit `read("any")` lesbar, also bis zum Launch keine echten Bewertungen veröffentlichen (Website-Umbau)
 - [ ] T-10.6 · P2 · Bestätigungsmail, Passwort-Reset, Magic Link und OAuth mit Testkonten durch die Sperre hindurch testen (Website-Umbau)
 - [ ] T-10.7 · P3 · Optional: E-Mail-Liste „Zum Start benachrichtigen“ mit Double-Opt-in und Hinweis in der Datenschutzerklärung (neu)
-- [ ] T-10.8 · P1 · Ergänzt T-10.1: Grobgerüst `web/bald.html` liegt seit `114fe83` im Repo, als teilweise erledigt vermerken (Chat)
 
 ## 11 · Fehler aus dem Website-Test
 

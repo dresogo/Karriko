@@ -54,9 +54,9 @@ class _WideFooter extends StatelessWidget {
                 ],
               ),
             ),
-            // Platform col
+            // Plattform
             _FooterColumn(
-              title: 'Platform',
+              title: 'Plattform',
               links: [
                 ('Suche', '/search'),
                 ('Für Betriebe', '/fuer-betriebe'),

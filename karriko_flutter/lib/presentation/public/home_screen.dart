@@ -334,7 +334,8 @@ class _FeaturesSection extends StatelessWidget {
     (
       '03',
       'Vertrauen',
-      'Moderierte Rezensionen schaffen hilfreiche Orientierung ohne unnötige Komplexität.'
+      'Jede Bewertung wird vor der Veröffentlichung geprüft, auffällige Fälle '
+          'und Meldungen sieht sich ein Mensch an.'
     ),
   ];
 

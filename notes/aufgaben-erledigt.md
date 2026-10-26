@@ -8,6 +8,16 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 26.10.2026 | T-6.44 | Admin-Bereich verspricht eine Vollprüfung jedes Freitexts | Markierung „Freitext prüfen“ erklärt nur noch: „Enthält einen Freitext. Allein kein Hinweis auf ein Problem.“ | dieser Commit |
+| 26.10.2026 | T-6.26 | Texte versprechen eine Vollprüfung jeder Bewertung | FAQ und Startseite neutral, gilt heute und nach E-2.13: „Jede Bewertung wird vor der Veröffentlichung geprüft. Auffällige Fälle und jede Meldung sieht sich ein Mensch an.“ Über uns war schon angepasst (`3ce4cf7`). Entschieden mit dem Nutzer | dieser Commit |
+| 26.10.2026 | T-2.40 | Löschfristen im Code an E-51 angleichen | Standard in `config.dart`: Entwürfe 30, Nachweise 14 Tage; `cleanup/.env` setzt keine eigenen Werte. Test und `APPWRITE_SETUP.md` angepasst, W-3.1 aus dem Factsheet entfernt. Wirkt nach dem nächsten Deploy von `cleanup` (vorher `dart run tools/vendor_core.dart`) | dieser Commit |
+| 26.10.2026 | T-1.17 | Factsheet E-45 an T-4.2 und T-4.25 angleichen | E-45 beschreibt `companies` mit nur `read("any")` und `company_profile` als einzigem Schreibweg | dieser Commit |
+| 26.10.2026 | T-1.16 | „Vorgeschlagene Reihenfolge für die P1-Punkte“ aktualisieren | Erledigte und hinfällige Schritte entfernt, Schritt 3 auf die Gegenprobe umgestellt | dieser Commit |
+| 26.10.2026 | T-7.12 | T-7.7 als erledigt prüfen | Geprüft: `flutter test` in `flutter.yml` führt die Layout-Tests aus, die meisten in sechs oder mehr Breiten mit Schrift 1,0 und 1,3 | dieser Commit |
+| 26.10.2026 | T-7.7 | Layout-Durchlauf als dauerhaften Test | Erledigt durch die Layout-Tests für öffentliche, Login-, Azubi-, Betriebs- und geplante Seiten in der CI (T-7.12); 320 px fehlt noch (T-7.10) | dieser Commit |
+| 26.10.2026 | T-7.11 | T-7.1 als teilweise erledigt vermerken | Vermerk unter T-7.1 | dieser Commit |
+| 26.10.2026 | T-10.8 | T-10.1 als teilweise erledigt vermerken | Vermerk unter T-10.1 | dieser Commit |
+| 26.10.2026 | T-9.15 | Wartungsseite bei T-9.13 vermerken | Vermerk unter T-9.13 | dieser Commit |
 | 26.10.2026 | T-3.21 | „Passwort vergessen“ bestätigt indirekt, dass es das Konto gibt | Postfach-Zustand im Konjunktiv: „Falls für {Adresse} ein Konto existiert, ist ein Link unterwegs. Er gilt 60 Minuten.“ (E-42), Test `mail_links_test.dart` | `a6567ee` |
 | 22.10.2026 | T-3.1 | Rollen serverseitig über Teams oder Labels setzen, Prefs nur noch zur Anzeige | Hinfällig, ersetzt durch E-3.10: Die Rolle steuert nur die Oberfläche, kein Server vertraut ihr. Am Code geprüft: Keine Function liest die Rolle; Moderation und Administration prüfen die Teams serverseitig (`karriko_functions`, `teams.dart`), Betriebsrechte hängen an `owner_id`. Siehe T-4.30. Im Plan-Dokument am 22.10. eingetragen, am 23.10. übernommen | Code-Prüfung `main` @ `3b15760` |
 | 21.10.2026 | T-11.15 | Screenreader sehen nur „Enable accessibility“, Menü- und Suchknopf ohne Beschriftung | Im Browser `SemanticsBinding.instance.ensureSemantics()` beim Start; `TapTarget(semanticLabel:)` mit „Menü öffnen“, „Zurück“ und „Suchen“. Test `tap_target_semantics_test.dart`. Mit echtem Screenreader noch nicht durchgespielt | dieser Commit |

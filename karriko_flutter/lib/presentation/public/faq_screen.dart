@@ -76,8 +76,11 @@ class FaqScreen extends StatelessWidget {
       [
         (
           'Wie werden Bewertungen geprüft?',
-          'Jede Bewertung geht vor der Veröffentlichung durch die Moderation. Auf '
-              'deinen Wunsch erscheint sie später, zum Beispiel erst nach deinem '
+          // Neutral formuliert, damit es heute (jede Bewertung sieht ein
+          // Mensch) und nach der Vorsortierung (E-2.13) stimmt (T-6.26).
+          'Jede Bewertung wird vor der Veröffentlichung geprüft. Auffällige '
+              'Fälle und jede Meldung sieht sich ein Mensch an. Auf deinen '
+              'Wunsch erscheint sie später, zum Beispiel erst nach deinem '
               'Ausbildungsende.',
         ),
         (

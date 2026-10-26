@@ -1121,8 +1121,8 @@ gekennzeichnet.**
 
 | Variable | Standard | Wer | Bedeutung |
 |---|---|---|---|
-| `KARRIKO_DRAFT_RETENTION_DAYS` | 90 | `cleanup` | Nach wie vielen Tagen ohne Änderung ein Entwurf verfällt |
-| `KARRIKO_VERIFICATION_RETENTION_DAYS` | 30 | `cleanup` | Nach wie vielen Tagen nach der Moderationsentscheidung der Nachweis gelöscht wird |
+| `KARRIKO_DRAFT_RETENTION_DAYS` | 30 (E-51) | `cleanup` | Nach wie vielen Tagen ohne Änderung ein Entwurf verfällt |
+| `KARRIKO_VERIFICATION_RETENTION_DAYS` | 14 (E-51) | `cleanup` | Nach wie vielen Tagen nach der Moderationsentscheidung der Nachweis gelöscht wird |
 | `KARRIKO_DELAY_DAYS` | 3 | `submit_review` | Um wie viele Tage die Veröffentlichung verschoben wird, wenn jemand in A3 darum bittet |
 | `KARRIKO_SMALL_BUSINESS_DELAY_MONTHS` | 6 | `submit_review`, `publish_scheduled` | Um wie viele Monate bei einem Kleinbetrieb verschoben wird, wenn „erst nach Ausbildungsende" gewählt ist und kein Enddatum bekannt ist |
 
@@ -1491,8 +1491,8 @@ namentlich aufgeführt.
 
 | | |
 |---|---|
-| ⚖️ | **Aufbewahrungsfrist für Verifikationsnachweise.** Standard 30 Tage nach der Moderationsentscheidung (`KARRIKO_VERIFICATION_RETENTION_DAYS`). Wie lange man einen solchen Nachweis aufbewahren **darf** und aufbewahren **muss**, ist keine Entwicklungsfrage. |
-| ⚖️ | **Aufbewahrungsfrist für Entwürfe.** Standard 90 Tage ohne Änderung (`KARRIKO_DRAFT_RETENTION_DAYS`). Ein Entwurf enthält Antworten zu einem Betrieb, die nie abgeschickt wurden. |
+| ⚖️ | **Aufbewahrungsfrist für Verifikationsnachweise.** Standard 14 Tage nach der Moderationsentscheidung (`KARRIKO_VERIFICATION_RETENTION_DAYS`), wie im Löschkonzept (E-51). Wie lange man einen solchen Nachweis aufbewahren **darf** und aufbewahren **muss**, ist keine Entwicklungsfrage. |
+| ⚖️ | **Aufbewahrungsfrist für Entwürfe.** Standard 30 Tage ohne Änderung (`KARRIKO_DRAFT_RETENTION_DAYS`), wie im Löschkonzept (E-51). Ein Entwurf enthält Antworten zu einem Betrieb, die nie abgeschickt wurden. |
 | ⚖️ | **Aufbewahrung der Rohantworten.** `answers_json` bleibt unbefristet stehen, weil `recompute_all` sie braucht. Ob das zulässig ist und ob es eine Obergrenze braucht, ist offen. Es gibt heute keine Frist dafür. |
 | ⚖️ | **Aufbewahrung des Exports aus Abschnitt 11.** Er enthält Rohantworten und Nutzerkennungen. Wie lange und wo. |
 | ✅ | **Löschverlangen eines Nutzers.** Seit 20.10.2026 über `my_account`: eine eigene Bewertung vollständig löschen (E-4.6) oder das Konto (E-4.5, 14 Tage zurücknehmbar). |

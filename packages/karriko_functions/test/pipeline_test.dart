@@ -104,22 +104,29 @@ void main() {
       expect(config.moderatorsTeam, 'moderators');
     });
 
+    test('Fristen folgen ohne Umgebung dem Löschkonzept (E-51)', () {
+      final config = _config();
+      expect(config.draftRetentionDays, 30);
+      expect(config.verificationRetentionDays, 14);
+    });
+
     test('Fristen lassen sich über die Umgebung setzen', () {
       final config = _config(const {
-        'KARRIKO_DRAFT_RETENTION_DAYS': '30',
+        'KARRIKO_DRAFT_RETENTION_DAYS': '60',
         'KARRIKO_VERIFICATION_RETENTION_DAYS': '7',
       });
-      expect(config.draftRetentionDays, 30);
+      expect(config.draftRetentionDays, 60);
       expect(config.verificationRetentionDays, 7);
     });
 
     test('ein unlesbarer Zahlenwert fällt auf die Voreinstellung zurück', () {
       // Eine Function, die wegen eines Tippfehlers in einer Frist gar nicht
-      // startet, räumt nichts weg — und das ist schlechter als 90 Tage.
+      // startet, räumt nichts weg — und das ist schlechter als die
+      // Voreinstellung.
       expect(
-        _config(const {'KARRIKO_DRAFT_RETENTION_DAYS': 'neunzig'})
+        _config(const {'KARRIKO_DRAFT_RETENTION_DAYS': 'dreißig'})
             .draftRetentionDays,
-        90,
+        30,
       );
     });
 

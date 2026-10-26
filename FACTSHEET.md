@@ -137,7 +137,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-40 | 08/2026 | **Magic Link und Social Login nur für Azubis.** Wird ein Betriebskonto erkannt, sofort abmelden. | Betriebe durchlaufen eine menschliche Firmenprüfung. |
 | E-42 | – | **Keine Konto-Erkundung:** falsches Passwort und unbekannte E-Mail geben dieselbe Meldung, „Passwort vergessen" antwortet immer gleich. Bekannte Ausnahme: Registrierung (erst mit serverseitiger Registrierung lösbar). | Schutz der Nutzer. |
 | E-44 | – | **Jede Berechtigung serverseitig.** Client-Weiterleitungen sind Bequemlichkeit, keine Sicherheit. Ein Betrieb sieht nie Daten eines anderen. | – |
-| E-45 | 10/2026 | **`companies` mit Row Security**: Tabellenrechte nur `read("any")`, `create("users")`; Änderungsrecht pro Zeile für den Eigentümer. | Vorher durfte jeder Angemeldete jede Firma ändern. |
+| E-45 | 10/2026 | **`companies` mit Row Security**: Tabellen- und Zeilenrechte nur `read("any")`, kein Anlege- oder Änderungsrecht für Clients. Geschrieben wird nur über die Function `company_profile`; sie nimmt nur bestätigte Konten an, eine Firma je Konto und nur freigegebene Felder (T-4.2, T-4.25). | Vorher durfte jeder Angemeldete jede Firma ändern. Appwrite kennt keine Rechte je Spalte, direkt geschrieben ließen sich auch `is_verified` oder `owner_id` setzen. |
 | E-46 | 10/2026 | **Von Betrieben eingegebene URLs werden nicht verlinkt** (Website, Bewerbungs-URL, Kontakt-Mail), bis eine Prüfung auf `http`/`https` existiert. | Sonst wird eine `javascript:`-URL zum Einfallstor (PR #11). |
 | E-47 | 10/2026 | **Die Fehlerseite zeigt nur den Pfad, nie die Query.** | Die alte Fassung gab mögliche Einmal-Codes aus Mail-Links aus (PR #13). |
 | E-48 | 08/2026 | **Zugangsdaten nie ins Repo.** Fund im öffentlichen Repo → sofort rotieren, `git filter-repo --replace-text`, Force-Push, danach GitHub-Support um Purge unerreichbarer Objekte bitten. API-Schlüssel nach Gebrauch widerrufen, nicht ablaufen lassen. | Fall `notes/fehler.md`: 26 Tage öffentlich lesbar; alte Commits bleiben per SHA abrufbar. |
@@ -151,7 +151,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | Nr | Datum | Entscheidung | Grund |
 |---|---|---|---|
 | E-50 | 10/2026 | **Kontolöschung:** Nutzerbezug wird aus erhaltenen Bewertungen entfernt. Einheitliche **14-Tage-Widerrufsfrist** für jede Kontolöschung. | Art. 17 DSGVO, Schutz vor versehentlichem Löschen. |
-| E-51 | 10/2026 | Öffentliche Bewertungen ohne Höchstspeicherdauer. **Entwürfe 30 Tage, Verifikationsnachweise 14 Tage.** | Löschkonzept nach DIN 66398. Siehe Abschnitt 9: Code-Standard weicht noch ab. |
+| E-51 | 10/2026 | Öffentliche Bewertungen ohne Höchstspeicherdauer. **Entwürfe 30 Tage, Verifikationsnachweise 14 Tage.** | Löschkonzept nach DIN 66398; seit T-2.40 auch Standard im Code (`config.dart`). Juristische Prüfung offen (T-5.4). |
 | E-52 | 10/2026 | **Inaktive Konten** nach 3 Jahren löschen, vorher drei Warnungen (30 / 14 / 3 Tage). | Datensparsamkeit. |
 | E-53 | – | Kein Tracking ohne Einwilligung, AVV mit jedem Dienstleister, keine personenbezogenen Daten in Logs. | DSGVO. |
 | E-4.5 | 20.10.2026 | **Kontolöschung (T-2.8):** beantragt über `my_account`, 14 Tage nur Anmelden zum Zurücknehmen (E-3.11), danach löscht `cleanup` endgültig. Veröffentlichte Bewertungen bleiben mit `user_id = geloescht-<Zeile>` und ohne Gerätehash stehen; nicht veröffentlichte, Entwürfe, Merkliste, Profil, Nachweise und das Appwrite-Konto werden gelöscht, eigene Meldungen verlieren die Nutzerkennung. Betriebskonten vorerst über den Support (T-2.24). | Setzt E-50 um. Ersetzt die Regel aus `projekt-referenz.md` §3.3, nach der bei anonymen Bewertungen die Nutzer-ID bleibt (T-2.23). |
@@ -225,10 +225,6 @@ Bekannte Stellen, an denen Code, Doku und Entscheidungen nicht übereinstimmen. 
 **W-2 · Technik und Doku**
 
 - **W-2.1 · Noto-Fallback:** Für Zeichen außerhalb von Inter (z. B. Emojis) lädt Flutter weiter von `fonts.gstatic.com`. Widerspricht E-06, relevant für die CSP (T-5.26).
-
-**W-3 · Daten und Recht**
-
-- **W-3.1 · Löschfristen:** Code-Standard Entwürfe 90 Tage / Nachweise 30 Tage, Löschkonzept 30 / 14 Tage (E-51). Werte in `.env` der Functions anpassen; beides noch juristisch zu prüfen.
 
 **Offene Produktentscheidungen** (Details in `notes/aufgaben-offen.md` Abschnitt 8): Umfang der Börse · Antwortrecht für Betriebe · Löschverlangen für einzelne Bewertungen · finales Logo · Preisstufen Premium · fette Inter-Schnitte ja/nein.
 
