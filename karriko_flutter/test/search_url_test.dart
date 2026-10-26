@@ -106,6 +106,34 @@ void main() {
     expect(repo.suchen.last['minRating'], isNull);
   });
 
+  testWidgets('Bewertungsregler: Stufe antippen sucht und schreibt die Adresse',
+      (tester) async {
+    final repo = await oeffnen(tester, '/search');
+
+    expect(find.byType(Slider), findsOneWidget);
+    expect(find.text('Alle Bewertungen'), findsOneWidget);
+
+    await tester.tap(find.text('3,5'));
+    await tester.pump();
+
+    expect(repo.suchen.last['minRating'], 3.5);
+    expect(adressen.last, contains('bewertung=3.5'));
+    expect(find.text('ab 3,5 von 5'), findsOneWidget);
+  });
+
+  testWidgets('Bewertungsregler: per Tastatur eine Stufe weiter',
+      (tester) async {
+    final repo = await oeffnen(tester, '/search?bewertung=3');
+
+    final slider = tester.widget<Slider>(find.byType(Slider));
+    slider.focusNode!.requestFocus();
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+
+    expect(repo.suchen.last['minRating'], 3.5);
+  });
+
   testWidgets('unbekannte Branche wird ignoriert', (tester) async {
     final repo = await oeffnen(tester, '/search?branche=Erfunden');
 

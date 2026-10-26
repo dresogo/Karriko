@@ -252,17 +252,7 @@ class _FiltersSidebar extends StatelessWidget {
         const SizedBox(height: AppLayout.s32),
         _FilterSection(
           title: 'BEWERTUNG',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final step in _ratingSteps)
-                _FilterLink(
-                  label: step == null ? 'Alle' : 'ab ${_ratingLabel(step)}',
-                  selected: step == minRating,
-                  onTap: () => onRating(step),
-                ),
-            ],
-          ),
+          child: _RatingSlider(value: minRating, onChanged: onRating),
         ),
         const SizedBox(height: AppLayout.s32),
         _FilterSection(
@@ -317,6 +307,228 @@ class _FilterSection extends StatelessWidget {
         child,
       ],
     );
+  }
+}
+
+/// Bewertungsfilter als Schieberegler mit Raster: vier Stufen aus
+/// [_ratingSteps], Striche an jeder Stufe, Beschriftung darunter.
+///
+/// Swiss Design (Factsheet §2): Haarlinie in `line`, gewählter Bereich und
+/// Griff in `ink`, eckiger Griff, keine Welle. Mit Fokus wird der Griff
+/// `accent` mit Tintenrahmen, damit die Tastaturbedienung sichtbar bleibt.
+/// Gesucht wird erst beim Loslassen, nicht bei jeder Stufe unterwegs; die
+/// Beschriftungen sind zusätzlich Klickziele für ungenaue Finger.
+class _RatingSlider extends StatefulWidget {
+  final double? value;
+  final ValueChanged<double?> onChanged;
+
+  const _RatingSlider({required this.value, required this.onChanged});
+
+  @override
+  State<_RatingSlider> createState() => _RatingSliderState();
+}
+
+class _RatingSliderState extends State<_RatingSlider> {
+  final _focus = FocusNode();
+  late int _index = _indexOf(widget.value);
+
+  static int _indexOf(double? v) {
+    final i = _ratingSteps.indexOf(v);
+    return i < 0 ? 0 : i;
+  }
+
+  /// „Alle Bewertungen“ oder „ab 3,5 von 5“: sichtbar und für Screenreader.
+  static String _beschreibung(double? step) =>
+      step == null ? 'Alle Bewertungen' : 'ab ${_ratingLabel(step)} von 5';
+
+  @override
+  void initState() {
+    super.initState();
+    _focus.addListener(() => setState(() {}));
+  }
+
+  @override
+  void didUpdateWidget(_RatingSlider old) {
+    super.didUpdateWidget(old);
+    if (old.value != widget.value) _index = _indexOf(widget.value);
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _waehlen(int i) {
+    setState(() => _index = i);
+    widget.onChanged(_ratingSteps[i]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final focused = _focus.hasFocus;
+    final last = _ratingSteps.length - 1;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Der gewählte Wert in Worten, damit er nicht nur an der Position
+        // des Griffs abzulesen ist.
+        ExcludeSemantics(
+          child: Text(
+            _beschreibung(_ratingSteps[_index]),
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              fontFeatures: [FontFeature.tabularFigures()],
+            ),
+          ),
+        ),
+        const SizedBox(height: AppLayout.s8),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            trackHeight: 2,
+            trackShape: const RectangularSliderTrackShape(),
+            activeTrackColor: AppColors.ink,
+            inactiveTrackColor: AppColors.line,
+            activeTickMarkColor: AppColors.ink,
+            inactiveTickMarkColor: AppColors.muted,
+            tickMarkShape: const _RasterTick(),
+            thumbShape: _SquareThumb(focused: focused),
+            overlayShape: SliderComponentShape.noOverlay,
+            showValueIndicator: ShowValueIndicator.never,
+          ),
+          child: SizedBox(
+            // Mindesthöhe des Klickziels (WCAG 2.5.8).
+            height: 44,
+            child: Slider(
+              focusNode: _focus,
+              value: _index.toDouble(),
+              min: 0,
+              max: last.toDouble(),
+              divisions: last,
+              semanticFormatterCallback: (v) =>
+                  _beschreibung(_ratingSteps[v.round()]),
+              onChanged: (v) => setState(() => _index = v.round()),
+              onChangeEnd: (v) => widget.onChanged(_ratingSteps[v.round()]),
+            ),
+          ),
+        ),
+        // Beschriftung unter den Rasterstrichen. Für Screenreader reicht der
+        // Regler; die Beschriftungen sind nur zusätzliche Klickziele.
+        ExcludeSemantics(
+          child: SizedBox(
+            height: 24,
+            child: Stack(
+              children: [
+                for (var i = 0; i <= last; i++)
+                  Align(
+                    alignment: Alignment(-1 + 2 * i / last, 0),
+                    child: TapTarget(
+                      onTap: () => _waehlen(i),
+                      builder: (context, active) => Text(
+                        i == 0 ? 'Alle' : _ratingLabel(_ratingSteps[i]!),
+                        style: TextStyle(
+                          color: i == _index
+                              ? AppColors.accentDark
+                              : AppColors.muted,
+                          fontSize: 12,
+                          fontWeight:
+                              i == _index ? FontWeight.w800 : FontWeight.w400,
+                          decoration: active
+                              ? TextDecoration.underline
+                              : TextDecoration.none,
+                          fontFeatures: const [FontFeature.tabularFigures()],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Rasterstrich: 1 px breit, 8 px hoch, mittig auf der Linie.
+class _RasterTick extends SliderTickMarkShape {
+  const _RasterTick();
+
+  @override
+  Size getPreferredSize({
+    required SliderThemeData sliderTheme,
+    required bool isEnabled,
+  }) =>
+      const Size(1, 8);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required Offset thumbCenter,
+    required bool isEnabled,
+    required TextDirection textDirection,
+  }) {
+    final active = center.dx <= thumbCenter.dx;
+    final color = active
+        ? sliderTheme.activeTickMarkColor
+        : sliderTheme.inactiveTickMarkColor;
+    context.canvas.drawRect(
+      Rect.fromCenter(center: center, width: 1, height: 8),
+      Paint()..color = color ?? AppColors.muted,
+    );
+  }
+}
+
+/// Eckiger Griff (Factsheet §2.3: eckig außer Knöpfen). Mit Fokus `accent`
+/// mit 2 px Rahmen in `ink`, wie die Fokus-Regel für Eingabefelder.
+class _SquareThumb extends SliderComponentShape {
+  final bool focused;
+
+  const _SquareThumb({required this.focused});
+
+  static const _size = 14.0;
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) =>
+      const Size(_size, _size);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    final rect = Rect.fromCenter(center: center, width: _size, height: _size);
+    final canvas = context.canvas;
+    canvas.drawRect(
+      rect,
+      Paint()..color = focused ? AppColors.accent : AppColors.ink,
+    );
+    if (focused) {
+      canvas.drawRect(
+        rect.inflate(1),
+        Paint()
+          ..color = AppColors.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    }
   }
 }
 
