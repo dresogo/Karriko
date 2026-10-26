@@ -103,7 +103,7 @@ Der Tab „Offene Aufgaben“ im Plan-Dokument zeigt diese Datei, ergänzt um de
 
 - [ ] T-3.21 · P1 · „Passwort vergessen“ bestätigt indirekt, dass es das Konto gibt („Wir haben einen Reset-Link an {Adresse} gesendet“). Wortlaut wie beim Magic Link: „Falls für {Adresse} ein Konto existiert, ist ein Link unterwegs.“ (E-42) (Sites, Tab 40)
 - [ ] T-3.22 · P2 · Betriebsregistrierung prüft nicht, ob der Betrieb schon ein Profil hat, und erzeugt so Dubletten. Erster Schritt: Suche nach dem Betrieb, bei Treffer weiter zu „Profil beanspruchen“ (T-2.27) (Sites, Tab 36)
-- [ ] T-3.23 · P2 · Azubi-Registrierung umbauen nach der Entscheidung vom 22.10.2026: zwei Schritte, nur Vorname (kein Nachname, kein Wohnort), Beruf optional zum Vorausfüllen im Fragebogen, ein Passwortfeld mit Anzeigen statt zwei Feldern, auch beim Zurücksetzen. Den Satz „hilft bei personalisierten Empfehlungen“ streichen. Haken und Links siehe T-11.9, Mindestalter T-5.18 (Sites, Tab 35, 41)
+- [ ] T-3.23 · P2 · Azubi-Registrierung umbauen nach der Entscheidung vom 22.10.2026: zwei Schritte, nur Vorname (kein Nachname, kein Wohnort), Beruf optional zum Vorausfüllen im Fragebogen, ein Passwortfeld mit Anzeigen statt zwei Feldern, auch beim Zurücksetzen. Den Satz „hilft bei personalisierten Empfehlungen“ streichen, die Funktion gibt es nicht. Haken und Links siehe T-11.9, Mindestalter T-5.18 (Sites, Tab 35, 41)
 - [ ] T-3.24 · P1 · Magic Link sowie Google und Apple legen für unbekannte Adressen neue Konten an, ohne Zustimmung zu den Nutzungsbedingungen und ohne Mindestalter. Klären: Schritt „Konto vervollständigen“ beim ersten Login oder Magic Link nur für bestehende Konten (Sites, Tab 33, 45)
 
 ## 4 · Sicherheit, Rechte und Lieferkette
@@ -198,26 +198,26 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 
 - [ ] T-6.26 · P1 · Texte zur Prüfung an E-2.13 anpassen; sie versprechen eine Vollprüfung: FAQ „Jede Bewertung geht vor der Veröffentlichung durch die Moderation“, Startseite „Moderierte Rezensionen …“, Über uns „Alle Bewertungen werden moderiert und auf Authentizität geprüft“ (Sites, Tab 01, 19, 22)
 - [ ] T-6.27 · P2 · Texte versprechen Antworten der Betriebe, die nicht entschieden sind (T-8.1): Lead im Login Betrieb (`login_screen.dart`) und Werbekasten im Blogartikel (`blog_detail_screen.dart`). Bis zur Entscheidung entfernen (Sites, Tab 18, 34)
-- [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
+- [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten mit `?zugang=betrieb`. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
 - [ ] T-6.29 · P2 · „Premium starten“ auf „Für Betriebe“ führt nur zur Registrierung. Bis T-8.4 durch „Interesse melden“ ersetzen oder ausblenden (Sites, Tab 13)
 - [ ] T-6.30 · P2 · Suchfilter „Ab X Sternen“ auf Zahlen umstellen (ab 3 · ab 3,5 · ab 4); Bewertungen überall als Zahl mit Balken, keine Sterne (Entscheidung vom 22.10.2026) (Sites, Tab 02)
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
 - [ ] T-6.33 · P3 · Grobgerüst `/konto-wiederherstellen` aus `planned_catalog.dart` entfernen und die Adresse auf die Anmeldung umleiten; Lösch- und Warnmails verlinken auf die Anmeldung mit `?next=` zur Kontolöschung (Entscheidung vom 22.10.2026) (Sites, Tab 38)
 
-- [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
-- [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen, das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
-- [ ] T-6.36 · P2 · Fragebogen im Fokusmodus (Entscheidung vom 22.10.2026): ohne Website-Kopf- und Fußzeile, eigene Kopfleiste mit Betriebsname, Phasenleiste und „Pause“ (Sites, Tab 47)
-- [ ] T-6.37 · P3 · Artefakt „Karriko Sitemap“ nachziehen: Datenexport und Kontolöschung sind fertig, die Grobgerüste dafür gibt es nicht mehr (Sites, Tab 57, 58)
+- [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
+- [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
+- [ ] T-6.36 · P2 · Fragebogen im Fokusmodus (Entscheidung vom 22.10.2026): ohne Website-Kopf- und Fußzeile, eigene Kopfleiste mit Betriebsname, Phasenleiste und „Pause“, Weiter/Zurück mobil fest am unteren Rand (Sites, Tab 47)
+- [ ] T-6.37 · P3 · Artefakt „Karriko Sitemap“ nachziehen: Datenexport und Kontolöschung sind fertig (T-2.8, T-2.10), die Grobgerüste dafür gibt es nicht mehr; dazu die Entscheidungen vom 22.10.2026 (Sites, Tab 57, 58)
 
 Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit, mit erneuter Vorsortierung. Zu T-6.31: Pfade des Azubi-Bereichs entschieden (`/app`, `/app/bewerten`, `/app/bewertungen`, `/app/merkliste`, `/app/benachrichtigungen`, `/app/einstellungen`).
 
-- [ ] T-6.38 · P2 · Betriebs-Dashboard: „auf Feedback antworten“ entfernen (T-8.1), Kachel „Profilaufrufe“ ohne Daten entfernen (E-30), Band mit Prüfstatus und Erinnerung an den zweiten Faktor, Sie-Ansprache (Sites, Tab 59, 73)
-- [ ] T-6.39 · P2 · Attrappen Auswertung, Team und Abonnement enthalten erfundene Zahlen, Namen und einen Preis (49 €/Monat); bis zur echten Umsetzung aus dem Code nehmen (E-30) (Sites, Tab 67–69)
-- [ ] T-6.40 · P1 · Meldungen im Betriebsbereich: Gründe wie im öffentlichen Meldeformular, Begründung Pflicht, Liste eigener Meldungen mit Entscheidung, Prüfverlangen „Nachweis des Ausbildungsverhältnisses anfordern“, Grenzwert über eine Function (T-3.10) (Sites, Tab 66)
-- [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload und Ausbildungsberufe am Profil pflegen (Sites, Tab 60)
-- [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), Prüfung in `job_posting`, Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
-- [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt: entfernen oder als eigene Formularseite umsetzen (Sites, Tab 62)
+- [ ] T-6.38 · P2 · Betriebs-Dashboard: „auf Feedback antworten“ im Lead und „Feedback lesen und beantworten“ entfernen (T-8.1), Kachel „Profilaufrufe“ ohne Daten entfernen (E-30), Band mit Prüfstatus und Erinnerung an den zweiten Faktor (freiwillig, Entscheidung vom 22.10.2026), Sie-Ansprache (Sites, Tab 59, 73)
+- [ ] T-6.39 · P2 · Attrappen Auswertung, Team und Abonnement enthalten erfundene Zahlen (4.2, 1.2k, 87 %), Namen („Max Mustermann“) und einen Preis (49 €/Monat). Bis zur echten Umsetzung aus dem Code nehmen, nicht nur ausblenden (E-30, Factsheet §2.5) (Sites, Tab 67–69)
+- [ ] T-6.40 · P1 · Meldungen im Betriebsbereich: Gründe wie im öffentlichen Meldeformular (T-6.18), Begründung als Pflichtfeld, Liste der eigenen Meldungen mit Status und Entscheidung, Prüfverlangen „Nachweis des Ausbildungsverhältnisses anfordern“ (die Moderation fragt die verfassende Person anonym an), Grenzwert 5 je 24 h über eine Function statt direktem Tabellenzugriff (T-3.10) (Sites, Tab 66)
+- [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload (das Modell kennt `logoUrl`, die Oberfläche nicht) und Ausbildungsberufe am Profil pflegen, damit Betriebe ohne Bewertungen auf Berufsseiten erscheinen (Sites, Tab 60)
+- [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), in `job_posting` prüfen; abgelaufene Stellen verschwinden von der Website, im Betriebsbereich Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
+- [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt (Bearbeiten in der Liste). Entfernen oder als eigene Formularseite mit Vorschau umsetzen, je nach Entscheidung zu Tab 62 (Sites, Tab 62)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
