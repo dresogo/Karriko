@@ -8,6 +8,7 @@ import 'package:karriko_flutter/data/repositories/auth_repository.dart';
 import 'package:karriko_flutter/presentation/common/footer_widget.dart';
 import 'package:karriko_flutter/presentation/public/fuer_betriebe_screen.dart';
 import 'package:karriko_flutter/providers/auth_provider.dart';
+import 'package:karriko_flutter/presentation/common/fit_words_text.dart';
 
 /// Verhindert Netzwerkzugriffe beim Aufbau des Auth-Zustands im Test.
 class _OfflineAuthRepository implements AuthRepository {
@@ -205,7 +206,10 @@ void main() {
         'Verstößt ein Beitrag';
     expect(find.textContaining(answerStart), findsNothing);
 
-    final question = find.text('Können wir Bewertungen löschen lassen?');
+    // Die Fragen sind FitWordsText (T-11.14), find.text sieht nur Text.
+    final question = find.byWidgetPredicate((w) =>
+        w is FitWordsText &&
+        w.text == 'Können wir Bewertungen löschen lassen?');
     await tester.ensureVisible(question);
     await tester.tap(question);
     await tester.pump();

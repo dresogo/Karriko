@@ -49,6 +49,9 @@ void main() {
     final ziele = tester
         .widgetList<Link>(find.byType(Link))
         .map((l) => l.uri.toString())
+        // Kopf und Fuß verweisen inzwischen mit echten Links auf App-Seiten
+        // (T-11.22); hier zählen nur die Wege nach außen.
+        .where((u) => !u.startsWith('/'))
         .toSet();
     expect(ziele, {
       'mailto:demharter@dresogo.de?subject=Allgemeine%20Frage',

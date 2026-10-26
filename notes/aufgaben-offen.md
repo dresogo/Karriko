@@ -2,7 +2,7 @@
 
 **Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-176 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+175 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -301,8 +301,9 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
   Teilweise erledigt am 21.10.2026: Impressum nennt § 5 DDG. Offen: Impressum und Datenschutzerklärung sind weiter Platzhalter (T-5.1, T-10.3).
 - [ ] T-11.9 · P1 · Registrierung: Checkbox „Ich stimme den AGB und der Datenschutzerklärung zu“ ohne Links; einer Datenschutzerklärung stimmt man nicht zu. Text und Links anpassen, Wortlaut juristisch prüfen; Mindestalter siehe T-5.18 (Fehlerreport Website)
-- [ ] T-11.14 · P2 · Bei 320 px Wortumbrüche mitten im Wort („Bewertunge / n“, „Unternehmensp / rofil“) und abgeschnittene Texte („Passk…“, Fehlermeldungen); verwandt mit T-6.4 (Fehlerreport Website)
+  Teilweise erledigt am 26.10.2026: Haken „Ich akzeptiere die AGB.“ mit Link, darunter ohne Haken der Satz zur Datenschutzerklärung mit Link; beide öffnen in einem neuen Tab (`terms_consent.dart`, Azubi und Betrieb). Offen: Wortlaut juristisch prüfen (T-5.1), Mindestalter (T-5.18).
 - [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-08), in der App `Link` aus `url_launcher` (Fehlerreport Website)
+  Teilweise erledigt am 26.10.2026: `RouteLink` legt unter Kopfzeile, Fußzeile und Betriebs- und Stellenkarten der Suche ein echtes `<a href>`; Screenreader hören „Link“. Offen: übrige Verweise im Fließtext und auf den Profilseiten, für öffentliche Seiten endgültig mit der Website (E-08).
 
 ## 12 · Öffentliche Website (E-08)
 

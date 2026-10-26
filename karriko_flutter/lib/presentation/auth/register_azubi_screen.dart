@@ -6,6 +6,7 @@ import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import '../common/tap_target.dart';
 import 'widgets/social_sign_in_buttons.dart';
+import 'widgets/terms_consent.dart';
 
 class RegisterAzubiScreen extends ConsumerStatefulWidget {
   const RegisterAzubiScreen({super.key});
@@ -73,7 +74,7 @@ class _RegisterAzubiScreenState extends ConsumerState<RegisterAzubiScreen> {
     if (!_ausbildungKey.currentState!.validate()) return;
     if (!_agreeTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bitte stimme den AGB zu.')));
+          const SnackBar(content: Text('Bitte die AGB akzeptieren.')));
       return;
     }
     await ref.read(authProvider.notifier).registerAzubi(
@@ -453,15 +454,7 @@ class _StepAusbildung extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           // Die Zustimmung steht bei der Schaltflaeche, die sie ausloest.
-          CheckboxListTile(
-            value: agreeTerms,
-            onChanged: onAgreeChanged,
-            contentPadding: EdgeInsets.zero,
-            title: const Text(
-                'Ich stimme den AGB und der Datenschutzerklärung zu.',
-                style: TextStyle(fontSize: 12)),
-            controlAffinity: ListTileControlAffinity.leading,
-          ),
+          TermsConsent(value: agreeTerms, onChanged: onAgreeChanged),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -566,7 +559,13 @@ class _StepIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labels = ['Zugangsdaten', 'Persönliche Daten', 'Ausbildungsinfo'];
+    // Weiche Trennstriche: Die Spalten sind bei 320 px schmaler als die
+    // Wörter (T-11.14).
+    const labels = [
+      'Zugangs\u00ADdaten',
+      'Persönliche Daten',
+      'Ausbildungs\u00ADinfo',
+    ];
     return Row(
       children: List.generate(total, (i) {
         final active = i == current;

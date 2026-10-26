@@ -4,6 +4,7 @@ import '../../core/theme/app_theme.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/tap_target.dart';
+import '../common/fit_words_text.dart';
 
 /// Für Betriebe: die Verkaufsseite für Ausbildungsbetriebe.
 ///
@@ -1048,7 +1049,7 @@ class _FaqItemState extends State<_FaqItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
+                      child: FitWordsText(
                         widget.question,
                         style: TextStyle(
                           color: active ? AppColors.accentDark : AppColors.ink,

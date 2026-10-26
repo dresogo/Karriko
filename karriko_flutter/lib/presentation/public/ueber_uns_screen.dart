@@ -279,7 +279,7 @@ class _WhySection extends StatelessWidget {
   static const _paragraphs = [
     'Wer eine Ausbildung sucht, entscheidet sich für Jahre in einem '
         'Betrieb, den er meist nur aus der Stellenanzeige und einem '
-        'Vorstellungsgespräch kennt. Wie Betreuung, Umgang und Belastung '
+        'Vorstellungs\u00ADgespräch kennt. Wie Betreuung, Umgang und Belastung '
         'wirklich sind, erfährt man erst, wenn man schon unterschrieben hat.',
     'Karriko sammelt diese Erfahrungen. Azubis beantworten einen '
         'strukturierten Fragebogen zu ihrem Betrieb, statt nur Sterne zu '

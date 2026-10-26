@@ -33,7 +33,7 @@ class ImpressumScreen extends StatelessWidget {
         (
           'Streitschlichtung',
           'Ergänze hier die Hinweise zur Streitbeilegung und zur Teilnahme an '
-              'Verbraucherschlichtungsverfahren.'
+              'Verbraucher\u00ADschlichtungs\u00ADverfahren.'
         ),
       ],
       notice: LegalNotice(

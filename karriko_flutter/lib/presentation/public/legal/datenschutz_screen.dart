@@ -54,7 +54,7 @@ class DatenschutzScreen extends StatelessWidget {
         ),
       ],
       notice: LegalNotice(
-        'WICHTIG: Diese Datenschutzerklärung muss vor Go-Live von einem Rechtsanwalt '
+        'WICHTIG: Diese Datenschutz\u00ADerklärung muss vor Go-Live von einem Rechtsanwalt '
         'geprüft werden.',
       ),
     );

@@ -23,12 +23,17 @@ class TapTarget extends StatefulWidget {
   /// Ohne ihn liest ein Screenreader nur „Schaltfläche“ vor.
   final String? semanticLabel;
 
+  /// Für Screenreader ein Link statt einer Schaltfläche; gesetzt von
+  /// `RouteLink` und überall, wo [onTap] einen `Link` auslöst (T-11.22).
+  final bool isLink;
+
   const TapTarget({
     super.key,
     required this.onTap,
     required this.builder,
     this.behavior,
     this.semanticLabel,
+    this.isLink = false,
   });
 
   @override
@@ -72,7 +77,8 @@ class _TapTargetState extends State<TapTarget> {
           ),
         },
         child: Semantics(
-          button: true,
+          button: !widget.isLink,
+          link: widget.isLink,
           enabled: enabled,
           label: widget.semanticLabel,
           child: GestureDetector(

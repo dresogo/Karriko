@@ -6,6 +6,8 @@ import '../../core/constants/app_constants.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import '../common/tap_target.dart';
+import 'widgets/terms_consent.dart';
+import '../common/fit_words_text.dart';
 
 class RegisterBetriebScreen extends ConsumerStatefulWidget {
   const RegisterBetriebScreen({super.key});
@@ -71,7 +73,7 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
     if (!_step2Key.currentState!.validate()) return;
     if (!_agreeTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Bitte stimme den AGB zu.')));
+          const SnackBar(content: Text('Bitte die AGB akzeptieren.')));
       return;
     }
     await ref.read(authProvider.notifier).registerBetrieb(
@@ -113,8 +115,10 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                   const SizedBox(height: 24),
                   _StepIndicator(current: _step, labels: const [
                     'Unternehmen',
-                    'Kontaktperson',
-                    'Zugangsdaten'
+                    // Weiche Trennstriche: Die Spalten sind bei 320 px
+                    // schmaler als die Wörter (T-11.14).
+                    'Kontakt\u00ADperson',
+                    'Zugangs\u00ADdaten'
                   ]),
                   const SizedBox(height: 32),
                   Container(
@@ -305,7 +309,7 @@ class _StepUnternehmen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Unternehmensdaten',
+            FitWordsText('Unternehmensdaten',
                 style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 24),
             TextFormField(
@@ -507,15 +511,7 @@ class _StepZugang extends StatelessWidget {
                     Validators.confirmPassword(v, passwordCtrl.text),
               ),
               const SizedBox(height: 12),
-              CheckboxListTile(
-                value: agreeTerms,
-                onChanged: onAgreeChanged,
-                contentPadding: EdgeInsets.zero,
-                title: const Text(
-                    'Ich stimme den AGB und der Datenschutzerklärung zu.',
-                    style: TextStyle(fontSize: 12)),
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
+              TermsConsent(value: agreeTerms, onChanged: onAgreeChanged),
               const SizedBox(height: 16),
               Row(
                 children: [

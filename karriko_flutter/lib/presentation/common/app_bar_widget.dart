@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
+import 'route_link.dart';
 import 'tap_target.dart';
 
 class KarrikoAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -66,8 +67,8 @@ class _WideHeader extends ConsumerWidget {
     return Row(
       children: [
         // Brand (left)
-        TapTarget(
-          onTap: () => context.go('/'),
+        RouteLink(
+          route: '/',
           builder: (_, active) => _BrandMark(active: active),
         ),
         // Nav (center). FittedBox als Sicherheitsnetz: Knapp ueber dem
@@ -135,8 +136,8 @@ class _NarrowHeader extends ConsumerWidget {
         // Flexible statt fester Breite: bei schmalen Viewports oder vergrößerter
         // Systemschrift schrumpft der Schriftzug, statt die Zeile zu sprengen.
         Flexible(
-          child: TapTarget(
-            onTap: () => context.go('/'),
+          child: RouteLink(
+            route: '/',
             builder: (_, active) => _BrandMark(active: active),
           ),
         ),
@@ -205,8 +206,8 @@ class _IconHover extends StatelessWidget {
 }
 
 Widget _navLink(String label, String route, BuildContext context) {
-  return TapTarget(
-    onTap: () => context.go(route),
+  return RouteLink(
+    route: route,
     builder: (_, active) => Text(
       label,
       style: TextStyle(

@@ -57,8 +57,8 @@ class LoginChoiceScreen extends StatelessWidget {
                     icon: Icons.business_outlined,
                     title: 'Ich bin Betrieb',
                     description:
-                        'Unternehmensprofil pflegen, Feedback einsehen und '
-                        'Ausbildungsstellen anbieten.',
+                        'Unternehmens\u00ADprofil pflegen, Feedback einsehen '
+                        'und Ausbildungs\u00ADstellen anbieten.',
                     onTap: () => context.go(target('/login/betrieb')),
                   ),
                 ],
@@ -119,6 +119,11 @@ class _RoleRowState extends State<_RoleRow> {
 
   @override
   Widget build(BuildContext context) {
+    // Unter 400 px bleiben neben Symbol, Pfeil und Rändern keine 130 px für
+    // den Text; Wörter wie „Bewertungen“ brachen dann mitten im Wort um
+    // (T-11.14). Schmal entfällt das Symbol, der Rand wird kleiner.
+    final schmal = MediaQuery.sizeOf(context).width < 400;
+
     return Semantics(
       button: true,
       label: '${widget.title}. ${widget.description}',
@@ -134,7 +139,7 @@ class _RoleRowState extends State<_RoleRow> {
             duration: const Duration(milliseconds: 150),
             curve: Curves.easeOut,
             constraints: const BoxConstraints(minHeight: 96),
-            padding: const EdgeInsets.all(AppLayout.s24),
+            padding: EdgeInsets.all(schmal ? AppLayout.s16 : AppLayout.s24),
             decoration: BoxDecoration(
               border: Border.all(
                 color: _focused ? AppColors.ink : Colors.transparent,
@@ -144,17 +149,19 @@ class _RoleRowState extends State<_RoleRow> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: const BoxDecoration(
-                    color: AppColors.audienceBeige,
-                    border: Border.fromBorderSide(
-                        BorderSide(color: AppColors.line)),
+                if (!schmal) ...[
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: const BoxDecoration(
+                      color: AppColors.audienceBeige,
+                      border: Border.fromBorderSide(
+                          BorderSide(color: AppColors.line)),
+                    ),
+                    child: Icon(widget.icon, size: 22, color: AppColors.ink),
                   ),
-                  child: Icon(widget.icon, size: 22, color: AppColors.ink),
-                ),
-                const SizedBox(width: AppLayout.s16),
+                  const SizedBox(width: AppLayout.s16),
+                ],
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

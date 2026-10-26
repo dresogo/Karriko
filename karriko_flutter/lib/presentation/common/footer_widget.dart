@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
-import 'tap_target.dart';
+import 'route_link.dart';
 
 class FooterWidget extends StatelessWidget {
   const FooterWidget({super.key});
@@ -119,15 +118,13 @@ class _NarrowFooter extends StatelessWidget {
             ('Kontakt', '/kontakt'),
             ('Häufige Fragen', '/faq'),
           ]
-              .map((l) => Builder(
-                    builder: (ctx) => TapTarget(
-                      onTap: () => ctx.go(l.$2),
-                      builder: (_, active) => Text(l.$1,
-                          style: TextStyle(
-                              color: active ? AppColors.ink : AppColors.muted,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600)),
-                    ),
+              .map((l) => RouteLink(
+                    route: l.$2,
+                    builder: (_, active) => Text(l.$1,
+                        style: TextStyle(
+                            color: active ? AppColors.ink : AppColors.muted,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600)),
                   ))
               .toList(),
         ),
@@ -140,15 +137,13 @@ class _NarrowFooter extends StatelessWidget {
             ('Datenschutz', '/datenschutz'),
             ('AGB', '/agb'),
           ]
-              .map((l) => Builder(
-                    builder: (ctx) => TapTarget(
-                      onTap: () => ctx.go(l.$2),
-                      builder: (_, active) => Text(l.$1,
-                          style: TextStyle(
-                              color: active ? AppColors.ink : AppColors.muted,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600)),
-                    ),
+              .map((l) => RouteLink(
+                    route: l.$2,
+                    builder: (_, active) => Text(l.$1,
+                        style: TextStyle(
+                            color: active ? AppColors.ink : AppColors.muted,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600)),
                   ))
               .toList(),
         ),
@@ -216,8 +211,8 @@ class _FooterColumn extends StatelessWidget {
         const SizedBox(height: 12),
         ...links.map((l) => Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: TapTarget(
-                onTap: () => context.go(l.$2),
+              child: RouteLink(
+                route: l.$2,
                 builder: (_, active) => Text(l.$1,
                     style: TextStyle(
                       color: active ? AppColors.ink : AppColors.muted,

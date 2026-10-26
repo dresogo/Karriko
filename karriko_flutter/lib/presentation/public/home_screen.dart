@@ -7,6 +7,7 @@ import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/search_bar_widget.dart';
 import '../common/public_review_card.dart';
+import '../common/fit_words_text.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -156,7 +157,7 @@ class _HeroCopy extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 22),
-              Text(
+              FitWordsText(
                 'Bewertungen\nfür duale\nAusbildung.',
                 style: TextStyle(
                   color: AppColors.ink,
@@ -730,7 +731,7 @@ class _PrivacyHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     final fontSize =
         (MediaQuery.of(context).size.width * 0.045).clamp(36.0, 72.0);
-    return Text(
+    return FitWordsText(
       'Datenschutz\nist kein\nZusatzmodul.',
       style: TextStyle(
         color: AppColors.ink,

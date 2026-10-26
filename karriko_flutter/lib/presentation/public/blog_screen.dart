@@ -7,6 +7,7 @@ import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
 import '../common/tap_target.dart';
 import 'blog_cover.dart';
+import '../common/fit_words_text.dart';
 
 /// Filter der Blogseite. Der aktive Filter steht im Query-Parameter `typ`,
 /// damit eine gefilterte Ansicht teilbar ist und der Zurück-Button wirkt.
@@ -410,7 +411,7 @@ class _ArticleCard extends StatelessWidget {
             child: BlogCover(category: entry.category!, iconSize: 56),
           ),
           const SizedBox(height: AppLayout.s24),
-          Text(
+          FitWordsText(
             entry.title,
             style: TextStyle(
               color: AppColors.ink,

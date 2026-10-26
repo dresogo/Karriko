@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
+import '../common/fit_words_text.dart';
 
 /// Häufig gestellte Fragen. Die Inhalte sind vorerst statisch hinterlegt und
 /// können später aus der Datenbank geladen werden.
@@ -217,7 +218,8 @@ class _FaqItem extends StatelessWidget {
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         iconColor: AppColors.ink,
         collapsedIconColor: AppColors.muted,
-        title: Text(question, style: Theme.of(context).textTheme.headlineSmall),
+        title: FitWordsText(question,
+            style: Theme.of(context).textTheme.headlineSmall),
         children: [
           Text(answer,
               style:

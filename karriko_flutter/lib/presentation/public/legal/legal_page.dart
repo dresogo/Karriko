@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../common/app_bar_widget.dart';
 import '../../common/footer_widget.dart';
+import '../../common/fit_words_text.dart';
 
 /// Gemeinsames Gerüst für die Rechtstexte, damit Impressum, Datenschutz und AGB
 /// dasselbe Standard-Layout der Website verwenden.
@@ -56,7 +57,7 @@ class LegalPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: AppLayout.s16),
-                    Text(title,
+                    FitWordsText(title,
                         style: Theme.of(context).textTheme.displaySmall),
                     if (subtitle != null) ...[
                       const SizedBox(height: AppLayout.s8),
@@ -65,7 +66,7 @@ class LegalPage extends StatelessWidget {
                     ],
                     const SizedBox(height: AppLayout.s48),
                     for (final s in sections) ...[
-                      Text(s.$1,
+                      FitWordsText(s.$1,
                           style: Theme.of(context).textTheme.headlineMedium),
                       const SizedBox(height: AppLayout.s8),
                       Text(

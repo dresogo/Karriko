@@ -9,6 +9,7 @@ import '../../data/models/company_model.dart';
 import '../../data/models/job_model.dart';
 import '../common/app_bar_widget.dart';
 import '../common/footer_widget.dart';
+import '../common/route_link.dart';
 import '../common/tap_target.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -1010,8 +1011,8 @@ class _CompanyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rating = company.averageRating;
-    return TapTarget(
-      onTap: () => context.go('/company/${company.slug}'),
+    return RouteLink(
+      route: '/company/${company.slug}',
       behavior: HitTestBehavior.opaque,
       builder: (context, active) => Container(
         padding: const EdgeInsets.all(AppLayout.s24),
@@ -1098,8 +1099,8 @@ class _JobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TapTarget(
-      onTap: () => context.go('/stellen/${job.id}'),
+    return RouteLink(
+      route: '/stellen/${job.id}',
       behavior: HitTestBehavior.opaque,
       builder: (context, active) => Container(
         padding: const EdgeInsets.all(AppLayout.s24),

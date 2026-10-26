@@ -283,6 +283,7 @@ class _AnliegenRow extends StatelessWidget {
       target: uri.isScheme('mailto') ? LinkTarget.self : LinkTarget.blank,
       builder: (context, followLink) => TapTarget(
         onTap: followLink,
+        isLink: true,
         builder: (context, active) {
           final body = Column(
             crossAxisAlignment: CrossAxisAlignment.start,
