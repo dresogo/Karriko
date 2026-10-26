@@ -1,0 +1,164 @@
+/* Karriko – Swiss Design für die Website (Factsheet §2, Seiten-Tab 00).
+   Farben, Abstände und Ecken nur aus karriko_flutter/lib/core/theme/app_theme.dart. */
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  --ink: #111111;
+  --muted: #5f625f;
+  --paper: #f7f7f2;
+  --surface: #ffffff;
+  --line: #d8d8d2;
+  --accent: #e3342f;
+  --accent-dark: #b91f1a;
+  --beige: #f1f0e8;
+  --s8: 8px;
+  --s16: 16px;
+  --s24: 24px;
+  --s32: 32px;
+  --s48: 48px;
+  --s64: 64px;
+  --rand: 24px;
+}
+
+@media (min-width: 600px) { :root { --rand: 48px; } }
+@media (min-width: 1024px) { :root { --rand: 64px; } }
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* Deutsche Silbentrennung statt Bruch mitten im Wort (T-11.14). */
+h1, h2, h3, p, li { hyphens: auto; overflow-wrap: break-word; }
+
+a { color: var(--accent-dark); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.band {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: var(--rand);
+  padding-right: var(--rand);
+}
+
+/* Kopf */
+.kopf { border-bottom: 1px solid var(--line); background: var(--paper); }
+.kopf-innen {
+  display: flex;
+  align-items: center;
+  gap: var(--s24);
+  min-height: 64px;
+}
+.marke { color: var(--ink); font-weight: 800; font-size: 20px; text-decoration: none; }
+.kopf-nav { display: flex; gap: var(--s24); margin-left: auto; }
+.kopf-nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
+.kopf-nav a:hover { color: var(--ink); }
+.anmelden { color: var(--ink); font-weight: 700; font-size: 14px; text-decoration: none; }
+@media (max-width: 599px) { .kopf-nav { display: none; } .anmelden { margin-left: auto; } }
+
+/* Seitenkopf */
+.kopfbereich {
+  padding-top: var(--s64);
+  padding-bottom: var(--s48);
+  border-bottom: 1px solid var(--line);
+}
+.kicker {
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  margin: 0 0 var(--s16);
+}
+h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--s24);
+}
+.lead { color: var(--muted); max-width: 640px; margin: 0; }
+
+/* Abschnitt mit Überschrift links (⅓) und Inhalt rechts (⅔) */
+.raster {
+  display: grid;
+  gap: var(--s32);
+  padding-top: var(--s48);
+  padding-bottom: var(--s48);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 1024px) {
+  .raster { grid-template-columns: 1fr 2fr; gap: var(--s64); }
+}
+h2 { font-size: 30px; line-height: 1; font-weight: 800; margin: 0; }
+@media (min-width: 1024px) { h2 { font-size: 40px; } }
+h3 { font-size: 15px; font-weight: 800; margin: var(--s16) 0 var(--s8); }
+
+/* Gesamtnote */
+.gesamt { display: flex; align-items: baseline; gap: var(--s8); margin-bottom: var(--s16); }
+.gesamt-zahl { font-size: 64px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.gesamt-von { color: var(--muted); }
+.hinweis { color: var(--muted); font-size: 15px; margin: var(--s16) 0 var(--s24); }
+
+/* Balken: Zahl mit flachem Balken, keine Sterne (F-2) */
+.balken {
+  display: grid;
+  grid-template-columns: minmax(0, 168px) 1fr 40px;
+  align-items: center;
+  gap: var(--s16);
+  margin-bottom: var(--s8);
+  font-size: 14px;
+}
+.balken.betont { font-size: 16px; font-weight: 700; }
+.balken-spur { width: 100%; height: 6px; display: block; }
+.balken.betont .balken-spur { height: 10px; }
+.balken-spur .leer { fill: var(--line); }
+.balken-spur .voll { fill: var(--ink); }
+.balken-zahl { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+@media (max-width: 599px) {
+  .balken { grid-template-columns: 1fr 40px; }
+  .balken-spur { grid-column: 1 / -1; grid-row: 2; }
+}
+
+.schwelle {
+  background: var(--beige);
+  border-left: 2px solid var(--accent);
+  padding: var(--s16) var(--s24);
+}
+.schwelle p { margin: 0; }
+
+/* Freitexte */
+.freitext {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: var(--s24);
+  margin-bottom: var(--s16);
+}
+.freitext p { margin: 0; }
+.meta { color: var(--muted); font-size: 13px; }
+
+.liste { list-style: none; padding: var(--s32) 0; margin: 0; }
+.liste li { padding: var(--s16) 0; border-top: 1px solid var(--line); }
+
+/* Fuß */
+.fuss {
+  border-top: 1px solid var(--line);
+  margin-top: var(--s64);
+  padding: var(--s32) 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.fuss nav { display: flex; gap: var(--s24); }
+.fuss a { color: var(--muted); }
