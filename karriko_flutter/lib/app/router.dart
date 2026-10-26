@@ -103,6 +103,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       // wurde – der Link waere dann verbraucht und die Anmeldung gescheitert.
       const callbackPaths = ['/auth/magic', '/auth/oauth'];
       if (callbackPaths.contains(path)) return null;
+      // Aus demselben Grund der Bestätigungslink aus der Mail: Er kann in
+      // einem Browser ohne Sitzung landen, und ohne die Ausnahme schickte der
+      // Block weiter unten ihn samt Geheimnis zur Anmeldung.
+      if (path == '/verify-email' &&
+          state.uri.queryParameters.containsKey('secret')) {
+        return null;
+      }
 
       // Reihenfolge der Tore: Laden -> zweiter Faktor -> beantragte Loeschung
       // -> E-Mail-Bestaetigung -> Rolle (E-3.11). Wer sie umstellt, baut sich eine Weiterleitungsschleife: die

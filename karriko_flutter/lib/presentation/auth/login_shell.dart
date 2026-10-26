@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../common/app_bar_widget.dart';
@@ -222,10 +224,6 @@ class _Panel extends StatelessWidget {
       // Der Inhalt ist selbst eine Column mit MainAxisSize.max und würde die
       // volle Höhe einnehmen. Als Kind dieser Column bekommt er unbegrenzte
       // Höhe, schrumpft auf seine Inhaltshöhe und lässt sich damit ausrichten.
-      // Zentriert den Inhalt vertikal im Panel. Ein einfaches Align genügt nicht:
-      // Der Inhalt ist selbst eine Column mit MainAxisSize.max und würde die
-      // volle Höhe einnehmen. Als Kind dieser Column bekommt er unbegrenzte
-      // Höhe, schrumpft auf seine Inhaltshöhe und lässt sich damit ausrichten.
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,6 +260,160 @@ class LoginTrustNote extends StatelessWidget {
         fontSize: 13,
         height: 1.4,
       ),
+    );
+  }
+}
+
+/// Text der Vertrauenszeile unter den Login-Seiten (A-2 im Seiten-Tab
+/// „App · Anmeldung“). Der Anbietername sagt Nutzern nichts, „SSL“ ist veraltet.
+const loginTrustText = 'Daten in Frankfurt am Main · verschlüsselte Verbindung';
+
+/// Eingabefeld mit sichtbarem Label darüber, wie auf den Anmeldeseiten.
+class LoginLabeledField extends StatelessWidget {
+  final String label;
+  final Widget field;
+
+  const LoginLabeledField(
+      {super.key, required this.label, required this.field});
+
+  @override
+  Widget build(BuildContext context) {
+    return MergeSemantics(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
+          ),
+          const SizedBox(height: AppLayout.s8),
+          field,
+        ],
+      ),
+    );
+  }
+}
+
+/// Weg-Link unter dem Primärbutton: zurück, Zugang wechseln, abmelden.
+class LoginWayLink extends StatelessWidget {
+  final String label;
+  final VoidCallback? onPressed;
+  final IconData? icon;
+
+  const LoginWayLink(
+      {super.key, required this.label, required this.onPressed, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TextButton.styleFrom(
+      padding: EdgeInsets.zero,
+      minimumSize: const Size(0, 44),
+      tapTargetSize: MaterialTapTargetSize.padded,
+    );
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: icon == null
+          ? TextButton(onPressed: onPressed, style: style, child: Text(label))
+          : TextButton.icon(
+              onPressed: onPressed,
+              style: style,
+              icon: Icon(icon, size: 16),
+              label: Text(label),
+            ),
+    );
+  }
+}
+
+/// „Erneut senden“ mit Sperre: Der Link ist gerade erst verschickt worden,
+/// deshalb wartet er [sperre] ab, bevor er wieder auslöst, und zählt die
+/// Sekunden sichtbar herunter.
+class LoginResendLink extends StatefulWidget {
+  final String label;
+
+  /// Schickt erneut. Ein Fehler erscheint unter dem Link, die Sperre beginnt
+  /// nur nach Erfolg.
+  final Future<void> Function() onResend;
+
+  final Duration sperre;
+
+  /// `false`, wenn offen ist, wann die letzte Mail ging.
+  final bool gesperrtAmAnfang;
+
+  const LoginResendLink({
+    super.key,
+    required this.label,
+    required this.onResend,
+    this.sperre = const Duration(seconds: 60),
+    this.gesperrtAmAnfang = true,
+  });
+
+  @override
+  State<LoginResendLink> createState() => _LoginResendLinkState();
+}
+
+class _LoginResendLinkState extends State<LoginResendLink> {
+  Timer? _timer;
+  int _rest = 0;
+  bool _isBusy = false;
+  String? _fehler;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.gesperrtAmAnfang) _sperren();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _sperren() {
+    _timer?.cancel();
+    _rest = widget.sperre.inSeconds;
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) return;
+      setState(() => _rest--);
+      if (_rest <= 0) t.cancel();
+    });
+  }
+
+  Future<void> _senden() async {
+    setState(() {
+      _isBusy = true;
+      _fehler = null;
+    });
+    try {
+      await widget.onResend();
+      if (mounted) setState(_sperren);
+    } catch (e) {
+      if (mounted) setState(() => _fehler = e.toString());
+    } finally {
+      if (mounted) setState(() => _isBusy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gesperrt = _rest > 0;
+    final link = LoginWayLink(
+      label: gesperrt ? '${widget.label} (in $_rest s)' : widget.label,
+      onPressed: gesperrt || _isBusy ? null : _senden,
+    );
+    if (_fehler == null) return link;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        link,
+        const SizedBox(height: AppLayout.s8),
+        LoginErrorBanner(_fehler!),
+      ],
     );
   }
 }

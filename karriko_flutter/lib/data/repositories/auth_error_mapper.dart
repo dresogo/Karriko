@@ -12,6 +12,13 @@ class AuthFailure implements Exception {
   String toString() => message;
 }
 
+/// Ein Link aus einer Mail (Passwort-Reset, Bestätigung) ist abgelaufen,
+/// schon benutzt oder unvollständig. Eigene Klasse, weil die Seite dann statt
+/// einer Feldmeldung den Weg zu einem neuen Link zeigt.
+class AuthLinkInvalid extends AuthFailure {
+  const AuthLinkInvalid() : super('Dieser Link gilt nicht mehr.');
+}
+
 /// Zugangsdaten stimmten, es fehlt aber der zweite Faktor.
 ///
 /// Bewusst **kein** [AuthFailure]: das ist kein Fehler, sondern ein

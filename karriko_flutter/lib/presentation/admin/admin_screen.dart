@@ -253,8 +253,7 @@ class _AdminLoginState extends ConsumerState<_AdminLogin> {
                   ),
                 ),
                 const SizedBox(height: AppLayout.s16),
-                const LoginTrustNote(
-                    'Geschützt durch Appwrite Auth · SSL-verschlüsselt'),
+                const LoginTrustNote(loginTrustText),
               ],
             ),
           ),

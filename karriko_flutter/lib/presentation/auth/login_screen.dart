@@ -74,9 +74,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               'Bewertungen zu antworten.'
           : 'Melde dich an, um Bewertungen zu schreiben, Betriebe zu merken und '
               'dein Profil zu verwalten.',
-      aside: const LoginTrustNote(
-        'Geschützt durch Appwrite Auth · SSL-verschlüsselt',
-      ),
+      aside: const LoginTrustNote(loginTrustText),
       child: AutofillGroup(
         child: Form(
           key: _formKey,
@@ -149,7 +147,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: TextButton(
-                  onPressed: () => context.go('/forgot-password'),
+                  // Die Adresse geht als `extra` mit, nicht in der URL.
+                  onPressed: () => context.go(
+                    _isBetrieb
+                        ? '/forgot-password?zugang=betrieb'
+                        : '/forgot-password',
+                    extra: _emailCtrl.text.trim(),
+                  ),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: const Size(0, 44),

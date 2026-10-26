@@ -253,17 +253,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = const AuthState();
   }
 
-  Future<void> resetPassword(String email) async {
-    state = state.copyWith(isLoading: true, clearError: true);
-    try {
-      await _repo.resetPassword(email);
-      state = state.copyWith(isLoading: false);
-    } catch (e) {
-      state = state.copyWith(
-          isLoading: false, error: 'Passwort-Reset fehlgeschlagen.');
-    }
-  }
-
   Future<void> updateProfile({String? firstName, String? lastName}) async {
     final userId = state.user?.id;
     if (userId == null) return;

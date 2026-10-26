@@ -21,9 +21,7 @@ class LoginChoiceScreen extends StatelessWidget {
       headline: 'Wer bist\ndu?',
       lede: 'Azubis und Betriebe arbeiten in unterschiedlichen Bereichen der '
           'Plattform. Wähle deinen Zugang, um dich anzumelden.',
-      aside: const LoginTrustNote(
-        'Geschützt durch Appwrite Auth · SSL-verschlüsselt',
-      ),
+      aside: const LoginTrustNote(loginTrustText),
       child: Column(
         // stretch statt start: die Auswahlliste soll die Panelbreite ausfüllen,
         // nicht auf ihre Inhaltsbreite schrumpfen.

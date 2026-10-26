@@ -41,13 +41,23 @@ void main() {
 
     expect(find.byType(TextFormField), findsNothing);
     expect(find.text('Nachricht senden'), findsNothing);
-    expect(find.text('E-Mail schreiben'), findsOneWidget);
-    expect(find.text('demharter@dresogo.de'), findsOneWidget);
+    expect(find.text('demharter@dresogo.de'), findsWidgets);
 
+    // Jedes Anliegen öffnet das Mailprogramm mit eigenem Betreff, alle an die
+    // eine echte Adresse; Sicherheitslücken gehen an die Meldestelle aus
+    // security.txt.
     final ziele = tester
         .widgetList<Link>(find.byType(Link))
         .map((l) => l.uri.toString())
         .toSet();
-    expect(ziele, {'mailto:demharter@dresogo.de'});
+    expect(ziele, {
+      'mailto:demharter@dresogo.de?subject=Allgemeine%20Frage',
+      'mailto:demharter@dresogo.de?subject=Betriebe%20und%20Premium',
+      'mailto:demharter@dresogo.de?subject=Kammern%20und%20Schulen',
+      'mailto:demharter@dresogo.de?subject=Presseanfrage',
+      'mailto:demharter@dresogo.de?subject=Datenschutz',
+      'mailto:demharter@dresogo.de?subject=Bewertung%20melden',
+      'https://github.com/dresogo/Karriko/security/advisories/new',
+    });
   });
 }

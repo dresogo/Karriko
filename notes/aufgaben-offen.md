@@ -168,8 +168,10 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Teilweise erledigt am 13.10.2026: Kontakt und Registrierung Betrieb behoben, neuer Layout-Test für neun öffentliche Seiten (`7a02091`); `/subscription` ist ausgeblendet. Ursache durchgängig `Text` in einer `Row` ohne `Expanded`/`Flexible`.
 - [ ] T-6.5 · P2 · Auth-Seiten auf Swiss Design umstellen und mit Kopfzeile versehen (todo E)
   Betrifft `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`.
+  Teilweise erledigt am 26.10.2026: Passwort vergessen, Passwort setzen und E-Mail bestätigen im `LoginShell` nach den Seiten-Tabs 40–42 (Sie für Betriebe über `?zugang=betrieb`, „Erneut senden“ mit 60 s Sperre, Test `mail_links_test.dart`). Dabei behoben: Reset- und Bestätigungslink lösten ihr Geheimnis nie ein (`updateRecovery`, `updateEmailVerification`); der Wächter lässt `/verify-email` mit Geheimnis durch. Vertrauenszeile nach A-2. Gegen die echte Instanz noch nicht durchgespielt (T-3.15). Offen: Registrierung Azubi und Betrieb (Tabs 35, 36).
 - [ ] T-6.6 · P2 · Restliche Betriebsseiten: Analytics, Abonnement, Team, Bewertungen, Meldungen (todo E)
 - [ ] T-6.8 · P2 · Restliche öffentliche Seiten: Bewertungsdetail, Blogartikel, Kontakt, Über uns (todo E)
+  Teilweise erledigt am 26.10.2026: Über uns (`3ce4cf7`) und Kontakt nach Seiten-Tab 21 (Anliegen mit vorbelegtem Betreff an die eine bestehende Adresse, Sicherheitslücken an die Meldestelle aus `security.txt`, Bewertungen melden mit dem heutigen Weg bis T-6.18). Offen: Bewertungsdetail (Tab 04; entschieden am 26.10.2026: Direktlink zeigt auch ohne Konto den ganzen Text) und Blogartikel (Tab 18).
 - [ ] T-6.11 · P2 · Ladezeit auf dem Smartphone messen: LCP unter 2,5 s, CLS unter 0,1 (Referenz §5)
 
 - [ ] T-6.17 · P1 · Seite „Eigene Bewertung“ unter `/my-reviews/:id`: Status, Begründung bei Ablehnung (Art. 17 DSA), Freitext ändern, zurückziehen. Die Danke-Seite verspricht „Bis dahin kannst du sie noch ändern“, einen Weg dafür gibt es nicht (Sitemap)
