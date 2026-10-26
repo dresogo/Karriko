@@ -195,6 +195,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/konto-loeschung',
           builder: (_, __) => const AccountDeletionScreen()),
+      // Eine eigene Wiederherstellungsseite gibt es nicht (Entscheidung vom
+      // 22.10.2026, T-6.33): Zurueckgenommen wird nach dem Anmelden auf
+      // /konto-loeschung, der Waechter fuehrt Abgemeldete zur Anmeldung.
+      GoRoute(
+          path: '/konto-wiederherstellen',
+          redirect: (_, __) => '/konto-loeschung'),
       GoRoute(path: '/search', builder: (_, __) => const SearchScreen()),
       GoRoute(
           path: '/company/:slug',
@@ -304,9 +310,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: '/betrieb-reviews',
           builder: (_, __) => const betrieb.BetriebReviewsScreen()),
-      // Analytics, Team und Abonnement sind noch Attrappen ohne Datenquelle.
-      // Bis sie echt sind, fuehren alte Links und Lesezeichen aufs Dashboard;
-      // die Bildschirme liegen weiter unter presentation/betrieb/.
+      // Analytics, Team und Abonnement gibt es noch nicht. Die Attrappen mit
+      // erfundenen Zahlen, Namen und Preis sind geloescht (T-6.39, in der
+      // Historie bis ab78893); alte Links und Lesezeichen fuehren aufs Dashboard.
       for (final path in const ['/analytics', '/team', '/subscription'])
         GoRoute(path: path, redirect: (_, __) => '/betrieb-dashboard'),
       GoRoute(path: '/reports', builder: (_, __) => const ReportsScreen()),

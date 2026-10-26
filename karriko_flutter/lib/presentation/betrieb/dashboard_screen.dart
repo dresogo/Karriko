@@ -17,8 +17,7 @@ class BetriebDashboardScreen extends ConsumerWidget {
       appBarTitle: 'Dashboard',
       eyebrow: 'BETRIEB',
       title: company?.isNotEmpty == true ? company! : 'Dein Betrieb',
-      lede:
-          'Bewertungen einsehen, auf Feedback antworten und dein Profil pflegen.',
+      lede: 'Bewertungen einsehen, Profil und Ausbildungsstellen pflegen.',
       headerAction: FilledButton.icon(
         onPressed: () => context.go('/betrieb-reviews'),
         icon: const Icon(Icons.rate_review_outlined, size: 18),
@@ -42,7 +41,8 @@ class BetriebDashboardScreen extends ConsumerWidget {
 /// An dieser Stelle standen bislang erfundene Kennzahlen (4,2 ⌀, 24 Bewertungen,
 /// 1,2k Profilaufrufe) samt Score-Verlauf. Solange keine Auswertung angebunden
 /// ist, benennt die Seite das offen, statt Zahlen zu zeigen, auf die ein Betrieb
-/// Entscheidungen stützen würde.
+/// Entscheidungen stützen würde. Profilaufrufe zählt Karriko noch nicht
+/// (T-2.25), deshalb steht dafür auch kein Platzhalter (E-30, T-6.38).
 class _MetricsNotice extends StatelessWidget {
   const _MetricsNotice();
 
@@ -57,7 +57,7 @@ class _MetricsNotice extends StatelessWidget {
         const SizedBox(height: AppLayout.s16),
         LayoutBuilder(
           builder: (context, constraints) {
-            final cols = constraints.maxWidth >= 720 ? 3 : 1;
+            final cols = constraints.maxWidth >= 720 ? 2 : 1;
             final width = (constraints.maxWidth - (cols - 1) * gap) / cols;
 
             return Wrap(
@@ -66,7 +66,6 @@ class _MetricsNotice extends StatelessWidget {
               children: const [
                 ('Ø Bewertung', 'Sobald Bewertungen vorliegen'),
                 ('Bewertungen', 'Sobald Bewertungen vorliegen'),
-                ('Profilaufrufe', 'Auswertung folgt'),
               ]
                   .map((m) => (m.$1, m.$2))
                   .map(
@@ -147,7 +146,7 @@ class _ManagementActions extends StatelessWidget {
     (
       Icons.rate_review_outlined,
       'Bewertungen',
-      'Feedback lesen und beantworten',
+      'Feedback lesen',
       '/betrieb-reviews',
     ),
     (
@@ -162,8 +161,8 @@ class _ManagementActions extends StatelessWidget {
       'Stellen ausschreiben und verwalten',
       '/betrieb-stellen',
     ),
-    // Analytics, Team und Abonnement fehlen, bis sie an echte Daten
-    // angebunden sind; die Routen leiten bis dahin hierher zurueck.
+    // Analytics, Team und Abonnement gibt es noch nicht (T-6.39); die
+    // Routen leiten hierher zurueck.
     (
       Icons.flag_outlined,
       'Bewertungen melden',

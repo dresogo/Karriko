@@ -291,7 +291,7 @@ class _CompanyMark extends StatelessWidget {
       );
 }
 
-/// Gesamtnote gross gesetzt, darunter die Verteilung der abgegebenen Sterne.
+/// Gesamtnote gross gesetzt, darunter die Verteilung der Gesamturteile.
 class _RatingPanel extends StatelessWidget {
   final CompanyModel company;
   final _ReviewStats stats;
@@ -391,7 +391,7 @@ class _DistributionRow extends StatelessWidget {
     final fraction = total == 0 ? 0.0 : count / total;
 
     return Semantics(
-      label: '$star Sterne: $count Bewertungen',
+      label: 'Gesamturteil $star: $count Bewertungen',
       excludeSemantics: true,
       child: Padding(
         padding: const EdgeInsets.only(bottom: AppLayout.s8),
@@ -409,8 +409,8 @@ class _DistributionRow extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(Icons.star, size: 12, color: AppColors.muted),
-            const SizedBox(width: AppLayout.s16),
+            // Ohne Sternsymbol (Entscheidung vom 22.10.2026, T-6.30).
+            const SizedBox(width: AppLayout.s8),
             Expanded(child: _Meter(fraction: fraction)),
             const SizedBox(width: AppLayout.s16),
             SizedBox(

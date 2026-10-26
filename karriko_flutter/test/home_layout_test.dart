@@ -58,6 +58,9 @@ void main() {
     'tablet 900': Size(900, 1000),
     'phone 375': Size(375, 812),
     'phone klein 360': Size(360, 640),
+    // Schmalste gängige Breite (iPhone SE 1. Generation); dort fielen die
+    // Fehler aus T-11.14 auf (T-7.10).
+    'phone schmal 320': Size(320, 568),
   };
 
   sizes.forEach((name, size) {

@@ -8,6 +8,13 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 26.10.2026 | T-7.10 | Layout-Tests um 320 px ergänzen | Neun Layout-Tests prüfen zusätzlich 320 × 568 px mit Schrift 1,0 und 1,3. Dabei behoben: „Schreib uns“ auf Über uns lief bei 320 px und großer Schrift um 2 px über | dieser Commit |
+| 26.10.2026 | T-6.33 | Grobgerüst `/konto-wiederherstellen` entfernen | Aus `planned_catalog.dart` gelöscht; die Adresse leitet auf `/konto-loeschung`, der Wächter führt Abgemeldete zur Anmeldung. Test in `router_guard_test.dart`. Die Lösch- und Warnmails entstehen mit T-2.34 | dieser Commit |
+| 26.10.2026 | T-6.30 | Suchfilter als Zahl statt Sternen | Filter „Alle · ab 3 · ab 3,5 · ab 4“ statt Schieberegler, Adresse `?bewertung=3.5` (alter Parameter `sterne` wird noch gelesen); Ergebniskarten mit Zahl und flachem Balken, im Profil ohne Sternsymbol. Filterzeilen über `TapTarget` (E-10). Test `search_url_test.dart` | dieser Commit |
+| 26.10.2026 | T-6.27 | Texte versprechen Antworten der Betriebe | Entfernt aus Login Betrieb, Betriebs-Kasten im Blogartikel und zwei Blogtexten (Tipp jetzt: Bewertungen im Team besprechen) | dieser Commit |
+| 26.10.2026 | T-6.45 | T-6.6 auf Bewertungen und Meldungen beschränken | Vermerk unter T-6.6 | dieser Commit |
+| 26.10.2026 | T-6.39 | Attrappen Auswertung, Team und Abonnement mit erfundenen Zahlen | `analytics_screen.dart`, `team_screen.dart`, `subscription_screen.dart` gelöscht (in der Historie bis `ab78893`); `/analytics`, `/team`, `/subscription` führen weiter aufs Dashboard | dieser Commit |
+| 26.10.2026 | T-6.29 | „Premium starten“ führt nur zur Registrierung | Schon mit dem Umbau von „Für Betriebe“ erledigt: „Interesse melden“ statt Kaufknopf | `d4c7a9c` |
 | 26.10.2026 | T-6.44 | Admin-Bereich verspricht eine Vollprüfung jedes Freitexts | Markierung „Freitext prüfen“ erklärt nur noch: „Enthält einen Freitext. Allein kein Hinweis auf ein Problem.“ | dieser Commit |
 | 26.10.2026 | T-6.26 | Texte versprechen eine Vollprüfung jeder Bewertung | FAQ und Startseite neutral, gilt heute und nach E-2.13: „Jede Bewertung wird vor der Veröffentlichung geprüft. Auffällige Fälle und jede Meldung sieht sich ein Mensch an.“ Über uns war schon angepasst (`3ce4cf7`). Entschieden mit dem Nutzer | dieser Commit |
 | 26.10.2026 | T-2.40 | Löschfristen im Code an E-51 angleichen | Standard in `config.dart`: Entwürfe 30, Nachweise 14 Tage; `cleanup/.env` setzt keine eigenen Werte. Test und `APPWRITE_SETUP.md` angepasst, W-3.1 aus dem Factsheet entfernt. Wirkt nach dem nächsten Deploy von `cleanup` (vorher `dart run tools/vendor_core.dart`) | dieser Commit |

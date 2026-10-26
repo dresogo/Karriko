@@ -56,8 +56,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         _city = ort;
         _cityController.text = ort;
       }
-      final sterne = double.tryParse(params['sterne'] ?? '');
-      if (sterne != null && sterne >= 1 && sterne <= 5) _minRating = sterne;
+      // `sterne` ist der alte Name aus geteilten Links (T-11.17).
+      final ab = double.tryParse(params['bewertung'] ?? params['sterne'] ?? '');
+      if (_ratingSteps.contains(ab)) _minRating = ab;
       setState(() {});
       _search();
     });
@@ -77,9 +78,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             query: _query.isEmpty ? null : _query,
             industry: _industry == 'Alle Branchen' ? null : _industry,
             city: _city,
-            // "Ab 1 Stern" means no effective filter.
-            minRating:
-                (_minRating != null && _minRating! > 1) ? _minRating : null,
+            minRating: _minRating,
           ),
         );
   }
@@ -92,8 +91,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       if (_query.isNotEmpty) 'q': _query,
       if (_industry != 'Alle Branchen') 'branche': _industry,
       if (_city != null) 'ort': _city!,
-      if (_minRating != null && _minRating! > 1)
-        'sterne': _minRating!.toStringAsFixed(0),
+      if (_minRating != null) 'bewertung': _ratingParam(_minRating!),
     };
     SystemNavigator.routeInformationUpdated(
       uri:
@@ -110,7 +108,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       industries: _industries,
       cityController: _cityController,
       selectedIndustry: _industry,
-      minRating: _minRating ?? 1,
+      minRating: _minRating,
       onIndustry: (v) {
         setState(() => _industry = v);
         _search();
@@ -200,13 +198,26 @@ class _Header extends StatelessWidget {
 
 // ─── Filter sidebar ──────────────────────────────────────────────────────────
 
+/// Stufen des Bewertungsfilters, als Zahl statt Sternen (Entscheidung vom
+/// 22.10.2026, T-6.30). `null` heißt: alle.
+const _ratingSteps = <double?>[null, 3, 3.5, 4];
+
+/// „3“ oder „3,5“ für die Anzeige.
+String _ratingLabel(double v) => v == v.roundToDouble()
+    ? v.toStringAsFixed(0)
+    : v.toString().replaceAll('.', ',');
+
+/// „3“ oder „3.5“ für die Adresse.
+String _ratingParam(double v) =>
+    v == v.roundToDouble() ? v.toStringAsFixed(0) : v.toString();
+
 class _FiltersSidebar extends StatelessWidget {
   final List<String> industries;
   final TextEditingController cityController;
   final String selectedIndustry;
-  final double minRating;
+  final double? minRating;
   final ValueChanged<String> onIndustry;
-  final ValueChanged<double> onRating;
+  final ValueChanged<double?> onRating;
   final ValueChanged<String> onCity;
 
   const _FiltersSidebar({
@@ -230,7 +241,7 @@ class _FiltersSidebar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final industry in industries)
-                _IndustryLink(
+                _FilterLink(
                   label: industry,
                   selected: industry == selectedIndustry,
                   onTap: () => onIndustry(industry),
@@ -242,39 +253,14 @@ class _FiltersSidebar extends StatelessWidget {
         _FilterSection(
           title: 'BEWERTUNG',
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 2,
-                  activeTrackColor: AppColors.accent,
-                  inactiveTrackColor: AppColors.line,
-                  thumbColor: AppColors.ink,
-                  overlayShape: SliderComponentShape.noOverlay,
-                  thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 7),
+              for (final step in _ratingSteps)
+                _FilterLink(
+                  label: step == null ? 'Alle' : 'ab ${_ratingLabel(step)}',
+                  selected: step == minRating,
+                  onTap: () => onRating(step),
                 ),
-                child: Slider(
-                  value: minRating,
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  onChanged: onRating,
-                ),
-              ),
-              const SizedBox(height: AppLayout.s8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    minRating <= 1 ? 'Alle' : 'Ab ${minRating.toInt()} Sternen',
-                    style:
-                        const TextStyle(color: AppColors.muted, fontSize: 12),
-                  ),
-                  const Text('5 Sterne',
-                      style: TextStyle(color: AppColors.muted, fontSize: 12)),
-                ],
-              ),
             ],
           ),
         ),
@@ -334,20 +320,23 @@ class _FilterSection extends StatelessWidget {
   }
 }
 
-class _IndustryLink extends StatelessWidget {
+/// Eine Filteroption als Textzeile. [TapTarget] statt InkWell (E-10):
+/// Hand-Cursor, Tastatur und Hover als Unterstreichung.
+class _FilterLink extends StatelessWidget {
   final String label;
   final bool selected;
   final VoidCallback onTap;
 
-  const _IndustryLink(
+  const _FilterLink(
       {required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return SelectionContainer.disabled(
-      child: InkWell(
+    return Semantics(
+      selected: selected,
+      child: TapTarget(
         onTap: onTap,
-        child: Padding(
+        builder: (context, active) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 7),
           child: Text(
             label,
@@ -355,6 +344,8 @@ class _IndustryLink extends StatelessWidget {
               color: selected ? AppColors.accentDark : AppColors.ink,
               fontSize: 15,
               fontWeight: selected ? FontWeight.w800 : FontWeight.w400,
+              decoration:
+                  active ? TextDecoration.underline : TextDecoration.none,
             ),
           ),
         ),
@@ -851,23 +842,28 @@ class _CompanyCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppLayout.s16),
+            // Zahl mit flachem Balken statt Sternen (Entscheidung vom
+            // 22.10.2026, T-6.30); Skala wie [ScoreBalken].
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    for (var i = 0; i < 5; i++)
-                      Icon(
-                        Icons.star,
-                        size: 16,
-                        color: (rating != null && rating.round() > i)
-                            ? AppColors.ink
-                            : AppColors.line,
-                      ),
-                  ],
+                Expanded(
+                  child: Container(
+                    height: 6,
+                    color: AppColors.line,
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: rating == null
+                          ? 0
+                          : ((rating - 1) / 4).clamp(0.0, 1.0),
+                      child: Container(color: AppColors.ink),
+                    ),
+                  ),
                 ),
+                const SizedBox(width: AppLayout.s16),
                 Text(
-                  rating != null ? '${rating.toStringAsFixed(1)} / 5' : '–',
+                  rating != null
+                      ? '${rating.toStringAsFixed(1).replaceAll('.', ',')} / 5'
+                      : '–',
                   style: const TextStyle(
                     color: AppColors.muted,
                     fontSize: 12,

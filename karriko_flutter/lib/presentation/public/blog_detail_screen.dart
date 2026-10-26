@@ -1111,9 +1111,10 @@ class _NextStep extends StatelessWidget {
     final forCompanies = category == 'Für Betriebe';
     final (title, text, label, location) = forCompanies
         ? (
-            'Zeig, wie gut deine Ausbildung ist.',
-            'Lege ein Betriebsprofil an, antworte auf Bewertungen und werde '
-                'von passenden Azubis gefunden.',
+            // Betriebe mit Sie (F-8); ohne Antworten auf Bewertungen (T-8.1).
+            'Zeigen Sie, wie gut Ihre Ausbildung ist.',
+            'Legen Sie ein Betriebsprofil an, schreiben Sie Stellen aus und '
+                'werden Sie von passenden Azubis gefunden.',
             'Mehr für Betriebe',
             '/fuer-betriebe',
           )

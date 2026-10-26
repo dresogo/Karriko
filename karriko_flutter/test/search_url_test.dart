@@ -92,6 +92,20 @@ void main() {
     });
   });
 
+  testWidgets('Bewertungsfilter mit Nachkommastelle (T-6.30)', (tester) async {
+    final repo = await oeffnen(tester, '/search?bewertung=3.5');
+
+    expect(repo.suchen.last['minRating'], 3.5);
+    expect(adressen.last, contains('bewertung=3.5'));
+  });
+
+  testWidgets('Stufen außerhalb von 3, 3,5 und 4 werden ignoriert',
+      (tester) async {
+    final repo = await oeffnen(tester, '/search?sterne=2');
+
+    expect(repo.suchen.last['minRating'], isNull);
+  });
+
   testWidgets('unbekannte Branche wird ignoriert', (tester) async {
     final repo = await oeffnen(tester, '/search?branche=Erfunden');
 

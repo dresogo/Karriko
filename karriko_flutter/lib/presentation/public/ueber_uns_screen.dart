@@ -571,10 +571,12 @@ class _ContactBand extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () => context.go('/kontakt'),
+              // Flexible: Bei 320 px und großer Schrift lief die Zeile sonst
+              // um 2 px über (T-7.10).
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Schreib uns'),
+                  Flexible(child: Text('Schreib uns')),
                   SizedBox(width: AppLayout.s8),
                   Icon(Icons.arrow_forward, size: 18),
                 ],

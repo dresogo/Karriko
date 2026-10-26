@@ -70,8 +70,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       eyebrow: _isBetrieb ? 'FÜR BETRIEBE' : 'FÜR AZUBIS',
       headline: _isBetrieb ? 'Betrieb\nanmelden.' : 'Azubi\nanmelden.',
       lede: _isBetrieb
-          ? 'Melde dich an, um dein Unternehmensprofil zu pflegen und auf '
-              'Bewertungen zu antworten.'
+          // Betriebe mit Sie (F-8, T-6.28); keine Antworten auf Bewertungen,
+          // solange T-8.1 offen ist (T-6.27).
+          ? 'Melden Sie sich an, um Ihr Unternehmensprofil und Ihre '
+              'Ausbildungsstellen zu pflegen.'
           : 'Melde dich an, um Bewertungen zu schreiben, Betriebe zu merken und '
               'dein Profil zu verwalten.',
       aside: const LoginTrustNote(loginTrustText),

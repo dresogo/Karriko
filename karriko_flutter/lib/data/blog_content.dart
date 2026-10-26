@@ -104,9 +104,9 @@ class BlogContent {
         ArticleHeading('Was Betriebe wissen sollten'),
         ArticleParagraph(
           'Betriebe haben keinen Anspruch darauf, zu erfahren, wer eine '
-          'Bewertung geschrieben hat. Sie können aber auf Bewertungen '
-          'antworten und Beiträge melden, die gegen die Richtlinien verstoßen '
-          '– etwa bei Beleidigungen oder falschen Tatsachenbehauptungen.',
+          'Bewertung geschrieben hat. Sie können aber Beiträge melden, die '
+          'gegen die Richtlinien verstoßen – etwa bei Beleidigungen oder '
+          'falschen Tatsachenbehauptungen.',
         ),
         ArticleCallout(
           title: 'Wie Karriko moderiert',
@@ -147,15 +147,16 @@ class BlogContent {
         ArticleHeading('Besser gefunden werden'),
         ArticleParagraph(
           'Bewerberinnen und Bewerber lesen Bewertungen, bevor sie sich '
-          'bewerben. Ein Betrieb, der auf Kritik sachlich antwortet und '
-          'zeigt, was sich verändert hat, wirkt glaubwürdiger als einer mit '
-          'ausschließlich perfekten Noten.',
+          'bewerben. Ein Betrieb, der Kritik ernst nimmt und zeigt, was sich '
+          'verändert hat, wirkt glaubwürdiger als einer mit ausschließlich '
+          'perfekten Noten.',
         ),
         ArticleCallout(
           title: 'Tipp für den Einstieg',
-          text: 'Antworte auf die drei jüngsten Bewertungen. Bedanke dich, '
-              'gehe auf einen konkreten Punkt ein und sag, was du daraus '
-              'mitnimmst.',
+          // Ohne Antworten auf Bewertungen, solange T-8.1 offen ist (T-6.27).
+          text: 'Lies die drei jüngsten Bewertungen mit deinem Team. Such dir '
+              'einen konkreten Punkt heraus und überlege, was ihr daran '
+              'ändern könnt.',
         ),
         ArticleHeading('Drei schnelle Hebel'),
         ArticleList([

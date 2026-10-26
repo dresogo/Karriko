@@ -2,7 +2,7 @@
 
 **Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-183 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+176 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -190,6 +190,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Betrifft `register_azubi`, `register_betrieb`, `forgot_password`, `reset_password`, `verify_email`.
   Teilweise erledigt am 26.10.2026: Passwort vergessen, Passwort setzen und E-Mail bestätigen im `LoginShell` nach den Seiten-Tabs 40–42 (Sie für Betriebe über `?zugang=betrieb`, „Erneut senden“ mit 60 s Sperre, Test `mail_links_test.dart`). Dabei behoben: Reset- und Bestätigungslink lösten ihr Geheimnis nie ein (`updateRecovery`, `updateEmailVerification`); der Wächter lässt `/verify-email` mit Geheimnis durch. Vertrauenszeile nach A-2. Gegen die echte Instanz noch nicht durchgespielt (T-3.15). Offen: Registrierung Azubi und Betrieb (Tabs 35, 36).
 - [ ] T-6.6 · P2 · Restliche Betriebsseiten: Analytics, Abonnement, Team, Bewertungen, Meldungen (todo E)
+  Stand 26.10.2026: Nur noch Bewertungen und Meldungen; Analytics, Abonnement und Team sind aus dem Code gelöscht (T-6.39, T-6.45).
 - [ ] T-6.8 · P2 · Restliche öffentliche Seiten: Bewertungsdetail, Blogartikel, Kontakt, Über uns (todo E)
   Teilweise erledigt am 26.10.2026: Über uns (`3ce4cf7`) und Kontakt nach Seiten-Tab 21 (Anliegen mit vorbelegtem Betreff an die eine bestehende Adresse, Sicherheitslücken an die Meldestelle aus `security.txt`, Bewertungen melden mit dem heutigen Weg bis T-6.18). Offen: Bewertungsdetail (Tab 04; entschieden am 26.10.2026: Direktlink zeigt auch ohne Konto den ganzen Text) und Blogartikel (Tab 18).
 - [ ] T-6.11 · P2 · Ladezeit auf dem Smartphone messen: LCP unter 2,5 s, CLS unter 0,1 (Referenz §5)
@@ -204,14 +205,11 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Stand 21.10.2026: Die Leckprüfung macht jetzt Appwrite (E-3.12); ihre Ablehnung kommt als `password_pwned` und soll direkt am Feld stehen. Die Stärkeanzeige richtet sich nach der Mindestlänge 12.
 - [ ] T-6.25 · P1 · Öffentliche Seite „So prüfen wir Bewertungen“: wie die Echtheit geprüft wird (UWG § 5b Abs. 3), später auf der Website (Moderation)
 
-- [ ] T-6.27 · P2 · Texte versprechen Antworten der Betriebe, die nicht entschieden sind (T-8.1): Lead im Login Betrieb (`login_screen.dart`) und Werbekasten im Blogartikel (`blog_detail_screen.dart`). Bis zur Entscheidung entfernen (Sites, Tab 18, 34)
 - [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten mit `?zugang=betrieb`. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
-- [ ] T-6.29 · P2 · „Premium starten“ auf „Für Betriebe“ führt nur zur Registrierung. Bis T-8.4 durch „Interesse melden“ ersetzen oder ausblenden (Sites, Tab 13)
-- [ ] T-6.30 · P2 · Suchfilter „Ab X Sternen“ auf Zahlen umstellen (ab 3 · ab 3,5 · ab 4); Bewertungen überall als Zahl mit Balken, keine Sterne (Entscheidung vom 22.10.2026) (Sites, Tab 02)
+  Teilweise erledigt am 26.10.2026: Login Betrieb, Passwortseiten (`?zugang=betrieb`), E-Mail bestätigen für Betriebe und der Betriebs-Kasten im Blogartikel siezen; „Für Betriebe“ seit `d4c7a9c`. Offen: Registrierung Betrieb, Betriebsbereich, Factsheet §2.5.
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
   Teilweise erledigt am 26.10.2026: Spalte heißt „Plattform“. Offen: die Links, sobald die Seiten stehen.
-- [ ] T-6.33 · P3 · Grobgerüst `/konto-wiederherstellen` aus `planned_catalog.dart` entfernen und die Adresse auf die Anmeldung umleiten; Lösch- und Warnmails verlinken auf die Anmeldung mit `?next=` zur Kontolöschung (Entscheidung vom 22.10.2026) (Sites, Tab 38)
 
 - [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
 - [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
@@ -221,7 +219,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit, mit erneuter Vorsortierung. Zu T-6.31: Pfade des Azubi-Bereichs entschieden (`/app`, `/app/bewerten`, `/app/bewertungen`, `/app/merkliste`, `/app/benachrichtigungen`, `/app/einstellungen`).
 
 - [ ] T-6.38 · P2 · Betriebs-Dashboard: „auf Feedback antworten“ im Lead und „Feedback lesen und beantworten“ entfernen (T-8.1), Kachel „Profilaufrufe“ ohne Daten entfernen (E-30), Band mit Prüfstatus und Erinnerung an den zweiten Faktor (freiwillig, Entscheidung vom 22.10.2026), Sie-Ansprache (Sites, Tab 59, 73)
-- [ ] T-6.39 · P2 · Attrappen Auswertung, Team und Abonnement enthalten erfundene Zahlen (4.2, 1.2k, 87 %), Namen („Max Mustermann“) und einen Preis (49 €/Monat). Bis zur echten Umsetzung aus dem Code nehmen, nicht nur ausblenden (E-30, Factsheet §2.5) (Sites, Tab 67–69)
+  Teilweise erledigt am 26.10.2026: „auf Feedback antworten“ und „Feedback lesen und beantworten“ entfernt, Kachel „Profilaufrufe“ entfernt. Offen: Band mit Prüfstatus und Erinnerung an den zweiten Faktor, Sie-Ansprache (T-6.28).
 - [ ] T-6.40 · P1 · Meldungen im Betriebsbereich: Gründe wie im öffentlichen Meldeformular (T-6.18), Begründung als Pflichtfeld, Liste der eigenen Meldungen mit Status und Entscheidung, Prüfverlangen „Nachweis des Ausbildungsverhältnisses anfordern“ (die Moderation fragt die verfassende Person anonym an), Grenzwert 5 je 24 h über eine Function statt direktem Tabellenzugriff (T-3.10) (Sites, Tab 66)
 - [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload (das Modell kennt `logoUrl`, die Oberfläche nicht) und Ausbildungsberufe am Profil pflegen, damit Betriebe ohne Bewertungen auf Berufsseiten erscheinen (Sites, Tab 60)
 - [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), in `job_posting` prüfen; abgelaufene Stellen verschwinden von der Website, im Betriebsbereich Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
@@ -229,7 +227,6 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
-- [ ] T-6.45 · P2 · Ergänzt T-6.6: auf Bewertungen und Meldungen beschränken; Analytics, Abonnement und Team kommen nach T-6.39 aus dem Code, statt umgestaltet zu werden (Chat)
 
 ## 7 · Tests
 
@@ -242,7 +239,6 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
   Teilweise erledigt am 18.10.2026: `CompanyRepository` nimmt ein `TablesDB` entgegen und ist damit ohne Appwrite testbar; `company_repository_test.dart` prüft Merkliste, Suchabfragen und Profiländerung. Dabei behoben: ein gemerkter, inzwischen gelöschter Betrieb ließ die ganze Merkliste scheitern. Offen: übrige Repositories nach demselben Muster, Widget-Tests für Merkliste, Suche, Unternehmensdetail und Betriebsseiten.
 - [ ] T-7.8 · P3 · Testabdeckung der Geschäftslogik messen, Ziel über 80 % (Referenz §5)
 - [ ] T-7.9 · P2 · Klickwege auf einem echten Telefon durchspielen; bisher nur in der Mobil-Emulation angesehen, dort blieben Klicks hängen (Statusbericht 13.7, im Archiv)
-- [ ] T-7.10 · P2 · Layout-Tests um 320 px ergänzen; die schmalste Testbreite ist 360 px, die Fehler aus T-11.14 stammen von 320 px (Chat)
 
 ## 8 · Produktentscheidungen
 

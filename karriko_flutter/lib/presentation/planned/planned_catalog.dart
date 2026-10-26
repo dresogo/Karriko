@@ -234,20 +234,6 @@ const plannedPages = <PlannedPageSpec>[
       PlannedSection('Prüfung', 'Freigabe durch einen Menschen.'),
     ],
   ),
-  PlannedPageSpec(
-    path: '/konto-wiederherstellen',
-    eyebrow: 'Konto',
-    title: 'Konto wiederherstellen',
-    lede: 'Eine Kontolöschung lässt sich 14 Tage lang zurücknehmen, auch nach '
-        'einer Löschung wegen Inaktivität.',
-    area: PlannedArea.public,
-    refs: ['E-50', 'E-52'],
-    sections: [
-      PlannedSection('Anmelden', 'Mit Zugangsdaten oder Link aus der Mail.'),
-      PlannedSection('Frist', 'Wie lange die Wiederherstellung möglich ist.'),
-      PlannedSection('Was zurückkommt', 'Profil, Merkliste, Bewertungen.'),
-    ],
-  ),
 
   // ── Azubi-Bereich ─────────────────────────────────────────────────────────
   PlannedPageSpec(

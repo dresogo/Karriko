@@ -45,6 +45,9 @@ void main() {
     'desktop 1440': Size(1440, 900),
     'tablet 900': Size(900, 1000),
     'phone klein 360': Size(360, 800),
+    // Schmalste gängige Breite (iPhone SE 1. Generation); dort fielen die
+    // Fehler aus T-11.14 auf (T-7.10).
+    'phone schmal 320': Size(320, 568),
   };
 
   for (final spec in plannedPages) {

@@ -187,5 +187,19 @@ void main() {
 
       expect(await _goTo(tester, '/konto-loeschung'), '/login');
     });
+
+    testWidgets('/konto-wiederherstellen führt auf die Rücknahme (T-6.33)',
+        (tester) async {
+      await _pump(
+          tester, _user(role: 'azubi', verified: true, loeschung: termin));
+      expect(
+          await _goTo(tester, '/konto-wiederherstellen'), '/konto-loeschung');
+    });
+
+    testWidgets('/konto-wiederherstellen abgemeldet führt zum Login',
+        (tester) async {
+      await _pump(tester, null);
+      expect(await _goTo(tester, '/konto-wiederherstellen'), '/login');
+    });
   });
 }
