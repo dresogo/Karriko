@@ -136,3 +136,8 @@ _legacy/
 notes/claude_plan/
 notes/claude_sites/
 notes/Karriko Sitemap.html
+
+# Ausgaben von Werkzeugen, die abgeleitete Datenbanken mit eigener Lizenz
+# erzeugen (tools/orte_aus_quellen.dart: OpenStreetMap, ODbL). Nicht
+# ungeprueft veroeffentlichen.
+tools/ausgabe/
