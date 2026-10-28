@@ -210,7 +210,6 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
   Teilweise erledigt am 26.10.2026: Spalte heißt „Plattform“. Offen: die Links, sobald die Seiten stehen.
-  Teilweise erledigt am 28.10.2026: In der App heißt die Spalte schon „Plattform“ (`footer_widget.dart`). Offen: die Links, sobald die Seiten stehen.
 
 - [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
 - [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
