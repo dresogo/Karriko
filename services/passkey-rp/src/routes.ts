@@ -26,7 +26,40 @@ export type Deps = {
   config: Config;
   store: PasskeyStore;
   issueSessionToken: SessionTokenIssuer;
+  /** Hat das Konto einen aktiven zweiten Faktor? Im Zweifel `true`. */
+  hasMfa: (userId: string) => Promise<boolean>;
 };
+
+/**
+ * Wie alt die Sitzung hoechstens sein darf, aus der ein neuer Passkey
+ * angelegt wird (T-3.26, Entscheidung vom 28.10.2026).
+ *
+ * Ohne diese Grenze reichte ein kurz erbeutetes JWT, um einen eigenen Passkey
+ * zu hinterlegen und damit dauerhaft Zugang zu behalten. Nach zehn Minuten muss
+ * man sich neu anmelden; das kostet einen Schritt, und nur beim Anlegen.
+ */
+export const FRISCHE_SITZUNG_SEKUNDEN = 600;
+
+/** Ist die Sitzung frisch genug, um einen Passkey anzulegen? */
+export function sitzungFrisch(
+  user: AuthenticatedUser,
+  now = new Date(),
+): boolean {
+  if (!user.sessionCreatedAt) return false;
+  const entstanden = new Date(user.sessionCreatedAt).getTime();
+  if (Number.isNaN(entstanden)) return false;
+  return now.getTime() - entstanden <= FRISCHE_SITZUNG_SEKUNDEN * 1000;
+}
+
+const neuAnmelden = (): RouteResult => ({
+  status: 403,
+  body: {
+    code: 'reauth_required',
+    message:
+      'Bitte melde dich zur Sicherheit neu an und lege den Passkey direkt ' +
+      'danach an.',
+  },
+});
 
 const ok = (body: unknown): RouteResult => ({ status: 200, body });
 const fehler = (status: number, message: string): RouteResult => ({
@@ -54,6 +87,7 @@ export async function registerOptions(
   deps: Deps,
   user: AuthenticatedUser,
 ): Promise<RouteResult> {
+  if (!sitzungFrisch(user)) return neuAnmelden();
   const vorhandene = await deps.store.listByUser(user.id);
 
   const options = await generateRegistrationOptions({
@@ -75,7 +109,9 @@ export async function registerOptions(
       // Anmeldung ohne Eingabe des Nutzernamens. Geraete, die das nicht
       // koennen, werden dadurch aber nicht ausgeschlossen.
       residentKey: 'preferred',
-      userVerification: 'preferred',
+      // Pflicht seit T-3.26: Ein Schluessel ohne PIN oder Biometrie waere
+      // reiner Besitz, und ein verlorener Stick reichte zur Anmeldung.
+      userVerification: 'required',
     },
   });
 
@@ -94,6 +130,7 @@ export async function registerVerify(
   user: AuthenticatedUser,
   body: { response?: unknown; deviceName?: unknown },
 ): Promise<RouteResult> {
+  if (!sitzungFrisch(user)) return neuAnmelden();
   const response = body.response as Parameters<
     typeof verifyRegistrationResponse
   >[0]['response'];
@@ -123,7 +160,7 @@ export async function registerVerify(
       expectedChallenge: erwartet.challenge,
       expectedOrigin: deps.config.origins,
       expectedRPID: deps.config.rpId,
-      requireUserVerification: false,
+      requireUserVerification: true,
     });
   } catch {
     return fehler(400, 'Der Passkey konnte nicht geprüft werden.');
@@ -165,7 +202,7 @@ export async function loginOptions(deps: Deps): Promise<RouteResult> {
   // Konto existiert — das Verfahren ist von sich aus enumerationssicher.
   const options = await generateAuthenticationOptions({
     rpID: deps.config.rpId,
-    userVerification: 'preferred',
+    userVerification: 'required',
   });
 
   await deps.store.saveChallenge({
@@ -208,7 +245,7 @@ export async function loginVerify(
         counter: passkey.signCount,
         transports: passkey.transports as never,
       },
-      requireUserVerification: false,
+      requireUserVerification: true,
     });
   } catch {
     return anmeldungAbgelehnt();
@@ -220,6 +257,18 @@ export async function loginVerify(
   if (!isCounterAcceptable(passkey.signCount, neuerZaehler)) {
     // Ein nicht gestiegener Zaehler deutet auf eine Kopie des Schluessels hin.
     return anmeldungAbgelehnt();
+  }
+
+  // Konten mit zweitem Faktor melden sich vorerst nicht per Passkey an, bis
+  // gegen die Instanz geprueft ist, ob Appwrite danach noch TOTP verlangt
+  // (T-3.26, E-3.13). Die Signatur war gueltig; eine eigene Meldung verraet
+  // hier nichts, was der Inhaber des Passkeys nicht schon weiss.
+  if (await deps.hasMfa(passkey.userId)) {
+    return fehler(
+      403,
+      'Für Konten mit Zwei-Faktor-Bestätigung ist die Anmeldung per Passkey ' +
+        'vorerst gesperrt. Bitte melde dich mit Passwort und Code an.',
+    );
   }
 
   await deps.store.touch(passkey.rowId, neuerZaehler);

@@ -55,6 +55,14 @@ Appwrite Function laufen.
 - **`aaguid` wird nicht gespeichert.** Es benennt das Authenticator-Modell, hat
   für die Anmeldung keinen Nutzen und wäre ein zusätzliches Merkmal am Nutzer.
 - **Der öffentliche Schlüssel verlässt den Dienst nie.**
+- **Anlegen nur aus einer frischen Sitzung** (höchstens 10 Minuten, E-3.14).
+  Der Dienst liest das Alter über `account.getSession('current')` mit dem JWT;
+  ist es nicht feststellbar, antwortet er mit 403 und `code: reauth_required`.
+- **PIN oder Biometrie ist Pflicht** (`userVerification: 'required'`) bei
+  Anlegen und Anmelden.
+- **Konten mit aktivem TOTP melden sich nicht per Passkey an**, bis geprüft
+  ist, ob Appwrite nach `users.createToken` noch TOTP verlangt (T-3.15). Die
+  Prüfung braucht `users.read`, das der Schlüssel ohnehin hat.
 
 ## Appwrite-Konfiguration
 

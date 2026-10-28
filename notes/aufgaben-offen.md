@@ -109,6 +109,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-3.24 · P1 · Magic Link sowie Google und Apple legen für unbekannte Adressen neue Konten an, ohne Zustimmung zu den Nutzungsbedingungen und ohne Mindestalter. Klären: Schritt „Konto vervollständigen“ beim ersten Login oder Magic Link nur für bestehende Konten (Sites, Tab 33, 45)
 - [ ] T-3.25 · P2 · Ergänzt T-3.17: Der Google-Knopf zeigt heute ein Text-„G“, nichts wird zur Laufzeit geladen; offen bleibt das offizielle Logo als Asset (Chat)
 - [ ] T-3.26 · P1 · Passkey-Dienst: Neuer Passkey braucht nur ein gültiges JWT. Wer kurz an eine Sitzung kommt, hinterlegt einen eigenen Passkey und behält dauerhaft Zugang. Außerdem prüfen, ob eine Sitzung aus `Users.createToken` bei aktivem TOTP den zweiten Faktor noch verlangt; sonst umgeht die Passkey-Anmeldung E-3.13 bei Moderationskonten. Maßnahmen: frische Anmeldung (oder TOTP) vor `register/options` verlangen, `requireUserVerification: true` bei Anmeldung und Registrierung, Mail an das Konto bei neuem Passkey, MFA-Weg gegen die Instanz testen (T-3.15) (Chat, Sicherheitsprüfung 28.10.2026)
+  Teilweise erledigt am 28.10.2026 (E-3.14): Anlegen nur aus einer höchstens 10 Minuten alten Sitzung, PIN oder Biometrie Pflicht, Passkey-Anmeldung für Konten mit TOTP gesperrt. Offen: Mail an das Konto bei neuem Passkey (braucht SMTP, T-3.6) und der MFA-Weg gegen die Instanz (T-3.15).
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 

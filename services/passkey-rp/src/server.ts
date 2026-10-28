@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { loadConfig } from './config.ts';
 import { AppwritePasskeyStore } from './store.ts';
-import { createSessionToken, userFromJwt } from './appwrite.ts';
+import { createSessionToken, hasMfa, userFromJwt } from './appwrite.ts';
 import { corsHeaders, handle, type HandlerDeps } from './handler.ts';
 
 /**
@@ -23,6 +23,7 @@ const deps: HandlerDeps = {
   config,
   store: new AppwritePasskeyStore(config),
   issueSessionToken: (userId) => createSessionToken(config, userId),
+  hasMfa: (userId) => hasMfa(config, userId),
   authenticate: userFromJwt,
 };
 

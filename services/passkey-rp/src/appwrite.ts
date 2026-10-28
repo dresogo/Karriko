@@ -6,6 +6,12 @@ export type AuthenticatedUser = {
   id: string;
   email: string;
   name: string;
+  /**
+   * Wann die Sitzung entstand, aus der das JWT stammt (ISO-Zeitpunkt), oder
+   * `null`, wenn Appwrite es nicht verraet. Grundlage der Frische-Pruefung vor
+   * dem Anlegen eines Passkeys (T-3.26).
+   */
+  sessionCreatedAt: string | null;
 };
 
 /**
@@ -32,10 +38,43 @@ export async function userFromJwt(
       .setEndpoint(config.appwriteEndpoint)
       .setProject(config.appwriteProjectId)
       .setJWT(jwt);
-    const account = await new Account(client).get();
-    return { id: account.$id, email: account.email, name: account.name };
+    const konto = new Account(client);
+    const account = await konto.get();
+    let sessionCreatedAt: string | null = null;
+    try {
+      sessionCreatedAt = (await konto.getSession({ sessionId: 'current' }))
+        .$createdAt;
+    } catch {
+      // Bleibt null; die Frische-Pruefung lehnt dann ab, statt zu raten.
+    }
+    return {
+      id: account.$id,
+      email: account.email,
+      name: account.name,
+      sessionCreatedAt,
+    };
   } catch {
     return null;
+  }
+}
+
+/**
+ * Hat das Konto einen aktiven zweiten Faktor (TOTP)?
+ *
+ * Solange nicht gegen die echte Instanz geprueft ist, ob eine Sitzung aus
+ * `users.createToken` danach noch TOTP verlangt, lehnt der Dienst die
+ * Passkey-Anmeldung fuer solche Konten ab (T-3.26, E-3.13). Im Zweifel `true`:
+ * Lieber eine Anmeldung zu viel abgelehnt als einen Faktor uebersprungen.
+ */
+export async function hasMfa(config: Config, userId: string): Promise<boolean> {
+  const client = new Client()
+    .setEndpoint(config.appwriteEndpoint)
+    .setProject(config.appwriteProjectId)
+    .setKey(config.appwriteApiKey);
+  try {
+    return (await new Users(client).get({ userId })).mfa;
+  } catch {
+    return true;
   }
 }
 
