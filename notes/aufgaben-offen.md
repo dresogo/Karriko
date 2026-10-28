@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-170 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+189 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -110,6 +110,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-3.25 · P2 · Ergänzt T-3.17: Der Google-Knopf zeigt heute ein Text-„G“, nichts wird zur Laufzeit geladen; offen bleibt das offizielle Logo als Asset (Chat)
 - [ ] T-3.26 · P1 · Passkey-Dienst: Neuer Passkey braucht nur ein gültiges JWT. Wer kurz an eine Sitzung kommt, hinterlegt einen eigenen Passkey und behält dauerhaft Zugang. Außerdem prüfen, ob eine Sitzung aus `Users.createToken` bei aktivem TOTP den zweiten Faktor noch verlangt; sonst umgeht die Passkey-Anmeldung E-3.13 bei Moderationskonten. Maßnahmen: frische Anmeldung (oder TOTP) vor `register/options` verlangen, `requireUserVerification: true` bei Anmeldung und Registrierung, Mail an das Konto bei neuem Passkey, MFA-Weg gegen die Instanz testen (T-3.15) (Chat, Sicherheitsprüfung 28.10.2026)
   Teilweise erledigt am 28.10.2026 (E-3.14): Anlegen nur aus einer höchstens 10 Minuten alten Sitzung, PIN oder Biometrie Pflicht, Passkey-Anmeldung für Konten mit TOTP gesperrt. Offen: Mail an das Konto bei neuem Passkey (braucht SMTP, T-3.6) und der MFA-Weg gegen die Instanz (T-3.15).
+- [ ] T-3.27 · P2 · Ergänzt T-3.17 und T-3.19: Die Knöpfe „Google“ und „Apple“ stehen auf Anmeldung und Registrierung Azubi, melden aber erst beim Klick „noch nicht freigeschaltet“. Widerspricht E-30; ausblenden, solange `OAUTH_ENABLED` aus ist (Rundgang 28.10.2026)
 
 ## 4 · Sicherheit, Rechte und Lieferkette
 
@@ -182,6 +183,8 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.30 · P2 · Klären, ob die Auffindbarkeit von Bewertungen über Google zum Löschkonzept passt; als Frage in den Tab „Fragen an den Anwalt“ aufnehmen (Website-Umbau SEO)
 - [ ] T-5.31 · P2 · Anwalt: Gilt die Ausnahme für Kleinunternehmen im Digital Services Act für Karriko? Die Frage fehlt noch im Tab „Fragen an den Anwalt“ (Moderation)
 - [ ] T-5.32 · P2 · Ergänzt T-5.22: Neben dem Feld mit 4000 Zeichen erlaubt das Freitextfeld im Abbruch-Modul 2000 Zeichen; beide auf 1000 (Chat)
+- [ ] T-5.33 · P1 · Blogartikel „DSGVO und Ausbildungsbewertungen“ (`blog_content.dart`) macht ungeprüfte Rechtsaussagen, etwa „Betriebe haben keinen Anspruch darauf, zu erfahren, wer eine Bewertung geschrieben hat“ (zu prüfen u. a. gegen den Auskunftsanspruch nach § 21 TDDDG) und „Eigene Daten kannst du jederzeit einsehen und löschen lassen“; er verweist auf die Datenschutzerklärung, die ein Platzhalter ist. Vom Anwalt prüfen lassen oder bis dahin zurückziehen (Factsheet §7 Regel 5) (Rundgang 28.10.2026)
+- [ ] T-5.34 · P2 · „Bewertungen werden nicht auf Wunsch entfernt“ (FAQ und „Für Betriebe“, Band „Was Geld nicht kauft“) mit dem Beanstandungsverfahren abgleichen (T-5.11) und juristisch prüfen lassen (Rundgang 28.10.2026)
 
 ## 6 · Oberfläche und Barrierefreiheit
 
@@ -220,6 +223,9 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 - [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload (das Modell kennt `logoUrl`, die Oberfläche nicht) und Ausbildungsberufe am Profil pflegen, damit Betriebe ohne Bewertungen auf Berufsseiten erscheinen (Sites, Tab 60)
 - [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), in `job_posting` prüfen; abgelaufene Stellen verschwinden von der Website, im Betriebsbereich Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
 - [ ] T-6.43 · P3 · Grobgerüst `/betrieb-stellen/:id` ist seit T-2.15 überholt (Bearbeiten in der Liste). Entfernen oder als eigene Formularseite mit Vorschau umsetzen, je nach Entscheidung zu Tab 62 (Sites, Tab 62)
+- [ ] T-6.46 · P2 · Ergänzt T-6.28: Die FAQ-Antworten im Abschnitt „Für Betriebe“ duzen („Registriere dich als Betrieb …“, „kannst du ihn melden“); auf Sie-Ansprache umstellen (Factsheet §2.5) (Rundgang 28.10.2026)
+- [ ] T-6.47 · P2 · „So funktioniert Karriko →“ auf „Für Betriebe“ führt auf `/transparenz`, ein Grobgerüst mit „Inhalt folgt“ und internen Nummern (E-29, T-5.15) für jeden Besucher. Link bis T-6.25 entfernen, öffentliche Grobgerüste ohne interne Nummern zeigen (Rundgang 28.10.2026)
+- [ ] T-6.48 · P2 · „Für Betriebe“, Profil-Check: „Azubis können Betriebe bewerten, bevor diese selbst registriert sind“ stimmt erst mit T-2.26 (Betrieb vorschlagen); bis dahin umformulieren (E-30) (Rundgang 28.10.2026)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
@@ -273,6 +279,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-9.13 · P2 · Notfallplan vervollständigen: Telefon, Kontakte, Wartungsseite, Bremsen in Staging erprobt (Notfallplan)
   Stand 26.10.2026: Grobgerüst der Wartungsseite `web/wartung.html` liegt seit `114fe83` im Repo.
 - [ ] T-9.14 · P1 · Ergänzt T-9.10: Die Übergangsseite läuft auf Hetzner-Webhosting mit Apache und `.htaccess`. T-4.9, T-4.33, T-10.1 und T-10.2 setzen nginx oder Caddy voraus, der Passkey-Dienst braucht Node. Festlegen, ob die Produktion auf Webhosting oder einem eigenen Server läuft (Chat)
+- [ ] T-9.16 · P2 · Kontakt: Alle Anliegen (Allgemein, Betriebe, Kammern, Presse, Datenschutz) gehen an `demharter@dresogo.de`, also an die Übergangsdomain. Adressen auf karriko.de einrichten, je Anliegen oder mit Betreff; hängt an T-3.6 (Rundgang 28.10.2026)
 
 ## 10 · Vorschaltseite bis zum Launch
 
@@ -298,6 +305,18 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
   Teilweise erledigt am 26.10.2026: Haken „Ich akzeptiere die AGB.“ mit Link, darunter ohne Haken der Satz zur Datenschutzerklärung mit Link; beide öffnen in einem neuen Tab (`terms_consent.dart`, Azubi und Betrieb). Offen: Wortlaut juristisch prüfen (T-5.1), Mindestalter (T-5.18).
 - [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-1.17), in der App `Link` aus `url_launcher` (Fehlerreport Website)
   Teilweise erledigt am 26.10.2026: `RouteLink` legt unter Kopfzeile, Fußzeile und Betriebs- und Stellenkarten der Suche ein echtes `<a href>`; Screenreader hören „Link“. Offen: übrige Verweise im Fließtext und auf den Profilseiten, für öffentliche Seiten endgültig mit der Website (E-1.17).
+- [ ] T-11.23 · P2 · Startseite: Die Überschrift „Klare Einblicke, bevor die Bewerbung rausgeht.“ bricht bei 1280 px mitten im Wort („Bewerbun / g“). Wie in T-11.14 mit `FitWordsText` (Rundgang 28.10.2026)
+- [ ] T-11.24 · P2 · Startseite: Abschnitt „Aktuelle Bewertungen“ ist ohne Bewertungen leer, nur die Überschrift steht da. Hinweis zeigen oder Abschnitt ausblenden (Rundgang 28.10.2026)
+- [ ] T-11.25 · P3 · Startseite: Die Kacheln „Azubi“, „Betrieb“ und „Stellen“ sehen wie Einstiege aus, sind aber nicht verlinkt (etwa Registrierung Azubi, „Für Betriebe“, Suche mit Stellen) (Rundgang 28.10.2026)
+- [ ] T-11.26 · P1 · Suche: Auf `/search` reagieren Links nicht auf Mausklicks, weder die Navigation noch die Betriebskarten; per Skript ausgelöst funktionieren sie, auf anderen Seiten auch. Im Browser-Bereich der App nachgestellt, im echten Browser gegenprüfen; bestätigt sich das, kommt man aus der Suche nicht zum Betriebsprofil (Rundgang 28.10.2026)
+- [ ] T-11.27 · P2 · Suche: Der Branchenfilter zeigt nur 5 der 15 Branchen aus `AppConstants.industries`; Betriebe etwa in „Medien & Kreatives“ lassen sich nicht filtern (Rundgang 28.10.2026)
+- [ ] T-11.28 · P2 · Suche: Branchen mit „&“ gehen in der Adresse verloren (`?branche=Gesundheit+&+Pflege`); nach Neuladen oder über einen geteilten Link ist der Filter weg. Wert kodieren (`%26`) (Rundgang 28.10.2026)
+- [ ] T-11.29 · P2 · Suche mobil (375 px): Die ganze Filterliste steht vor Suchfeld und Ergebnissen. Suchfeld und Ergebnisse zuerst, Filter einklappbar (Rundgang 28.10.2026)
+- [ ] T-11.30 · P3 · Suche: Überschrift „UNTERNEHMEN DURCHSUCHEN“ in Versalien und mit „Unternehmen“, das Suchfeld sagt „Betrieb“. Einheitlich „Betrieb“ und Satzschreibung wie auf den übrigen Seiten (Rundgang 28.10.2026)
+- [ ] T-11.31 · P2 · Betriebsprofil: Besucher lesen „Die erste Bewertung hilft allen …“, finden aber keinen Weg zum Bewerten; der Knopf erscheint nur angemeldeten Azubis. Hinweis „Zum Bewerten anmelden“ mit Rückkehr zum Profil (Rundgang 28.10.2026)
+- [ ] T-11.32 · P2 · Registrierung Betrieb: Im ersten Schritt klafft eine große Lücke zwischen den Feldern und „Weiter“ (feste Kartenhöhe); zusammen mit T-6.5 (Rundgang 28.10.2026)
+- [ ] T-11.33 · P3 · Mobiles Menü fährt von links herein, das Menüsymbol sitzt rechts (Rundgang 28.10.2026)
+- [ ] T-11.34 · P3 · Blog: Reiter „Produkt-Updates 0“ ohne Beiträge; ausblenden, bis es welche gibt (E-30) (Rundgang 28.10.2026)
 
 ## 12 · Öffentliche Website (E-1.17)
 
