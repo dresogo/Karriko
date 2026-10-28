@@ -1,6 +1,6 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 26. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
 175 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
@@ -246,6 +246,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
   Die Spalten `betrieb_reply` und `betrieb_replied_at` standen in der alten `reviews` schon. Nicht gebaut, weil es die Frage entschieden hätte.
 - [ ] T-8.3 · P2 · Suchmaschinen: Flutter Web zeichnet auf eine Canvas, Crawler sehen wenig Text. Die Referenz setzt auf organischen Traffic und strukturierte Daten; Lösung festlegen, etwa statische Vorschauseiten für Betriebsprofile (neu)
   Stand 21.10.2026: Die Richtung ist mit E-08 entschieden (eigene Website, App unter `/app`). Offen ist das Framework: Der Tab „Website-Umbau SEO“ empfiehlt Jaspr nach einem Prototyp von 2–3 Tagen (CSP `script-src 'self'`, lesbares HTML ohne JavaScript, LCP unter 2,5 s, Regeln aus `packages/` ohne Kopie), Astro 6 als Ausweichweg; danach E-08 ersetzen. Umsetzung in Abschnitt 12.
+  Stand 28.10.2026: Jaspr-Prototyp unter `website/` hat alle vier Prüfbedingungen erfüllt (CSP ohne Ausnahmen, HTML ohne JavaScript, LCP lokal 1,3 s, Regeln aus `questionnaire_core` ohne Kopie; Messwerte in `website/README.md`). Offen: deine Entscheidung zwischen Jaspr und Astro 6, danach E-08 ersetzen.
 - [ ] T-8.4 · P2 · Preismodell und Abonnement: Leistungen von Premium, Zahlungsanbieter, B2B-AGB (README, neu)
   Laut Tab „Finanzierung und Erlöse“: Preise erst bei 10–20 Betrieben testen, dann in den Code; Ergebnis (Preisstufen, Einnahmequellen, rote Linien) als Entscheidung ins Factsheet.
 - [ ] T-8.5 · P2 · Umfang der Börse: Bewerbungen, Datei-Upload, Stellensuche, jeweils mit Datenschutzfolgen (todo G)
@@ -310,6 +311,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 Phasen aus dem Tab „Website-Umbau SEO“. Welches Framework, entscheidet T-8.3; E-08 nennt noch Next.js.
 
 - [ ] T-12.1 · P2 · Grundgerüst: Website-Projekt, Routing `/` und `/app/` im Server, Flutter mit `--base-href /app/` und `APP_ORIGIN=https://karriko.de/app`, Rückrufadressen für Mail, Magic Link und OAuth (auch bei Google und Apple) auf `/app/…`; Schlüssel der Website nur mit Lesezugriff auf `companies`, `company_scores`, `public_reviews` und `jobs` (Website-Umbau SEO)
+  Teilweise erledigt am 28.10.2026: Website-Projekt `website/` in Jaspr 0.23.5 (Servermodus, ohne Client-Komponenten), Betriebsprofil mit Testdaten, CSP und Sicherheits-Header, Inter lokal, 404 für unbekannte Betriebe. Offen: Framework-Entscheidung (T-8.3), Server-Routing `/` und `/app/`, Flutter mit `--base-href /app/`, Rückrufadressen, Leseschlüssel für Appwrite.
 - [ ] T-12.2 · P2 · Statische Seiten: Impressum, Datenschutz, AGB, Über uns, FAQ, Für Betriebe, Kontakt. Rechtstexte gibt es danach nur noch auf der Website, die App verlinkt dorthin (Website-Umbau SEO)
 - [ ] T-12.3 · P2 · Betriebsprofile mit Bewertungen und Scores, Einzelbewertungen, JSON-LD (`EmployerAggregateRating` nur bei sichtbarem Score, E-22); Seiten-Cache, den `aggregate_company`, `moderate_review`, `publish_scheduled` und `cleanup` gezielt leeren (Website-Umbau SEO)
 - [ ] T-12.4 · P2 · Stellen mit `JobPosting`, Suche unter `/suche` ohne Index, Landingpages Beruf × Ort (Website-Umbau SEO)

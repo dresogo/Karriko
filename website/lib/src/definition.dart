@@ -7,8 +7,26 @@ import 'package:questionnaire_core/questionnaire_core.dart';
 /// (E-04); im Prototyp direkt aus dem Repo gelesen, im Betrieb aus dem
 /// Bucket `questionnaires`.
 final Questionnaire definition = Questionnaire.parseJsonString(
-  File('../appwrite/questionnaires/questionnaire_v1.json').readAsStringSync(),
+  _definitionsdatei().readAsStringSync(),
 );
+
+/// Sucht `appwrite/questionnaires/questionnaire_v1.json` vom Arbeitsverzeichnis
+/// aufwärts. `jaspr serve` läuft in `website/`, der gebaute Server in
+/// `website/build/jaspr/`.
+File _definitionsdatei() {
+  var ordner = Directory.current.absolute;
+  while (true) {
+    final datei = File(
+      '${ordner.path}/appwrite/questionnaires/questionnaire_v1.json',
+    );
+    if (datei.existsSync()) return datei;
+    final eltern = ordner.parent;
+    if (eltern.path == ordner.path) {
+      throw StateError('questionnaire_v1.json nicht gefunden');
+    }
+    ordner = eltern;
+  }
+}
 
 /// Anzeigenamen der Dimensionen, wie in der App (`public_review_card.dart`).
 String dimensionLabel(String dimension) => switch (dimension) {

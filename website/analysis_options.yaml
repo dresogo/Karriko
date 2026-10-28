@@ -14,8 +14,9 @@
 include: package:lints/recommended.yaml
 
 analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+  # Der gebaute Server enthält Kopien aller Pakete.
+  exclude:
+    - build/**
 
 # Jaspr has a custom analyzer plugin 'jaspr_lints', which is enabled here.
 #
