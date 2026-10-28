@@ -179,7 +179,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Die eingespielte Konfiguration traegt die echte Projekt- und
       # Datenbankkennung, die .env von submit_review das Salz fuer den
