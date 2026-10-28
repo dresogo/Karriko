@@ -74,6 +74,16 @@ const exportedDraftFields = ['company_id', 'answers_json', 'updated_at'];
 /// Die Spalten einer eigenen Meldung im Export.
 const exportedReportFields = ['review_id', 'reason', 'status'];
 
+/// Die Spalten eines Passkeys im Export (T-2.43): was die Person beim Anlegen
+/// angegeben hat und wann er benutzt wurde. Ohne öffentlichen Schlüssel,
+/// Kennung des Authenticators und Zähler — die dienen nur der Prüfung.
+const exportedPasskeyFields = [
+  'deviceName',
+  'createdAt',
+  'lastUsedAt',
+  'backedUp',
+];
+
 /// Baut die Exportdatei.
 ///
 /// [account] sind die Kontodaten aus Appwrite (Name, Adresse, Anlage),
@@ -88,6 +98,7 @@ Map<String, Object?> buildAccountExport({
   required List<ExportRow> drafts,
   required List<ExportRow> bookmarks,
   required List<ExportRow> reports,
+  List<ExportRow> passkeys = const [],
   Map<String, String> companyNames = const {},
 }) {
   Map<String, Object?> auswahl(ExportRow zeile, List<String> felder) => {
@@ -127,6 +138,13 @@ Map<String, Object?> buildAccountExport({
         },
     ],
     'reports': [for (final z in reports) auswahl(z, exportedReportFields)],
+    'passkeys': [
+      for (final z in passkeys)
+        {
+          for (final feld in exportedPasskeyFields)
+            if (z.data.containsKey(feld)) feld: z.data[feld],
+        },
+    ],
   };
 }
 

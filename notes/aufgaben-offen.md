@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-182 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+177 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -82,9 +82,6 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-2.37 · P2 · Vorsortierung nach E-2.13, Stufe „Regeln“: Spalten `risk_level`, `risk_flags`, `sample`, `screened_at`, `screen_version` über `appwrite-setup.mjs` (E-05); Vorprüfung als reine Funktion in `packages/karriko_functions` (Häufung, Kontoalter, gleicher Gerätehash, Textduplikate, vorhandene `quality_flags`); Freigabe-Logik mit `moderate_review` teilen, damit es bei einem Weg in `public_reviews` bleibt. Schließt T-4.18 ein (Moderation)
 - [ ] T-2.38 · P2 · KI-Vorprüfung im Schattenbetrieb: Anbieter mit EU-Verarbeitung und AVV (E-02, T-5.8), Prompt und Ausgabeschema versioniert im Paket, die KI sieht nur Freitexte und Sterne; Ergebnis nur speichern, nach 200 Bewertungen Abweichungen zwischen KI und Mensch auswerten (Moderation)
 - [ ] T-2.39 · P2 · Automatische Freigabe scharf schalten, nur wenn in T-2.38 kein roter Fall als grün durchging: Grün gibt frei, Stichprobe 20 %, ab 500 Bewertungen 5 %; `moderation_log` mit Aktion `auto_approve` und Systemkennung; `moderation_desk` sortiert nach Risiko und zeigt Flags und Stichprobe; E-2.13 mit den endgültigen Schwellen abgleichen (Moderation)
-- [ ] T-2.41 · P2 · `submit_review` löscht den Entwurf aus `draft_id` mit Admin-Rechten, ohne zu prüfen, ob er dem Aufrufer gehört. Vor dem Löschen `user_id` des Entwurfs gegen den Aufrufer prüfen, sonst nicht löschen. Die IDs aus `ID.unique()` sind nicht erratbar, die Prüfung fehlt trotzdem (Chat, Sicherheitsprüfung 28.10.2026)
-- [ ] T-2.42 · P2 · `submit_review` übernimmt `verification_file_id` ungeprüft. So lässt sich eine fremde Nachweisdatei an die eigene Bewertung hängen: Die Moderation sieht ein fremdes Dokument, und `my_account` → `delete_review` oder `cleanup` löscht die fremde Datei. Prüfen, dass die Datei im Bucket existiert, vom Aufrufer hochgeladen wurde und an keiner anderen Bewertung hängt (Chat, Sicherheitsprüfung 28.10.2026)
-- [ ] T-2.43 · P1 · Kontolöschung und Export übergehen die Passkeys: `purgeAccount` löscht die Zeilen in `passkeys` nicht (`userId`, `deviceName` und Zeitstempel bleiben), der Export nach E-4.7 enthält sie nicht. Löschen in `account_purge.dart` ergänzen, im Export Gerätename und Daten ohne Schlüssel aufnehmen; `rows.write` für die Passkey-Tabelle in `cleanup` und `my_account` prüfen (Chat, Sicherheitsprüfung 28.10.2026)
 - [ ] T-2.44 · P3 · Grenze von 3 Bewertungen je 24 h in `submit_review` ist Prüfen-dann-Anlegen: parallele Einreichungen kommen gemeinsam durch. Für einzelne Konten unkritisch, bei der Vorsortierung (T-2.37) als Häufung mit erfassen (Chat, Sicherheitsprüfung 28.10.2026)
 
 ## 3 · Anmeldung und Konten
@@ -146,8 +143,6 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-4.39 · P2 · Node 20 ablösen: bekommt keinen Fix für CVE-2026-111497 mehr, nur 22.x, 24.x und 26.x wurden gepatcht. `tools/*.mjs` und `dart.yml` auf Node 22 oder 24 umstellen, `notes/APPWRITE_SETUP.md` und D-1.6, D-5.3 anpassen (Chat)
 - [ ] T-4.40 · P2 · Node auf dem eigenen Rechner auf 22.23.4 oder 24.22.1 aktualisieren; dort läuft die Appwrite CLI mit Admin-Zugang (D-1.7), CVE-2026-111497 (Chat)
 - [ ] T-4.41 · P2 · Ergänzt T-3.10: Meldungen schreibt der Client direkt in `review_reports` und setzt dabei `reporter_id` und `status` selbst. Eine Meldung lässt sich so einem anderen Konto zuschreiben, `reason` hat keine Längengrenze. Mit der Function für Meldungen: Melder aus dem JWT, `status` immer `open`, `reason` auf 1000 Zeichen begrenzen, Tabellenrecht `create` entfernen (Chat, Sicherheitsprüfung 28.10.2026)
-- [ ] T-4.42 · P2 · Ergänzt T-3.16: `services/passkey-rp/src/server.ts` liest den Request-Rumpf ohne Obergrenze in den Speicher, auch auf den Anmelde-Routen ohne Anmeldung. Grenze (etwa 64 KB) mit 413 und Zeitlimit für langsame Anfragen setzen (Chat, Sicherheitsprüfung 28.10.2026)
-- [ ] T-4.43 · P3 · `debugPrint` schreibt auch im Release-Build für Web in die Browser-Konsole, darunter Kennungen wie in `auth_repository.dart` (`ensureCompany fuer ${user.id}`). Ausgaben hinter `kDebugMode` legen oder ohne Kennungen formulieren (E-53) (Chat, Sicherheitsprüfung 28.10.2026)
 
 ## 5 · Datenschutz und Recht
 

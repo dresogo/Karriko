@@ -416,6 +416,7 @@ rowSecurity: false — Rechte: _keine_
 | `status` | key | `status` | ASC |
 | `status_publish_after` | key | `status`, `publish_after` | ASC, ASC |
 | `company_id` | key | `company_id` | ASC |
+| `verification_file_id_key` | key | `verification_file_id` | ASC |
 
 #### `public_reviews`
 

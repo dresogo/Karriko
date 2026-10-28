@@ -159,6 +159,31 @@ Future<dynamic> main(final context) async {
     );
   }
 
+  // Die Function fasst den Nachweis später mit ihrem Schlüssel an (Moderation,
+  // `delete_review`, `cleanup`). Eine Kennung aus dem Rumpf zählt deshalb nur,
+  // wenn die Datei existiert und noch an keiner Bewertung hängt (T-2.42).
+  final rohNachweis = ctx.body['verification_file_id'];
+  final nachweisId =
+      rohNachweis is String && rohNachweis.isNotEmpty ? rohNachweis : null;
+  final nachweis = checkVerificationFile(
+    fileId: nachweisId,
+    exists:
+        nachweisId != null && await tables.verificationFileExists(nachweisId),
+    usedByOtherReview:
+        nachweisId != null && await tables.verificationFileInUse(nachweisId),
+  );
+  if (nachweis == VerificationFileCheck.missing ||
+      nachweis == VerificationFileCheck.alreadyUsed) {
+    ctx.logError('Nachweis abgelehnt: ${nachweis.name}.');
+    return _antwort(
+      context,
+      FunctionResponse.invalid(
+        'Dein Nachweis ist nicht mehr verfügbar. Bitte lade ihn noch einmal '
+        'hoch. Dein Entwurf ist gespeichert.',
+      ),
+    );
+  }
+
   final scores = ReviewScores.compute(questionnaire, answers);
   final timings = <String, int>{
     for (final eintrag in (ctx.body['timings'] as Map? ?? const {}).entries)
@@ -190,7 +215,8 @@ Future<dynamic> main(final context) async {
     status: entscheidung.status,
     timings: timings,
     inviteSource: _quelle(questionnaire, ctx.body['invite_source']),
-    verificationFileId: ctx.body['verification_file_id'] as String?,
+    verificationFileId:
+        nachweis == VerificationFileCheck.usable ? nachweisId : null,
     // Der Rohwert wird gehasht und fällt danach weg. Ohne Salz in der Umgebung
     // wird gar nicht gehasht — ein bekanntes Salz ist kein Salz.
     deviceHash: hashDeviceKey(
@@ -209,10 +235,16 @@ Future<dynamic> main(final context) async {
 
   // Erst nach dem Anlegen. Scheitert das Löschen, ist der Entwurf verwaist —
   // `cleanup` räumt ihn später weg. Umgekehrt wäre die Bewertung verloren.
+  // Gelöscht wird mit dem Schlüssel der Function, deshalb nur ein eigener
+  // Entwurf (T-2.41); eine fremde Kennung bleibt folgenlos.
   final draftId = ctx.body['draft_id'];
   if (draftId is String && draftId.isNotEmpty) {
     try {
-      await tables.deleteDraft(draftId);
+      if (draftOwnedBy(await tables.getDraftData(draftId), userId)) {
+        await tables.deleteDraft(draftId);
+      } else {
+        ctx.logError('Entwurf $draftId gehört nicht zum Aufrufer.');
+      }
     } catch (e) {
       ctx.logError('Entwurf $draftId nicht geloescht: $e');
     }

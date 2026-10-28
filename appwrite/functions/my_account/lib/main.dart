@@ -174,6 +174,7 @@ Future<Map<String, Object?>> _export(
   final entwuerfe = await tables.draftsByUser(userId);
   final merkliste = await tables.bookmarksByUser(userId);
   final meldungen = await tables.reportsByReporter(userId);
+  final passkeys = await tables.passkeysByUser(userId);
 
   final betriebe = await tables.companiesByIds({
     for (final z in [...bewertungen, ...entwuerfe, ...merkliste])
@@ -197,6 +198,7 @@ Future<Map<String, Object?>> _export(
     drafts: [for (final z in entwuerfe) zeile(z)],
     bookmarks: [for (final z in merkliste) zeile(z)],
     reports: [for (final z in meldungen) zeile(z)],
+    passkeys: [for (final z in passkeys) zeile(z)],
     companyNames: {
       for (final e in betriebe.entries)
         if (e.value.data['name'] case final String name) e.key: name,

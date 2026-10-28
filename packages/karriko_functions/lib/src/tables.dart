@@ -281,6 +281,21 @@ class Tables {
         rowId: id,
       );
 
+  /// Die Daten eines Entwurfs, oder `null`, wenn es ihn nicht gibt.
+  Future<Map<String, Object?>?> getDraftData(String id) async {
+    try {
+      final row = await db.getRow(
+        databaseId: config.databaseId,
+        tableId: config.draftsTable,
+        rowId: id,
+      );
+      return Map<String, Object?>.from(row.data);
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return null;
+      rethrow;
+    }
+  }
+
   /// Entwürfe, die seit [grenze] nicht angefasst wurden.
   Stream<aw.Row> staleDrafts(DateTime grenze, {int pageSize = 100}) => _pages(
         tableId: config.draftsTable,
@@ -653,6 +668,20 @@ class Tables {
   Future<List<aw.Row>> reportsByReporter(String userId) =>
       _alleMit(config.reviewReportsTable, 'reporter_id', userId);
 
+  /// Die Passkeys eines Kontos (T-2.43).
+  ///
+  /// Die Tabelle legt der Passkey-Dienst an, nicht `appwrite-setup.mjs`
+  /// (T-3.16). Fehlt sie noch, gibt es auch keine Passkeys — das ist kein
+  /// Fehler, der eine Löschung oder einen Export aufhalten darf.
+  Future<List<aw.Row>> passkeysByUser(String userId) async {
+    try {
+      return await _alleMit(config.passkeysTable, 'userId', userId);
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return const [];
+      rethrow;
+    }
+  }
+
   Future<List<aw.Row>> reportsForReview(String reviewId) =>
       _alleMit(config.reviewReportsTable, 'review_id', reviewId);
 
@@ -759,6 +788,34 @@ class Tables {
   }
 
   // ── Storage ───────────────────────────────────────────────────────────────
+
+  /// Liegt die Datei im Bucket für Nachweise?
+  Future<bool> verificationFileExists(String fileId) async {
+    try {
+      await Storage(client).getFile(
+        bucketId: config.verificationBucket,
+        fileId: fileId,
+      );
+      return true;
+    } on AppwriteException catch (e) {
+      if (e.code == 404) return false;
+      rethrow;
+    }
+  }
+
+  /// Hängt die Datei schon an einer Bewertung?
+  Future<bool> verificationFileInUse(String fileId) async {
+    final result = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewsTable,
+      queries: [
+        Query.equal('verification_file_id', fileId),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+    );
+    return result.rows.isNotEmpty;
+  }
 
   Future<void> deleteVerificationFile(String fileId) =>
       Storage(client).deleteFile(

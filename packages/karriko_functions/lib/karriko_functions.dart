@@ -28,5 +28,6 @@ export 'src/publish_decision.dart';
 export 'src/rate_limits.dart';
 export 'src/responses.dart';
 export 'src/review_row.dart';
+export 'src/submission_refs.dart';
 export 'src/tables.dart';
 export 'src/teams.dart';

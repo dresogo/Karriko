@@ -37,6 +37,10 @@ class FunctionConfig {
   final String profilesTable;
   final String bookmarksTable;
 
+  /// Passkeys des eigenen WebAuthn-Dienstes (`services/passkey-rp`). Gelesen
+  /// für Export und Kontolöschung (T-2.43); Spalten in camelCase wie dort.
+  final String passkeysTable;
+
   /// Wie viele Tage sich eine Kontolöschung zurücknehmen lässt (E-50).
   final int deletionGraceDays;
 
@@ -82,6 +86,7 @@ class FunctionConfig {
     this.accountDeletionsTable = 'account_deletions',
     this.profilesTable = 'profiles',
     this.bookmarksTable = 'bookmarks',
+    this.passkeysTable = 'passkeys',
     this.deletionGraceDays = 14,
     this.aggregateFunction = 'aggregate_company',
     required this.questionnairesBucket,
@@ -139,6 +144,7 @@ class FunctionConfig {
           mit('KARRIKO_TBL_ACCOUNT_DELETIONS', 'account_deletions'),
       profilesTable: mit('KARRIKO_TBL_PROFILES', 'profiles'),
       bookmarksTable: mit('KARRIKO_TBL_BOOKMARKS', 'bookmarks'),
+      passkeysTable: mit('KARRIKO_TBL_PASSKEYS', 'passkeys'),
       deletionGraceDays: zahl('KARRIKO_DELETION_GRACE_DAYS', 14),
       aggregateFunction: mit('KARRIKO_FN_AGGREGATE', 'aggregate_company'),
       questionnairesBucket:

@@ -61,6 +61,18 @@ void main() {
         ExportRow('m1', '2026-10-04T00:00:00Z',
             {'review_id': 'r9', 'reporter_id': 'u1', 'reason': 'Beleidigung'}),
       ],
+      passkeys: [
+        ExportRow('p1', '2026-10-05T00:00:00Z', {
+          'userId': 'u1',
+          'deviceName': 'Laptop',
+          'createdAt': '2026-10-05T00:00:00Z',
+          'lastUsedAt': null,
+          'backedUp': true,
+          'credentialId': 'cred',
+          'publicKey': 'key',
+          'signCount': 3,
+        }),
+      ],
       companyNames: {'c1': 'Musterbau GmbH', 'c2': 'Beispiel AG'},
     );
 
@@ -94,6 +106,15 @@ void main() {
           ((export['reports'] as List).single as Map)['reporter_id'], isNull);
     });
 
+    test('Passkeys mit Gerätename und Zeiten, ohne Prüfdaten (T-2.43)', () {
+      final p = (export['passkeys'] as List).single as Map;
+      expect(p['deviceName'], 'Laptop');
+      expect(p['backedUp'], isTrue);
+      for (final feld in ['userId', 'credentialId', 'publicKey', 'signCount']) {
+        expect(p.containsKey(feld), isFalse, reason: feld);
+      }
+    });
+
     test('ohne Appwrite-Metadaten im Profil', () {
       expect((export['profile'] as Map).containsKey(r'$id'), isFalse);
     });
@@ -110,6 +131,7 @@ void main() {
         drafts: [_row('d1', {})],
         bookmarks: [_row('b1', {})],
         meldungen: [_row('m1', {})],
+        passkeys: [_row('p1', {})],
         hatProfil: true,
       );
       final u = _FakeUsers();
@@ -133,6 +155,7 @@ void main() {
             'reviews/r2',
             'review_drafts/d1',
             'bookmarks/b1',
+            'passkeys/p1',
             'profiles/u1',
             'account_deletions/u1',
           ]));
@@ -185,11 +208,12 @@ class _FakeTables implements Tables {
     this.drafts = const [],
     this.bookmarks = const [],
     this.meldungen = const [],
+    this.passkeys = const [],
     this.hatProfil = false,
     this.hatFirma = false,
   });
 
-  final List<aw.Row> reviews, drafts, bookmarks, meldungen;
+  final List<aw.Row> reviews, drafts, bookmarks, meldungen, passkeys;
   final bool hatProfil, hatFirma;
 
   final geloescht = <String>[];
@@ -213,6 +237,8 @@ class _FakeTables implements Tables {
   Future<List<aw.Row>> bookmarksByUser(String userId) async => bookmarks;
   @override
   Future<List<aw.Row>> reportsByReporter(String userId) async => meldungen;
+  @override
+  Future<List<aw.Row>> passkeysByUser(String userId) async => passkeys;
   @override
   Future<List<aw.Row>> reportsForReview(String reviewId) async => const [];
   @override

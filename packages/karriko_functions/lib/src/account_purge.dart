@@ -17,7 +17,7 @@ import 'tables.dart';
 /// 2. Entwürfe und Merkliste werden gelöscht.
 /// 3. Eigene Meldungen bleiben für die Moderation stehen, tragen aber statt
 ///    der Nutzerkennung einen Platzhalter.
-/// 4. Die Profilzeile wird gelöscht.
+/// 4. Passkeys und die Profilzeile werden gelöscht.
 /// 5. Das Appwrite-Konto wird gelöscht; damit enden alle Sitzungen und die
 ///    Prefs.
 /// 6. Der Antrag selbst wird gelöscht. Es bleibt keine Zeile, die das Konto
@@ -63,6 +63,12 @@ Future<PurgeResult> purgeAccount({
   for (final zeile in await tables.reportsByReporter(userId)) {
     await tables.updateRowData(tables.config.reviewReportsTable, zeile.$id,
         {'reporter_id': deletedUserMarker(zeile.$id)});
+  }
+  // Ohne Konto lässt sich mit einem Passkey nicht mehr anmelden, die Zeile
+  // nennt aber weiter Konto, Gerätename und Zeitpunkte (T-2.43).
+  for (final zeile in await tables.passkeysByUser(userId)) {
+    await _ohne404(
+        () => tables.deleteRow(tables.config.passkeysTable, zeile.$id));
   }
   if (await tables.getProfile(userId) != null) {
     await _ohne404(() => tables.deleteRow(tables.config.profilesTable, userId));

@@ -13,6 +13,12 @@ import { corsHeaders, handle, type HandlerDeps } from './handler.ts';
  */
 const config = loadConfig();
 
+/**
+ * Groesste angenommene Anfrage. Eine WebAuthn-Antwort ist wenige Kilobyte
+ * gross; 64 KB lassen reichlich Luft.
+ */
+const MAX_BODY_BYTES = 64 * 1024;
+
 const deps: HandlerDeps = {
   config,
   store: new AppwritePasskeyStore(config),
@@ -32,8 +38,20 @@ const server = createServer(async (req, res) => {
 
   let body: unknown = {};
   if (req.method === 'POST') {
+    // Mit Obergrenze (T-4.42): Die Anmelde-Routen sind ohne Anmeldung
+    // erreichbar, ein unbegrenzter Rumpf landete sonst komplett im Speicher.
     const chunks: Buffer[] = [];
-    for await (const chunk of req) chunks.push(chunk as Buffer);
+    let groesse = 0;
+    for await (const chunk of req) {
+      groesse += (chunk as Buffer).length;
+      if (groesse > MAX_BODY_BYTES) {
+        res.writeHead(413, { 'Content-Type': 'application/json', ...cors });
+        res.end(JSON.stringify({ message: 'Anfrage zu groß.' }));
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk as Buffer);
+    }
     const raw = Buffer.concat(chunks).toString('utf8');
     if (raw) {
       try {
@@ -68,6 +86,11 @@ const server = createServer(async (req, res) => {
     res.end(JSON.stringify({ message: 'Interner Fehler.' }));
   }
 });
+
+// Langsame Anfragen nicht beliebig lange offen halten (T-4.42): Kopf und
+// Rumpf muessen innerhalb von zehn Sekunden vollstaendig da sein.
+server.headersTimeout = 10_000;
+server.requestTimeout = 10_000;
 
 server.listen(config.port, () => {
   console.log(

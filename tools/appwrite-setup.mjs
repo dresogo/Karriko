@@ -438,6 +438,9 @@ const SCHEMA = [
       { key: 'status', type: 'key', columns: ['status'] },
       { key: 'status_publish_after', type: 'key', columns: ['status', 'publish_after'] },
       { key: 'company_id_key', type: 'key', columns: ['company_id'] },
+      // `submit_review` prueft, ob ein Nachweis schon an einer Bewertung
+      // haengt (T-2.42).
+      { key: 'verification_file_id_key', type: 'key', columns: ['verification_file_id'] },
     ],
   },
 

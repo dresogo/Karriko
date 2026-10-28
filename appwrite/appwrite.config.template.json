@@ -172,6 +172,12 @@
           "type": "key",
           "columns": ["company_id"],
           "orders": ["ASC"]
+        },
+        {
+          "key": "verification_file_id_key",
+          "type": "key",
+          "columns": ["verification_file_id"],
+          "orders": ["ASC"]
         }
       ]
     },
