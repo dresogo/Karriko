@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-189 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+188 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -308,7 +308,6 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 - [ ] T-11.23 · P2 · Startseite: Die Überschrift „Klare Einblicke, bevor die Bewerbung rausgeht.“ bricht bei 1280 px mitten im Wort („Bewerbun / g“). Wie in T-11.14 mit `FitWordsText` (Rundgang 28.10.2026)
 - [ ] T-11.24 · P2 · Startseite: Abschnitt „Aktuelle Bewertungen“ ist ohne Bewertungen leer, nur die Überschrift steht da. Hinweis zeigen oder Abschnitt ausblenden (Rundgang 28.10.2026)
 - [ ] T-11.25 · P3 · Startseite: Die Kacheln „Azubi“, „Betrieb“ und „Stellen“ sehen wie Einstiege aus, sind aber nicht verlinkt (etwa Registrierung Azubi, „Für Betriebe“, Suche mit Stellen) (Rundgang 28.10.2026)
-- [ ] T-11.26 · P1 · Suche: Auf `/search` reagieren Links nicht auf Mausklicks, weder die Navigation noch die Betriebskarten; per Skript ausgelöst funktionieren sie, auf anderen Seiten auch. Im Browser-Bereich der App nachgestellt, im echten Browser gegenprüfen; bestätigt sich das, kommt man aus der Suche nicht zum Betriebsprofil (Rundgang 28.10.2026)
 - [ ] T-11.27 · P2 · Suche: Der Branchenfilter zeigt nur 5 der 15 Branchen aus `AppConstants.industries`; Betriebe etwa in „Medien & Kreatives“ lassen sich nicht filtern (Rundgang 28.10.2026)
 - [ ] T-11.28 · P2 · Suche: Branchen mit „&“ gehen in der Adresse verloren (`?branche=Gesundheit+&+Pflege`); nach Neuladen oder über einen geteilten Link ist der Filter weg. Wert kodieren (`%26`) (Rundgang 28.10.2026)
 - [ ] T-11.29 · P2 · Suche mobil (375 px): Die ganze Filterliste steht vor Suchfeld und Ergebnissen. Suchfeld und Ergebnisse zuerst, Filter einklappbar (Rundgang 28.10.2026)

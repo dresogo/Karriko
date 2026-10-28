@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 28.10.2026 | T-11.26 | Links auf der Suchseite reagieren nicht auf Mausklicks | Ursache: Der Material-Slider legt seinen Wert-Indikator immer ins Navigator-Overlay, als leere Fläche in Seitengröße; seit Flutter 3.47 (T-4.45) fängt ein solcher leerer Semantik-Knoten im Web die Klicks ab. Der Bewertungsregler hat jetzt ein eigenes Overlay in Reglergröße. Test schlägt ohne Korrektur an; im Release-Build per Mausklick geprüft | `406ebff` |
 | 28.10.2026 | T-6.38 | Betriebs-Dashboard: Band mit Prüfstatus und Erinnerung an den zweiten Faktor, Sie-Ansprache | Band oben im Dashboard: geprüft oder „wird noch geprüft“ (Veröffentlichen erst danach), Empfehlung des zweiten Faktors mit Link, verschwindet bei aktivem Faktor. Sie-Ansprache mit T-6.28. Test ergänzt | `17c4c5e` |
 | 28.10.2026 | T-6.34 | Azubi-Dashboard aufräumen | Schnellzugriff samt „Fragen bewerten“ entfernt, abgeschickte Bewertungen mit Status (dieselben Texte wie „Meine Bewertungen“), Entwürfe mit Löschdatum nach E-51 | `75f7e19` |
 | 28.10.2026 | T-6.28 | Betriebe siezen | Registrierung Betrieb und Betriebsbereich (Dashboard, Profil, Stellen, Meldungen, Einstellungen) siezen; die gemeinsamen Seiten Zwei-Faktor und Passkeys neutral formuliert. Factsheet §2.5 ergänzt. Test prüft, dass im Betriebsbereich keine Du-Formen stehen | `17c4c5e` |
