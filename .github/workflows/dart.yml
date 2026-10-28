@@ -159,6 +159,12 @@ jobs:
   #
   # Die Kennungen sind Platzhalter. Es wird nichts eingespielt und kein Netz
   # angefasst.
+  #
+  # **Nicht lokal nachstellen (E-1.18).** In der CI gibt es die erzeugten
+  # Dateien noch nicht. Lokal sind appwrite.config.json und die .env der
+  # Functions die echten; mit diesen Platzhaltern wurden sie am 28.10.2026
+  # ueberschrieben, samt Salz. Die Skripte brechen das inzwischen ab, lokal
+  # trotzdem nur `--pruefen` oder eine Kopie des Repositories benutzen.
   tools:
     name: Werkzeuge
     runs-on: ubuntu-latest

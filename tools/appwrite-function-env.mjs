@@ -23,13 +23,15 @@
 //     node tools/appwrite-function-env.mjs
 //
 //   node tools/appwrite-function-env.mjs --pruefen
+//   node tools/appwrite-function-env.mjs --ueberschreiben   Werte entfernen, mit Sicherung
 //
 // `--pruefen` schreibt nichts und meldet, welche Datei fehlt oder abweicht.
 //
 // Die erzeugten Dateien stehen in der .gitignore. Alle Variablen stehen mit
 // Erklaerung in notes/APPWRITE_SETUP.md.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
+import { envWerte, sicherSchreiben } from './schutz.mjs';
 
 const BASIS = 'appwrite/functions';
 const NUR_PRUEFEN = process.argv.includes('--pruefen');
@@ -160,7 +162,12 @@ for (const name of namen) {
     continue;
   }
 
-  writeFileSync(ziel, text, 'utf8');
+  // Fehlt eine Variable in der Umgebung, fiele ihre Zeile sonst still weg,
+  // auch das Salz (E-1.18).
+  if (!sicherSchreiben(ziel, text, envWerte)) {
+    process.exitCode = 1;
+    continue;
+  }
   const mitSalz = (JE_FUNCTION[name] ?? []).includes('KARRIKO_DEVICE_HASH_SALT') &&
     (process.env.KARRIKO_DEVICE_HASH_SALT ?? '').trim() !== '';
   console.log(`+ ${ziel} (${anzahl} Variable(n)${mitSalz ? ', mit Salz' : ''})`);
@@ -175,6 +182,14 @@ if (NUR_PRUEFEN) {
     process.exit(1);
   }
   process.exit(0);
+}
+
+if (process.exitCode === 1) {
+  console.error(
+    '\nNicht alle Dateien geschrieben (siehe ✗ oben). Vor einem Push erst ' +
+      'die Umgebung pruefen.'
+  );
+  process.exit(1);
 }
 
 if ((process.env.KARRIKO_DEVICE_HASH_SALT ?? '').trim() === '') {

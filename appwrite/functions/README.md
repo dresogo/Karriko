@@ -36,6 +36,11 @@ Function. Alle drei haben `--pruefen`, und alle drei erzeugen Dateien, die nicht
 ins Repository gehören: Die Konfiguration trägt die echte Projekt- und
 Datenbankkennung, die `.env` von `submit_review` das Salz für den Gerätehash.
 
+**Geschützt (E-1.18):** Würde beim Erzeugen ein vorhandener Wert verschwinden
+oder sich ändern, etwa weil eine Umgebungsvariable fehlt, schreiben die beiden
+Node-Skripte nichts und nennen die betroffenen Schlüssel. Mit `--ueberschreiben`
+geht es trotzdem; die alte Datei liegt danach unter `appwrite/.sicherung/`.
+
 ## Das vendoring
 
 Die Functions benutzen zwei gemeinsame Pakete:

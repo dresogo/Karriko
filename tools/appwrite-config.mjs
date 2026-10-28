@@ -18,6 +18,7 @@
 //
 //   APPWRITE_PROJECT_ID=… APPWRITE_DATABASE_ID=… node tools/appwrite-config.mjs
 //   … node tools/appwrite-config.mjs --pruefen
+//   … node tools/appwrite-config.mjs --ueberschreiben   andere Kennungen, mit Sicherung
 //
 // `--pruefen` schreibt nichts und endet mit Code 1, wenn die erzeugte Datei
 // fehlt oder nicht zur Vorlage passt. Fuer die CI und fuer den Moment vor einem
@@ -28,6 +29,7 @@
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { sicherSchreiben } from './schutz.mjs';
 
 const VORLAGE = 'appwrite/appwrite.config.template.json';
 const ZIEL = 'appwrite/appwrite.config.json';
@@ -152,7 +154,19 @@ if (NUR_PRUEFEN) {
   process.exit(0);
 }
 
-writeFileSync(ZIEL, inhalt, 'utf8');
+// Nie stillschweigend andere Kennungen ueber echte schreiben (E-1.18).
+const kennungen = (text) => {
+  try {
+    const d = JSON.parse(text);
+    return {
+      projectId: d.projectId ?? '',
+      databaseIds: [...new Set((d.tablesDB ?? d.databases ?? []).map((x) => x.$id))].join(','),
+    };
+  } catch {
+    return {};
+  }
+};
+if (!sicherSchreiben(ZIEL, inhalt, kennungen)) process.exit(1);
 
 console.log(
   `${ZIEL} geschrieben.\n\n` +

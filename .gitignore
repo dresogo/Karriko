@@ -112,6 +112,11 @@ appwrite/appwrite.config.json
 # Salz fuer den Geraetehash — ein bekanntes Salz ist kein Salz.
 appwrite/functions/*/.env
 
+# Sicherungen aus tools/schutz.mjs (E-1.18): alte Fassungen der beiden Dateien
+# oben, mit echten Kennungen und dem Salz. Liegen bewusst ausserhalb der
+# Function-Ordner, weil `appwrite push` diese komplett hochlaedt.
+appwrite/.sicherung/
+
 # Exporte aus tools/appwrite-purge-reviews.mjs. Enthalten Rohantworten und
 # Nutzerkennungen und duerfen das Repository nie erreichen. Der alte Standardpfad
 # unter notes/reports/ bleibt mit drin, falls ein aelterer Aufruf ihn noch nennt.
