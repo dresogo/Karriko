@@ -68,7 +68,7 @@ Noch nicht final. In der engeren Wahl: **„Treppe"** (K aus aufsteigenden Stufe
 
 ### 2.5 Ton
 
-Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erfundenen Zahlen, Zitate oder Kontaktdaten – lieber ein sichtbarer Platzhalter.
+Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis, Sie-Ansprache gegenüber Betrieben (Entscheidung vom 22.10.2026, T-6.28): „Für Betriebe“, Anmeldung und Registrierung Betrieb, Betriebsbereich. Keine erfundenen Zahlen, Zitate oder Kontaktdaten – lieber ein sichtbarer Platzhalter.
 
 ---
 

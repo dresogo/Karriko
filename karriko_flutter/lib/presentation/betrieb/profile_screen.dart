@@ -127,7 +127,7 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
     return AppPage(
       appBarTitle: 'Unternehmensprofil',
       eyebrow: 'UNTERNEHMENSPROFIL',
-      title: name.isNotEmpty ? name : 'Dein Unternehmen',
+      title: name.isNotEmpty ? name : 'Ihr Unternehmen',
       lede: user?.email,
       headerAction: _editing || geladen == null
           ? null
@@ -195,7 +195,7 @@ class _BetriebProfileScreenState extends ConsumerState<BetriebProfileScreen> {
             child: Text(
               _descCtrl.text.trim().isNotEmpty
                   ? _descCtrl.text.trim()
-                  : 'Noch keine Beschreibung hinterlegt. Erzähl Azubis, was deine '
+                  : 'Noch keine Beschreibung hinterlegt. Erzählen Sie Azubis, was Ihre '
                       'Ausbildung ausmacht.',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     height: 1.6,

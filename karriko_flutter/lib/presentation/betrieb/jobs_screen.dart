@@ -22,8 +22,8 @@ class BetriebJobsScreen extends ConsumerWidget {
       appBarTitle: 'Ausbildungsstellen',
       eyebrow: 'AUSBILDUNGSSTELLEN',
       title: 'Stellen\nausschreiben.',
-      lede: 'Veröffentlichte Stellen erscheinen auf deinem Betriebsprofil und '
-          'in der Suche. Entwürfe sieht nur dein Betrieb.',
+      lede: 'Veröffentlichte Stellen erscheinen auf Ihrem Betriebsprofil und '
+          'in der Suche. Entwürfe sieht nur Ihr Betrieb.',
       headerAction: company == null
           ? null
           : OutlinedButton.icon(

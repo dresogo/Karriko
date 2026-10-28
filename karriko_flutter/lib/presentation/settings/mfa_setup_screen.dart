@@ -199,13 +199,13 @@ class _Intro extends StatelessWidget {
       children: [
         const _Heading(
           'Zusätzlich absichern',
-          'Nach der Eingabe deines Passworts fragen wir zusätzlich einen Code '
-              'aus einer Authenticator-App ab. Wer dein Passwort kennt, kommt '
-              'damit trotzdem nicht in dein Konto.',
+          'Nach der Eingabe des Passworts fragen wir zusätzlich einen Code '
+              'aus einer Authenticator-App ab. Wer das Passwort kennt, kommt '
+              'damit trotzdem nicht ins Konto.',
         ),
         const SizedBox(height: AppLayout.s24),
         const Text(
-          'Du brauchst dafür eine Authenticator-App, etwa Aegis, '
+          'Nötig ist dafür eine Authenticator-App, etwa Aegis, '
           '2FAS, Google Authenticator oder 1Password.',
           style: TextStyle(color: AppColors.muted, fontSize: 14, height: 1.5),
         ),
@@ -240,7 +240,7 @@ class _Active extends StatelessWidget {
         ),
         const SizedBox(height: AppLayout.s24),
         const Text(
-          'Schaltest du sie ab, schützt nur noch dein Passwort das Konto.',
+          'Ohne sie schützt nur noch das Passwort das Konto.',
           style: TextStyle(color: AppColors.muted, fontSize: 14, height: 1.5),
         ),
         const SizedBox(height: AppLayout.s32),
@@ -369,14 +369,14 @@ class _Recovery extends StatelessWidget {
       children: [
         const _Heading(
           'Wiederherstellungscodes',
-          'Verlierst du dein Gerät, sind das deine einzige Möglichkeit, wieder '
-              'ins Konto zu kommen. Jeder Code lässt sich einmal verwenden.',
+          'Geht das Gerät verloren, sind sie der einzige Weg zurück '
+              'ins Konto. Jeder Code lässt sich einmal verwenden.',
         ),
         const SizedBox(height: AppLayout.s16),
         const Text(
-          'Wir zeigen sie dir nur dieses eine Mal. Bewahre sie an einem '
-          'sicheren Ort auf, am besten im Passwortmanager – nicht als '
-          'Screenshot auf demselben Gerät.',
+          'Sie erscheinen nur dieses eine Mal. Am besten an einem sicheren '
+          'Ort aufbewahren, etwa im Passwortmanager – nicht als Screenshot '
+          'auf demselben Gerät.',
           style: TextStyle(color: AppColors.muted, fontSize: 14, height: 1.5),
         ),
         const SizedBox(height: AppLayout.s24),

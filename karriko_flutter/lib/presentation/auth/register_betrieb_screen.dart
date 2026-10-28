@@ -109,7 +109,8 @@ class _RegisterBetriebScreenState extends ConsumerState<RegisterBetriebScreen> {
                   Text('Als Betrieb registrieren',
                       style: Theme.of(context).textTheme.displaySmall),
                   const SizedBox(height: 8),
-                  Text('Erstelle ein Profil und verwalte Bewertungen.',
+                  Text(
+                      'Erstellen Sie ein Profil und verwalten Sie Ihre Bewertungen.',
                       style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center),
                   const SizedBox(height: 24),

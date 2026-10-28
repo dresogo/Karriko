@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/company_provider.dart';
+import '../common/route_link.dart';
 import '../common/app_page.dart';
 
 class BetriebDashboardScreen extends ConsumerWidget {
@@ -16,7 +18,7 @@ class BetriebDashboardScreen extends ConsumerWidget {
     return AppPage(
       appBarTitle: 'Dashboard',
       eyebrow: 'BETRIEB',
-      title: company?.isNotEmpty == true ? company! : 'Dein Betrieb',
+      title: company?.isNotEmpty == true ? company! : 'Ihr Betrieb',
       lede: 'Bewertungen einsehen, Profil und Ausbildungsstellen pflegen.',
       headerAction: FilledButton.icon(
         onPressed: () => context.go('/betrieb-reviews'),
@@ -24,6 +26,8 @@ class BetriebDashboardScreen extends ConsumerWidget {
         label: const Text('Bewertungen ansehen'),
       ),
       children: const [
+        _StatusBand(),
+        SizedBox(height: AppLayout.s48),
         _MetricsNotice(),
         SizedBox(height: AppLayout.s48),
         SectionLabel('Verwaltung'),
@@ -31,6 +35,105 @@ class BetriebDashboardScreen extends ConsumerWidget {
         _ManagementActions(),
         SizedBox(height: AppLayout.s48),
         _ProfileCompletion(),
+      ],
+    );
+  }
+}
+
+// ─── Status ───────────────────────────────────────────────────────────────────
+
+/// Prüfstatus des Betriebs und eine freiwillige Erinnerung an den zweiten
+/// Faktor (T-6.38, Entscheidung vom 22.10.2026).
+///
+/// Der Prüfstatus steht hier, weil davon abhängt, ob Stellen veröffentlicht
+/// werden können (`job_posting` verlangt das Abzeichen). Den zweiten Faktor
+/// verlangt Karriko von Betrieben nicht (E-3.13 gilt nur für Moderation); die
+/// Zeile verschwindet, sobald er aktiv ist.
+class _StatusBand extends ConsumerWidget {
+  const _StatusBand();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final firma = ref.watch(myCompanyProvider).valueOrNull;
+    final mfaAktiv = ref.watch(authProvider).user?.mfaEnabled ?? false;
+    final text = Theme.of(context).textTheme;
+
+    final zeilen = <Widget>[
+      if (firma != null)
+        _StatusZeile(
+          icon: firma.isVerified
+              ? Icons.verified_outlined
+              : Icons.hourglass_empty,
+          text: firma.isVerified
+              ? 'Ihr Betrieb ist geprüft. Ausbildungsstellen können Sie '
+                  'veröffentlichen.'
+              : 'Ihr Betrieb wird noch geprüft. Stellen können Sie schon als '
+                  'Entwurf anlegen, veröffentlicht werden sie nach der Prüfung.',
+        ),
+      if (!mfaAktiv)
+        _StatusZeile(
+          icon: Icons.shield_outlined,
+          text: 'Empfehlung: Schützen Sie das Betriebskonto zusätzlich mit '
+              'einem zweiten Faktor.',
+          link: RouteLink(
+            route: '/betrieb-settings/mfa',
+            builder: (_, active) => Text(
+              'Zwei-Faktor-Bestätigung einrichten',
+              style: text.bodySmall?.copyWith(
+                color: active ? AppColors.ink : AppColors.accentDark,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
+    ];
+    if (zeilen.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(AppLayout.s16),
+      decoration: const BoxDecoration(
+        color: AppColors.paper,
+        border: Border(left: BorderSide(color: AppColors.ink, width: 3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var i = 0; i < zeilen.length; i++) ...[
+            if (i > 0) const SizedBox(height: AppLayout.s16),
+            zeilen[i],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusZeile extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Widget? link;
+
+  const _StatusZeile({required this.icon, required this.text, this.link});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 18, color: AppColors.ink),
+        const SizedBox(width: AppLayout.s8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(text, style: Theme.of(context).textTheme.bodySmall),
+              if (link != null) ...[
+                const SizedBox(height: AppLayout.s8),
+                link!,
+              ],
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -92,8 +195,8 @@ class _MetricsNotice extends StatelessWidget {
               const SizedBox(width: AppLayout.s8),
               Expanded(
                 child: Text(
-                  'Die Auswertung deiner Bewertungen ist noch nicht angebunden. '
-                  'Deine eingegangenen Bewertungen findest du bereits unter '
+                  'Die Auswertung Ihrer Bewertungen ist noch nicht angebunden. '
+                  'Ihre eingegangenen Bewertungen finden Sie bereits unter '
                   '„Bewertungen".',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
@@ -310,13 +413,13 @@ class _ProfileCompletion extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Vervollständige dein Profil',
+                'Vervollständigen Sie Ihr Profil',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: AppLayout.s8),
               Text(
                 'Ein ausgefülltes Profil mit Beschreibung, Branche und Standort '
-                'hilft Azubis bei der Einordnung deines Betriebs.',
+                'hilft Azubis bei der Einordnung Ihres Betriebs.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: AppLayout.s24),

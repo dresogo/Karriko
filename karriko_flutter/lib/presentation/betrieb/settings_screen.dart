@@ -24,10 +24,10 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
     return AppPage(
       appBarTitle: 'Einstellungen',
       eyebrow: 'EINSTELLUNGEN',
-      title: 'Dein Betriebskonto\nund was daran hängt.',
+      title: 'Ihr Betriebskonto\nund was daran hängt.',
       lede: user?.companyName?.isNotEmpty == true
           ? 'Einstellungen für ${user!.companyName}'
-          : 'Alles rund um deinen Betriebszugang.',
+          : 'Alles rund um Ihren Betriebszugang.',
       children: [
         const SectionLabel('Konto'),
         const SizedBox(height: AppLayout.s16),
@@ -42,7 +42,7 @@ class _BetriebSettingsScreenState extends ConsumerState<BetriebSettingsScreen> {
             AppRow(
               icon: Icons.lock_outline,
               title: 'Passwort ändern',
-              subtitle: 'Wir schicken dir einen Link per E-Mail',
+              subtitle: 'Wir schicken Ihnen einen Link per E-Mail',
               onTap: () => context.go('/forgot-password'),
             ),
             AppRow(

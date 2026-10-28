@@ -162,7 +162,7 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
                   icon: Icons.error_outline,
                   text: 'Die Unternehmensdaten konnten nicht geladen werden. '
                       'Solange sie fehlen, lässt sich keine Stelle '
-                      'ausschreiben – lade die Seite neu.',
+                      'ausschreiben – laden Sie die Seite neu.',
                 )
               : const _Hinweis(
                   icon: Icons.hourglass_empty,
@@ -172,16 +172,16 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
         else if (jobs.hasError)
           const _Hinweis(
             icon: Icons.error_outline,
-            text: 'Die Stellen konnten nicht geladen werden. Prüfe die '
-                'Verbindung und lade die Seite neu.',
+            text: 'Die Stellen konnten nicht geladen werden. Prüfen Sie die '
+                'Verbindung und laden Sie die Seite neu.',
           )
         else ...[
           if (liste.isEmpty && !_formOffen)
             AppEmptyState(
               title: 'Noch keine Stelle ausgeschrieben',
               description:
-                  'Veröffentliche deine erste Ausbildungsstelle. Sie erscheint '
-                  'auf deinem Profil und in der Suche.',
+                  'Veröffentlichen Sie Ihre erste Ausbildungsstelle. Sie erscheint '
+                  'auf Ihrem Profil und in der Suche.',
               actionLabel: 'Stelle erstellen',
               onAction: _neuOeffnen,
             )
@@ -232,7 +232,7 @@ class _BetriebJobsSectionState extends ConsumerState<BetriebJobsSection> {
                 _formSchliessen();
                 _melden(veroeffentlicht
                     ? 'Stelle veröffentlicht.'
-                    : 'Entwurf gespeichert. Veröffentlichen kannst du ihn '
+                    : 'Entwurf gespeichert. Veröffentlichen können Sie ihn '
                         'jederzeit.');
               },
               onError: _melden,

@@ -98,7 +98,7 @@ class _PasskeyManageScreenState extends ConsumerState<PasskeyManageScreen> {
                 ),
                 const SizedBox(height: AppLayout.s16),
                 const Text(
-                  'Ein Passkey ersetzt dein Passwort durch Fingerabdruck, '
+                  'Ein Passkey ersetzt das Passwort durch Fingerabdruck, '
                   'Gesicht oder Geräte-PIN. Er lässt sich nicht abphishen, '
                   'weil er nur auf dieser Website funktioniert.',
                   style: TextStyle(
@@ -128,7 +128,7 @@ class _PasskeyManageScreenState extends ConsumerState<PasskeyManageScreen> {
                     const Center(child: CircularProgressIndicator())
                   else if (passkeys.isEmpty)
                     const _Hinweis(
-                      'Noch kein Passkey eingerichtet. Solange schützt nur dein '
+                      'Noch kein Passkey eingerichtet. Solange schützt nur das '
                       'Passwort das Konto.',
                     )
                   else

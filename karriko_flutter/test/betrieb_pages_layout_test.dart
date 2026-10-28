@@ -129,6 +129,29 @@ void main() {
     expect(find.textContaining('noch nicht angebunden'), findsOneWidget);
   });
 
+  testWidgets('Dashboard zeigt Prüfstatus und Zwei-Faktor-Empfehlung (T-6.38)',
+      (tester) async {
+    await _open(tester, '/betrieb-dashboard', const Size(1440, 900));
+
+    // Der Testbetrieb ist ungeprüft und hat keinen zweiten Faktor.
+    expect(find.textContaining('wird noch geprüft'), findsOneWidget);
+    expect(find.text('Zwei-Faktor-Bestätigung einrichten'), findsOneWidget);
+  });
+
+  testWidgets('Betriebsbereich siezt (T-6.28)', (tester) async {
+    for (final route in [
+      '/betrieb-dashboard',
+      '/betrieb-profile',
+      '/betrieb-settings',
+    ]) {
+      await _open(tester, route, const Size(1440, 900));
+      for (final du in ['Dein ', 'dein ', 'deine ', 'deinen ', ' du ']) {
+        expect(find.textContaining(du), findsNothing,
+            reason: '„$du" auf $route');
+      }
+    }
+  });
+
   testWidgets('Dashboard verlinkt alle Betriebsbereiche', (tester) async {
     await _open(tester, '/betrieb-dashboard', const Size(1440, 900));
 

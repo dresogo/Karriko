@@ -58,7 +58,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Melde Bewertungen, die gegen unsere Richtlinien verstoßen. Unser Team prüft jede Meldung individuell.',
+                      'Melden Sie Bewertungen, die gegen unsere Richtlinien verstoßen. Unser Team prüft jede Meldung individuell.',
                       style: Theme.of(context)
                           .textTheme
                           .bodySmall
