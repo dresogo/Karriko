@@ -2,7 +2,7 @@ name: karriko_website
 description: >-
   Prototyp der öffentlichen Website von Karriko in Jaspr (T-12.1, T-8.3):
   serverseitig gerendertes HTML ohne JavaScript, die App läuft getrennt unter
-  /app (E-08).
+  /app (E-1.17).
 publish_to: 'none'
 version: 0.0.1
 

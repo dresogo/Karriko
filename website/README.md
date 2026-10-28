@@ -1,6 +1,6 @@
-# Karriko – Website-Prototyp (Jaspr)
+# Karriko – Website (Jaspr)
 
-Prototyp für die öffentliche Website nach E-08 und T-8.3: ein Betriebsprofil mit
+Grundgerüst der öffentlichen Website nach E-1.17 (vorher Prototyp für T-8.3): ein Betriebsprofil mit
 Testdaten, serverseitig gerendert in [Jaspr](https://jaspr.site) 0.23.5. Die
 Flutter-App läuft getrennt unter `/app`.
 

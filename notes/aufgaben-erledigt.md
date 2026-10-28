@@ -1,6 +1,6 @@
 # Karriko – Erledigte Aufgaben
 
-**Stand:** 26. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
+**Stand:** 28. Oktober 2026 · **Offenes:** [`aufgaben-offen.md`](aufgaben-offen.md)
 
 Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, Nummer und Beleg. Neue Einträge kommen oben in die Tabelle, im selben Commit, der den Punkt aus der offenen Liste nimmt. Die Nummern bleiben vergeben und werden nie neu besetzt.
 
@@ -8,6 +8,7 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 28.10.2026 | T-8.3 | Suchmaschinen: Lösung für öffentliche Seiten festlegen | Jaspr, nach dem Prototyp unter `website/`, der alle vier Prüfbedingungen erfüllte. Neue Entscheidung E-1.17 ersetzt E-08. Entschieden mit dem Nutzer | dieser Commit |
 | 26.10.2026 | T-11.14 | Bei 320 px Wortumbrüche mitten im Wort und abgeschnittene Texte | Große Überschriften als `FitWordsText`: verkleinert die Schrift, bis das längste Wort passt (Startseite, Rechtsseiten, Blog, FAQ, Für Betriebe, Registrierung). Fließtext und schmale Spalten mit weichen Trennstrichen an den Wortfugen; Flutter zeichnet dort keinen sichtbaren Bindestrich. Login-Auswahl unter 400 px ohne Symbol, damit „Bewertungen“ passt. Neuer Test `word_breaks_test.dart` prüft 17 Seiten bei 320 px mit Schrift 1,0 und 1,3 und echter Inter-Schrift | dieser Commit |
 | 26.10.2026 | T-7.10 | Layout-Tests um 320 px ergänzen | Neun Layout-Tests prüfen zusätzlich 320 × 568 px mit Schrift 1,0 und 1,3. Dabei behoben: „Schreib uns“ auf Über uns lief bei 320 px und großer Schrift um 2 px über | dieser Commit |
 | 26.10.2026 | T-6.33 | Grobgerüst `/konto-wiederherstellen` entfernen | Aus `planned_catalog.dart` gelöscht; die Adresse leitet auf `/konto-loeschung`, der Wächter führt Abgemeldete zur Anmeldung. Test in `router_guard_test.dart`. Die Lösch- und Warnmails entstehen mit T-2.34 | dieser Commit |

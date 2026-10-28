@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-175 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+174 Aufgaben sind offen, 61 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -129,7 +129,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-4.23 · P3 · ISMS-Grundlagen: Risikoliste und Erklärung zur Anwendbarkeit (Plan)
 - [ ] T-4.24 · P2 · Major-Updates als eigene Migration mit Tests: `flutter_riverpod` 3, `go_router` 18, `cached_network_image` 4, `flutter_lints` 6; der Sammel-PR #16 wurde deshalb geschlossen (Factsheet E-11)
 - [ ] T-4.28 · P2 · `security.txt` fertigstellen: auf dem Server mit `Content-Type: text/plain; charset=utf-8` ausliefern und prüfen, bei `--base-href /app/` an die Wurzel der Domain legen, OpenPGP-Signatur (RFC 9116 §2.3) und `Expires` vor dem 15.04.2027 verlängern (neu)
-- [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-08), App über eine Function (Tab Anmeldeschranke)
+- [ ] T-4.29 · P2 · Anmeldeschranke technisch absichern: `public_reviews` ist mit `read("any")` über die Appwrite-API für jeden lesbar, gesperrte Volltexte ließen sich also ohne Konto abrufen. Festlegen, wie gesperrte Teile nur angemeldet ausgeliefert werden, etwa Lesezugriff entziehen, Website serverseitig mit Schlüssel lesen (E-1.17), App über eine Function (Tab Anmeldeschranke)
   Hängt an T-8.9 (Festlegung) und T-6.21 (Umsetzung); verwandt mit T-10.5.
 - [ ] T-4.32 · P2 · Einfache Alarme, etwa bei vielen 401-Antworten oder auffällig vielen Bewertungen für einen Betrieb (Plan)
 - [ ] T-4.33 · P1 · Nginx-Entwurf vervollständigen: eigene Location `/passkey` für den Passkey-Dienst (T-3.16, T-11.3), `security.txt` an der Wurzel (T-4.28), ein Zertifikat für karriko.de, www.karriko.de und karriko.dresogo.de, CSP zuerst als `Report-Only` (Nginx-Konfiguration)
@@ -244,9 +244,6 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 
 - [ ] T-8.1 · P1 · Antworten der Betriebe: ja oder nein; falls ja nach den Regeln der Referenz (eine Antwort, 1000 Zeichen, keine Links, danach unveränderlich) (todo G, Referenz §2.4)
   Die Spalten `betrieb_reply` und `betrieb_replied_at` standen in der alten `reviews` schon. Nicht gebaut, weil es die Frage entschieden hätte.
-- [ ] T-8.3 · P2 · Suchmaschinen: Flutter Web zeichnet auf eine Canvas, Crawler sehen wenig Text. Die Referenz setzt auf organischen Traffic und strukturierte Daten; Lösung festlegen, etwa statische Vorschauseiten für Betriebsprofile (neu)
-  Stand 21.10.2026: Die Richtung ist mit E-08 entschieden (eigene Website, App unter `/app`). Offen ist das Framework: Der Tab „Website-Umbau SEO“ empfiehlt Jaspr nach einem Prototyp von 2–3 Tagen (CSP `script-src 'self'`, lesbares HTML ohne JavaScript, LCP unter 2,5 s, Regeln aus `packages/` ohne Kopie), Astro 6 als Ausweichweg; danach E-08 ersetzen. Umsetzung in Abschnitt 12.
-  Stand 28.10.2026: Jaspr-Prototyp unter `website/` hat alle vier Prüfbedingungen erfüllt (CSP ohne Ausnahmen, HTML ohne JavaScript, LCP lokal 1,3 s, Regeln aus `questionnaire_core` ohne Kopie; Messwerte in `website/README.md`). Offen: deine Entscheidung zwischen Jaspr und Astro 6, danach E-08 ersetzen.
 - [ ] T-8.4 · P2 · Preismodell und Abonnement: Leistungen von Premium, Zahlungsanbieter, B2B-AGB (README, neu)
   Laut Tab „Finanzierung und Erlöse“: Preise erst bei 10–20 Betrieben testen, dann in den Code; Ergebnis (Preisstufen, Einnahmequellen, rote Linien) als Entscheidung ins Factsheet.
 - [ ] T-8.5 · P2 · Umfang der Börse: Bewerbungen, Datei-Upload, Stellensuche, jeweils mit Datenschutzfolgen (todo G)
@@ -285,7 +282,7 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 
 - [ ] T-10.1 · P1 · „Kommt bald“-Seite auf karriko.de. Die Sperre sitzt im Reverse Proxy (Caddy oder nginx), nicht in der App, und deckt alle Pfade ab: Website, `/app/` und den Passkey-Dienst (Website-Umbau)
   Teilweise erledigt: Grobgerüst `web/bald.html` liegt seit `114fe83` im Repo. Offen: Inhalt und die Sperre im Proxy (hängt an T-9.14).
-- [ ] T-10.2 · P1 · Zugang per Passwortformular, das ein HttpOnly-Cookie setzt (Caddy `forward_auth` oder Next.js-Middleware), mit Rate-Limit gegen Durchprobieren. Einfachste Übergangslösung: HTTP Basic Auth im Proxy (Website-Umbau)
+- [ ] T-10.2 · P1 · Zugang per Passwortformular, das ein HttpOnly-Cookie setzt (Caddy `forward_auth` oder im Jaspr-Server), mit Rate-Limit gegen Durchprobieren. Einfachste Übergangslösung: HTTP Basic Auth im Proxy (Website-Umbau)
 - [ ] T-10.3 · P1 · Impressum und Datenschutzerklärung auf der Vorschaltseite öffentlich verlinken, sie müssen auch vor dem Launch erreichbar sein (neu)
 - [ ] T-10.4 · P1 · Launch-Schritt festlegen: Sperre entfernen, `noindex` abschalten, Sitemap in der Search Console einreichen (Website-Umbau)
 - [ ] T-10.5 · P2 · Die Sperre schützt nur die Website. `public_reviews` und `company_scores` sind über die Appwrite-API weiter mit `read("any")` lesbar, also bis zum Launch keine echten Bewertungen veröffentlichen (Website-Umbau)
@@ -296,22 +293,22 @@ Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrie
 
 Übernommen am 18.10.2026 aus dem Tab „Fehlerreport Website“ (Test vom 13.10.2026 auf karriko.dresogo.de bei 320 px). Priorität aus der Schwere im Report: kritisch und hoch → P1, mittel → P2, niedrig → P3. Inzwischen behoben und deshalb nicht übernommen: Kontaktformular (T-2.11), 404-Seite ohne Rahmen, widersprüchliche Antwortzeit (Kontakt nennt keine mehr).
 
-- [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-08), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
-  Teilweise erledigt am 21.10.2026: App mit Pfad-URLs (`usePathUrlStrategy`), `web/.htaccess` leitet unbekannte Pfade auf `index.html` (Apache, Hetzner Webhosting), `tools/build_web.dart` prüft, dass sie im Build liegt. Offen: Build hochladen und einen Mail-Link sowie /impressum direkt aufrufen. Mit dem Umzug nach `/app/` (E-08) brauchen `.htaccess`, `--base-href` und die Mail-Adressen den Unterpfad.
+- [ ] T-11.2 · P1 · Links aus Bestätigungsmail, Reset, Magic Link und OAuth (`/verify-email`, `/reset-password`, `/auth/magic`, `/auth/oauth`) enden auf 404, weil die App Hash-URLs nutzt: `usePathUrlStrategy()` und im Server unbekannte Pfade auf `index.html`; die App läuft künftig unter `/app/` (E-1.17), die Mail-Links müssen das berücksichtigen (Fehlerreport Website)
+  Teilweise erledigt am 21.10.2026: App mit Pfad-URLs (`usePathUrlStrategy`), `web/.htaccess` leitet unbekannte Pfade auf `index.html` (Apache, Hetzner Webhosting), `tools/build_web.dart` prüft, dass sie im Build liegt. Offen: Build hochladen und einen Mail-Link sowie /impressum direkt aufrufen. Mit dem Umzug nach `/app/` (E-1.17) brauchen `.htaccess`, `--base-href` und die Mail-Adressen den Unterpfad.
 - [ ] T-11.3 · P1 · Der Live-Build spricht den Passkey-Dienst unter `http://localhost:3000` an, Passkeys gehen für niemanden: mit `--dart-define=PASSKEY_SERVICE_URL=…` bauen, Dienst mit passender `RP_ID` betreiben (hängt an T-3.8, T-3.16) (Fehlerreport Website)
 - [ ] T-11.4 · P1 · Impressum nennt „§ 5 TMG“, seit Mai 2024 gilt § 5 DDG; Impressum und Datenschutzerklärung sind öffentlich erreichbare Platzhalter (siehe T-5.1, T-10.3) (Fehlerreport Website)
   Teilweise erledigt am 21.10.2026: Impressum nennt § 5 DDG. Offen: Impressum und Datenschutzerklärung sind weiter Platzhalter (T-5.1, T-10.3).
 - [ ] T-11.9 · P1 · Registrierung: Checkbox „Ich stimme den AGB und der Datenschutzerklärung zu“ ohne Links; einer Datenschutzerklärung stimmt man nicht zu. Text und Links anpassen, Wortlaut juristisch prüfen; Mindestalter siehe T-5.18 (Fehlerreport Website)
   Teilweise erledigt am 26.10.2026: Haken „Ich akzeptiere die AGB.“ mit Link, darunter ohne Haken der Satz zur Datenschutzerklärung mit Link; beide öffnen in einem neuen Tab (`terms_consent.dart`, Azubi und Betrieb). Offen: Wortlaut juristisch prüfen (T-5.1), Mindestalter (T-5.18).
-- [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-08), in der App `Link` aus `url_launcher` (Fehlerreport Website)
-  Teilweise erledigt am 26.10.2026: `RouteLink` legt unter Kopfzeile, Fußzeile und Betriebs- und Stellenkarten der Suche ein echtes `<a href>`; Screenreader hören „Link“. Offen: übrige Verweise im Fließtext und auf den Profilseiten, für öffentliche Seiten endgültig mit der Website (E-08).
+- [ ] T-11.22 · P3 · Links sind Knöpfe statt echter Links, „In neuem Tab öffnen“ geht nicht; für öffentliche Seiten mit dem Website-Umbau (E-1.17), in der App `Link` aus `url_launcher` (Fehlerreport Website)
+  Teilweise erledigt am 26.10.2026: `RouteLink` legt unter Kopfzeile, Fußzeile und Betriebs- und Stellenkarten der Suche ein echtes `<a href>`; Screenreader hören „Link“. Offen: übrige Verweise im Fließtext und auf den Profilseiten, für öffentliche Seiten endgültig mit der Website (E-1.17).
 
-## 12 · Öffentliche Website (E-08)
+## 12 · Öffentliche Website (E-1.17)
 
-Phasen aus dem Tab „Website-Umbau SEO“. Welches Framework, entscheidet T-8.3; E-08 nennt noch Next.js.
+Phasen aus dem Tab „Website-Umbau SEO“. Framework ist Jaspr (E-1.17), Projekt `website/`.
 
 - [ ] T-12.1 · P2 · Grundgerüst: Website-Projekt, Routing `/` und `/app/` im Server, Flutter mit `--base-href /app/` und `APP_ORIGIN=https://karriko.de/app`, Rückrufadressen für Mail, Magic Link und OAuth (auch bei Google und Apple) auf `/app/…`; Schlüssel der Website nur mit Lesezugriff auf `companies`, `company_scores`, `public_reviews` und `jobs` (Website-Umbau SEO)
-  Teilweise erledigt am 28.10.2026: Website-Projekt `website/` in Jaspr 0.23.5 (Servermodus, ohne Client-Komponenten), Betriebsprofil mit Testdaten, CSP und Sicherheits-Header, Inter lokal, 404 für unbekannte Betriebe. Offen: Framework-Entscheidung (T-8.3), Server-Routing `/` und `/app/`, Flutter mit `--base-href /app/`, Rückrufadressen, Leseschlüssel für Appwrite.
+  Teilweise erledigt am 28.10.2026: Website-Projekt `website/` in Jaspr 0.23.5 (Servermodus, ohne Client-Komponenten), Betriebsprofil mit Testdaten, CSP und Sicherheits-Header, Inter lokal, 404 für unbekannte Betriebe. Offen: Server-Routing `/` und `/app/`, Flutter mit `--base-href /app/`, Rückrufadressen, Leseschlüssel für Appwrite.
 - [ ] T-12.2 · P2 · Statische Seiten: Impressum, Datenschutz, AGB, Über uns, FAQ, Für Betriebe, Kontakt. Rechtstexte gibt es danach nur noch auf der Website, die App verlinkt dorthin (Website-Umbau SEO)
 - [ ] T-12.3 · P2 · Betriebsprofile mit Bewertungen und Scores, Einzelbewertungen, JSON-LD (`EmployerAggregateRating` nur bei sichtbarem Score, E-22); Seiten-Cache, den `aggregate_company`, `moderate_review`, `publish_scheduled` und `cleanup` gezielt leeren (Website-Umbau SEO)
 - [ ] T-12.4 · P2 · Stellen mit `JobPosting`, Suche unter `/suche` ohne Index, Landingpages Beruf × Ort (Website-Umbau SEO)

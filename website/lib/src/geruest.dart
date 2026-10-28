@@ -2,7 +2,7 @@ import 'package:jaspr/dom.dart';
 import 'package:jaspr/jaspr.dart';
 
 /// Kopf und Fuß aller Seiten (Seiten-Tab 00). Phase 1: immer „Anmelden“,
-/// der Link führt in die App unter /app (E-08).
+/// der Link führt in die App unter /app (E-1.17).
 class Geruest extends StatelessComponent {
   final List<Component> children;
 

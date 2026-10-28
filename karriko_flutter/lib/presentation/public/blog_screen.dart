@@ -34,7 +34,7 @@ const _wide = 1024.0;
 /// Aufmacher, Artikelraster und – sobald es welche gibt – die jüngsten
 /// Produkt-Updates als Zeitleiste. Die Inhalte kommen aus [BlogContent].
 ///
-/// Ein RSS-Feed (`/blog/feed.xml`) gehört zur serverseitigen Website (E-08)
+/// Ein RSS-Feed (`/blog/feed.xml`) gehört zur serverseitigen Website (E-1.17)
 /// und steht deshalb hier nicht.
 class BlogScreen extends StatelessWidget {
   const BlogScreen({super.key});

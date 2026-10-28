@@ -40,7 +40,7 @@ const plannedPages = <PlannedPageSpec>[
     lede: 'Betriebe, Bewertungen und Stellen zu einem Ausbildungsberuf. '
         'Grundlage ist die Berufsliste der Bundesagentur für Arbeit.',
     area: PlannedArea.public,
-    refs: ['E-08', 'T-2.30', 'T-8.3'],
+    refs: ['E-1.17', 'T-2.30'],
     sections: [
       PlannedSection('Über den Beruf', 'Kurzbeschreibung und Dauer.'),
       PlannedSection('Betriebe mit Bewertungen',
@@ -56,7 +56,7 @@ const plannedPages = <PlannedPageSpec>[
     title: 'Ausbildungsbetriebe in {}',
     lede: 'Ausbildungsbetriebe einer Stadt aus den Betriebsdaten.',
     area: PlannedArea.public,
-    refs: ['E-08', 'T-8.3'],
+    refs: ['E-1.17'],
     sections: [
       PlannedSection(
           'Betriebe vor Ort', 'Liste mit Score ab drei Bewertungen.'),
@@ -72,7 +72,7 @@ const plannedPages = <PlannedPageSpec>[
     lede: 'Betriebe und Berufe einer Branche, aus den Branchen des '
         'Suchfilters.',
     area: PlannedArea.public,
-    refs: ['E-08', 'T-8.3'],
+    refs: ['E-1.17'],
     sections: [
       PlannedSection('Betriebe der Branche', 'Liste mit Score.'),
       PlannedSection('Berufe der Branche', 'Weg zu den Berufsseiten.'),

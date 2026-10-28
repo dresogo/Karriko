@@ -2,7 +2,7 @@
 
 **Zweck:** Eine Seite, die jede KI und jeder Mensch liest, bevor am Projekt etwas entschieden wird. Sie hält fest, *was gilt* und *warum*. Neue Entscheidungen werden hier eingetragen. Was überholt ist, wird ersetzt statt doppelt geführt; die alte Fassung bleibt in der Git-Historie (E-1.15).
 
-**Stand:** 23. Oktober 2026, abgeglichen mit `main` @ `3b15760`; Aufgabenliste mit Eingang E-1.16, Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, MFA E-3.13, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
+**Stand:** 28. Oktober 2026, abgeglichen mit `main` @ `3b15760`; Website in Jaspr E-1.17, Aufgabenliste mit Eingang E-1.16, Ersetzungsregel E-1.15, Moderation E-2.13, Rolle E-3.10, Wächter E-3.11, Passwort E-3.12, MFA E-3.13, Löschen und Export E-4.5 bis E-4.7 · **Verantwortlich:** Sebastian Demharter
 
 **Rangfolge bei Widersprüchen:** Code (`app_theme.dart`, Fragendefinition, Functions) → dieses Factsheet → `notes/projekt-referenz.md` → ältere Notizen und Chats. Steht etwas im Factsheet, das der Code anders macht, ist das ein Befund für Abschnitt 9, keine stille Korrektur.
 
@@ -83,7 +83,7 @@ Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erf
 | Serverlogik | Elf Appwrite Functions in Dart, gemeinsame Pakete in `packages/` |
 | Passkeys | Eigener WebAuthn-Dienst `services/passkey-rp` (Node 22, TypeScript, zwei Laufzeit-Abhängigkeiten) |
 | Hosting | Noch nicht gewählt; Favorit ist Hetzner (T-9.10) |
-| Öffentliche Seiten (geplant) | Serverseitiges HTML (Next.js), Flutter-App unter `/app` |
+| Öffentliche Seiten | Serverseitiges HTML in Jaspr 0.23 (`website/`, E-1.17), Flutter-App unter `/app` |
 
 **Schichtung:** `presentation → providers → repositories → Appwrite`. Neuer Code hält sich daran.
 
@@ -104,7 +104,6 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-05 | 10/2026 | **Tabellen nur über `tools/appwrite-setup.mjs`**, nie `appwrite push table` mit `-f` oder gekürzter Konfiguration. | Am 4.10.2026 hat ein Push alle Tabellen bis auf eine gelöscht, ohne Backup. CLI bleibt für Teams, Functions, Uploads. |
 | E-06 | 10/2026 | **Keine Laufzeit-Ressourcen von Dritt-CDNs**: Schrift lokal, Web-Build immer mit `--no-web-resources-cdn` über `tools/build_web.dart`. | DSGVO (IP-Übertragung) und spätere CSP mit `script-src 'self'`. Deshalb auch JS-Brücken als eigene Datei, nie inline. |
 | E-07 | 10/2026 | **Lieferkette klein halten**: ungenutzte Pakete entfernt, Actions festgenagelt, Lockfile erzwungen, Dependabot, CodeQL, OSV-Scanner. | Jede Abhängigkeit ist ein Risiko. Neue Pakete nur mit Begründung. |
-| E-08 | 10/2026 | **SEO: öffentliche Seiten als serverseitiges HTML** (Next.js), getrennt von der Flutter-App, die unter `/app` läuft. Routing per Pfad (nginx/Caddy). | Flutter Web rendert auf Canvas, Suchmaschinen sehen keinen Inhalt. Vorbild: kununu. |
 | E-09 | 10/2026 | **Zieldomain karriko.de**. Vor dem Umzug beachten: Passkey-`rpId` ist an die Domain gebunden und nicht migrierbar; `APP_ORIGIN` und Appwrite-Web-Plattform müssen karriko.de kennen. | Übergangsdomain soll keine Altlasten erzeugen. |
 | E-10 | 10/2026 | Im Browser **kein Ripple, keine Seitenübergänge, Text markierbar, Hand-Cursor** (PR #11). Umsetzung: globale `SelectionArea` im `builder` der App; Navigation, Karten, Buttons und Fragebogen per `SelectionContainer.disabled` ausgenommen. Klickziele immer über `TapTarget` (`presentation/common/tap_target.dart`), nicht über `GestureDetector`. Native Apps behalten ihre Übergänge. | Die App soll sich wie eine Website anfühlen; `TapTarget` bringt Cursor, Hover, Fokus, Tastaturbedienung und Button-Semantik mit. |
 | E-11 | 10/2026 | **Major-Updates von Abhängigkeiten nie über einen Dependabot-Sammel-PR**, sondern als eigene Migration mit Tests. Anstehend: `flutter_riverpod` 2→3, `go_router` 14→18, `cached_network_image` 3→4, `flutter_lints` 4→6 (PR #16 deshalb geschlossen). | Brechende Änderungen brauchen eigene Prüfung. |
@@ -112,6 +111,7 @@ Format: Nummer · Datum · Entscheidung · Grund. Neue Einträge unten anhängen
 | E-13 | 10/2026 | **Squash-Merge**, wenn Zwischenstände eines PRs Ballast enthalten (z. B. große Binärdateien). | Was nie nach `main` kommt, muss nicht aus der Historie entfernt werden. |
 | E-1.15 | 20.10.2026 | **Im Factsheet wird ersetzt statt doppelt geführt.** Eine überholte Entscheidung wird durch die neue ersetzt, aufgelöste Widersprüche werden entfernt. Nummern werden nie neu vergeben; die alte Fassung steht in der Git-Historie. Gilt auch für den Tab „Factsheet“ im Plan-Dokument. | Das Factsheet soll zeigen, was gilt. Doppelte Einträge kosten Lesezeit und führen zu Verwechslungen. |
 | E-1.16 | 23.10.2026 | **Eine Aufgabenliste in zwei Dateien, mit Eingang im Plan-Dokument.** Offene Aufgaben in `notes/aufgaben-offen.md`, Erledigtes mit Datum, Nummer und Commit in `notes/aufgaben-erledigt.md`, im selben Commit; abgearbeitet wird nur dort. Neue Aufgaben dürfen auch im Plan-Dokument entstehen, aber nur im Abschnitt „Eingang“ des Tabs „Offene Aufgaben“ und ohne Nummer. Jede Sitzung mit Repo-Zugriff übernimmt den Eingang zu Beginn in die Datei und vergibt die Nummern; nach dem Commit schreibt sie den Tab aus der Datei neu. Abgeschlossene Berichte und Pläne kommen mit `git mv` nach `notes/archiv/`, mit Grund und Nachfolger in `archiv/README.md`. | Am 22.10.2026 entstanden 46 Aufgaben nur im Dokument, weil die Sitzung keinen Repo-Zugriff hatte; die Liste lief auseinander. Nummern an einer Stelle verhindern Doppelvergaben. Ersetzt E-1.14. |
+| E-1.17 | 28.10.2026 | **Öffentliche Website als serverseitiges HTML in Jaspr** (Dart), Projekt `website/`, getrennt von der Flutter-App unter `/app`; Routing per Pfad im Reverse Proxy. Keine `@client`-Komponenten ohne eigene Entscheidung, Styles und Schrift als eigene Dateien, CSP ohne `unsafe-inline`. Regeln kommen aus `packages/` (E-04), nicht als Kopie. | Flutter Web rendert auf Canvas, Suchmaschinen sehen keinen Inhalt. Der Prototyp vom 28.10.2026 erfüllte alle vier Prüfbedingungen (CSP ohne Ausnahmen, HTML ohne JavaScript, LCP lokal 1,3 s, `questionnaire_core` ohne Kopie; `website/README.md`). Next.js schließt mit strenger CSP statische Seiten aus; Astro 6 bleibt Ausweichweg. Ersetzt E-08 (T-8.3). |
 
 ### Bewertungen und Daten
 
