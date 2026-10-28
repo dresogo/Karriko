@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-177 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+175 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -136,12 +136,10 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-4.32 · P2 · Einfache Alarme, etwa bei vielen 401-Antworten oder auffällig vielen Bewertungen für einen Betrieb (Plan)
 - [ ] T-4.33 · P1 · Nginx-Entwurf vervollständigen: eigene Location `/passkey` für den Passkey-Dienst (T-3.16, T-11.3), `security.txt` an der Wurzel (T-4.28), ein Zertifikat für karriko.de, www.karriko.de und karriko.dresogo.de, CSP zuerst als `Report-Only` (Nginx-Konfiguration)
 - [ ] T-4.34 · P2 · Apache- und PHP-Version des Hetzner-Webhostings ablesen und in der Komponentenliste eintragen (D-1.8, D-1.9); prüfen, ob PHP für die Subdomain abschaltbar ist, Karriko nutzt es nicht (Komponenten und Versionen)
-- [ ] T-4.35 · P3 · Dart-Version klären: Factsheet §3 nennt 3.11, das Lockfile der App verlangt mindestens 3.12 (Komponenten und Versionen)
 - [ ] T-4.37 · P2 · Ergänzt T-4.19: Logos werden heute nicht hochgeladen, sondern als URL über `company_profile` gespeichert; die Aufgabe greift erst mit dem Logo-Upload aus T-6.41 (Chat)
 - [ ] T-4.40 · P2 · Node auf dem eigenen Rechner auf 22.23.4 oder 24.22.1 aktualisieren; dort läuft die Appwrite CLI mit Admin-Zugang (D-1.7), CVE-2026-111497 (Chat)
 - [ ] T-4.41 · P2 · Ergänzt T-3.10: Meldungen schreibt der Client direkt in `review_reports` und setzt dabei `reporter_id` und `status` selbst. Eine Meldung lässt sich so einem anderen Konto zuschreiben, `reason` hat keine Längengrenze. Mit der Function für Meldungen: Melder aus dem JWT, `status` immer `open`, `reason` auf 1000 Zeichen begrenzen, Tabellenrecht `create` entfernen (Chat, Sicherheitsprüfung 28.10.2026)
 - [ ] T-4.44 · P2 · Appwrite-SDKs auf die neuen Major-Versionen heben, je als eigene Migration (E-11): `appwrite` 25.4 → 28.2 in der App, `dart_appwrite` 29.4 → 31.1 in Functions und `karriko_functions`, `node-appwrite` 30 → 31 im Passkey-Dienst. Vorher klären, welche Server-Version Appwrite Cloud in Frankfurt fährt; laut `pub outdated` kämen mit den neuen Majors der App weitere Pakete wie `flutter_local_notifications`, `flutter_background_service` und `mqtt5_client` dazu (Lieferkette, E-07) (Chat, Update-Runde 28.10.2026)
-- [ ] T-4.45 · P2 · Flutter von 3.44.7 auf das aktuelle Stable 3.47.8 heben: lokal `flutter upgrade`, `flutter-version` in `dart.yml` und `flutter.yml`, Factsheet §3 und D-1.1/D-1.2; danach Analyse, Tests, Web-Build mit `tools/build_web.dart` und Sichtprüfung (Chat, Update-Runde 28.10.2026)
 - [ ] T-4.46 · P3 · Ergänzt T-4.24: `lints` 4 → 6 in `packages/questionnaire_core` und `packages/karriko_functions`, 5 → 6 in `website/`; neue Hinweise beheben (Chat, Update-Runde 28.10.2026)
 
 ## 5 · Datenschutz und Recht

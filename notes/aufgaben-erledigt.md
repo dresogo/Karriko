@@ -8,6 +8,8 @@ Was aus `aufgaben-offen.md` erledigt oder hinfällig ist, steht hier mit Datum, 
 
 | Datum | Nummer | Aufgabe | Ergebnis | Beleg |
 | --- | --- | --- | --- | --- |
+| 28.10.2026 | T-4.45 | Flutter auf das aktuelle Stable heben | Lokal 3.44.7 → 3.47.8 (Dart 3.13.7); die automatisch geänderte `pubspec.lock` im SDK liegt als `git stash` im Flutter-Ordner. CI auf `3.47.x`, Factsheet §3, README, `APPWRITE_SETUP.md`, D-1.1/D-1.2. Getestet: Analyse, 862 Tests, Release-Build, Startseite, Suche und Anmeldung im Browser; Pakete, alle Functions und die Website (Jaspr-Build, Seiten, CSP) | `7c600fb` |
+| 28.10.2026 | T-4.35 | Dart-Version klären | Factsheet §3 nennt jetzt Dart 3.13 (aus Flutter 3.47) und getrennt die Functions-Laufzeit Dart 3.11; das passt zur Untergrenze 3.12 im Lockfile der App | `7c600fb` |
 | 28.10.2026 | T-4.39 | Node 20 ablösen | Werkzeug-Job in `dart.yml` auf Node 22; README nennt Node 22 als Voraussetzung, `APPWRITE_SETUP.md` nennt keine Version. D-1.6 und D-5.3 im Tab „Komponenten und Versionen“ angepasst. Lokal mit Node 24 geprüft: `appwrite-setup --pruefen`, `appwrite-config`, `appwrite-function-env` | `37c0b02` |
 | 28.10.2026 | T-4.38 | Passkey-Dienst auf gepatchtes Node festlegen | `engines` `^22.23.4 \|\| >=24.22.1`, Lockfile nachgezogen; CI nutzt `22` und damit die neueste 22er. D-1.5 und D-4.1 angepasst. Typprüfung, 25 Tests, `npm audit` ohne Befund | `37c0b02` |
 | 28.10.2026 | T-4.36 | `dart_appwrite` in den Functions angleichen | Alle elf Functions und `karriko_functions` verlangen `^29.4.0`, Lockfiles einheitlich 29.4.0. Dependabot prüft die Functions weiterhin bewusst nicht (Begründung in `dependabot.yml`). Analyse aller Functions, 287 + 128 Tests, `vendor_core --pruefen`. Nicht deployt | `0110a9a` |
