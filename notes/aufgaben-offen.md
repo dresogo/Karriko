@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-173 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+170 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -206,21 +206,16 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
   Stand 21.10.2026: Die Leckprüfung macht jetzt Appwrite (E-3.12); ihre Ablehnung kommt als `password_pwned` und soll direkt am Feld stehen. Die Stärkeanzeige richtet sich nach der Mindestlänge 12.
 - [ ] T-6.25 · P1 · Öffentliche Seite „So prüfen wir Bewertungen“: wie die Echtheit geprüft wird (UWG § 5b Abs. 3), später auf der Website (Moderation)
 
-- [ ] T-6.28 · P2 · Betriebe siezen (Entscheidung vom 22.10.2026): Für Betriebe, Login und Registrierung Betrieb, Betriebsbereich, Passwortseiten mit `?zugang=betrieb`. Factsheet §2.5 ergänzen (Sites, Tab 13, 34, 36)
-  Teilweise erledigt am 26.10.2026: Login Betrieb, Passwortseiten (`?zugang=betrieb`), E-Mail bestätigen für Betriebe und der Betriebs-Kasten im Blogartikel siezen; „Für Betriebe“ seit `d4c7a9c`. Offen: Registrierung Betrieb, Betriebsbereich, Factsheet §2.5.
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
   Teilweise erledigt am 26.10.2026: Spalte heißt „Plattform“. Offen: die Links, sobald die Seiten stehen.
 
-- [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
 - [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)
 - [ ] T-6.36 · P2 · Fragebogen im Fokusmodus (Entscheidung vom 22.10.2026): ohne Website-Kopf- und Fußzeile, eigene Kopfleiste mit Betriebsname, Phasenleiste und „Pause“, Weiter/Zurück mobil fest am unteren Rand (Sites, Tab 47)
 - [ ] T-6.37 · P3 · Artefakt „Karriko Sitemap“ nachziehen: Datenexport und Kontolöschung sind fertig (T-2.8, T-2.10), die Grobgerüste dafür gibt es nicht mehr; dazu die Entscheidungen vom 22.10.2026 (Sites, Tab 57, 58)
 
 Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit, mit erneuter Vorsortierung. Zu T-6.31: Pfade des Azubi-Bereichs entschieden (`/app`, `/app/bewerten`, `/app/bewertungen`, `/app/merkliste`, `/app/benachrichtigungen`, `/app/einstellungen`).
 
-- [ ] T-6.38 · P2 · Betriebs-Dashboard: „auf Feedback antworten“ im Lead und „Feedback lesen und beantworten“ entfernen (T-8.1), Kachel „Profilaufrufe“ ohne Daten entfernen (E-30), Band mit Prüfstatus und Erinnerung an den zweiten Faktor (freiwillig, Entscheidung vom 22.10.2026), Sie-Ansprache (Sites, Tab 59, 73)
-  Teilweise erledigt am 26.10.2026: „auf Feedback antworten“ und „Feedback lesen und beantworten“ entfernt, Kachel „Profilaufrufe“ entfernt. Offen: Band mit Prüfstatus und Erinnerung an den zweiten Faktor, Sie-Ansprache (T-6.28).
 - [ ] T-6.40 · P1 · Meldungen im Betriebsbereich: Gründe wie im öffentlichen Meldeformular (T-6.18), Begründung als Pflichtfeld, Liste der eigenen Meldungen mit Status und Entscheidung, Prüfverlangen „Nachweis des Ausbildungsverhältnisses anfordern“ (die Moderation fragt die verfassende Person anonym an), Grenzwert 5 je 24 h über eine Function statt direktem Tabellenzugriff (T-3.10) (Sites, Tab 66)
 - [ ] T-6.41 · P2 · Betriebsprofil: Logo-Upload (das Modell kennt `logoUrl`, die Oberfläche nicht) und Ausbildungsberufe am Profil pflegen, damit Betriebe ohne Bewertungen auf Berufsseiten erscheinen (Sites, Tab 60)
 - [ ] T-6.42 · P2 · Stellen: Ablaufdatum als Pflichtfeld, vorausgefüllt mit drei Monaten (Entscheidung vom 22.10.2026), in `job_posting` prüfen; abgelaufene Stellen verschwinden von der Website, im Betriebsbereich Reiter „Abgelaufen“ mit „Verlängern“ (Sites, Tab 61)
