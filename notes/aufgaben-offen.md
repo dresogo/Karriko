@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-188 Aufgaben sind offen, 63 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+190 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -72,7 +72,6 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-2.27 · P1 · Profil beanspruchen: Ein Betrieb übernimmt ein vorgeschlagenes Profil, statt bei der Registrierung ein zweites anzulegen, mit menschlicher Prüfung (Sitemap)
 - [ ] T-2.28 · P2 · Admin-Bereich „Nutzer“: Konto suchen, sperren, Rollenfehler beheben; Referenz §1.2 verlangt eine Benutzerverwaltung (Sitemap)
 - [ ] T-2.29 · P2 · Admin-Bereich „Anfragen“: ein Eingang für Kontaktformular, Auskunfts- und Löschverlangen und Beanstandungen von Betrieben (Sitemap)
-- [ ] T-2.30 · P2 · Vollständige Berufsliste der BA mit `tools/import_berufe.dart` einspielen, heute stehen rund 40 Beispielberufe in der Suche (Plan Fragebogen A12)
 - [ ] T-2.31 · P1 · `submit_review` neu deployen (vorher `dart run tools/vendor_core.dart`): Erst dann gelten die Prüfung auf bestätigte Adresse (403) und das Limit von 3 Bewertungen je 24 h (429). Danach mit einem unbestätigten Testkonto gegenprüfen (Export 13.10.)
   Teilweise erledigt am 20.10.2026: alle acht Functions mit dem aktuellen Code deployt, `publish_scheduled` und `cleanup` nach T-2.32 erneut auf dem normalen Weg. Offen: die Gegenprobe mit einem unbestätigten Testkonto.
 - [ ] T-2.33 · P1 · `cleanup` um die fehlenden Löschregeln erweitern: unbestätigte Konten, Passkey-Challenges, Gerätehash (12 Monate), Bearbeitungszeiten, abgelehnte Bewertungen, Benachrichtigungen, abgelaufene Stellen, Exporte. Jeder Lauf protokolliert Datenart und Anzahl, ohne Kennungen (Löschkonzept)
@@ -83,6 +82,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-2.38 · P2 · KI-Vorprüfung im Schattenbetrieb: Anbieter mit EU-Verarbeitung und AVV (E-02, T-5.8), Prompt und Ausgabeschema versioniert im Paket, die KI sieht nur Freitexte und Sterne; Ergebnis nur speichern, nach 200 Bewertungen Abweichungen zwischen KI und Mensch auswerten (Moderation)
 - [ ] T-2.39 · P2 · Automatische Freigabe scharf schalten, nur wenn in T-2.38 kein roter Fall als grün durchging: Grün gibt frei, Stichprobe 20 %, ab 500 Bewertungen 5 %; `moderation_log` mit Aktion `auto_approve` und Systemkennung; `moderation_desk` sortiert nach Risiko und zeigt Flags und Stichprobe; E-2.13 mit den endgültigen Schwellen abgleichen (Moderation)
 - [ ] T-2.44 · P3 · Grenze von 3 Bewertungen je 24 h in `submit_review` ist Prüfen-dann-Anlegen: parallele Einreichungen kommen gemeinsam durch. Für einzelne Konten unkritisch, bei der Vorsortierung (T-2.37) als Häufung mit erfassen (Chat, Sicherheitsprüfung 28.10.2026)
+- [ ] T-2.45 · P1 · Geänderte Fragendefinition v1 einspielen: S3 verweist jetzt auf `assets/data/berufe.json` (T-2.30). `appwrite/questionnaires/questionnaire_v1.json` neu in den Bucket `questionnaires` hochladen, Prüfsumme in der Release-Zeile anpassen (APPWRITE_SETUP §9) und die App neu bauen; bis dahin zeigt S3 weiter die Beispielliste. Danach `berufe_beispiel.json` entfernen (Chat, T-2.30)
 
 ## 3 · Anmeldung und Konten
 
@@ -185,6 +185,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.32 · P2 · Ergänzt T-5.22: Neben dem Feld mit 4000 Zeichen erlaubt das Freitextfeld im Abbruch-Modul 2000 Zeichen; beide auf 1000 (Chat)
 - [ ] T-5.33 · P1 · Blogartikel „DSGVO und Ausbildungsbewertungen“ (`blog_content.dart`) macht ungeprüfte Rechtsaussagen, etwa „Betriebe haben keinen Anspruch darauf, zu erfahren, wer eine Bewertung geschrieben hat“ (zu prüfen u. a. gegen den Auskunftsanspruch nach § 21 TDDDG) und „Eigene Daten kannst du jederzeit einsehen und löschen lassen“; er verweist auf die Datenschutzerklärung, die ein Platzhalter ist. Vom Anwalt prüfen lassen oder bis dahin zurückziehen (Factsheet §7 Regel 5) (Rundgang 28.10.2026)
 - [ ] T-5.34 · P2 · „Bewertungen werden nicht auf Wunsch entfernt“ (FAQ und „Für Betriebe“, Band „Was Geld nicht kauft“) mit dem Beanstandungsverfahren abgleichen (T-5.11) und juristisch prüfen lassen (Rundgang 28.10.2026)
+- [ ] T-5.35 · P2 · Herkunft, Stand und Nutzungsbedingungen der BA-Dateien klären (`DKZ_Ausbildungen_gueltig.xml`, Textliste mit BKZ), aus denen `berufe.json` entstand; Quelle und Stand gegebenenfalls in der App oder im Impressum nennen (Chat, T-2.30)
 
 ## 6 · Oberfläche und Barrierefreiheit
 
@@ -226,6 +227,7 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 - [ ] T-6.46 · P2 · Ergänzt T-6.28: Die FAQ-Antworten im Abschnitt „Für Betriebe“ duzen („Registriere dich als Betrieb …“, „kannst du ihn melden“); auf Sie-Ansprache umstellen (Factsheet §2.5) (Rundgang 28.10.2026)
 - [ ] T-6.47 · P2 · „So funktioniert Karriko →“ auf „Für Betriebe“ führt auf `/transparenz`, ein Grobgerüst mit „Inhalt folgt“ und internen Nummern (E-29, T-5.15) für jeden Besucher. Link bis T-6.25 entfernen, öffentliche Grobgerüste ohne interne Nummern zeigen (Rundgang 28.10.2026)
 - [ ] T-6.48 · P2 · „Für Betriebe“, Profil-Check: „Azubis können Betriebe bewerten, bevor diese selbst registriert sind“ stimmt erst mit T-2.26 (Betrieb vorschlagen); bis dahin umformulieren (E-30) (Rundgang 28.10.2026)
+- [ ] T-6.49 · P3 · S3: Suchbegriffe für gängige Kurzformen, die in den amtlichen Namen nicht vorkommen („Kfz“ → Kraftfahrzeugmechatroniker/in, „MFA“ → Medizinische/r Fachangestellte/r, „Azubi Büro“ …); Erzieher/in fehlt bewusst (landesrechtlich, Gruppe 1220) und landet beim Auffangeintrag (Chat, T-2.30)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
