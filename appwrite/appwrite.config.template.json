@@ -336,7 +336,7 @@
       "name": "Review Reports",
       "enabled": true,
       "rowSecurity": true,
-      "$permissions": ["create(\"users/verified\")", "read(\"team:${TEAM_MODERATORS}\")"],
+      "$permissions": ["read(\"team:${TEAM_MODERATORS}\")"],
       "columns": [
         { "key": "review_id", "type": "varchar", "size": 36, "required": true },
         { "key": "reporter_id", "type": "varchar", "size": 36, "required": true },
@@ -443,6 +443,28 @@
         "Aufrufer seine eigenen Zeilen."
       ],
       "scopes": ["rows.read"]
+    },
+    {
+      "$id": "report_review",
+      "name": "report_review",
+      "enabled": true,
+      "logging": true,
+      "runtime": "dart-3.11",
+      "entrypoint": "lib/main.dart",
+      "commands": "dart pub get",
+      "path": "functions/report_review",
+      "timeout": 30,
+      "specification": "s-0.5vcpu-512mb",
+      "execute": ["users"],
+      "events": [],
+      "schedule": "",
+      "_hinweis": [
+        "Der einzige Weg, eine Meldung anzulegen (T-4.41). review_reports hat",
+        "kein Anlegerecht mehr fuer Clients; der Melder kommt aus dem Aufruf,",
+        "der Status ist immer open. Liest public_reviews und review_reports,",
+        "schreibt nur review_reports. Kein files.read, kein users.read."
+      ],
+      "scopes": ["rows.read", "rows.write"]
     },
     {
       "$id": "company_profile",

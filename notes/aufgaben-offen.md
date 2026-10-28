@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-175 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+173 Aufgaben sind offen, 62 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -93,6 +93,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-3.8 · P1 · Passkey-`rpId` auf die Produktionsdomain festlegen, bevor echte Nutzer Passkeys anlegen; nachträglich nicht migrierbar (README)
 - [ ] T-3.10 · P1 · Ratenbegrenzungen aus der Referenz umsetzen oder nachweisen: 3 Bewertungen je 24 h, 5 Meldungen je Betrieb und 24 h, 5 Login-Versuche je IP und Minute (Referenz §2.4)
   Teilweise erledigt am 13.10.2026: 3 Bewertungen je 24 h in `submit_review` (`64c8973`, wirkt nach T-2.31). Offen: Meldungen je Betrieb (laufen direkt in die Tabelle, bräuchten eine Function) und Login-Versuche (Appwrite-Einstellung).
+  Teilweise erledigt am 28.10.2026: 5 Meldungen je Konto und 24 h in der neuen Function `report_review` (T-4.41), wirkt nach dem Deploy. Offen: Login-Versuche (Appwrite-Einstellung).
 - [ ] T-3.13 · P2 · E-Mail-Änderung nur mit erneuter Bestätigung (Referenz §3.3)
   Stand 21.10.2026: Die App bietet keine E-Mail-Änderung an. Wenn sie kommt, muss danach die Bestätigung erneut verlangt werden (Wächter E-3.11 schickt unbestätigte Konten auf /verify-email).
 - [ ] T-3.15 · P2 · Gegen die echte Instanz durchspielen: Registrierungen, Bestätigungsmail, Reset, Realtime-Kanal, Magic Link doppelt öffnen, Social Login in Chrome, Safari und Firefox, Passkeys auf zwei Plattformen, alle TOTP-Pfade (todo C)
@@ -138,9 +139,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-4.34 · P2 · Apache- und PHP-Version des Hetzner-Webhostings ablesen und in der Komponentenliste eintragen (D-1.8, D-1.9); prüfen, ob PHP für die Subdomain abschaltbar ist, Karriko nutzt es nicht (Komponenten und Versionen)
 - [ ] T-4.37 · P2 · Ergänzt T-4.19: Logos werden heute nicht hochgeladen, sondern als URL über `company_profile` gespeichert; die Aufgabe greift erst mit dem Logo-Upload aus T-6.41 (Chat)
 - [ ] T-4.40 · P2 · Node auf dem eigenen Rechner auf 22.23.4 oder 24.22.1 aktualisieren; dort läuft die Appwrite CLI mit Admin-Zugang (D-1.7), CVE-2026-111497 (Chat)
-- [ ] T-4.41 · P2 · Ergänzt T-3.10: Meldungen schreibt der Client direkt in `review_reports` und setzt dabei `reporter_id` und `status` selbst. Eine Meldung lässt sich so einem anderen Konto zuschreiben, `reason` hat keine Längengrenze. Mit der Function für Meldungen: Melder aus dem JWT, `status` immer `open`, `reason` auf 1000 Zeichen begrenzen, Tabellenrecht `create` entfernen (Chat, Sicherheitsprüfung 28.10.2026)
 - [ ] T-4.44 · P2 · Appwrite-SDKs auf die neuen Major-Versionen heben, je als eigene Migration (E-11): `appwrite` 25.4 → 28.2 in der App, `dart_appwrite` 29.4 → 31.1 in Functions und `karriko_functions`, `node-appwrite` 30 → 31 im Passkey-Dienst. Vorher klären, welche Server-Version Appwrite Cloud in Frankfurt fährt; laut `pub outdated` kämen mit den neuen Majors der App weitere Pakete wie `flutter_local_notifications`, `flutter_background_service` und `mqtt5_client` dazu (Lieferkette, E-07) (Chat, Update-Runde 28.10.2026)
-- [ ] T-4.46 · P3 · Ergänzt T-4.24: `lints` 4 → 6 in `packages/questionnaire_core` und `packages/karriko_functions`, 5 → 6 in `website/`; neue Hinweise beheben (Chat, Update-Runde 28.10.2026)
 
 ## 5 · Datenschutz und Recht
 
@@ -211,6 +210,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-6.31 · P2 · App-Pfade beim Umzug nach `/app` eindeutschen (`/app/anmelden`, `/app/registrieren/azubi`, `/app/passwort-vergessen` …) und Mail- sowie OAuth-Rückleitungen mitziehen (Entscheidung vom 22.10.2026, gehört zu T-12.1) (Sites, Tab App · Anmeldung)
 - [ ] T-6.32 · P3 · Fußzeile: „Platform“ heißt „Plattform“. Links ergänzen, sobald die Seiten stehen: Bewertungsrichtlinien, Cookie-Einstellungen, So funktioniert Karriko, Hilfe, Presse (Sites, Tab 00)
   Teilweise erledigt am 26.10.2026: Spalte heißt „Plattform“. Offen: die Links, sobald die Seiten stehen.
+  Teilweise erledigt am 28.10.2026: In der App heißt die Spalte schon „Plattform“ (`footer_widget.dart`). Offen: die Links, sobald die Seiten stehen.
 
 - [ ] T-6.34 · P2 · Azubi-Dashboard: Eintrag „Fragen bewerten“ (alter Name, gleiches Ziel wie „Bewertung schreiben“) und den Schnellzugriff entfernen; abgeschickte Bewertungen mit Status zeigen, an Entwürfen das Löschdatum nach E-51 (Sites, Tab 46)
 - [ ] T-6.35 · P2 · Profil in die Einstellungen ziehen (Abschnitt „Konto“, Entscheidung vom 22.10.2026): `/app/profil` leitet um, Nachname und „Rolle“ entfallen (T-3.23, E-3.10), das Profilmenü enthält nur noch Einstellungen und Abmelden (Sites, Tab 53, 54)

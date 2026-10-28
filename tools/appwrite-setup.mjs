@@ -550,7 +550,12 @@ const SCHEMA = [
     name: 'Review Reports',
     // Eine Meldung ist kein Urteil: Sie legt eine Zeile an, mehr passiert
     // nicht. Der Melder liest seine eigene, die Moderation alle.
-    permissions: ['create("users/verified")', `read("team:${TEAM_MODERATORS}")`],
+    //
+    // **Kein Anlegerecht fuer Clients (T-4.41).** Vorher setzte der Client
+    // `reporter_id` und `status` selbst. Angelegt wird nur ueber die Function
+    // `report_review`; sie setzt das Leserecht des Melders pro Zeile.
+    permissions: [`read("team:${TEAM_MODERATORS}")`],
+    exactPermissions: true,
     createIfMissing: true,
     rowSecurity: true,
     columns: [

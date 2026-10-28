@@ -85,6 +85,7 @@ Client und Server rechnen mit **demselben Paket** [`questionnaire_core`](package
 | `company_profile` | Aufruf | der einzige Schreibweg nach `companies`: eigenes Firmenprofil anlegen oder ändern, nur freigegebene Felder |
 | `job_posting` | Aufruf | der einzige Schreibweg nach `jobs`: Stellen des eigenen Betriebs, veröffentlichen erst mit Abzeichen |
 | `my_account` | Aufruf | Konto löschen (14 Tage zurücknehmbar), eigene Bewertung löschen, Datenexport |
+| `report_review` | Aufruf | Meldung zu einer Bewertung anlegen, höchstens 5 je 24 h |
 | `moderate_review` | Aufruf (`moderators`, `admins`) | freigeben oder ablehnen |
 | `moderation_desk` | Aufruf (`moderators`, `admins`) | Daten für den Admin-Bereich, ohne `user_id`, Gerätehash und Rohantworten |
 | `aggregate_company` | Änderung an `public_reviews` | rechnet `company_scores` neu |
@@ -260,7 +261,7 @@ packages/
 └── karriko_functions/   Appwrite-Kleber und die entscheidenden Funktionen ohne Netzzugriff
 
 appwrite/
-├── functions/        elf Functions, je ein eigenes Dart-Paket
+├── functions/        zwölf Functions, je ein eigenes Dart-Paket
 ├── questionnaires/   Fragendefinition für den Server
 └── appwrite.config.template.json
 

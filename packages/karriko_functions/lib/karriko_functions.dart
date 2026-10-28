@@ -27,6 +27,7 @@ export 'src/my_reviews.dart';
 export 'src/publish_decision.dart';
 export 'src/rate_limits.dart';
 export 'src/responses.dart';
+export 'src/review_report.dart';
 export 'src/review_row.dart';
 export 'src/submission_refs.dart';
 export 'src/tables.dart';

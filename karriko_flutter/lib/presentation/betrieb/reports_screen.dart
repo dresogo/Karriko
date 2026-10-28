@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/review_provider.dart';
+import '../../data/repositories/review_report_repository.dart';
 import '../common/app_bar_widget.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
@@ -102,13 +103,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               child: ElevatedButton(
                 onPressed: _selectedReviewId != null && reporterId != null
                     ? () async {
-                        await ref.read(reviewReportRepositoryProvider).report(
-                              reviewId: _selectedReviewId!,
-                              reporterId: reporterId,
-                              reason: _reasonCtrl.text.isEmpty
-                                  ? _selectedReason
-                                  : '$_selectedReason: ${_reasonCtrl.text}',
-                            );
+                        try {
+                          await ref.read(reviewReportRepositoryProvider).report(
+                                reviewId: _selectedReviewId!,
+                                reason: _reasonCtrl.text.isEmpty
+                                    ? _selectedReason
+                                    : '$_selectedReason: ${_reasonCtrl.text}',
+                              );
+                        } on ReportException catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.message)));
+                          }
+                          return;
+                        }
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text(

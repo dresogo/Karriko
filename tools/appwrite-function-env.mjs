@@ -93,6 +93,8 @@ const JE_FUNCTION = {
   job_posting: [],
   // Konto loeschen, Bewertung loeschen, Export. Frist wie cleanup.
   my_account: ['KARRIKO_DELETION_GRACE_DAYS'],
+  // Legt Meldungen an (T-4.41). Kein Salz, keine Fristen.
+  report_review: ['KARRIKO_TBL_REVIEW_REPORTS'],
 };
 
 const fehlt = GEMEINSAM.filter(

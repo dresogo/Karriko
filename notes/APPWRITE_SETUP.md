@@ -707,7 +707,7 @@ vorbehalten" abweist, fehlt vermutlich das Team.
 
 ## 6. Functions
 
-Elf Functions, alle in Dart.
+Zwölf Functions, alle in Dart.
 
 ### Gemeinsam für alle acht
 
@@ -871,6 +871,32 @@ Löschen und Auskunft stehen jedem Konto zu.
 Maßgeblich für die Löschung ist allein die Tabelle, nicht die Pref: Wer sie von
 Hand entfernt, nimmt nichts zurück. In den 14 Tagen lehnt `submit_review` neue
 Bewertungen ab; die App zeigt nur `/konto-loeschung` (E-3.11).
+
+#### `report_review`
+
+| | |
+|---|---|
+| Ausführen darf | `users` |
+| Auslöser | Aufruf |
+| Timeout | 30 s |
+| Scopes | `rows.read`, `rows.write` |
+
+**Der einzige Weg, eine Meldung anzulegen (T-4.41).** `review_reports` hat
+kein Anlegerecht mehr für Clients; vorher setzte die App `reporter_id` und
+`status` selbst. Aufruf mit `{"review_id": "…", "reason": "…"}`. Die Function
+verlangt eine bestätigte Adresse, nimmt den Melder aus dem JWT, setzt den
+Status immer auf `open` und gibt nur dem Melder Leserecht an der Zeile.
+
+Abgelehnt wird: Grund leer oder länger als 1000 Zeichen (400), Bewertung nicht
+öffentlich (404), dieselbe Bewertung vom selben Konto schon gemeldet (409),
+mehr als 5 Meldungen je Konto in 24 h (429, T-3.10). Die Regeln stehen in
+`packages/karriko_functions/lib/src/review_report.dart`.
+
+**Reihenfolge beim Einspielen:** erst die Function deployen und die App mit
+dem neuen Meldeweg ausliefern, dann `node tools/appwrite-setup.mjs
+--fix-permissions` für `review_reports`. Umgekehrt scheitern Meldungen aus
+der alten App, bis sie ersetzt ist — das ist gewollt, aber nicht vor dem
+Deploy der Function.
 
 #### `moderation_desk`
 

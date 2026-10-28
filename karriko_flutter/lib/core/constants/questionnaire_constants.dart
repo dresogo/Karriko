@@ -58,6 +58,13 @@ class QuestionnaireConstants {
     defaultValue: 'my_reviews',
   );
 
+  /// Der einzige Weg, eine Meldung anzulegen (T-4.41). Auf `review_reports`
+  /// hat kein Client Anlegerecht; der Melder kommt aus dem geprueften Aufruf.
+  static const reportReviewFunction = String.fromEnvironment(
+    'FN_REPORT_REVIEW',
+    defaultValue: 'report_review',
+  );
+
   /// Der einzige Schreibweg nach `companies`: legt das eigene Firmenprofil an
   /// oder aendert es, nur freigegebene Felder (T-4.2).
   static const companyProfileFunction = String.fromEnvironment(

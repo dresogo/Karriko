@@ -486,6 +486,49 @@ class Tables {
     return zaehler;
   }
 
+  /// Hat dieses Konto diese Bewertung schon gemeldet?
+  Future<bool> reportExists(String reviewId, String reporterId) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewReportsTable,
+      queries: [
+        Query.equal('review_id', reviewId),
+        Query.equal('reporter_id', reporterId),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+    );
+    return ergebnis.rows.isNotEmpty;
+  }
+
+  /// Wie viele Meldungen dieses Konto seit [since] abgegeben hat (T-3.10).
+  Future<int> countReportsByReporterSince(
+      String reporterId, DateTime since) async {
+    final ergebnis = await db.listRows(
+      databaseId: config.databaseId,
+      tableId: config.reviewReportsTable,
+      queries: [
+        Query.equal('reporter_id', reporterId),
+        Query.greaterThanEqual(r'$createdAt', since.toUtc().toIso8601String()),
+        Query.select([r'$id']),
+        Query.limit(1),
+      ],
+      total: true,
+    );
+    return ergebnis.total;
+  }
+
+  /// Legt eine Meldung an. Lesen darf sie der Melder (für seine Liste) und
+  /// über die Tabellenrechte die Moderation; ändern darf sie kein Client.
+  Future<aw.Row> createReport(Map<String, Object?> data, String reporterId) =>
+      db.createRow(
+        databaseId: config.databaseId,
+        tableId: config.reviewReportsTable,
+        rowId: ID.unique(),
+        data: data,
+        permissions: [Permission.read(Role.user(reporterId))],
+      );
+
   Future<aw.Row> getReport(String id) => db.getRow(
         databaseId: config.databaseId,
         tableId: config.reviewReportsTable,
