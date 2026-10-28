@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -132,6 +133,56 @@ void main() {
     await tester.pump();
 
     expect(repo.suchen.last['minRating'], 3.5);
+  });
+
+  testWidgets('Bewertungsregler legt keine Fläche über die Seite (T-11.26)',
+      (tester) async {
+    final semantik = tester.ensureSemantics();
+    await oeffnen(tester, '/search');
+
+    // Der Wert-Indikator des Sliders landet im nächsten Overlay. Ist das
+    // das Overlay des Navigators, deckt ein leerer Semantik-Knoten die ganze
+    // Seite ab, und im Web reagiert kein Link mehr auf Klicks.
+    final overlay = find
+        .ancestor(of: find.byType(Slider), matching: find.byType(Overlay))
+        .first;
+    expect(tester.getSize(overlay).height, lessThanOrEqualTo(44));
+
+    // Kein leerer Knoten ohne Text und Aktion in Bildschirmgröße.
+    final bildschirm = tester.view.physicalSize / tester.view.devicePixelRatio;
+    final leer = <SemanticsNode>[];
+    void pruefen(SemanticsNode knoten) {
+      final daten = knoten.getSemanticsData();
+      final rect = knoten.rect;
+      if (knoten.childrenCount == 0 &&
+          daten.label.isEmpty &&
+          daten.actions == 0 &&
+          rect.width >= bildschirm.width &&
+          rect.height >= bildschirm.height) {
+        leer.add(knoten);
+      }
+      knoten.visitChildren((kind) {
+        pruefen(kind);
+        return true;
+      });
+    }
+
+    pruefen(tester
+        .binding.renderViews.first.owner!.semanticsOwner!.rootSemanticsNode!);
+    expect(leer, isEmpty);
+    semantik.dispose();
+  });
+
+  testWidgets('Bewertungsregler: Wechsel der Seite räumt sauber auf',
+      (tester) async {
+    await oeffnen(tester, '/search?bewertung=3');
+    await tester.tap(find.text('4'));
+    await tester.pump();
+    expect(find.text('ab 4 von 5'), findsOneWidget);
+    await tester.pumpAndSettle();
+
+    await tester.pumpWidget(const SizedBox());
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('unbekannte Branche wird ignoriert', (tester) async {

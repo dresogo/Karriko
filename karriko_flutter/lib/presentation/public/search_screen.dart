@@ -356,6 +356,10 @@ class _RatingSliderState extends State<_RatingSlider> {
 
   @override
   void dispose() {
+    // Steckt immer im eigenen Overlay (initialEntries); vor dispose
+    // heraus, sonst schlägt die Prüfung in OverlayEntry.dispose an.
+    _reglerEintrag.remove();
+    _reglerEintrag.dispose();
     _focus.dispose();
     super.dispose();
   }
@@ -365,10 +369,31 @@ class _RatingSliderState extends State<_RatingSlider> {
     widget.onChanged(_ratingSteps[i]);
   }
 
+  /// Der Regler als Eintrag im eigenen Overlay (siehe [build]). Ein Eintrag
+  /// baut sich nicht mit seinem Eltern-Widget neu, deshalb stößt [build] ihn
+  /// jedes Mal an.
+  late final OverlayEntry _reglerEintrag = OverlayEntry(
+    builder: (context) {
+      final last = _ratingSteps.length - 1;
+      return Slider(
+        focusNode: _focus,
+        value: _index.toDouble(),
+        min: 0,
+        max: last.toDouble(),
+        divisions: last,
+        semanticFormatterCallback: (v) =>
+            _beschreibung(_ratingSteps[v.round()]),
+        onChanged: (v) => setState(() => _index = v.round()),
+        onChangeEnd: (v) => widget.onChanged(_ratingSteps[v.round()]),
+      );
+    },
+  );
+
   @override
   Widget build(BuildContext context) {
     final focused = _focus.hasFocus;
     final last = _ratingSteps.length - 1;
+    _reglerEintrag.markNeedsBuild();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -403,17 +428,15 @@ class _RatingSliderState extends State<_RatingSlider> {
           child: SizedBox(
             // Mindesthöhe des Klickziels (WCAG 2.5.8).
             height: 44,
-            child: Slider(
-              focusNode: _focus,
-              value: _index.toDouble(),
-              min: 0,
-              max: last.toDouble(),
-              divisions: last,
-              semanticFormatterCallback: (v) =>
-                  _beschreibung(_ratingSteps[v.round()]),
-              onChanged: (v) => setState(() => _index = v.round()),
-              onChangeEnd: (v) => widget.onChanged(_ratingSteps[v.round()]),
-            ),
+            // Eigenes Overlay nur für den Regler (T-11.26). `Slider` legt
+            // seinen Wert-Indikator immer per OverlayPortal ins nächste
+            // Overlay, auch bei `ShowValueIndicator.never` – dann als leere
+            // Fläche in Overlay-Größe. Im Navigator-Overlay war das die ganze
+            // Seite, und ab Flutter 3.47 fängt ein solcher leerer
+            // Semantik-Knoten im Web die Klicks ab: Kein Link der Suchseite
+            // ließ sich mehr anklicken. Hier bleibt die Fläche so groß wie
+            // der Regler, und darunter liegt kein Link.
+            child: Overlay(initialEntries: [_reglerEintrag]),
           ),
         ),
         // Beschriftung unter den Rasterstrichen. Für Screenreader reicht der
