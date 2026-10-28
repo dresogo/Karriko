@@ -97,7 +97,7 @@ funktioniert.
 | Appwrite CLI | 27.3.0 oder neuer — `appwrite --version` |
 | Node | 20 oder neuer, für die Werkzeuge unter `tools/` |
 | Dart | 3.11 oder neuer, für `vendor_core.dart` und die Tests |
-| Flutter | 3.44 oder neuer, für die App |
+| Flutter | 3.47 oder neuer, für die App |
 
 Die CLI installiert sich mit
 

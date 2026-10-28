@@ -76,7 +76,7 @@ Sachlich, vertrauenswürdig, präzise. Du-Ansprache gegenüber Azubis. Keine erf
 
 | Ebene | Wahl |
 |---|---|
-| App | Flutter 3.44 (Web, iOS, Android), Dart 3.11 |
+| App | Flutter 3.47 (Web, iOS, Android), Dart 3.13; Functions-Laufzeit Dart 3.11 |
 | State | Riverpod |
 | Routing | GoRouter, ein zentraler Wächter |
 | Backend | Appwrite Cloud, **Region Frankfurt**, SDK 25.4 |

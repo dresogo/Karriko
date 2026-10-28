@@ -10,8 +10,8 @@ Azubis bewerten ihren Ausbildungsbetrieb. Betriebe sehen, was wirklich über sie
 [![Dart CI](https://github.com/dresogo/Karriko/actions/workflows/dart.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/dart.yml)
 [![Passkey-Dienst](https://github.com/dresogo/Karriko/actions/workflows/passkey-rp.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/passkey-rp.yml)
 [![CodeQL](https://github.com/dresogo/Karriko/actions/workflows/codeql.yml/badge.svg)](https://github.com/dresogo/Karriko/actions/workflows/codeql.yml)
-![Flutter](https://img.shields.io/badge/Flutter-3.44-02569B?logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-3.11-0175C2?logo=dart&logoColor=white)
+![Flutter](https://img.shields.io/badge/Flutter-3.47-02569B?logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.13-0175C2?logo=dart&logoColor=white)
 ![Appwrite](https://img.shields.io/badge/Appwrite-25.4-FD366E?logo=appwrite&logoColor=white)
 ![Plattformen](https://img.shields.io/badge/Web%20·%20iOS%20·%20Android-lightgrey)
 
@@ -114,7 +114,7 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 
 | | |
 |---|---|
-| **Framework** | Flutter 3.44 (Web, iOS, Android — Desktop-Targets sind generiert, aber ungetestet) |
+| **Framework** | Flutter 3.47 (Web, iOS, Android — Desktop-Targets sind generiert, aber ungetestet) |
 | **State** | Riverpod (`flutter_riverpod`) |
 | **Routing** | GoRouter mit zentralem Redirect-Wächter |
 | **Backend** | Appwrite Cloud (Region Frankfurt), SDK 25.4 — Auth, `TablesDB`, Realtime, Teams, Storage |
@@ -147,7 +147,7 @@ Social Login und Magic Links bleiben Azubis vorbehalten, weil Betriebe eine mens
 
 ## Schnellstart
 
-**Voraussetzungen:** Flutter 3.44 oder neuer, ein Appwrite-Projekt. Für die Werkzeuge unter `tools/` zusätzlich Node 22 oder neuer, für den Passkey-Dienst Node 22.23.4 oder 24.22.1 und neuer (gepatchte Fassungen, T-4.38), für das Einspielen die Appwrite-CLI.
+**Voraussetzungen:** Flutter 3.47 oder neuer, ein Appwrite-Projekt. Für die Werkzeuge unter `tools/` zusätzlich Node 22 oder neuer, für den Passkey-Dienst Node 22.23.4 oder 24.22.1 und neuer (gepatchte Fassungen, T-4.38), für das Einspielen die Appwrite-CLI.
 
 ```bash
 git clone https://github.com/dresogo/Karriko.git
