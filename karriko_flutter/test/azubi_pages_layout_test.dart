@@ -6,6 +6,7 @@ import 'package:karriko_flutter/core/theme/app_theme.dart';
 import 'package:karriko_flutter/data/models/user_model.dart';
 import 'package:karriko_flutter/data/repositories/auth_repository.dart';
 import 'package:karriko_flutter/providers/auth_provider.dart';
+import 'package:karriko_flutter/providers/review_provider.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   _FakeAuthRepository(this.user);
@@ -38,7 +39,10 @@ Future<void> _open(WidgetTester tester, String route, Size size) async {
 
   _container = ProviderContainer(
     overrides: [
-      authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_azubi))
+      authRepositoryProvider.overrideWithValue(_FakeAuthRepository(_azubi)),
+      // Sonst fragt das Dashboard `my_reviews` ab und bleibt im Ladezustand.
+      ownReviewsProvider
+          .overrideWith((ref) async => const OwnReviewsResult(reviews: [])),
     ],
   );
   addTearDown(_container.dispose);
@@ -100,13 +104,15 @@ void main() {
     });
   });
 
-  testWidgets('Dashboard begruesst mit dem Namen und zeigt Schnellzugriff',
+  testWidgets('Dashboard begruesst mit dem Namen, ohne Schnellzugriff (T-6.34)',
       (tester) async {
     await _open(tester, '/dashboard', const Size(1440, 900));
 
     expect(find.text('Hallo, Lena Berger.'), findsOneWidget);
-    expect(find.text('Fragen bewerten'), findsOneWidget);
-    expect(find.text('Mein Profil'), findsOneWidget);
+    expect(find.text('ABGESCHICKTE BEWERTUNGEN'), findsOneWidget);
+    expect(find.text('Noch keine Bewertung abgeschickt.'), findsOneWidget);
+    expect(find.text('Schnellzugriff'), findsNothing);
+    expect(find.text('Fragen bewerten'), findsNothing);
   });
 
   testWidgets('Profil zeigt Konto-Angaben aus dem Nutzer', (tester) async {

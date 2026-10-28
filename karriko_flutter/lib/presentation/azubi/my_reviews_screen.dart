@@ -12,6 +12,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/questionnaire_provider.dart';
 import '../../providers/review_provider.dart';
 import '../common/app_bar_widget.dart';
+import 'own_review_status.dart';
 
 /// Was ein Azubi von seinen eigenen Bewertungen sieht.
 ///
@@ -268,36 +269,7 @@ class _AbgeschicktZeileState extends ConsumerState<_AbgeschicktZeile> {
     );
   }
 
-  /// Was unter dem Betriebsnamen steht.
-  ///
-  /// Die vier Zustände bekommen vier Texte. Eine zurückgestellte Bewertung sähe
-  /// sonst wie eine verschollene aus, und eine abgelehnte wie eine, die noch
-  /// geprüft wird.
-  String _lage() {
-    final datum = DateFormat('dd.MM.yyyy').format(eintrag.submittedAt);
-
-    if (eintrag.istZurueckgestellt) {
-      if (eintrag.publishAfterTrainingEnd) {
-        return 'Gespeichert · geht nach deinem Ausbildungsende in die Prüfung';
-      }
-      final ab = eintrag.publishAfter;
-      return ab == null
-          ? 'Gespeichert · geht später in die Prüfung'
-          : 'Gespeichert · geht am ${DateFormat('dd.MM.yyyy').format(ab)} '
-              'in die Prüfung';
-    }
-
-    if (eintrag.istFreigegeben) {
-      final seit = eintrag.publishedAt;
-      return seit == null
-          ? 'Veröffentlicht'
-          : 'Veröffentlicht am ${DateFormat('dd.MM.yyyy').format(seit)}';
-    }
-
-    if (eintrag.istAbgelehnt) return 'Nicht veröffentlicht';
-
-    return 'Abgeschickt am $datum · in Prüfung';
-  }
+  String _lage() => ownReviewStatusText(eintrag);
 
   @override
   Widget build(BuildContext context) {

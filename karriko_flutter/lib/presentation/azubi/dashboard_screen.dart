@@ -5,7 +5,9 @@ import '../../core/theme/app_theme.dart';
 import '../../data/models/review_draft.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/questionnaire_provider.dart';
+import '../../providers/review_provider.dart';
 import '../common/app_page.dart';
+import 'own_review_status.dart';
 
 class AzubiDashboardScreen extends ConsumerWidget {
   const AzubiDashboardScreen({super.key});
@@ -20,7 +22,7 @@ class AzubiDashboardScreen extends ConsumerWidget {
       appBarTitle: 'Dashboard',
       eyebrow: 'DASHBOARD',
       title: 'Hallo, ${auth.user?.displayName ?? 'Azubi'}.',
-      lede: 'Deine Bewertungen und der schnelle Weg zu allem Weiteren.',
+      lede: 'Deine Bewertungen und Entwürfe auf einen Blick.',
       headerAction: FilledButton.icon(
         onPressed: () => context.go('/reviews/new'),
         icon: const Icon(Icons.add, size: 18),
@@ -29,9 +31,7 @@ class AzubiDashboardScreen extends ConsumerWidget {
       children: [
         _Stats(reviews: myReviews),
         const SizedBox(height: AppLayout.s48),
-        const SectionLabel('Schnellzugriff'),
-        const SizedBox(height: AppLayout.s16),
-        const _QuickActions(),
+        const _SubmittedSection(),
         const SizedBox(height: AppLayout.s48),
         _ReviewsSection(reviews: myReviews),
       ],
@@ -84,130 +84,52 @@ class _Stats extends StatelessWidget {
   }
 }
 
-// ─── Schnellzugriff ──────────────────────────────────────────────────────────
+// ─── Bewertungen ─────────────────────────────────────────────────────────────
 
-class _QuickActions extends StatelessWidget {
-  const _QuickActions();
-
-  static const _actions = <(IconData, String, String)>[
-    (Icons.quiz_outlined, 'Fragen bewerten', '/fragen-bewerten'),
-    (Icons.search, 'Betrieb suchen', '/search'),
-    (Icons.rate_review_outlined, 'Meine Bewertungen', '/my-reviews'),
-    (Icons.person_outline, 'Mein Profil', '/profile'),
-    (Icons.tune, 'Einstellungen', '/settings'),
-  ];
+/// Die abgeschickten Bewertungen mit ihrem Stand (T-6.34). Dieselben Texte
+/// wie unter „Meine Bewertungen“, damit ein Zustand nicht zwei Namen hat.
+class _SubmittedSection extends ConsumerWidget {
+  const _SubmittedSection();
 
   @override
-  Widget build(BuildContext context) {
-    const gap = AppLayout.s16;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eigene = ref.watch(ownReviewsProvider);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Feste Spaltenzahl statt Seitenverhältnis: So bestimmt der Inhalt die
-        // Höhe und lange Beschriftungen brechen um, statt überzulaufen.
-        final cols = switch (constraints.maxWidth) {
-          >= 900 => 3,
-          >= 560 => 2,
-          _ => 1,
-        };
-        final width = (constraints.maxWidth - (cols - 1) * gap) / cols;
-
-        return Wrap(
-          spacing: gap,
-          runSpacing: gap,
-          children: [
-            for (final action in _actions)
-              SizedBox(
-                width: width,
-                child: _QuickAction(
-                  icon: action.$1,
-                  label: action.$2,
-                  route: action.$3,
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class _QuickAction extends StatefulWidget {
-  final IconData icon;
-  final String label;
-  final String route;
-
-  const _QuickAction(
-      {required this.icon, required this.label, required this.route});
-
-  @override
-  State<_QuickAction> createState() => _QuickActionState();
-}
-
-class _QuickActionState extends State<_QuickAction> {
-  bool _focused = false;
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      child: Material(
-        color: AppColors.surface,
-        child: SelectionContainer.disabled(
-          child: InkWell(
-            onTap: () => context.go(widget.route),
-            onFocusChange: (v) => setState(() => _focused = v),
-            onHover: (v) => setState(() => _hovered = v),
-            hoverColor: AppColors.paper,
-            focusColor: AppColors.audienceBeige,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              curve: Curves.easeOut,
-              constraints: const BoxConstraints(minHeight: 64),
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppLayout.s16,
-                vertical: AppLayout.s16,
-              ),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: _focused ? AppColors.ink : AppColors.line,
-                    width: _focused ? 2 : 1),
-              ),
-              child: Row(
-                children: [
-                  Icon(widget.icon, size: 20, color: AppColors.ink),
-                  const SizedBox(width: AppLayout.s16),
-                  Expanded(
-                    child: Text(
-                      widget.label,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SectionHead(
+          label: 'Abgeschickte Bewertungen',
+          actionLabel: 'Alle anzeigen',
+          onAction: () => context.go('/my-reviews'),
+        ),
+        const SizedBox(height: AppLayout.s16),
+        eigene.when(
+          data: (ergebnis) => ergebnis.reviews.isEmpty
+              ? Text(
+                  'Noch keine Bewertung abgeschickt.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                )
+              : AppRowGroup(
+                  children: [
+                    for (final eintrag in ergebnis.reviews.take(3))
+                      AppRow(
+                        icon: Icons.rate_review_outlined,
+                        title: eintrag.companyName ?? 'Betrieb',
+                        subtitle: ownReviewStatusText(eintrag),
+                        onTap: () => context.go('/my-reviews'),
                       ),
-                    ),
-                  ),
-                  AnimatedSlide(
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeOut,
-                    offset: _hovered || _focused
-                        ? const Offset(0.25, 0)
-                        : Offset.zero,
-                    child: const Icon(Icons.arrow_forward,
-                        size: 18, color: AppColors.muted),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+          loading: () => const _SectionLoading(),
+          error: (_, __) => const _SectionError(
+            text: 'Deine Bewertungen konnten nicht geladen werden.',
           ),
         ),
-      ),
+      ],
     );
   }
 }
-
-// ─── Bewertungen ─────────────────────────────────────────────────────────────
 
 class _ReviewsSection extends StatelessWidget {
   final AsyncValue<List<ReviewDraft>> reviews;
@@ -241,7 +163,7 @@ class _ReviewsSection extends StatelessWidget {
                       AppRow(
                         icon: Icons.edit_outlined,
                         title: '${review.answers.length} Antworten',
-                        subtitle: 'Angefangen, noch nicht abgeschickt',
+                        subtitle: draftDeletionText(review),
                         onTap: () => context
                             .go('/reviews/new?company=${review.companyId}'),
                       ),

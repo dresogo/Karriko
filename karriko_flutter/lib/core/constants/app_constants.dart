@@ -37,4 +37,9 @@ class AppConstants {
   static const reviewMaxLength = 2000;
 
   static const pageSize = 20;
+
+  /// Nach so vielen Tagen ohne Änderung löscht `cleanup` einen Entwurf
+  /// (E-51, `KARRIKO_DRAFT_RETENTION_DAYS`). Die App zeigt daraus nur das
+  /// Löschdatum an; maßgeblich ist der Server.
+  static const draftRetentionDays = 30;
 }
