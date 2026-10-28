@@ -13,7 +13,7 @@ environment:
 dependencies:
   # Server-SDK. Anders als `appwrite` im Client kennt es API-Schluessel und
   # Team-Abfragen.
-  dart_appwrite: ^29.0.0
+  dart_appwrite: ^29.4.0
   # Nur fuer den gesalzenen Hash der Geraetekennung.
   crypto: ^3.0.0
   questionnaire_core:
