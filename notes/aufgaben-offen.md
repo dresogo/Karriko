@@ -2,7 +2,7 @@
 
 **Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-190 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+194 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -83,6 +83,7 @@ Kontolöschung, Löschen eigener Bewertungen und Datenexport sind seit 20.10.202
 - [ ] T-2.39 · P2 · Automatische Freigabe scharf schalten, nur wenn in T-2.38 kein roter Fall als grün durchging: Grün gibt frei, Stichprobe 20 %, ab 500 Bewertungen 5 %; `moderation_log` mit Aktion `auto_approve` und Systemkennung; `moderation_desk` sortiert nach Risiko und zeigt Flags und Stichprobe; E-2.13 mit den endgültigen Schwellen abgleichen (Moderation)
 - [ ] T-2.44 · P3 · Grenze von 3 Bewertungen je 24 h in `submit_review` ist Prüfen-dann-Anlegen: parallele Einreichungen kommen gemeinsam durch. Für einzelne Konten unkritisch, bei der Vorsortierung (T-2.37) als Häufung mit erfassen (Chat, Sicherheitsprüfung 28.10.2026)
 - [ ] T-2.45 · P1 · Geänderte Fragendefinition v1 einspielen: S3 verweist jetzt auf `assets/data/berufe.json` (T-2.30). `appwrite/questionnaires/questionnaire_v1.json` neu in den Bucket `questionnaires` hochladen, Prüfsumme in der Release-Zeile anpassen (APPWRITE_SETUP §9) und die App neu bauen; bis dahin zeigt S3 weiter die Beispielliste. Danach `berufe_beispiel.json` entfernen (Chat, T-2.30)
+- [ ] T-2.46 · P2 · Ortsliste aus `tools/orte_aus_quellen.dart` (Destatis, OpenPLZ, GeoNames; 10.915 Gemeinden mit PLZ, Koordinaten und Stadtbezirken) nach der Lizenzklärung (T-5.36) als Tabelle `orte` in Appwrite einspielen, über `appwrite-setup.mjs` (E-05), nicht als App-Asset (3 MB). Quartalsweise neu erzeugen; Lücken: 291 Gemeinden ohne Koordinate, uneinheitliche Kreisnamen aus GeoNames (Chat, Ortssuche 28.10.2026)
 
 ## 3 · Anmeldung und Konten
 
@@ -186,6 +187,7 @@ Die Punkte mit „neu“ sind Hinweise, keine Rechtsberatung. Sie gehören auf d
 - [ ] T-5.33 · P1 · Blogartikel „DSGVO und Ausbildungsbewertungen“ (`blog_content.dart`) macht ungeprüfte Rechtsaussagen, etwa „Betriebe haben keinen Anspruch darauf, zu erfahren, wer eine Bewertung geschrieben hat“ (zu prüfen u. a. gegen den Auskunftsanspruch nach § 21 TDDDG) und „Eigene Daten kannst du jederzeit einsehen und löschen lassen“; er verweist auf die Datenschutzerklärung, die ein Platzhalter ist. Vom Anwalt prüfen lassen oder bis dahin zurückziehen (Factsheet §7 Regel 5) (Rundgang 28.10.2026)
 - [ ] T-5.34 · P2 · „Bewertungen werden nicht auf Wunsch entfernt“ (FAQ und „Für Betriebe“, Band „Was Geld nicht kauft“) mit dem Beanstandungsverfahren abgleichen (T-5.11) und juristisch prüfen lassen (Rundgang 28.10.2026)
 - [ ] T-5.35 · P2 · Herkunft, Stand und Nutzungsbedingungen der BA-Dateien klären (`DKZ_Ausbildungen_gueltig.xml`, Textliste mit BKZ), aus denen `berufe.json` entstand; Quelle und Stand gegebenenfalls in der App oder im Impressum nennen (Chat, T-2.30)
+- [ ] T-5.36 · P2 · Lizenzen der Ortsliste klären: Nutzungsbedingungen der Destatis-Codeliste „Regionalschlüssel“; ODbL-Pflichten für die aus OpenStreetMap abgeleitete Datenbank (Namensnennung „© OpenStreetMap-Mitwirkende“, Weitergabe der Datenbank unter ODbL); CC BY 4.0 von GeoNames (Link auf geonames.org). Quellenhinweis in App und Impressum (Chat, Ortssuche 28.10.2026)
 
 ## 6 · Oberfläche und Barrierefreiheit
 
@@ -228,6 +230,8 @@ Stand 22.10.2026 zu T-6.17: nach dem Absenden nur Freitexte änderbar, jederzeit
 - [ ] T-6.47 · P2 · „So funktioniert Karriko →“ auf „Für Betriebe“ führt auf `/transparenz`, ein Grobgerüst mit „Inhalt folgt“ und internen Nummern (E-29, T-5.15) für jeden Besucher. Link bis T-6.25 entfernen, öffentliche Grobgerüste ohne interne Nummern zeigen (Rundgang 28.10.2026)
 - [ ] T-6.48 · P2 · „Für Betriebe“, Profil-Check: „Azubis können Betriebe bewerten, bevor diese selbst registriert sind“ stimmt erst mit T-2.26 (Betrieb vorschlagen); bis dahin umformulieren (E-30) (Rundgang 28.10.2026)
 - [ ] T-6.49 · P3 · S3: Suchbegriffe für gängige Kurzformen, die in den amtlichen Namen nicht vorkommen („Kfz“ → Kraftfahrzeugmechatroniker/in, „MFA“ → Medizinische/r Fachangestellte/r, „Azubi Büro“ …); Erzieher/in fehlt bewusst (landesrechtlich, Gruppe 1220) und landet beim Auffangeintrag (Chat, T-2.30)
+- [ ] T-6.50 · P2 · Betriebsprofil: Ort aus der Ortsliste (T-2.46) über PLZ oder Name wählen und mit Gemeindeschlüssel speichern statt als Freitext; Stadtbezirk vorschlagen (eindeutige PLZ wie 81667 → Au-Haidhausen gesetzt, sonst Auswahl der Bezirke dieser PLZ); in `company_profile` gegen die Liste prüfen. Für Azubis keinen Stadtteil erheben (E-22, E-2.12) (Chat, Ortssuche 28.10.2026)
+- [ ] T-6.51 · P2 · Suche: Filter nach Ort, PLZ, Kreis oder Bundesland aus der Ortsliste, Anzeige „München · Au-Haidhausen“, Umkreissuche („25 km um 95028“) und Sortierung nach Entfernung über Koordinaten der Betriebe; ersetzt den Freitext-Filter „Standort“ (T-11.10). Hängt an T-2.46 und T-6.50 (Chat, Ortssuche 28.10.2026)
 
 Stand 22.10.2026 zu T-6.31: Pfade des Betriebsbereichs entschieden (`/app/betrieb`, `/app/betrieb/profil`, `/app/betrieb/stellen`, `/app/betrieb/bewertungen`, `/app/betrieb/meldungen`, `/app/betrieb/einstellungen`).
 
