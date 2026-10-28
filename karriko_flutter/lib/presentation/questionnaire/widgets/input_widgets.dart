@@ -257,12 +257,37 @@ class _SearchSelectState extends State<SearchSelect> {
     super.dispose();
   }
 
+  /// Höchstens acht Treffer, die besten zuerst.
+  ///
+  /// Mit der vollständigen Liste (T-2.30) passen auf „Mechatr“ über zehn
+  /// Berufe. Alphabetisch kämen „Fachpraktiker/in für Kfz-Mechatroniker“ und
+  /// fünf „Kraftfahrzeugmechatroniker/in“ vor „Mechatroniker/in“, und der
+  /// gesuchte Beruf fiele aus der Liste. Deshalb: erst Namen, die mit der
+  /// Eingabe beginnen, dann solche mit einem Wort, das so beginnt, dann der
+  /// Rest; innerhalb einer Stufe bleibt die Reihenfolge der Liste.
   List<({String code, String name})> get _treffer {
     final suche = _suche.text.trim().toLowerCase();
     if (suche.length < 2) return const [];
-    return [
+    int stufe(String name) {
+      final klein = name.toLowerCase();
+      if (klein.startsWith(suche)) return 0;
+      if (RegExp(r'[\s\-/(]' + RegExp.escape(suche)).hasMatch(klein)) {
+        return 1;
+      }
+      return 2;
+    }
+
+    final passend = [
       for (final eintrag in _eintraege)
-        if (eintrag.name.toLowerCase().contains(suche)) eintrag,
+        if (eintrag.name.toLowerCase().contains(suche))
+          (eintrag: eintrag, stufe: stufe(eintrag.name)),
+    ];
+    // Stabil sortieren: `sort` garantiert das nicht, deshalb nach Stufen
+    // getrennt einsammeln.
+    return [
+      for (var s = 0; s <= 2; s++)
+        for (final t in passend)
+          if (t.stufe == s) t.eintrag,
     ].take(8).toList();
   }
 

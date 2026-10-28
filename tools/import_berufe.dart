@@ -1,5 +1,9 @@
 // Erzeugt die vollstaendige Berufsliste fuer S3 aus einer CSV.
 //
+// Fuer das DKZ-Verzeichnis der Bundesagentur fuer Arbeit (XML) gibt es seit
+// T-2.30 `tools/berufe_aus_ba.dart`; damit ist `berufe.json` entstanden.
+// Dieses Werkzeug bleibt fuer andere Quellen im CSV-Format.
+//
 // Woher die CSV kommt
 // -------------------
 // Die Bundesagentur fuer Arbeit veroeffentlicht die „Klassifikation der Berufe"

@@ -56,9 +56,11 @@ flutter:
     # appwrite/questionnaires/questionnaire_v1.json uebereinstimmen — dafuer
     # gibt es `dart run tools/sync_questionnaire.dart`.
     - assets/questionnaire/questionnaire_v1.json
-    # Beispielliste der Ausbildungsberufe fuer S3. Die vollstaendige Liste
-    # entsteht mit `dart run tools/import_berufe.dart` aus einer CSV der
-    # Bundesagentur fuer Arbeit; siehe notes/REVIEW_TEXTE.md.
+    # Ausbildungsberufe fuer S3. Die vollstaendige Liste (T-2.30) entsteht mit
+    # `dart run tools/berufe_aus_ba.dart` aus dem DKZ-Verzeichnis der
+    # Bundesagentur fuer Arbeit. Die Beispielliste bleibt, solange die aktive
+    # Fragendefinition im Storage noch auf sie verweist.
+    - assets/data/berufe.json
     - assets/data/berufe_beispiel.json
 
   # Inter 4.1 aus dem offiziellen Release (github.com/rsms/inter), Lizenz OFL

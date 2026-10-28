@@ -1,0 +1,3152 @@
+{
+  "quelle": "Bundesagentur für Arbeit, DKZ-Verzeichnis (DKZ_Ausbildungen_gueltig.xml); Gruppen 1110, 1120, 1130, 1140, 1210, 1310",
+  "hinweis": "Erzeugt mit tools/berufe_aus_ba.dart. Nicht von Hand ändern. Herkunft, Stand und Nutzungsbedingungen der Quelle sind noch zu klären (T-2.30).",
+  "stand": "2026-10-28",
+  "berufe": [
+    {
+      "code": "3434290500",
+      "name": "Anlagenmechaniker/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3421290400",
+      "name": "Anlagenmechaniker/in - Sanitär-, Heizungs- und Klimatechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "8133290300",
+      "name": "Anästhesietechnische/r Assistent/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3222290200",
+      "name": "Asphaltbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2612290700",
+      "name": "Associate Engineer - Automation and Drives",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4312290700",
+      "name": "Associate Engineer - Informationtechnology",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2623290700",
+      "name": "Associate Engineer - Mechanical Engineering",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2612290800",
+      "name": "Associate Engineer - Power Systems",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290900",
+      "name": "Aufbereitungsmechaniker/in - Braunkohle",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290100",
+      "name": "Aufbereitungsmechaniker/in - Feuerfeste/keramische Rohstoffe",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290200",
+      "name": "Aufbereitungsmechaniker/in - Naturstein",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290300",
+      "name": "Aufbereitungsmechaniker/in - Sand und Kies",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290000",
+      "name": "Aufbereitungsmechaniker/in - Steinkohle",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8252290000",
+      "name": "Augenoptiker/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3330290000",
+      "name": "Ausbaufacharbeiter/in (ohne Angabe des Schwerpunkts)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3312290300",
+      "name": "Ausbaufacharbeiter/in - Estricharbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3311290500",
+      "name": "Ausbaufacharbeiter/in - Fliesen-, Platten- und Mosaikarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3322290700",
+      "name": "Ausbaufacharbeiter/in - Stuckateurarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3330290700",
+      "name": "Ausbaufacharbeiter/in - Trockenbauarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3331290600",
+      "name": "Ausbaufacharbeiter/in - Wärme-, Kälte- und Schallschutzarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3332291200",
+      "name": "Ausbaufacharbeiter/in - Zimmererarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3329390600",
+      "name": "Ausbaumanager/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "6114290300",
+      "name": "Automatenfachmann/-frau - Automatendienstleistung",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2513290600",
+      "name": "Automatenfachmann/-frau - Automatenmechatronik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6227290100",
+      "name": "Automobilkaufmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6121290300",
+      "name": "Außenhandelsassistent/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "7211290000",
+      "name": "Bankkaufmann/-frau",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "5252290200",
+      "name": "Baugeräteführer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "4143290300",
+      "name": "Baustoffprüfer/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4143290001",
+      "name": "Baustoffprüfer/in - Asphalttechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4143290002",
+      "name": "Baustoffprüfer/in - Geotechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4143290003",
+      "name": "Baustoffprüfer/in - Mörtel- und Betontechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2721293200",
+      "name": "Bautechnische/r Konstrukteur/in - Architektur",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721293400",
+      "name": "Bautechnische/r Konstrukteur/in - Ingenieurbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721293300",
+      "name": "Bautechnische/r Konstrukteur/in - Tief-, Verkehrswege- und Landschaftsbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3323290000",
+      "name": "Bauwerksabdichter/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3217290000",
+      "name": "Bauwerksmechaniker/in für Abbruch und Betontrenntechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3434290100",
+      "name": "Behälter- und Apparatebauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2111290100",
+      "name": "Berg- und Maschinenmann/-frau - Transport und Instandhaltung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2111290200",
+      "name": "Berg- und Maschinenmann/-frau - Vortrieb und Gewinnung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2111291200",
+      "name": "Bergbautechnologe/-technologin - Tiefbautechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2111291000",
+      "name": "Bergbautechnologe/-technologin - Tiefbohrtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5212290200",
+      "name": "Berufskraftfahrer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "7130360900",
+      "name": "Berufsspezialist/in Technische/r Kaufmann/-frau (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "8240290100",
+      "name": "Bestattungsfachkraft (Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3211290000",
+      "name": "Beton- und Stahlbetonbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2122291100",
+      "name": "Betonfertigteilbauer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7130290000",
+      "name": "Betriebsassistent/in - Handwerk (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "6121390500",
+      "name": "Betriebswirt/in (doppelt qualifizierende Ausbildung) - Außenhandel",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6128391200",
+      "name": "Betriebswirt/in (doppelt qualifizierende Ausbildung) - Textil",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "7130390800",
+      "name": "Betriebswirt/in (doppelt qualifizierende Ausbildung) - allgemeine Betriebswirtschaft",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "5242290000",
+      "name": "Binnenschiffer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5242290001",
+      "name": "Binnenschiffer/in - Frachtschifffahrt",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5242290002",
+      "name": "Binnenschiffer/in - Personenschifffahrt",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5242290400",
+      "name": "Binnenschifffahrtskapitän/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "4121290200",
+      "name": "Biologielaborant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2723290200",
+      "name": "Biologiemodellmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3310290000",
+      "name": "Bodenleger/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9361290100",
+      "name": "Bogenmacher/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3332291100",
+      "name": "Bootsbauer/in - Neu-, Aus- und Umbau",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2524290400",
+      "name": "Bootsbauer/in - Technik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2911290000",
+      "name": "Brauer/in und Mälzer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2913290000",
+      "name": "Brenner/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3224290000",
+      "name": "Brunnenbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2342291500",
+      "name": "Buchbinder/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6251290200",
+      "name": "Buchhändler/in",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2922290000",
+      "name": "Bäcker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2238290100",
+      "name": "Böttcher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2452290400",
+      "name": "Büchsenmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9461290000",
+      "name": "Bühnenmaler/in und Bühnenplastiker/in - Malerei",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9461290100",
+      "name": "Bühnenmaler/in und Bühnenplastiker/in - Plastik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2235291500",
+      "name": "Bürsten- und Pinselmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235290001",
+      "name": "Bürsten- und Pinselmacher/in - Herstellen von Bürsten",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235290002",
+      "name": "Bürsten- und Pinselmacher/in - Herstellen von Pinseln",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4132291200",
+      "name": "Chemielaborant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4132290000",
+      "name": "Chemielaborjungwerker/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4131290100",
+      "name": "Chemikant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2451292200",
+      "name": "Chirurgiemechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3214290400",
+      "name": "Dachdecker/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3214290001",
+      "name": "Dachdecker/in - Abdichtungstechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3214290002",
+      "name": "Dachdecker/in - Außenwandbekleidungstechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3214290003",
+      "name": "Dachdecker/in - Dachdeckungstechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3214290004",
+      "name": "Dachdecker/in - Energietechnik an Dach und Wand",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3214290005",
+      "name": "Dachdecker/in - Reetdachtechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2913290100",
+      "name": "Destillateur/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8176290000",
+      "name": "Diätassistent/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "9333290000",
+      "name": "Drechsler/in (Elfenbeinschnitzer/in) - Drechseln",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9333290100",
+      "name": "Drechsler/in (Elfenbeinschnitzer/in) - Elfenbeinschnitzen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "6241290100",
+      "name": "Drogist/in",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "9352291000",
+      "name": "Edelsteinfasser/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352292600",
+      "name": "Edelsteinschleifer/in - Edelsteingravieren",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352292800",
+      "name": "Edelsteinschleifer/in - Edelsteinschleifen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352292900",
+      "name": "Edelsteinschleifer/in - Industriediamantschleifen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352293000",
+      "name": "Edelsteinschleifer/in - Schmuckdiamantschleifen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "5220290500",
+      "name": "Eisenbahner/in - Betriebsdienst - Lokführer/in und Transport",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5152290700",
+      "name": "Eisenbahner/in - Zugverkehrssteuerung",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2625291400",
+      "name": "Elektroanlagenmonteur/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2612291000",
+      "name": "Elektroniker/in - Automatisierungs- und Systemtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2612290400",
+      "name": "Elektroniker/in - Automatisierungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2625291700",
+      "name": "Elektroniker/in - Betriebstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2621290600",
+      "name": "Elektroniker/in - Energie- und Gebäudetechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2621291000",
+      "name": "Elektroniker/in - Gebäude- und Infrastruktursysteme",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2621290900",
+      "name": "Elektroniker/in - Gebäudesystemintegration",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2630290600",
+      "name": "Elektroniker/in - Geräte und Systeme",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2631295800",
+      "name": "Elektroniker/in - Informations- und Systemtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2622290600",
+      "name": "Elektroniker/in - Maschinen und Antriebstechnik (BBiG)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2622290500",
+      "name": "Elektroniker/in - Maschinen und Antriebstechnik (HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2631295600",
+      "name": "Elektronikfachkraft (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8172390000",
+      "name": "Ergotherapeut/in (Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3312290000",
+      "name": "Estrichleger/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "7141390700",
+      "name": "Eurokaufmann/-frau (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7321291000",
+      "name": "Fachangestellte/r - Arbeitsmarktdienstleistungen",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "5314290000",
+      "name": "Fachangestellte/r - Bäderbetriebe",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "9134290100",
+      "name": "Fachangestellte/r - Markt- und Sozialforschung",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "7331290000",
+      "name": "Fachangestellte/r - Medien- und Informationsdienste - Archiv",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7332290100",
+      "name": "Fachangestellte/r - Medien- und Informationsdienste - Bibliothek",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7331290100",
+      "name": "Fachangestellte/r - Medien- und Informationsdienste - Bildagentur",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7333290100",
+      "name": "Fachangestellte/r - Medien- und Informationsdienste - Information und Dokumentation",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7334290300",
+      "name": "Fachangestellte/r - Medien- und Informationsdienste - Medizinische Dokumentation",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "4310290700",
+      "name": "Fachberater/in - Integrierte Systeme (doppelt qualifizierende Ausbildung)",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4341290500",
+      "name": "Fachberater/in - Softwaretechniken (doppelt qualifizierende Ausbildung)",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4341290200",
+      "name": "Fachinformatiker/in - Anwendungsentwicklung",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4311291900",
+      "name": "Fachinformatiker/in - Daten- und Prozessanalyse",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4331290000",
+      "name": "Fachinformatiker/in - Digitale Vernetzung",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4310290600",
+      "name": "Fachinformatiker/in - Systemintegration",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "1110290500",
+      "name": "Fachkraft - Agrarservice",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "5213290200",
+      "name": "Fachkraft - Fahrbetrieb",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2914290000",
+      "name": "Fachkraft - Fruchtsafttechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6330290800",
+      "name": "Fachkraft - Gastronomie",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6330290001",
+      "name": "Fachkraft - Gastronomie (Restaurantservice)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6331290001",
+      "name": "Fachkraft - Gastronomie (Systemgastronomie)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "5133290700",
+      "name": "Fachkraft - Hafenlogistik",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "3324290200",
+      "name": "Fachkraft - Holz- und Bautenschutzarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "5132290200",
+      "name": "Fachkraft - Kurier-, Express- und Postdienstleistungen",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2930290500",
+      "name": "Fachkraft - Küche",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5131290600",
+      "name": "Fachkraft - Lagerlogistik",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2920290000",
+      "name": "Fachkraft - Lebensmitteltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2831290400",
+      "name": "Fachkraft - Lederherstellung und Gerbereitechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2832291300",
+      "name": "Fachkraft - Lederverarbeitung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441293500",
+      "name": "Fachkraft - Metalltechnik - Konstruktionstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2511290400",
+      "name": "Fachkraft - Metalltechnik - Montagetechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2421290800",
+      "name": "Fachkraft - Metalltechnik - Umform- und Drahttechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2423294300",
+      "name": "Fachkraft - Metalltechnik - Zerspanungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2234292100",
+      "name": "Fachkraft - Möbel-, Küchen- und Umzugsservice",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5311290200",
+      "name": "Fachkraft - Schutz und Sicherheit",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "3113290000",
+      "name": "Fachkraft - Straßen- und Verkehrstechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9451290200",
+      "name": "Fachkraft - Veranstaltungstechnik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3114290100",
+      "name": "Fachkraft - Wasserwirtschaft",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "5131290700",
+      "name": "Fachlagerist/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "6330290700",
+      "name": "Fachmann/-frau - Restaurants und Veranstaltungsgastronomie",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6331290000",
+      "name": "Fachmann/-frau - Systemgastronomie",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2822290500",
+      "name": "Fachpraktiker/in - Näherei, Schneiderei (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2930290100",
+      "name": "Fachpraktiker/in Küche (Beikoch) (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3421290500",
+      "name": "Fachpraktiker/in für Anlagenmechaniker SHK (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2342290500",
+      "name": "Fachpraktiker/in für Buchbinderei (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2922290100",
+      "name": "Fachpraktiker/in für Bäcker (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7140290400",
+      "name": "Fachpraktiker/in für Büromanagement (§66 BBiG/§42r HwO)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2235291600",
+      "name": "Fachpraktiker/in für Bürstenherstellung (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3214290500",
+      "name": "Fachpraktiker/in für Dachdecker (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9212290500",
+      "name": "Fachpraktiker/in für Dialogmarketing (§66 BBiG/§42r HwO)",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2621290300",
+      "name": "Fachpraktiker/in für Elektroniker (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5415290000",
+      "name": "Fachpraktiker/in für Fahrzeugpflege (§66 BBiG/§42r HwO)",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2923290100",
+      "name": "Fachpraktiker/in für Fleischer (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "1220290300",
+      "name": "Fachpraktiker/in für Floristik (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "8231290300",
+      "name": "Fachpraktiker/in für Friseur (§66 BBiG/§42r HwO)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "5411290100",
+      "name": "Fachpraktiker/in für Gebäudereiniger (§66 BBiG/§42r HwO)",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "8321291400",
+      "name": "Fachpraktiker/in für Hauswirtschaft und personenorientierte Serviceleistungen (§66 BBiG/§42r HwO)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3210290400",
+      "name": "Fachpraktiker/in für Hochbaufacharbeiter (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2230290200",
+      "name": "Fachpraktiker/in für Holzverarbeitung (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2631295400",
+      "name": "Fachpraktiker/in für IT Systemelektronik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4310291300",
+      "name": "Fachpraktiker/in für IT Systemintegration (§66 BBiG/§42r HwO)",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2510292500",
+      "name": "Fachpraktiker/in für Industriemechanik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521290000",
+      "name": "Fachpraktiker/in für Karosserie- und Fahrzeugbaumechanik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521290400",
+      "name": "Fachpraktiker/in für Kfz-Mechatroniker (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441293400",
+      "name": "Fachpraktiker/in für Konstruktionsmechanik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3433290200",
+      "name": "Fachpraktiker/in für Kreislauf- und Abfallwirtschaft (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "5131290100",
+      "name": "Fachpraktiker/in für Lagerlogistik (§66 BBiG/§42r HwO)",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2522290900",
+      "name": "Fachpraktiker/in für Land- und Baumaschinenmechatronik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "1110290100",
+      "name": "Fachpraktiker/in für Landwirt (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "3321290300",
+      "name": "Fachpraktiker/in für Maler und Lackierer (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2341293000",
+      "name": "Fachpraktiker/in für Medientechnologie Druck (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2341290900",
+      "name": "Fachpraktiker/in für Medientechnologie Druckverarbeitung (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441290400",
+      "name": "Fachpraktiker/in für Metallbau (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2420290300",
+      "name": "Fachpraktiker/in für Metalltechnik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2234292500",
+      "name": "Fachpraktiker/in für Möbel-, Küchen- und Umzugsservice (§66BBiG/§42rHwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8251290400",
+      "name": "Fachpraktiker/in für Orthopädietechnik (§66 BBiG/§42r HwO)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "1130290100",
+      "name": "Fachpraktiker/in für Pferdewirt (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "8321291200",
+      "name": "Fachpraktiker/in für Service in sozialen Einrichtungen (§66 BBiG/§42r HwO)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2721290900",
+      "name": "Fachpraktiker/in für Technisches Produktdesign (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5413290100",
+      "name": "Fachpraktiker/in für Textilreiniger (§66 BBiG/§42r HwO)",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "3220290200",
+      "name": "Fachpraktiker/in für Tiefbaufacharbeiter (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "1152290200",
+      "name": "Fachpraktiker/in für Tierpflege (Heim und Pension) (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1160290100",
+      "name": "Fachpraktiker/in für Winzer (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2423290200",
+      "name": "Fachpraktiker/in für Zerspanungsmechanik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2525290100",
+      "name": "Fachpraktiker/in für Zweiradmechatroniker (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2631290400",
+      "name": "Fachpraktiker/in für elektronische Geräte und Systeme (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3330290100",
+      "name": "Fachpraktiker/in im Ausbaufachwerk (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "1210290100",
+      "name": "Fachpraktiker/in im Gartenbau (§66 BBiG/§42r HwO)",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "6330290200",
+      "name": "Fachpraktiker/in im Gastgewerbe (§66 BBiG/§42r HwO)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "3410290600",
+      "name": "Fachpraktiker/in im Gebäudeservice (§66 BBiG/§42r HwO)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "8110290400",
+      "name": "Fachpraktiker/in im Gesundheitswesen (§66 BBiG/§42r HwO)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "6230290200",
+      "name": "Fachpraktiker/in im Nahrungsmittelverkauf (§66 BBiG/§42r HwO)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6210290300",
+      "name": "Fachpraktiker/in im Verkauf (§66 BBiG/§42r HwO)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6231290100",
+      "name": "Fachverkäufer/in - Lebensmittelhandwerk (Bäckerei)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6232290100",
+      "name": "Fachverkäufer/in - Lebensmittelhandwerk (Fleischerei)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6231290200",
+      "name": "Fachverkäufer/in - Lebensmittelhandwerk (Konditorei)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2451290700",
+      "name": "Fachwerker/in - Feinwerktechnik (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6128393500",
+      "name": "Fachwirt/in - E-Commerce (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6120390000",
+      "name": "Fachwirt/in - Handel (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6210390700",
+      "name": "Fachwirt/in - Vertrieb im Einzelhandel (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2525290600",
+      "name": "Fahrradmonteur/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2824290800",
+      "name": "Fahrzeuginterieur-Mechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2221290200",
+      "name": "Fahrzeuglackierer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3215290000",
+      "name": "Fassadenmonteur/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2136290000",
+      "name": "Feinoptiker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2422290600",
+      "name": "Feinpolierer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2451291200",
+      "name": "Feinwerkmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2451290001",
+      "name": "Feinwerkmechaniker/in - Feinmechanik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2510290001",
+      "name": "Feinwerkmechaniker/in - Maschinenbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2452290001",
+      "name": "Feinwerkmechaniker/in - Werkzeugbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2423290001",
+      "name": "Feinwerkmechaniker/in - Zerspanungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2511290200",
+      "name": "Fertigungsmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3213290000",
+      "name": "Feuerungs- und Schornsteinbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2142290000",
+      "name": "Figurenkeramformer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7212290300",
+      "name": "Finanzassistent/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "1141290100",
+      "name": "Fischwirt/in - Aquakultur und Binnenfischerei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1142290300",
+      "name": "Fischwirt/in - Küstenfischerei und Kleine Hochseefischerei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2134291600",
+      "name": "Flachglastechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235291100",
+      "name": "Flechtwerkgestalter/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235291300",
+      "name": "Flechtwerkgestalter/in - Flechtmöbel",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235291400",
+      "name": "Flechtwerkgestalter/in - Flechtobjekte",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2235291200",
+      "name": "Flechtwerkgestalter/in - Korbwaren",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2923290500",
+      "name": "Fleischer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3311290000",
+      "name": "Fliesen-, Platten- und Mosaikleger/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "1220290000",
+      "name": "Florist/in",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2633290200",
+      "name": "Fluggerätelektroniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2523290000",
+      "name": "Fluggerätmechaniker/in - Fertigungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2523290100",
+      "name": "Fluggerätmechaniker/in - Instandhaltungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2523290200",
+      "name": "Fluggerätmechaniker/in - Triebwerkstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "1171290100",
+      "name": "Forstwirt/in",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2332290400",
+      "name": "Fotograf/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6224290400",
+      "name": "Fotomedienfachmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "8231290000",
+      "name": "Friseur/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "5411290000",
+      "name": "Gebäudereiniger/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "9361290000",
+      "name": "Geigenbauer/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3122290300",
+      "name": "Geomatiker/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3216290000",
+      "name": "Gerüstbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2321297000",
+      "name": "Gestalter/in - immersive Medien",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9322290100",
+      "name": "Gestalter/in - visuelles Marketing",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2413291200",
+      "name": "Gießereimechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2413290001",
+      "name": "Gießereimechaniker/in - Druck- und Kokillenguss",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2413290002",
+      "name": "Gießereimechaniker/in - Feinguss",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2414290001",
+      "name": "Gießereimechaniker/in - Handformguss",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2413290003",
+      "name": "Gießereimechaniker/in - Kernherstellung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2413290004",
+      "name": "Gießereimechaniker/in - Maschinenformguss",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2413290005",
+      "name": "Gießereimechaniker/in - Schmelzbetrieb",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9342290200",
+      "name": "Glas- und Porzellanmaler/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2132290000",
+      "name": "Glasapparatebauer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9343290100",
+      "name": "Glasbläser/in - Christbaumschmuck",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9343290000",
+      "name": "Glasbläser/in - Glasgestaltung",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9343290200",
+      "name": "Glasbläser/in - Kunstaugen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3334290100",
+      "name": "Glaser/in - Fenster- und Glasfassadenbau",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3334290000",
+      "name": "Glaser/in - Verglasung und Glasbau",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2131290200",
+      "name": "Glasmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2134290800",
+      "name": "Glasveredler/in - Glasmalerei und Kunstverglasung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2134290900",
+      "name": "Glasveredler/in - Kanten- und Flächenveredlung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2134291000",
+      "name": "Glasveredler/in - Schliff und Gravur",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3223290000",
+      "name": "Gleisbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9352293200",
+      "name": "Gold- und Silberschmied/in - Goldschmieden",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352293300",
+      "name": "Gold- und Silberschmied/in - Silberschmieden",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9353290500",
+      "name": "Graveur/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "1212290000",
+      "name": "Gärtner/in - Baumschule",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1213290000",
+      "name": "Gärtner/in - Friedhofsgärtnerei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1214290200",
+      "name": "Gärtner/in - Garten- und Landschaftsbau",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1211290000",
+      "name": "Gärtner/in - Gemüsebau",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1211290100",
+      "name": "Gärtner/in - Obstbau",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1212290200",
+      "name": "Gärtner/in - Staudengärtnerei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1212290300",
+      "name": "Gärtner/in - Zierpflanzenbau",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "5242290100",
+      "name": "Hafenschiffer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "6120395400",
+      "name": "Handelsassistent/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "9368290000",
+      "name": "Handzuginstrumentenmacher/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "8321291300",
+      "name": "Hauswirtschafter/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8321290001",
+      "name": "Hauswirtschafter/in - Ländlich-agrarische Dienstleistungen",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8321290002",
+      "name": "Hauswirtschafter/in - Personenbetreuende Dienstleistungen",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8321290003",
+      "name": "Hauswirtschafter/in - Serviceorientierte Dienstleistungen",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "3210290000",
+      "name": "Hochbaufacharbeiter/in (ohne Angabe des Schwerpunkts)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3217290100",
+      "name": "Hochbaufacharbeiter/in - Abbruch- und Betontrenntechnikarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3211291000",
+      "name": "Hochbaufacharbeiter/in - Beton- und Stahlbetonarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3213290400",
+      "name": "Hochbaufacharbeiter/in - Feuerungs- und Schornsteinbauarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3212290700",
+      "name": "Hochbaufacharbeiter/in - Maurerarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3324290300",
+      "name": "Holz- und Bautenschützer/in - Bautenschutz",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3324290100",
+      "name": "Holz- und Bautenschützer/in - Holzschutz",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2230291000",
+      "name": "Holzbearbeitungsmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9331290100",
+      "name": "Holzbildhauer/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9362290000",
+      "name": "Holzblasinstrumentenmacher/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2234292800",
+      "name": "Holzmechaniker/in - Herstellen von Bauelementen, Holzpackmitteln und Rahmen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2234292700",
+      "name": "Holzmechaniker/in - Herstellen von Möbeln und Innenausbauteilen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2234292600",
+      "name": "Holzmechaniker/in - Montieren von Innenausbauten und Bauelementen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9333290200",
+      "name": "Holzspielzeugmacher/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "6322290000",
+      "name": "Hotelfachmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "8253290100",
+      "name": "Hörakustiker/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2631291300",
+      "name": "IT-System-Elektroniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6131290000",
+      "name": "Immobilienassistent/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6131290300",
+      "name": "Immobilienkaufmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "3331290200",
+      "name": "Industrie-Isolierer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2625291100",
+      "name": "Industrieelektriker/in - Betriebstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2630290400",
+      "name": "Industrieelektriker/in - Geräte und Systeme",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2510290600",
+      "name": "Industriefachhelfer/in (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7130290400",
+      "name": "Industriekaufmann/-frau",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2141292500",
+      "name": "Industriekeramiker/in Anlagentechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9342291700",
+      "name": "Industriekeramiker/in Dekorationstechnik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2142291700",
+      "name": "Industriekeramiker/in Modelltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2141292600",
+      "name": "Industriekeramiker/in Verfahrenstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2510291300",
+      "name": "Industriemechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2631296000",
+      "name": "Informationselektroniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7212290100",
+      "name": "Investmentfondskaufmann/-frau",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "3331290300",
+      "name": "Isolierfacharbeiter/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "7325290000",
+      "name": "Justizfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "3225290300",
+      "name": "Kanalbauer/in - Infrastrukturtechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2521294300",
+      "name": "Karosserie- und Fahrzeugbaumechaniker/in - Caravan- und Reisemobiltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521294100",
+      "name": "Karosserie- und Fahrzeugbaumechaniker/in - Karosserie- und Fahrzeugbautechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521291800",
+      "name": "Karosserie- und Fahrzeugbaumechaniker/in - Karosserieinstandhaltungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7140292200",
+      "name": "Kaufmann/-frau - Büromanagement",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "9212290400",
+      "name": "Kaufmann/-frau - Dialogmarketing",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "4311291800",
+      "name": "Kaufmann/-frau - Digitalisierungsmanagement",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "6128290000",
+      "name": "Kaufmann/-frau - E-Commerce",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6210290000",
+      "name": "Kaufmann/-frau - Einzelhandel",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "7322290100",
+      "name": "Kaufmann/-frau - Gesundheitswesen",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "6121291200",
+      "name": "Kaufmann/-frau - Groß- und Außenhandelsmanagement (Außenhandel)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6121291300",
+      "name": "Kaufmann/-frau - Groß- und Außenhandelsmanagement (Großhandel)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6321290500",
+      "name": "Kaufmann/-frau - Hotelmanagement",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "4323290100",
+      "name": "Kaufmann/-frau - IT-System-Management",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "5166290200",
+      "name": "Kaufmann/-frau - Kurier-, Express- und Postdienstleistungen",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "9211290700",
+      "name": "Kaufmann/-frau - Marketingkommunikation",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "5141290001",
+      "name": "Kaufmann/-frau - Mobilität und Verkehrsservice",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5162290300",
+      "name": "Kaufmann/-frau - Spedition und Logistikdienstleistung",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "6311290800",
+      "name": "Kaufmann/-frau - Tourismus und Freizeit",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "7213290600",
+      "name": "Kaufmann/-frau - Versicherungen und Finanzanlagen",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "9230290400",
+      "name": "Kaufmann/-frau - audiovisuelle Medien",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9341290700",
+      "name": "Keramiker/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9335290300",
+      "name": "Kerzenhersteller/in und Wachsbildner/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9335290001",
+      "name": "Kerzenhersteller/in und Wachsbildner/in - Kerzenherstellung",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9335290002",
+      "name": "Kerzenhersteller/in und Wachsbildner/in - Wachsbildnerei",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9364290100",
+      "name": "Klavier- und Cembalobauer/in - Cembalobau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9364290200",
+      "name": "Klavier- und Cembalobauer/in - Klavierbau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3420290000",
+      "name": "Klempner/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2930290000",
+      "name": "Koch/Köchin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2922290400",
+      "name": "Konditor/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441292500",
+      "name": "Konstruktionsmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8232290400",
+      "name": "Kosmetiker/in (duale Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2521294000",
+      "name": "Kraftfahrzeugmechatroniker/in - Karosserietechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2525290500",
+      "name": "Kraftfahrzeugmechatroniker/in - Motorradtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521292400",
+      "name": "Kraftfahrzeugmechatroniker/in - Nutzfahrzeugtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521291600",
+      "name": "Kraftfahrzeugmechatroniker/in - Personenkraftwagentechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2521293900",
+      "name": "Kraftfahrzeugmechatroniker/in - System- und Hochvolttechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293600",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Bauteile",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293700",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Compound- und Masterbatchherstellung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293500",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Faserverbundtechnologie",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293100",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Formteile",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293000",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Halbzeuge",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293400",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Kunststofffenster",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2210293200",
+      "name": "Kunststoff- und Kautschuktechnologe/-technologin - Mehrschichtkautschukteile",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2834290200",
+      "name": "Kürschner/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2222290000",
+      "name": "Lacklaborant/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2522291000",
+      "name": "Land- und Baumaschinenmechatroniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "1110290000",
+      "name": "Landwirt/in",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2523290300",
+      "name": "Leichtflugzeugbauer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3432290600",
+      "name": "Leitungsbauer/in - Infrastrukturtechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2133290100",
+      "name": "Leuchtröhrenglasbläser/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8173390000",
+      "name": "Logopäde/Logopädin (Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "5164290000",
+      "name": "Luftverkehrskaufmann/-frau",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "3321292200",
+      "name": "Maler/in und Lackierer/in - Ausbautechnik und Oberflächengestaltung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3321291400",
+      "name": "Maler/in und Lackierer/in - Bauten- und Korrosionsschutz",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3321292100",
+      "name": "Maler/in und Lackierer/in - Energieeffizienz- und Gestaltungstechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3321291300",
+      "name": "Maler/in und Lackierer/in - Gestaltung und Instandhaltung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3321291500",
+      "name": "Maler/in und Lackierer/in - Kirchenmalerei und Denkmalpflege",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "7140391900",
+      "name": "Managementassistent/in (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "9342290400",
+      "name": "Manufakturporzellanmaler/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2512290100",
+      "name": "Maschinen- und Anlagenführer/in (ohne Angabe des Schwerpunkts)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2312290600",
+      "name": "Maschinen- und Anlagenführer/in - Druckweiter- und Papierverarbeitung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2920290300",
+      "name": "Maschinen- und Anlagenführer/in - Lebensmitteltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2420291400",
+      "name": "Maschinen- und Anlagenführer/in - Metall-, Kunststofftechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2810290800",
+      "name": "Maschinen- und Anlagenführer/in - Textiltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2814291500",
+      "name": "Maschinen- und Anlagenführer/in - Textilveredelung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8234290100",
+      "name": "Maskenbildner/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8171290000",
+      "name": "Masseur/in und medizinische/r Bademeister/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "4341290600",
+      "name": "Mathematisch-technische/r Softwareentwickler/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "3212290000",
+      "name": "Maurer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2822292200",
+      "name": "Maßschneider/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822290001",
+      "name": "Maßschneider/in - Damen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822290002",
+      "name": "Maßschneider/in - Herren",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2833291100",
+      "name": "Maßschuhmacher/in - Maßschuhe",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2833291200",
+      "name": "Maßschuhmacher/in - Schaftbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2211290200",
+      "name": "Mechaniker/in - Reifen- und Vulkanisationstechnik - Reifen- und Fahrwerktechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2211290300",
+      "name": "Mechaniker/in - Reifen- und Vulkanisationstechnik - Vulkanisationstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2611290000",
+      "name": "Mechatroniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3423290200",
+      "name": "Mechatroniker/in - Kältetechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9453290100",
+      "name": "Mediengestalter/in - Bild und Ton",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2321297300",
+      "name": "Mediengestalter/in Digital und Print - Designkonzeption",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2321297100",
+      "name": "Mediengestalter/in Digital und Print - Digitalmedien",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2321297200",
+      "name": "Mediengestalter/in Digital und Print - Printmedien",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2321297400",
+      "name": "Mediengestalter/in Digital und Print - Projektmanagement",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9230291000",
+      "name": "Medienkaufmann/-frau Digital und Print",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2341292800",
+      "name": "Medientechnologe/-technologin Druck",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2342291400",
+      "name": "Medientechnologe/-technologin Druckverarbeitung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2341292900",
+      "name": "Medientechnologe/-technologin Siebdruck",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8110290100",
+      "name": "Medizinische/r Fachangestellte/r",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8122290500",
+      "name": "Medizinische/r Technologe/Technologin - Funktionsdiagnostik",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8121290300",
+      "name": "Medizinische/r Technologe/Technologin - Laboratoriumsanalytik",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8123290200",
+      "name": "Medizinische/r Technologe/Technologin - Radiologie",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8124290200",
+      "name": "Medizinische/r Technologe/Technologin - Veterinärmedizin",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2414290300",
+      "name": "Metall- und Glockengießer/in - Kunst- und Glockengusstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2414290100",
+      "name": "Metall- und Glockengießer/in - Metallgusstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2414290200",
+      "name": "Metall- und Glockengießer/in - Zinngusstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441290600",
+      "name": "Metallbauer/in - Konstruktionstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2441290500",
+      "name": "Metallbauer/in - Metallgestaltung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2522290000",
+      "name": "Metallbauer/in - Nutzfahrzeugbau",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9351290900",
+      "name": "Metallbildner/in - Gürtlertechnik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9351291000",
+      "name": "Metallbildner/in - Metalldrücktechnik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9353290100",
+      "name": "Metallbildner/in - Ziseliertechnik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9363290000",
+      "name": "Metallblasinstrumentenmacher/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2632290000",
+      "name": "Mikrotechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2632290001",
+      "name": "Mikrotechnologe/-technologin - Halbleitertechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2632290002",
+      "name": "Mikrotechnologe/-technologin - Mikrosystemtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2925290400",
+      "name": "Milchtechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4121290300",
+      "name": "Milchwirtschaftliche/r Laborant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2822291400",
+      "name": "Modist/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6253290100",
+      "name": "Musikfachhändler/in",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2121290400",
+      "name": "Naturwerksteinmechaniker/in - Maschinenbearbeitungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2121290500",
+      "name": "Naturwerksteinmechaniker/in - Schleiftechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2123290300",
+      "name": "Naturwerksteinmechaniker/in - Steinmetztechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7311290000",
+      "name": "Notarfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "8134290300",
+      "name": "Notfallsanitäter/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2430290700",
+      "name": "Oberflächenbeschichter/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3422290300",
+      "name": "Ofen- und Luftheizungsbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "8133290000",
+      "name": "Operationstechnische/r Assistent/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "7140391700",
+      "name": "Organisationsassistent/in",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "9365290500",
+      "name": "Orgelbauer/in - Orgelbau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9365290600",
+      "name": "Orgelbauer/in - Pfeifenbau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "8113290000",
+      "name": "Orthoptist/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2833290300",
+      "name": "Orthopädieschuhmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "8251290300",
+      "name": "Orthopädietechnik-Mechaniker/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8251290001",
+      "name": "Orthopädietechnik-Mechaniker/in - Individuelle Orthetik",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8251290002",
+      "name": "Orthopädietechnik-Mechaniker/in - Individuelle Rehatechnik",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8251290003",
+      "name": "Orthopädietechnik-Mechaniker/in - Prothetik",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2312290500",
+      "name": "Packmitteltechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2311291000",
+      "name": "Papiertechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3313290000",
+      "name": "Parkettleger/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "7311290100",
+      "name": "Patentanwaltsfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2834290000",
+      "name": "Pelzveredler/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7152290100",
+      "name": "Personaldienstleistungskaufmann/-frau",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "1132290400",
+      "name": "Pferdewirt/in - Klassische Reitausbildung",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1130290300",
+      "name": "Pferdewirt/in - Pferdehaltung und Service",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1132290300",
+      "name": "Pferdewirt/in - Pferderennen",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1131290200",
+      "name": "Pferdewirt/in - Pferdezucht",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1132290500",
+      "name": "Pferdewirt/in - Spezialreitweisen",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1113290500",
+      "name": "Pflanzentechnologe/-technologin",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "8130190001",
+      "name": "Pflegefachassistent/in / Pflegefachassistenzperson",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8130290600",
+      "name": "Pflegefachmann/-frau (Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "4131290200",
+      "name": "Pharmakant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "6241290200",
+      "name": "Pharmazeutisch-kaufmännische/r Angestellte/r",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "8182290000",
+      "name": "Pharmazeutisch-technische/r Assistent/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "4141290100",
+      "name": "Physiklaborant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "8171390100",
+      "name": "Physiotherapeut/in (Ausbildung)",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8177290100",
+      "name": "Podologe/Podologin",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2823290300",
+      "name": "Polster- und Dekorationsnäher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2824290000",
+      "name": "Polsterer/Polsterin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2811290800",
+      "name": "Produktgestalter/in - Textil",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4131290600",
+      "name": "Produktionsfachkraft Chemie",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2810290400",
+      "name": "Produktionsmechaniker/in - Textil",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2730290200",
+      "name": "Produktionstechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812295600",
+      "name": "Produktprüfer/in - Textil",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2814291400",
+      "name": "Produktveredler/in - Textil",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2452293400",
+      "name": "Präzisionswerkzeugmechaniker/in - Schneidwerkzeuge",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2452293500",
+      "name": "Präzisionswerkzeugmechaniker/in - Zerspanwerkzeuge",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4132292500",
+      "name": "Prüftechnologe/-technologin Keramik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "9323290000",
+      "name": "Raumausstatter/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "3310290001",
+      "name": "Raumausstatter/in - Boden",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2824290001",
+      "name": "Raumausstatter/in - Polstern",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9323290001",
+      "name": "Raumausstatter/in - Raumdekoration, Licht-, Sicht- und Sonnenschutzanlagen",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9323290002",
+      "name": "Raumausstatter/in - Wand- und Deckendekoration",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9323290100",
+      "name": "Raumausstatterwerker/in (§66 BBiG/§42r HwO)",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "7311290300",
+      "name": "Rechtsanwalts- und Notarfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7311290200",
+      "name": "Rechtsanwaltsfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "1173290000",
+      "name": "Revierjäger/in",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "3335290100",
+      "name": "Rollladen- und Sonnenschutzmechatroniker/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2832291100",
+      "name": "Sattler/in - Fahrzeugsattlerei",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2832290900",
+      "name": "Sattler/in - Feintäschnerei",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2832291000",
+      "name": "Sattler/in - Reitsportsattlerei",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5165290000",
+      "name": "Schifffahrtskaufmann/-frau - Linienfahrt",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5165290100",
+      "name": "Schifffahrtskaufmann/-frau - Trampfahrt",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2524290100",
+      "name": "Schiffsmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9354290100",
+      "name": "Schilder- und Lichtreklamehersteller/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9354290001",
+      "name": "Schilder- und Lichtreklamehersteller/in - Grafik, Druck, Applikation",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9354290002",
+      "name": "Schilder- und Lichtreklamehersteller/in - Technik, Montage, Werbeelektrik/-elektronik",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9352290400",
+      "name": "Schmuckwerker/in (§66 BBiG/§42r HwO)",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "4221290000",
+      "name": "Schornsteinfeger/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2833290400",
+      "name": "Schuhfertiger/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2442290600",
+      "name": "Schweißwerker/in (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5334290200",
+      "name": "Schädlingsbekämpfer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2833290700",
+      "name": "Schäftemacher/in (§66 BBiG/§42r HwO)",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2823290100",
+      "name": "Segelmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2813290200",
+      "name": "Seiler/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2813290001",
+      "name": "Seiler/in - Netzkonfektion",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2813290002",
+      "name": "Seiler/in - Seilherstellung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2813290003",
+      "name": "Seiler/in - Seilkonfektion",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9212290300",
+      "name": "Servicefachkraft - Dialogmarketing",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "5218290100",
+      "name": "Servicefahrer/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5142290000",
+      "name": "Servicekaufmann/-frau - Luftverkehr",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "5311290800",
+      "name": "Servicekraft - Schutz und Sicherheit",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "7321290200",
+      "name": "Sozialversicherungsfachangestellte/r - Rentenversicherung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7321290300",
+      "name": "Sozialversicherungsfachangestellte/r - Unfallversicherung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7321290100",
+      "name": "Sozialversicherungsfachangestellte/r - allgemeine Krankenversicherung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7321290400",
+      "name": "Sozialversicherungsfachangestellte/r - knappschaftliche Sozialversicherung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7321290500",
+      "name": "Sozialversicherungsfachangestellte/r - landwirtschaftliche Sozialversicherung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "3220290400",
+      "name": "Spezialtiefbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9333290300",
+      "name": "Spielzeughersteller/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "6312290000",
+      "name": "Sport- und Fitnesskaufmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "6312290400",
+      "name": "Sportfachmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2421290700",
+      "name": "Stanz- und Umformmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9331290000",
+      "name": "Steinmetz/in und Steinbildhauer/in - Steinbildhauerarbeiten",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2123290100",
+      "name": "Steinmetz/in und Steinbildhauer/in - Steinmetzarbeiten",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7230290000",
+      "name": "Steuerfachangestellte/r",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "3222290000",
+      "name": "Straßenbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "5121290000",
+      "name": "Straßenwärter/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "3322290000",
+      "name": "Stuckateur/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2926290700",
+      "name": "Süßwarentechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7130377100",
+      "name": "Technische/r Betriebswirt/in - Handwerk (doppelt qualifizierende Ausbildung)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2823290200",
+      "name": "Technische/r Konfektionär/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2723290001",
+      "name": "Technische/r Modellbauer/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2723291100",
+      "name": "Technische/r Modellbauer/in - Anschauung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2723291200",
+      "name": "Technische/r Modellbauer/in - Gießerei",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2723291400",
+      "name": "Technische/r Modellbauer/in - Karosserie und Produktion",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721292500",
+      "name": "Technische/r Produktdesigner/in - Maschinen- und Anlagenkonstruktion",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721293000",
+      "name": "Technische/r Produktdesigner/in - Produktgestaltung und -konstruktion",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721292800",
+      "name": "Technische/r Systemplaner/in - Elektrotechnische Systeme",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721292600",
+      "name": "Technische/r Systemplaner/in - Stahl- und Metallbautechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2721293100",
+      "name": "Technische/r Systemplaner/in - Versorgungs- und Ausrüstungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "7140190000",
+      "name": "Telefonist/in (§66 BBiG/§42r HwO)",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2822293500",
+      "name": "Textil- und Modenäher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822293600",
+      "name": "Textil- und Modeschneider/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822290003",
+      "name": "Textil- und Modeschneider/in - Arbeitsvorbereitung und Qualitätsprüfung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822290004",
+      "name": "Textil- und Modeschneider/in - Prototypen und Serienfertigung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822290005",
+      "name": "Textil- und Modeschneider/in - Schnitttechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812296100",
+      "name": "Textilgestalter/in im Handwerk - Filzen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812296200",
+      "name": "Textilgestalter/in im Handwerk - Klöppeln",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812295700",
+      "name": "Textilgestalter/in im Handwerk - Posamentieren",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2811291900",
+      "name": "Textilgestalter/in im Handwerk - Sticken",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812296000",
+      "name": "Textilgestalter/in im Handwerk - Stricken",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2812295800",
+      "name": "Textilgestalter/in im Handwerk - Weben",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4132290700",
+      "name": "Textillaborant/in",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4132290001",
+      "name": "Textillaborant/in - Textilchemie",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2810290001",
+      "name": "Textillaborant/in - Textiltechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2814290001",
+      "name": "Textillaborant/in - Textilveredelung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5413290000",
+      "name": "Textilreiniger/in",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "2133290000",
+      "name": "Thermometermacher/in - Thermometerblasen",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2135290000",
+      "name": "Thermometermacher/in - Thermometerjustieren",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3220290000",
+      "name": "Tiefbaufacharbeiter/in (ohne Angabe des Schwerpunkts)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3224290500",
+      "name": "Tiefbaufacharbeiter/in - Brunnenbau- und Spezialtiefbauarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3223290500",
+      "name": "Tiefbaufacharbeiter/in - Gleisbauarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3225290500",
+      "name": "Tiefbaufacharbeiter/in - Kanalbauarbeiten für Infrastrukturtechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3432290700",
+      "name": "Tiefbaufacharbeiter/in - Leitungsbauarbeiten für Infrastrukturtechnik",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3222290700",
+      "name": "Tiefbaufacharbeiter/in - Straßenbauarbeiten",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "8114290100",
+      "name": "Tiermedizinische/r Fachangestellte/r",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "1158290000",
+      "name": "Tierpfleger/in - Forschung und Klinik",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1152290100",
+      "name": "Tierpfleger/in - Tierheim und Tierpension",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1152290000",
+      "name": "Tierpfleger/in - Zoo",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1122290000",
+      "name": "Tierwirt/in - Geflügelhaltung",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1123290000",
+      "name": "Tierwirt/in - Imkerei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1121290000",
+      "name": "Tierwirt/in - Rinderhaltung",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1121290200",
+      "name": "Tierwirt/in - Schweinehaltung",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "1121290100",
+      "name": "Tierwirt/in - Schäferei",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "2234290000",
+      "name": "Tischler/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "6311291200",
+      "name": "Tourismuskaufmann/-frau (Privat- und Geschäftsreisen)",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "3330290400",
+      "name": "Trockenbaumonteur/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2453290000",
+      "name": "Uhrmacher/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3431290800",
+      "name": "Umwelttechnologe/-technologin - Abwasserbewirtschaftung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3433290800",
+      "name": "Umwelttechnologe/-technologin - Kreislauf- und Abfallwirtschaft",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3431290900",
+      "name": "Umwelttechnologe/-technologin - Rohrleitungsnetze und Industrieanlagen",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3431290001",
+      "name": "Umwelttechnologe/-technologin - Rohrleitungsnetze und Industrieanlagen (Industrieanlagen)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3431290002",
+      "name": "Umwelttechnologe/-technologin - Rohrleitungsnetze und Industrieanlagen (Rohrleitungsnetze)",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3431290700",
+      "name": "Umwelttechnologe/-technologin - Wasserversorgung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "6340290000",
+      "name": "Veranstaltungskaufmann/-frau",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "2430290300",
+      "name": "Verfahrensmechaniker/in - Beschichtungstechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2136290400",
+      "name": "Verfahrensmechaniker/in - Brillenoptik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2131290400",
+      "name": "Verfahrensmechaniker/in - Glastechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122291300",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - Asphalttechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122290000",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - Baustoffe",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122290200",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - Gipsplatten oder Faserzement",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122290300",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - Kalksandsteine oder Porenbeton",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122290100",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - Transportbeton",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2122290400",
+      "name": "Verfahrensmechaniker/in - Steine- und Erdenindustrie - vorgefertigte Betonerzeugnisse",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2921290900",
+      "name": "Verfahrenstechnologe/-technologin - Mühlen- und Getreidewirtschaft - Agrarlager",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2921290700",
+      "name": "Verfahrenstechnologe/-technologin - Mühlen- und Getreidewirtschaft - Müllerei",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2411291300",
+      "name": "Verfahrenstechnologe/-technologin Metall - Eisen- und Stahlmetallurgie",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2412291100",
+      "name": "Verfahrenstechnologe/-technologin Metall - Nichteisenmetallumformung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2411291400",
+      "name": "Verfahrenstechnologe/-technologin Metall - Nichteisenmetallurgie",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2412291200",
+      "name": "Verfahrenstechnologe/-technologin Metall - Stahlumformung",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "9334290000",
+      "name": "Vergolder/in",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "6210290100",
+      "name": "Verkäufer/in",
+      "bereich": "Kaufmännische Dienstleistungen, Handel, Vertrieb, Hotel und Tourismus"
+    },
+    {
+      "code": "3121290900",
+      "name": "Vermessungstechniker/in - Bergvermessung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "3121291000",
+      "name": "Vermessungstechniker/in - Vermessung",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "7320290300",
+      "name": "Verwaltungsfachangestellte/r - Bundesverwaltung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7328290200",
+      "name": "Verwaltungsfachangestellte/r - HWK und IHK",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7328290100",
+      "name": "Verwaltungsfachangestellte/r - Kirchenverwaltung - evangelische Kirche",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7320290700",
+      "name": "Verwaltungsfachangestellte/r - Kommunalverwaltung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "7320290200",
+      "name": "Verwaltungsfachangestellte/r - Landesverwaltung",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "3226290000",
+      "name": "Wasserbauer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "2912290100",
+      "name": "Weintechnologe/-technologin",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "5313290100",
+      "name": "Werkfeuerwehrmann/-frau",
+      "bereich": "Verkehr, Logistik, Schutz und Sicherheit"
+    },
+    {
+      "code": "7138290000",
+      "name": "Werkgehilfe/-gehilfin - Schmuckwarenindustrie, Taschen- und Armbanduhren",
+      "bereich": "Unternehmensorganisation, Buchhaltung, Recht und Verwaltung"
+    },
+    {
+      "code": "2122292400",
+      "name": "Werksteinhersteller/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "4142291200",
+      "name": "Werkstoffprüfer/in - Kunststofftechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4142290400",
+      "name": "Werkstoffprüfer/in - Metalltechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4142291100",
+      "name": "Werkstoffprüfer/in - Systemtechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "4142290300",
+      "name": "Werkstoffprüfer/in - Wärmebehandlungstechnik",
+      "bereich": "Naturwissenschaft, Geografie und Informatik"
+    },
+    {
+      "code": "2452291500",
+      "name": "Werkzeugmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "1160290000",
+      "name": "Winzer/in",
+      "bereich": "Land-, Forst- und Tierwirtschaft, Gartenbau"
+    },
+    {
+      "code": "3331290100",
+      "name": "Wärme-, Kälte- und Schallschutzisolierer/in",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "8111290100",
+      "name": "Zahnmedizinische/r Fachangestellte/r",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "8254290000",
+      "name": "Zahntechniker/in",
+      "bereich": "Gesundheit, Soziales, Lehre und Erziehung"
+    },
+    {
+      "code": "2423292600",
+      "name": "Zerspanungsmechaniker/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "3332290000",
+      "name": "Zimmerer/Zimmerin",
+      "bereich": "Bau, Architektur, Vermessung und Gebäudetechnik"
+    },
+    {
+      "code": "9361290700",
+      "name": "Zupfinstrumentenmacher/in - Gitarrenbau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "9361290800",
+      "name": "Zupfinstrumentenmacher/in - Harfenbau",
+      "bereich": "Sprache, Wirtschaft, Medien, Kunst, Kultur und Gestaltung"
+    },
+    {
+      "code": "2525290800",
+      "name": "Zweiradmechatroniker/in - Fahrradtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2525290900",
+      "name": "Zweiradmechatroniker/in - Motorradtechnik",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "2822292300",
+      "name": "Änderungsschneider/in",
+      "bereich": "Rohstoffgewinnung, Produktion und Fertigung"
+    },
+    {
+      "code": "sonstiger",
+      "name": "Mein Beruf steht nicht in der Liste",
+      "bereich": "Sonstiges"
+    }
+  ]
+}

@@ -179,11 +179,10 @@
       },
       "config": {
         "source": "berufe",
-        "asset": "assets/data/berufe_beispiel.json",
+        "asset": "assets/data/berufe.json",
         "maxLength": 200,
         "publicField": "beruf_name"
-      },
-      "review": true
+      }
     },
     {
       "id": "s4_lehrjahr",
