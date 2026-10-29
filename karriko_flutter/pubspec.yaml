@@ -17,7 +17,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   go_router: ^14.2.0
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^3.4.3
   appwrite: ^25.4.0
   dio: ^5.4.3
   intl: ^0.20.0
@@ -28,7 +28,7 @@ dependencies:
   # Nur fuer die Seitenweiterleitung beim Anbieter-Login (siehe
   # data/services/oauth_redirect.dart). Lag ohnehin transitiv vor; hier
   # deklariert, damit der direkte Zugriff nicht auf einem Zufall beruht.
-  web: ^1.1.1
+  web: ^1.1.2
   # Der Entwurf wird nach jeder Antwort lokal gespeichert, damit ein
   # geschlossener Tab keine halbe Stunde Arbeit kostet. localStorage direkt
   # ueber package:web ginge im Browser, traegt aber auf iOS und Android nicht.
@@ -44,7 +44,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
