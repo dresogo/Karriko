@@ -1,8 +1,8 @@
 # Karriko – Offene Aufgaben
 
-**Stand:** 28. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
+**Stand:** 30. Oktober 2026 · **Erledigtes:** [`aufgaben-erledigt.md`](aufgaben-erledigt.md)
 
-194 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
+203 Aufgaben sind offen, 64 davon blockieren den Launch. Die meisten P1-Punkte liegen bei Datenschicht, Anmeldung und Recht.
 
 Diese Datei und `aufgaben-erledigt.md` sind die einzige Aufgabenliste des Projekts. Sie ersetzen `notes/todo.md` (bis Commit `679bf77` in der Historie). Neue Aufgaben kommen hierher oder in den Eingang des Plan-Dokuments, nicht in Berichte oder neue Todo-Dateien (E-1.16).
 
@@ -334,6 +334,17 @@ Phasen aus dem Tab „Website-Umbau SEO“. Framework ist Jaspr (E-1.17), Projek
 - [ ] T-12.4 · P2 · Stellen mit `JobPosting`, Suche unter `/suche` ohne Index, Landingpages Beruf × Ort (Website-Umbau SEO)
 - [ ] T-12.5 · P3 · Blog aus `blog_content.dart` in Markdown-Dateien überführen (Website-Umbau SEO)
 - [ ] T-12.6 · P2 · Aufräumen vor dem Start: öffentliche Screens aus dem Flutter-Router, alte `#/`-Links per Skript auf `/` weiterleiten, `sitemap.xml` (bei vielen Betrieben als Index), `robots.txt` mit `Disallow: /app/` und `/suche`, echte 404 und 410, Service Worker des alten Builds abmelden, Core Web Vitals messen, Bilder als WebP mit festen Maßen. Search Console steht in T-10.4 (Website-Umbau SEO)
+- [ ] T-12.7 · P2 · Entscheiden, ob KI-Trainings-Bots (GPTBot, ClaudeBot, Google-Extended, CCBot) die öffentlichen Seiten lesen dürfen oder nur Such- und Abruf-Bots; danach als E-Eintrag ins Factsheet (Chat)
+  Für Training spricht, dass künftige Modelle Karriko kennen; dagegen, dass die Bewertungstexte der Nutzer ins Trainingsmaterial gehen.
+- [ ] T-12.8 · P2 · `robots.txt` pro KI-Bot regeln: Such- und Abruf-Bots erlauben (OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot, Perplexity-User), Trainings-Bots nach T-12.7; ergänzt T-12.6 (Chat)
+  GPTBot und OAI-SearchBot getrennt behandeln, ebenso ClaudeBot und Claude-SearchBot.
+- [ ] T-12.9 · P2 · Firewall- und CDN-Regeln beim Hoster (T-9.10) prüfen, damit KI-Such-Bots nicht vor `robots.txt` geblockt werden; Test mit `curl -A "ClaudeBot"` und `curl -A "OAI-SearchBot"` gegen `/robots.txt` und eine Betriebsseite (Chat)
+- [ ] T-12.10 · P2 · Strukturierte Daten auf Betriebsseiten erweitern: `Organization` mit Ort und angebotenen Ausbildungsberufen; ergänzt das JSON-LD aus T-12.3 (Chat)
+- [ ] T-12.11 · P2 · Kernfakten als lesbaren Text ausgeben, nicht nur als Balken: Betriebsname, Ort, Berufe, Score, Anzahl der Bewertungen, Stand-Datum; Sichtbarkeitsgrenzen nach E-22 (Chat)
+- [ ] T-12.12 · P2 · Gesamtzahl der Bewertungen offen zeigen, auch wenn hinter der Anmeldeschranke nur zwei Bewertungen sichtbar sind, damit KI-Antworten nicht aus dem sichtbaren Ausschnitt hochrechnen; mit Tab „Anmeldeschranke“ abgleichen (Chat)
+- [ ] T-12.13 · P2 · Sitemap zusätzlich in den Bing Webmaster Tools einreichen und IndexNow einrichten; ergänzt T-10.4 (Chat)
+- [ ] T-12.14 · P2 · Je nach T-12.7 das Auslesen durch KI-Crawler in der Datenschutzerklärung erwähnen; als Frage in den Tab „Fragen an den Anwalt“ (T-5.1) (Chat)
+- [ ] T-12.15 · P3 · Optional `llms.txt` mit Kurzbeschreibung und Links zu den wichtigsten Seiten anlegen; Nutzen bisher kaum belegt (Chat)
 
 ## Bewusst nicht geplant
 
